@@ -1,74 +1,58 @@
 <div class="tutorial-content">
     <h1 class="tutorial-title">Aspect Specifications and Pragmas in Ada: Verified Low-Level Control</h1>
-    <p class="tutorial-intro">
-        While high-level abstractions are essential for safety-critical systems, sometimes precise low-level control is unavoidable. Ada's aspect system transforms this necessity from a safety hazard into a verifiable design element. This tutorial explores how Ada's aspect specifications and pragmas enable bit-precise hardware control while maintaining formal verification guarantees. You'll learn to specify implementation details with mathematical precision – proving that low-level code is not just efficient, but <em>provably correct</em> in its interaction with hardware.
-    </p>
-
-    <div class="section-divider"></div>
-            <section class="tutorial-section">
-                <h2>Volatile and Atomic Objects</h2>
-                <p>Ada provides precise control over compiler optimizations for objects that interact with hardware or shared memory.</p>
-
-                <h3>Volatile Semantics and Safety</h3>
-                <h4>Basic Volatile Specification</h4>
-                <pre class="code-block"><code>-- Volatile object specification
+    
     <div class="tutorial-section">
-        <h4>Low-Level Control Philosophy</h4>
-        <p>
-            <strong>Ada approach:</strong> "Low-level control can be made precise, predictable, and verifiable"<br>
-            This fundamental shift transforms bit-level programming from a verification blind spot into a formally specified component of safety-critical systems.
+        <p class="tutorial-intro">
+            While high-level abstractions are essential for safety-critical systems, sometimes precise low-level control is unavoidable. Ada's aspect system transforms this necessity from a safety hazard into a verifiable design element. This tutorial explores how Ada's aspect specifications and pragmas enable bit-precise hardware control while maintaining formal verification guarantees. You'll learn to specify implementation details with mathematical precision – proving that low-level code is not just efficient, but <em>provably correct</em> in its interaction with hardware.
+        </p>
+        
+        <div class="section-block">
+            <h2>Low-Level Control Philosophy</h2>
+            <p>
+                <strong>Ada approach:</strong> "Low-level control can be made precise, predictable, and verifiable"<br>
+                This fundamental shift transforms bit-level programming from a verification blind spot into a formally specified component of safety-critical systems.
+            </p>
+        </div>
     </div>
 
-    <div class="section-divider"></div>
+    <hr class="section-divider">
+
     <div class="tutorial-section">
         <h2>Why Traditional Low-Level Programming Fails in Safety-Critical Systems</h2>
-        <p>
-        </p>
-        <h3>Common Low-Level Programming Deficiencies</h3>
-
-                <h4>Volatile Verification</h4>
-                <pre class="code-block"><code>-- SPARK verification of volatile usage
-        <ul>
-            <li>Compiler-dependent behavior creating portability and verification issues</li>
-            <li>Hidden optimizations that alter specified behavior</li>
-            <li>Lack of formal verification for bit-level operations</li>
-            <li>Unspecified memory layout causing hardware interface errors</li>
-            <li>Inconsistent volatile semantics leading to optimization errors</li>
-        </ul>
-        <ul>
-            <li>1996: Ariane 5 explosion partly due to bit-level errors</li>
-            <li>2004: Mars rover Spirit stuck due to memory layout issues</li>
-            <li>Medical device recalls due to register mapping errors</li>
-            <li>Avionics system failures from incorrect bit manipulation</li>
-            <li>Nuclear plant incidents from optimization errors</li>
-        </ul>
-        <h3>The Ariane 5 Case Study Revisited: A Bit-Level Perspective</h3>
-        <p>
-            The Ariane 5 rocket explosion was caused by a 64-bit floating point value being converted to a 16-bit integer. But critically, the error occurred because:
-        </p>
-        <ul>
-
-                <h4>Volatile Semantics Explained</h4>
-                <ul>
-                    <li><code>Volatile</code>: Prevents compiler optimizations for the object</li>
-                    <li><code>Volatile_Function</code>: Specifies if function reads volatile state</li>
-                    <li><code>Async_Writers</code>: Indicates asynchronous updates to the object</li>
-                    <li><code>Effective_Reads</code>: Specifies if reads have side effects</li>
-                    <li><code>Effective_Writes</code>: Specifies if writes have side effects</li>
-                </ul>
-                <p>These aspects precisely define how the compiler should treat volatile objects, enabling verification of their usage.</p>
-
-                <h3>Atomic Operations and Safety</h3>
-                <p>Ensuring atomic access to shared data in concurrent systems:</p>
-                <pre class="code-block"><code>-- Atomic variable specification
-            <li>Bit-level representation assumptions were violated</li>
-            <li>Optimizations removed critical overflow handling</li>
-            <li>Memory layout wasn't formally specified</li>
-            <li>No verification of low-level representation</li>
+        <p>Traditional approaches often lack the formal verification needed for safety-critical applications.</p>
+        
+        <div class="section-block">
+            <h3>Common Low-Level Programming Deficiencies</h3>
+            <ul>
+                <li>Compiler-dependent behavior creating portability and verification issues</li>
+                <li>Hidden optimizations that alter specified behavior</li>
+                <li>Lack of formal verification for bit-level operations</li>
+                <li>Unspecified memory layout causing hardware interface errors</li>
+                <li>Inconsistent volatile semantics leading to optimization errors</li>
+            </ul>
+            
+            <h3>Historical Incidents</h3>
+            <ul>
+                <li>1996: Ariane 5 explosion partly due to bit-level errors</li>
+                <li>2004: Mars rover Spirit stuck due to memory layout issues</li>
+                <li>Medical device recalls due to register mapping errors</li>
+                <li>Avionics system failures from incorrect bit manipulation</li>
+                <li>Nuclear plant incidents from optimization errors</li>
+            </ul>
+            
+            <h3>The Ariane 5 Case Study Revisited: A Bit-Level Perspective</h3>
+            <p>The Ariane 5 rocket explosion was caused by a 64-bit floating point value being converted to a 16-bit integer. But critically, the error occurred because:</p>
+            <ul>
+                <li>Bit-level representation assumptions were violated</li>
+                <li>Optimizations removed critical overflow handling</li>
+                <li>Memory layout wasn't formally specified</li>
+                <li>No verification of low-level representation</li>
+            </ul>
+        </div>
+        
         <div class="definition-box">
             <h4>Ada's Aspect Philosophy</h4>
-            <p>
-                Rather than treating low-level details as implementation-specific, Ada integrates precise control into the language with:
+            <p>Rather than treating low-level details as implementation-specific, Ada integrates precise control into the language with:</p>
             <ul>
                 <li>Formal aspect syntax: Precise specification of implementation details</li>
                 <li>Verification-enabled pragmas: Compiler directives that support verification</li>
@@ -76,70 +60,146 @@
                 <li>Optimization control: Predictable performance tuning</li>
                 <li>Certification-specific aspects: Direct support for safety standards</li>
             </ul>
-            <p>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
     <div class="tutorial-section">
+        <h2>Volatile and Atomic Objects</h2>
+        <p>Ada provides precise control over compiler optimizations for objects that interact with hardware or shared memory.</p>
 
-                <h4>Volatile and Atomic Verification Levels</h4>
-                <table class="tutorial-table">
-                    <thead>
-                        <tr><th>Verification Level</th><th>What It Checks</th><th>How To Enable</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Syntactic Checking</td><td>Correct aspect syntax and placement</td><td>Compiler with <code>-gnatwa</code></td></tr>
-                        <tr><td>Static Analysis</td><td>Proper usage patterns and dependencies</td><td><code>gnatprove --level=1</code></td></tr>
-                        <tr><td>Formal Verification</td><td>Mathematical proof of volatile safety</td><td>SPARK with <code>--level=2</code></td></tr>
-                    </tbody>
-                </table>
-                <p>For safety-critical systems, all three levels should be used to ensure comprehensive volatile verification.</p>
+        <div class="section-block">
+            <h3>Volatile Semantics and Safety</h3>
+            <h4>Basic Volatile Specification</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Volatile object specification
+Sensor_Value : Float with Volatile;</code></pre>
+            </div>
+            
+            <h4>Volatile Verification</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- SPARK verification of volatile usage
+procedure Read_Sensor (Value : out Float) with
+  Global => (In_Out => Sensor_Value),
+  Volatile_Function => Read_Sensor;</code></pre>
+            </div>
+            
+            <h4>Volatile Semantics Explained</h4>
+            <ul>
+                <li><code class="code-inline">Volatile</code>: Prevents compiler optimizations for the object</li>
+                <li><code class="code-inline">Volatile_Function</code>: Specifies if function reads volatile state</li>
+                <li><code class="code-inline">Async_Writers</code>: Indicates asynchronous updates to the object</li>
+                <li><code class="code-inline">Effective_Reads</code>: Specifies if reads have side effects</li>
+                <li><code class="code-inline">Effective_Writes</code>: Specifies if writes have side effects</li>
+            </ul>
+            <p>These aspects precisely define how the compiler should treat volatile objects, enabling verification of their usage.</p>
 
-                <h4>Volatile and Atomic Pitfalls and Solutions</h4>
-                <strong>Pitfall: Incomplete Volatile Specification</strong>
-                <pre class="code-block"><code>Sensor_Value : Float;
+            <h3>Atomic Operations and Safety</h3>
+            <p>Ensuring atomic access to shared data in concurrent systems:</p>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Atomic variable specification
+Shared_Counter : Integer with Atomic;</code></pre>
+            </div>
+        </div>
+        
+        <div class="section-block">
+            <h4>Volatile and Atomic Verification Levels</h4>
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th>Verification Level</th>
+                        <th>What It Checks</th>
+                        <th>How To Enable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Syntactic Checking</td>
+                        <td>Correct aspect syntax and placement</td>
+                        <td>Compiler with <code class="code-inline">-gnatwa</code></td>
+                    </tr>
+                    <tr>
+                        <td>Static Analysis</td>
+                        <td>Proper usage patterns and dependencies</td>
+                        <td><code class="code-inline">gnatprove --level=1</code></td>
+                    </tr>
+                    <tr>
+                        <td>Formal Verification</td>
+                        <td>Mathematical proof of volatile safety</td>
+                        <td>SPARK with <code class="code-inline">--level=2</code></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>For safety-critical systems, all three levels should be used to ensure comprehensive volatile verification.</p>
+            
+            <h4>Volatile and Atomic Pitfalls and Solutions</h4>
+            <p><strong>Pitfall: Incomplete Volatile Specification</strong></p>
+            <div class="code-block">
+                <pre><code class="language-ada">Sensor_Value : Float;</code></pre>
+            </div>
+            
+            <p><strong>Solution: Complete Specification</strong></p>
+            <div class="code-block">
+                <pre><code class="language-ada">Sensor_Value : Float with
+  Volatile,
+  Async_Writers => True,
+  Effective_Reads => True;</code></pre>
+            </div>
+            
+            <p><strong>Pitfall: Non-Atomic Compound Operations</strong></p>
+            <div class="code-block">
+                <pre><code class="language-ada">procedure Increment_Counter is
+begin
+   Counter := Counter + 1;  -- Not atomic
+end Increment_Counter;</code></pre>
+            </div>
+            
+            <p><strong>Solution: Verified Atomic Operations</strong></p>
+            <div class="code-block">
+                <pre><code class="language-ada">procedure Increment_Counter with
+  Global => (In_Out => Counter),
+  Depends => (Counter => Counter);
+
+pragma Atomic (Counter);</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="tutorial-section">
         <h2>Aspect Syntax and Semantics</h2>
-            Ada's aspect system provides a formal mechanism for specifying implementation details while maintaining strong typing guarantees.
-                <strong>Solution: Complete Specification</strong>
-                <pre class="code-block"><code>Sensor_Value : Float with
-        </p>
-        <h3>Aspect Fundamentals</h3>
-        <h4>Aspect Syntax Forms</h4>
-        <div class="code-block">
-                <strong>Pitfall: Non-Atomic Compound Operations</strong>
-                <pre class="code-block"><code>procedure Increment_Counter is
-            <pre><code class="language-ada">-- Postfix aspect syntax (most common)
+        <p>Ada's aspect system provides a formal mechanism for specifying implementation details while maintaining strong typing guarantees.</p>
+        
+        <div class="section-block">
+            <h3>Aspect Fundamentals</h3>
+            <h4>Aspect Syntax Forms</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Postfix aspect syntax (most common)
 function Square (X : Integer) return Integer with
    Pre  => X >= 0,
    Post => Square'Result = X * X;
-                <strong>Solution: Verified Atomic Operations</strong>
-                <pre class="code-block"><code>procedure Increment_Counter with
 
 -- Pragma aspect syntax
 pragma Assert (X > 0, "X must be positive");
 
 -- Representation clause aspect
-            </section>
-
-            <section class="tutorial-section">
-                <h2>Optimization Control and Certification Aspects</h2>
-                <p>Ada provides precise control over compiler optimizations while supporting certification requirements through specialized aspects.</p>
-
-                <h3>Optimization Control Aspects</h3>
-                <h4>Basic Optimization Control</h4>
-                <pre class="code-block"><code>-- Inline control
 for Sensor_Record use record
    ID      at 0 range 0..7;
    Status  at 1 range 0..3;
 end record;</code></pre>
-        </div>
-        <h4>Aspect Categories</h4>
-            <pre><code class="language-ada">-- Verification aspects
+            </div>
+            
+            <h4>Aspect Categories</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Verification aspects
 with Pre, Post, Type_Invariant, Contract_Cases;
 
+-- Representation aspects
 with Size, Bit_Order, Small, Alignment;
 
 -- Optimization aspects
-
-                <h4>Optimization Verification</h4>
-                <pre class="code-block"><code>-- Verified optimization control
 with Inline, Suppress, Volatile;
 
 -- Certification aspects
@@ -147,57 +207,44 @@ with SPARK_Mode, Review, Assertion_Policy;
 
 -- Documentation aspects
 with Documentation, Refined_By;</code></pre>
-        </div>
-        <div class="note-box">
-            <h3>Key Aspect Properties</h3>
-            <ul>
-                <li>Aspects are part of the program's semantics, not comments</li>
-                Unlike traditional compiler directives, Ada's aspects are designed to support verification rather than obscure it.
-
-                <h4>Optimization Control Guidelines</h4>
-                <table class="tutorial-table">
-                    <thead>
-                        <tr><th>Aspect</th><th>When to Use</th><th>Certification Impact</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><code>Inline</code></td><td>Small, frequently called functions</td><td>Must verify inlined code maintains safety</td></tr>
-                        <tr><td><code>Suppress</code></td><td>Verified safe to suppress specific checks</td><td>Requires formal justification for certification</td></tr>
-                        <tr><td><code>Optimize</code></td><td>Time-critical sections needing optimization</td><td>Must verify WCET after optimization</td></tr>
-                        <tr><td><code>Review</code></td><td>Certification-specific review requirements</td><td>Directly addresses certification evidence needs</td></tr>
-                    </tbody>
-                </table>
-                <p>Optimization aspects must be used judiciously in safety-critical systems, with verification evidence for each use.</p>
-
-                <h3>Certification-Specific Aspects</h3>
-                <p>Aspects designed specifically for safety certification:</p>
-                <pre class="code-block"><code>-- SPARK mode specification
-            </p>
-        </div>
-        <h3>Aspect Verification and Processing</h3>
-        <div class="two-column">
-            <div class="column">
-                <h4>Verification Processing</h4>
-                <p>How verification aspects are processed:</p>
-                <div class="code-block">
+            </div>
+            
+            <div class="note-box">
+                <h3>Key Aspect Properties</h3>
+                <ul>
+                    <li>Aspects are part of the program's semantics, not comments</li>
+                    <li>Unlike traditional compiler directives, Ada's aspects are designed to support verification rather than obscure it</li>
+                </ul>
+            </div>
+            
+            <h3>Aspect Verification and Processing</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Verification Processing</h4>
+                    <p>How verification aspects are processed:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">function Process (X : Integer) return Integer with
    Pre  => X > 0,
    Post => Process'Result > X;
 
 -- 1. GNATprove extracts verification conditions
 -- 2. Conditions are translated to verification language
 -- 3. Automated provers attempt to prove conditions
--- 4. Counterexamples generated for unproven conditions
+-- 4. Counterexamples generated for unproven conditions</code></pre>
+                    </div>
+                    <p>Verification aspects enable mathematical proof of correctness.</p>
                 </div>
-                <p>Verification aspects enable mathematical proof of correctness.</p>
-            </div>
-            <div class="column">
-                <h4>Representation Processing</h4>
-                <p>How representation aspects are processed:</p>
-                    <pre><code class="language-ada">type Sensor_Record is record
+                
+                <div class="column">
+                    <h4>Representation Processing</h4>
+                    <p>How representation aspects are processed:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">type Sensor_Record is record
    ID      : Sensor_ID;
    Status  : Status_Type;
    Value   : Float;
 end record with
-   Size => 32,
+   Size => 32;
 
 -- Representation process
 -- 1. Compiler checks aspect consistency
@@ -205,231 +252,109 @@ end record with
 -- 3. Verification tools check representation safety
 -- 4. Documentation tools extract representation details
 -- 5. No hidden implementation choices</code></pre>
+                    </div>
+                    <p>Representation aspects provide bit-precise control with verification support.</p>
                 </div>
-                <p>Representation aspects provide bit-precise control with verification support.</p>
-
-                <h4>1. SPARK_Mode Aspect</h4>
-                <p>Enabling formal verification for specific units:</p>
-                <pre class="code-block"><code>-- SPARK for entire package
             </div>
-        </div>
-        <div class="tip-box">
-            <h3>Aspect Best Practices</h3>
-            <ul>
-                <li>Prefer aspect syntax over pragmas when possible</li>
-                <li>Document the purpose of each aspect</li>
-                <li>Avoid aspects that compromise safety</li>
-                <li>Use aspects to make implicit requirements explicit</li>
-            </ul>
+            
+            <div class="tip-box">
+                <h3>Aspect Best Practices</h3>
+                <ul>
+                    <li>Prefer aspect syntax over pragmas when possible</li>
+                    <li>Document the purpose of each aspect</li>
+                    <li>Avoid aspects that compromise safety</li>
+                    <li>Use aspects to make implicit requirements explicit</li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="section-divider"></div>
-        <div class="code-block">
-                <p>This aspect enables targeted formal verification of critical components.</p>
+    <hr class="section-divider">
 
-                <h4>2. Review Aspect</h4>
-                <p>Directly addressing certification requirements:</p>
-                <pre class="code-block"><code>-- DO-178C certification aspects
-            <pre><code class="language-ada">type Sensor_Record is record
-   ID      : Sensor_ID;
-   Status  : Status_Type;
-   Value   : Float;
-end record;
+    <div class="tutorial-section">
+        <h2>Optimization Control and Certification Aspects</h2>
+        <p>Ada provides precise control over compiler optimizations while supporting certification requirements through specialized aspects.</p>
 
--- Specify precise memory layout
-for Sensor_Record use record
-   ID      at 0 range 0..7;
-   Status  at 1 range 0..3;
-end record;
-
--- Alternative: Using Size and Alignment
-for Sensor_Record use record
-   ID      at 0 range 0..7;
-   Status  at 0 range 8..11;
-   Value   at 4 range 0..31;
-end record;
-for Sensor_Record'Size use 48;
-        </div>
-        <h4>Verification of Representation</h4>
-            <pre><code class="language-ada">-- Verify representation safety
-pragma Assert (Sensor_Record'Size = 48);
-pragma Assert (Sensor_Record'Alignment = 4);
-
--- SPARK verification
-type Sensor_Record is record
-   ID      : Sensor_ID;
-                <p>These aspects directly connect code to certification requirements.</p>
-
-                <h3>Optimization and Certification Best Practices</h3>
-                <ul>
-                    <li>Document the rationale for each optimization decision</li>
-                    <li>Verify optimized code maintains safety properties</li>
-                    <li>Use <code>SPARK_Mode</code> to isolate critical verification zones</li>
-                    <li>Apply <code>Review</code> aspects to all safety-critical components</li>
-                    <li>Generate certification evidence directly from aspects</li>
-                </ul>
-            </section>
-
-            <section class="tutorial-section">
-                <h2>Real-World Aspect Applications</h2>
-                <h3>Boeing 787 Dreamliner Flight Control</h3>
-                <p>Aspect usage in the flight control software:</p>
-                <ul>
-                    <li>Bit-precise representation clauses for hardware interfaces</li>
-                    <li>Volatile aspects for sensor and actuator communication</li>
-                    <li>SPARK_Mode for critical control algorithms</li>
-                    <li>Review aspects for DO-178C certification evidence</li>
-                    <li>Verified optimization control for time-critical code</li>
-                </ul>
-                <p>The aspect-based approach reduced certification evidence generation time by 50% compared to previous Boeing models by embedding certification requirements directly in the code.</p>
-
-                <h3>Medical Device Critical Monitoring</h3>
-                <p>Aspect usage in a life-critical monitoring system:</p>
-                <ul>
-                    <li>Record representations for medical device registers</li>
-                    <li>Atomic operations for shared patient data</li>
-                    <li>SPARK verification of safety-critical algorithms</li>
-                    <li>Review aspects for IEC 62304 certification</li>
-                    <li>Verified volatile usage for sensor interfaces</li>
-                </ul>
-                <p>This implementation prevented numerous potential low-level errors that had caused recalls in previous device models.</p>
-
-                <h3>Safety-Critical Aspect Pattern</h3>
-                <p>A verified sensor interface from DO-178C certified code:</p>
-                <pre class="code-block"><code>-- Memory-mapped I/O address
-   Status  : Status_Type;
-   Value   : Float;
-end record with
-   Size => 48,
-      (for all R of Sensor_Record =>
-         R.ID in 1..255 and
-         R.Status in Valid_Status and
-         R.Value in -100.0..1000.0);
-
--- Verification evidence
--- [gnatprove] medium: Type_Invariant might fail
--- [gnatprove] at record definition:
--- [gnatprove]   ID range 0..7 ensures 1..255
--- [gnatprove]   Status range 8..11 ensures Valid_Status
--- [gnatprove]   Value range 32..63 ensures -100.0..1000.0
--- [gnatprove]   type invariant holds</code></pre>
-        </div>
-        <div class="tutorial-table-container">
+        <div class="section-block">
+            <h3>Optimization Control Aspects</h3>
+            <h4>Basic Optimization Control</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Inline control
+function Fast_Math (X, Y : Float) return Float with
+   Inline => True,
+   Pre => X > 0.0 and Y > 0.0;</code></pre>
+            </div>
+            
+            <h4>Optimization Verification</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Verified optimization control
+procedure Critical_Loop with
+   Optimize => Time,
+   WCET => 50.0; -- Worst-case execution time constraint</code></pre>
+            </div>
+            
+            <h4>Optimization Control Guidelines</h4>
             <table class="tutorial-table">
                 <thead>
                     <tr>
-                        <th>Approach</th>
-                        <th>Safety Benefits</th>
+                        <th>Aspect</th>
+                        <th>When to Use</th>
+                        <th>Certification Impact</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Position/Range Specification</td>
-                        <td>Precise hardware register mapping</td>
-                        <td>Exact bit-level control with verification</td>
-                    <tr>
-                        <td>Size Specification</td>
-                        <td>Memory-constrained environments</td>
-                        <td>Verified memory usage guarantees</td>
+                        <td><code class="code-inline">Inline</code></td>
+                        <td>Small, frequently called functions</td>
+                        <td>Must verify inlined code maintains safety</td>
                     </tr>
                     <tr>
-                        <td>Alignment Specification</td>
-                        <td>Performance-critical hardware access</td>
-                        <td>Verified alignment for efficient access</td>
+                        <td><code class="code-inline">Suppress</code></td>
+                        <td>Verified safe to suppress specific checks</td>
+                        <td>Requires formal justification for certification</td>
                     </tr>
-                        <td>Bit_Order Specification</td>
-                        <td>Hardware with specific bit ordering</td>
-                        <td>Verified bit ordering for correct interpretation</td>
+                    <tr>
+                        <td><code class="code-inline">Optimize</code></td>
+                        <td>Time-critical sections needing optimization</td>
+                        <td>Must verify WCET after optimization</td>
+                    </tr>
+                    <tr>
+                        <td><code class="code-inline">Review</code></td>
+                        <td>Certification-specific review requirements</td>
+                        <td>Directly addresses certification evidence needs</td>
                     </tr>
                 </tbody>
             </table>
+            <p>Optimization aspects must be used judiciously in safety-critical systems, with verification evidence for each use.</p>
+
+            <h3>Certification-Specific Aspects</h3>
+            <p>Aspects designed specifically for safety certification:</p>
+            <div class="code-block">
+                <pre><code class="language-ada">-- SPARK mode specification
+package Critical_Functions with
+   SPARK_Mode => On,
+   Review => Required,
+   Certification_Level => "DO-178C Level A";
+
+-- Assertion policy for certification
+pragma Assertion_Policy (
+   Pre => Check,
+   Post => Check,
+   Type_Invariant => Check);</code></pre>
+            </div>
         </div>
-        <p>
-                <p>The complete aspect certification package included:</p>
-                <ul>
-                    <li>Formal representation specifications with verification</li>
-                    <li>SPARK verification reports for critical aspects</li>
-                    <li>Review aspect extraction for certification evidence</li>
-                    <li>WCET analysis of optimized code sections</li>
-                    <li>Formal proof of volatile safety properties</li>
-                    <li>Problem reports and resolution evidence</li>
-                </ul>
-                <p>This comprehensive evidence package enabled successful certification with minimal audit findings, demonstrating that aspects can reduce rather than increase certification burden.</p>
-            </section>
-
-            <section class="tutorial-section">
-                <h2>Exercises: Building Verified Low-Level Systems</h2>
-                <h3>Exercise 1: Avionics Hardware Interface</h3>
-                <p>Design a verified hardware interface for aircraft sensors:</p>
-                <ul>
-                    <li>Create bit-precise register representations</li>
-                    <li>Add volatile aspects for hardware access</li>
-                    <li>Implement atomic operations for shared data</li>
-                    <li>Add contracts to ensure low-level safety</li>
-                    <li>Generate certification evidence from aspects</li>
-                </ul>
-                <strong>Challenge:</strong> Prove that the hardware interface cannot produce invalid register values regardless of execution path.
-
-                <h3>Exercise 2: Medical Device Register Mapping</h3>
-                <p>Build a register mapping system for a medical device:</p>
-                <ul>
-                    <li>Design record representations for device registers</li>
-                    <li>Add formal contracts for all register operations</li>
-                    <li>Implement verification-preserving hardware access</li>
-                    <li>Create DO-178C/IEC 62304 certification aspects</li>
-                    <li>Generate complete certification evidence</li>
-                </ul>
-                <strong>Challenge:</strong> Prove that all register operations maintain device safety properties.
-
-                <h3>Aspect Verification Strategy</h3>
-                <ol>
-                    <li><strong>Syntactic verification:</strong> Check aspect syntax and placement</li>
-                    <li><strong>Static verification:</strong> Prove aspect consistency and safety</li>
-                    <li><strong>Representation verification:</strong> Verify memory layout properties</li>
-                    <li><strong>Volatile verification:</strong> Prove correct volatile usage</li>
-                    <li><strong>Certification verification:</strong> Generate evidence from review aspects</li>
-                    <li><strong>Runtime verification:</strong> Test with runtime checks enabled</li>
-                </ol>
-                <p>For highest safety levels, all six verification steps are required to demonstrate proper aspect usage.</p>
-            </section>
-
-            <section class="tutorial-section">
-                <h2>Next Steps: SPARK Subset for Formal Verification</h2>
-                <p>Now that you've mastered Ada's aspect system, you're ready to explore how to achieve mathematical verification of critical components. In the next tutorial, we'll dive into the SPARK subset of Ada, showing how to:</p>
-                <ul>
-                    <li>Understand the SPARK language subset</li>
-                    <li>Prove absence of runtime errors</li>
-                    <li>Verify functional correctness</li>
-                    <li>Generate verification condition reports</li>
-                    <li>Apply SPARK to safety-critical patterns</li>
-                </ul>
-                <h3>Practice Challenge</h3>
-                <p>Enhance your avionics hardware interface with SPARK:</p>
-                <ul>
-                    <li>Add <code>SPARK_Mode</code> to critical components</li>
-                    <li>Implement contracts for formal verification</li>
-                    <li>Prove absence of runtime errors</li>
-                    <li>Verify functional correctness properties</li>
-                    <li>Create a verification plan for SPARK code</li>
-                </ul>
-                <h4>The Path to Mathematical Verification</h4>
-                <p>Aspect specifications provide the foundation for precise low-level control, but formal verification takes safety to the next level. When combined with strong typing, Design by Contract, and precise representation control, SPARK creates a powerful framework for developing systems that are not just functionally correct, but <em>mathematically proven</em> to be correct.</p>
-                <p>This integrated approach is why Ada remains the language of choice for organizations that need the highest levels of assurance. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but <em>provably correct</em> in all execution paths.</p>
-            </section>
-            Choosing the right representation approach is critical for both safety and verification efficiency.
-        </p>
     </div>
 
-    <div class="section-divider"></div>
+    <hr class="section-divider">
+
     <div class="tutorial-section">
         <h2>Advanced Representation Techniques</h2>
-        <p>
-            Using representation clauses for sophisticated hardware interfacing:
-        </p>
-        <h4>1. Register Mapping Pattern</h4>
-        <div class="code-block">
-            <pre><code class="language-ada">-- Memory-mapped I/O address
+        <p>Using representation clauses for sophisticated hardware interfacing:</p>
+        
+        <div class="section-block">
+            <h4>1. Register Mapping Pattern</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Memory-mapped I/O address
 Sensor_Base : constant System.Address := 
    System'To_Address (16#FFFF_0000#);
 
@@ -454,51 +379,30 @@ for Sensor'Address use Sensor_Base;
 pragma Volatile (Sensor);
 
 -- Safe register access
-procedure Set_Control (Bits : Control_Bits) is
+procedure Set_Control (Bits : Control_Bits) with
+   Pre => Valid_Control_Bits(Bits) is
 begin
    Sensor.Control := Bits;
-end Set_Control;
-
--- Contract ensures safe access
-procedure Set_Control (Bits : Control_Bits) with
-   Pre => Valid_Control_Bits(Bits);</code></pre>
-        </div>
-        <h4>2. Bit-Packed Array Pattern</h4>
-        <div class="code-block">
-            <pre><code class="language-ada">-- Boolean array with compact representation
+end Set_Control;</code></pre>
+            </div>
+            
+            <h4>2. Bit-Packed Array Pattern</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Boolean array with compact representation
 type Sensor_Flags is array (Sensor_ID) of Boolean;
 
 -- Specify packed representation
-for Sensor_Flags use
-   (1 => 16#0001#,  -- Bit 0
-    2 => 16#0002#,  -- Bit 1
-    3 => 16#0004#,  -- Bit 2
-    -- ...
-    16 => 16#8000#); -- Bit 15
+for Sensor_Flags'Component_Size use 1;
 for Sensor_Flags'Size use 16;
 for Sensor_Flags'Alignment use 2;
 
--- Alternative: Using record representation
-type Sensor_Flags is record
-   Flag_1  : Boolean;
-   Flag_2  : Boolean;
-   -- ...
-   Flag_16 : Boolean;
-end record;
-for Sensor_Flags use record
-   Flag_1  at 0 range 0..0;
-   Flag_2  at 0 range 1..1;
-   -- ...
-   Flag_16 at 1 range 15..15;
-end record;
-for Sensor_Flags'Size use 16;
-
 -- Verification of compact representation
 pragma Assert (Sensor_Flags'Size = 16);</code></pre>
-        </div>
-        <h4>3. Overlay Pattern</h4>
-        <div class="code-block">
-            <pre><code class="language-ada">-- Raw memory view
+            </div>
+            
+            <h4>3. Overlay Pattern</h4>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Raw memory view
 type Raw_Data is array (1..4) of Byte;
 pragma Pack (Raw_Data);
 
@@ -525,22 +429,21 @@ pragma Assert (Raw_Data'Alignment = Sensor_Packet'Alignment);
 
 -- Safe overlay usage
 procedure Process_Packet (Data : Raw_Data) is
-   Packet : Sensor_Packet with
-      Address => Data'Address,
-      Volatile;
+   Packet : Sensor_Packet;
+   for Packet'Address use Data'Address;
+   pragma Import (Ada, Packet);
+   pragma Volatile (Packet);
 begin
    if Validate_CRC(Packet) then
       Process_Sensor_Value(Packet.Value);
    end if;
-end Process_Packet;
-
--- Contract ensures safe overlay
-procedure Process_Packet (Data : Raw_Data) with
-   Pre => Data'Length * 8 = Sensor_Packet'Size;</code></pre>
+end Process_Packet;</code></pre>
+            </div>
         </div>
     </div>
 
-    <div class="section-divider"></div>
+    <hr class="section-divider">
+
     <div class="tutorial-section">
         <h2>Representation Clause Pitfalls</h2>
         <div class="two-column">
@@ -555,6 +458,7 @@ end record;
 -- No verification of layout safety</code></pre>
                 </div>
             </div>
+            
             <div class="column">
                 <h4>Solution: Verified Representation</h4>
                 <div class="code-block">
@@ -577,6 +481,7 @@ end record;</code></pre>
                 </div>
             </div>
         </div>
+        
         <div class="two-column">
             <div class="column">
                 <h4>Pitfall: Incorrect Bit Ordering</h4>
@@ -589,18 +494,26 @@ end record;
 -- Bit order depends on target architecture</code></pre>
                 </div>
             </div>
+            
             <div class="column">
                 <h4>Solution: Explicit Bit Ordering</h4>
                 <div class="code-block">
                     <pre><code class="language-ada">-- Explicit bit ordering specification
-pragma Wording_Order (High_Order_First);
 for Sensor_Record use record
    ID      at 0 range 0..7;
    Status  at 0 range 8..11;
 end record;
+for Sensor_Record'Bit_Order use High_Order_First;
 -- Bit order is now precisely defined</code></pre>
                 </div>
             </div>
+        </div>
+        
+        <div class="note-box">
+            <h3>Key Takeaway</h3>
+            <p>
+                Ada's aspect system enables precise low-level control without sacrificing safety or verification. By making implementation details explicit and verifiable, Ada transforms traditionally dangerous low-level programming into a mathematically precise component of safety-critical systems. The discipline required to specify aspects properly prevents the kinds of subtle bugs that have caused catastrophic failures in other languages.
+            </p>
         </div>
     </div>
 </div>
