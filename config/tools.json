@@ -34,5 +34,11 @@
         "name": "Sequence Generator",
         "icon": "format_list_numbered",
         "description": "Creates sequences of numbers with or without additional text."
+    },
+    {
+        "slug": "random-numbers",
+        "name": "Random Number Generator",
+        "icon": "casino",
+        "description": "Generate random numbers with options for range, quantity, decimals, uniqueness, and sorting."
     }
 ]
