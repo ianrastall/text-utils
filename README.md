@@ -80,14 +80,6 @@ A collection of interactive web-based tools and educational tutorials for text p
 - Tutorials are modular HTML files, easily extensible for new languages or topics.
 - Configuration and data are stored in JSON or plain text for easy editing.
 
-## Contributing
-
-Contributions are welcome!
-
-- To add a new tool, create a new HTML/JS file and add it to the navigation.
-- To expand tutorials, follow the structure in `tutorials/ada/` and update the relevant `index.json`.
-- Please open issues or pull requests for bug fixes, improvements, or new features.
-
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
