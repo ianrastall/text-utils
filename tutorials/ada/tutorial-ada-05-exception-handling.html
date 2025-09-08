@@ -1,0 +1,1155 @@
+<div class="tutorial-content">
+    <h1 class="tutorial-title">Exception Handling and Robust Error Management in Ada</h1>
+    
+    <div class="tutorial-section">
+        <p class="tutorial-intro">
+            In safety-critical systems, how errors are handled is often more important than preventing them. Ada's exception system transforms error management from an afterthought into a first-class design element with precise semantics and verifiable properties. This tutorial explores Ada's robust approach to exceptions, showing how to design systems that fail gracefully rather than catastrophically. You'll learn to build error handling strategies that not only recover from problems but also prove their correctness - turning what is often a source of fragility into a foundation for reliability.
+        </p>
+        
+        <div class="callout-primary">
+            <h4>Error Management Philosophy</h4>
+            <p>
+                <strong>Traditional approach:</strong> "Let's try to avoid errors and handle the ones we anticipate"<br>
+                <strong>Ada approach:</strong> "Let's design for failure and prove our recovery strategies work"<br>
+                This fundamental shift in perspective is what makes Ada uniquely suited for systems where failure is not an option.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-block">
+        <h2>Why Most Exception Systems Fail in Critical Applications</h2>
+        <p>
+            General-purpose exception systems often create more problems than they solve in safety-critical contexts. Understanding these pitfalls is essential to leveraging Ada's superior approach.
+        </p>
+        
+        <div class="two-column">
+            <div class="column">
+                <h3>Common Exception System Deficiencies</h3>
+                <ul>
+                    <li><span class="text-highlight">Unpredictable resource consumption</span> (stack usage, memory allocation)</li>
+                    <li><span class="text-highlight">Hidden control flow paths</span> that complicate verification</li>
+                    <li><span class="text-highlight">No distinction between recoverable and fatal errors</span></li>
+                    <li><span class="text-highlight">Exception swallowing</span> that masks underlying problems</li>
+                    <li><span class="text-highlight">Inconsistent propagation semantics</span> across language boundaries</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Real-World Consequences</h3>
+                <ul>
+                    <li>1996: Ariane 5 explosion partly due to unhandled exception</li>
+                    <li>2004: Mars rover Spirit stuck due to uncaught exception</li>
+                    <li>2010: "Flash crash" exacerbated by exception handling issues</li>
+                    <li>Medical device recalls due to improper error recovery</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>The Ariane 5 Case Study Revisited</h3>
+            <p>
+                The Ariane 5 rocket explosion was caused by a floating-point error that should have been handled. But critically, the error handling system itself failed because:
+            </p>
+            <ul>
+                <li>The exception handler was removed during optimization</li>
+                <li>No verification ensured the handler's presence</li>
+                <li>The system lacked a proper fallback mode</li>
+                <li>Error propagation wasn't formally specified</li>
+            </ul>
+            <p>
+                Ada's exception system, combined with contracts, would have prevented this by requiring verified error handling paths and providing predictable recovery mechanisms.
+            </p>
+        </div>
+        
+        <div class="definition-box">
+            <h4>Ada's Exception Philosophy</h4>
+            <p>
+                Rather than treating exceptions as mere error signals, Ada integrates them into the design process with:
+            </p>
+            <ul>
+                <li>Predictable resource usage during propagation</li>
+                <li>Explicit control flow that supports verification</li>
+                <li>Clear distinction between recoverable and fatal conditions</li>
+                <li>Formal specification of error handling requirements</li>
+                <li>Integration with Design by Contract for complete verification</li>
+            </ul>
+            <p>
+                This approach transforms error management from a runtime concern into a design-time verification problem.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Exception Semantics and Propagation</h2>
+        <p>
+            Ada's exception system provides precise control over error signaling and handling with predictable behavior.
+        </p>
+        
+        <h3>Basic Exception Structure</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Exception Declaration and Raising</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Declare custom exceptions
+Sensor_Error   : exception;
+Timeout_Error  : exception;
+Invalid_Value  : exception;
+
+-- Raise exceptions with context
+procedure Read_Sensor (ID : Sensor_ID; Value : out Float) is
+begin
+   if not Sensor_Ready(ID) then
+      raise Sensor_Error with "Sensor " & ID'Image & " not ready";
+   end if;
+   
+   Value := Read_Hardware_Sensor(ID);
+   
+   if Value > MAX_VALID_VALUE then
+      raise Invalid_Value with "Value " & Value'Image & " exceeds limit";
+   end if;
+end Read_Sensor;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h4>Exception Handling</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Process_Sensor_Data is
+   Value : Float;
+begin
+   Read_Sensor(1, Value);
+   Analyze(Value);
+   
+exception
+   when Sensor_Error =>
+      Log_Error("Sensor failure");
+      Initialize_Sensors;
+      
+   when Invalid_Value =>
+      Log_Error("Invalid reading");
+      Calibrate_Sensor(1);
+      
+   when others =>
+      Emergency_Shutdown;
+end Process_Sensor_Data;</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note-box">
+            <h3>Key Exception Properties</h3>
+            <ul>
+                <li>Exceptions are <em>raised</em> at a specific point in code</li>
+                <li>Propagation follows the static call tree (not dynamic)</li>
+                <li>Handlers are selected based on the exception's identity</li>
+                <li>Propagation stops at the first matching handler</li>
+                <li>Unhandled exceptions propagate to the environment</li>
+            </ul>
+            <p>
+                Unlike many languages, Ada's exception propagation is fully determined at compile time, making it verifiable.
+            </p>
+        </div>
+        
+        <h3>Exception Propagation Mechanics</h3>
+        <p>
+            Understanding the precise propagation rules is critical for safety-critical systems:
+        </p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Propagation Path</h4>
+                <ol>
+                    <li>Exception raised in current subprogram</li>
+                    <li>Check for handler in current subprogram</li>
+                    <li>If none, unwind stack to caller</li>
+                    <li>Check caller for handler</li>
+                    <li>Repeat until handler found or program terminates</li>
+                </ol>
+                <p>
+                    This follows the static call tree, not the dynamic call sequence.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Stack Unwinding</h4>
+                <ul>
+                    <li>Local objects with <code class="code-inline">finalize</code> are properly cleaned up</li>
+                    <li>No hidden resource leaks during propagation</li>
+                    <li>Predictable stack usage (no unbounded recursion)</li>
+                    <li>No heap allocation during propagation</li>
+                </ul>
+                <p>
+                    This determinism is essential for safety-critical applications.
+                </p>
+            </div>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Exception Handling Best Practices</h3>
+            <ul>
+                <li>Handle exceptions at the appropriate level of abstraction</li>
+                <li>Never swallow exceptions without action</li>
+                <li>Preserve context when propagating exceptions</li>
+                <li>Use specific exception types rather than <code class="code-inline">others</code></li>
+                <li>Ensure all code paths have error handling</li>
+                <li>Test all exception paths thoroughly</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Custom Exception Hierarchies</h2>
+        <p>
+            While Ada doesn't have inheritance-based exception hierarchies like some OOP languages, it provides powerful mechanisms for creating structured exception taxonomies.
+        </p>
+        
+        <h3>Exception Taxonomy Patterns</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>1. Tagged Type Exception Pattern</h4>
+                <p>
+                    Using tagged types to create an extensible exception hierarchy:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Exceptions is
+   
+   type System_Exception is tagged private;
+   function Reason (E : System_Exception) return String;
+   
+   type Sensor_Exception is new System_Exception with private;
+   type Communication_Exception is new System_Exception with private;
+   type Hardware_Exception is new System_Exception with private;
+   
+   -- Specific exception constructors
+   function Sensor_Timeout return Sensor_Exception;
+   function Sensor_Offline return Sensor_Exception;
+   function Buffer_Overflow return Communication_Exception;
+   
+private
+   type System_Exception is tagged record
+      Message : Unbounded_String;
+   end record;
+   
+   type Sensor_Exception is new System_Exception with null record;
+   -- ...
+   
+end Exceptions;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h4>2. Exception Package Hierarchy</h4>
+                <p>
+                    Using package structure to organize exceptions:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package System_Exceptions is
+   System_Error : exception;
+end System_Exceptions;
+
+package System_Exceptions.Sensor is
+   Sensor_Error   : exception;
+   Timeout_Error  : exception;
+   Calibration_Error : exception;
+end System_Exceptions.Sensor;
+
+package System_Exceptions.Communication is
+   Communication_Error : exception;
+   Buffer_Overflow     : exception;
+   Checksum_Failure    : exception;
+end System_Exceptions.Communication;
+
+-- Usage
+with System_Exceptions.Sensor;
+use System_Exceptions.Sensor;
+
+procedure Read_Sensor is
+begin
+   -- ...
+exception
+   when Timeout_Error =>
+      -- Handle timeout
+end Read_Sensor;</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Exception Hierarchy Design Guidelines</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Good Hierarchy</h4>
+                    <ul>
+                        <li>Organized by error domain (sensors, comms, etc.)</li>
+                        <li>Clear distinction between recoverable and fatal</li>
+                        <li>Context-rich exception types</li>
+                        <li>Minimal use of generic exceptions</li>
+                        <li>Documentation of recovery strategies</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h4>Poor Hierarchy</h4>
+                    <ul>
+                        <li>Too many specific exception types</li>
+                        <li>Unclear recovery semantics</li>
+                        <li>Generic exceptions like "Error"</li>
+                        <li>Exceptions that don't provide context</li>
+                        <li>No guidance on handling strategies</li>
+                    </ul>
+                </div>
+            </div>
+            <p>
+                The goal is to create an exception taxonomy that guides proper error handling rather than complicating it.
+            </p>
+        </div>
+        
+        <h3>Exception Context and Diagnostics</h3>
+        <p>
+            Providing rich context is essential for effective error handling:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">with Ada.Exceptions; use Ada.Exceptions;
+
+package Sensor_Exceptions is
+   
+   Sensor_Error : exception;
+   
+   -- Enhanced exception with context
+   type Sensor_Exception is new Exception_Occurrence with private;
+   
+   function Create_Sensor_Error (
+      ID      : Sensor_ID;
+      Message : String;
+      Value   : Float := Float'Last) return Sensor_Exception;
+      
+   function Get_Sensor_ID (E : Sensor_Exception) return Sensor_ID;
+   function Get_Value (E : Sensor_Exception) return Float;
+   
+private
+   type Sensor_Exception is new Exception_Occurrence with record
+      Sensor_ID : System.Sensor_ID;
+      Value     : Float;
+   end record;
+   
+end Sensor_Exceptions;
+
+-- Usage
+raise Create_Sensor_Error(
+   ID      => 5,
+   Message => "Value out of range",
+   Value   => 150.0);</code></pre>
+        </div>
+        
+        <div class="note-box">
+            <h3>Context Information Best Practices</h3>
+            <ul>
+                <li>Include component identifier (sensor ID, task name)</li>
+                <li>Capture relevant parameter values</li>
+                <li>Record timestamp of error occurrence</li>
+                <li>Preserve system state context</li>
+                <li>Include error severity level</li>
+                <li>Provide recovery suggestions when possible</li>
+            </ul>
+            <p>
+                Rich context transforms error handling from generic recovery to targeted problem resolution.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Exception Contracts and Verification</h2>
+        <p>
+            One of Ada's most powerful capabilities is specifying exception behavior as part of Design by Contract, enabling formal verification of error handling.
+        </p>
+        
+        <h3>Exception Specifications as Contracts</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Basic Exception Contracts</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Calculate_Safety_Margin (
+   Load, Capacity : Positive) return Float with
+   Pre  => Capacity > Load,
+   Post => Calculate_Safety_Margin'Result in 0.0..1.0,
+   -- Contract: Only these exceptions can be raised
+   Exceptional_Cases =>
+      (Capacity_Error => Capacity <= Load,
+       others          => False);</code></pre>
+                </div>
+                <p>
+                    Specifies exactly when and why exceptions may occur.
+                </p>
+            </div>
+            
+            <div class="column">
+                <h4>Exceptional Postconditions</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Process_Command (
+   Cmd : Command_Type;
+   Response : out Response_Type) with
+   Pre  => Valid_Command(Cmd),
+   Contract_Cases =>
+      (Cmd.Valid =>
+         (Response.Status = Success and
+          Response.Timestamp <= Clock + Milliseconds(50)),
+       Cmd.Invalid =>
+         (Response.Status = Error and
+          Response.Error_Code = Invalid_Command)),
+   Exceptional_Cases =>
+      (Timeout_Error => 
+         Response.Timestamp > Clock + Milliseconds(50));</code></pre>
+                </div>
+                <p>
+                    Specifies behavior even when exceptions occur.
+                </p>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>Exception Contract Verification Levels</h4>
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th>Verification Level</th>
+                        <th>What It Checks</th>
+                        <th>How To Enable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Runtime Checking</td>
+                        <td>Exceptions only raised as specified</td>
+                        <td><code class="code-inline">-gnata</code> compiler flag</td>
+                    </tr>
+                    <tr>
+                        <td>Static Analysis</td>
+                        <td>Proof that no unspecified exceptions can occur</td>
+                        <td><code class="code-inline">gnatprove --level=1</code></td>
+                    </tr>
+                    <tr>
+                        <td>Formal Verification</td>
+                        <td>Mathematical proof of exception contract compliance</td>
+                        <td>SPARK with <code class="code-inline">--level=2</code></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                For safety-critical systems, all three levels should be used to ensure comprehensive exception verification.
+            </p>
+        </div>
+        
+        <h3>Advanced Exception Contract Patterns</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>1. Recovery Guarantees</h4>
+                <p>
+                    Specify what state is preserved after exception handling:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Update_System_State (
+   New_State : System_State) with
+   Pre  => Valid_State_Transition(Current_State, New_State),
+   Post => Current_State = New_State,
+   Exceptional_Cases =>
+      (Invalid_State_Error =>
+         Current_State = Current_State'Old and
+         System_Available = True);</code></pre>
+                </div>
+                <p>
+                    Guarantees system remains available even when updates fail.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>2. Exception Chaining</h4>
+                <p>
+                    Preserve context when propagating exceptions:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Process_Data is
+begin
+   Parse_Input;
+exception
+   when Parse_Error =>
+      -- Preserve original context
+      raise Data_Processing_Error with
+         "Input processing failed: " &amp; Exception_Information;
+end Process_Data;
+
+-- Exception contract shows chaining
+Exceptional_Cases =>
+   (Data_Processing_Error =>
+      Exception_Message(Data_Processing_Error)'Length > 0 and
+      Exception_Identity(Data_Processing_Error) = Data_Processing_Error and
+      Exception_Occurrence(Data_Processing_Error).Exception_Name = "Parse_Error");</code></pre>
+                </div>
+                <p>
+                    Maintains error context through multiple handling layers.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>3. Resource Safety Contracts</h4>
+                <p>
+                    Guarantee resource cleanup during exception propagation:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Process_With_Resource is
+   R : Resource_Type := Acquire_Resource;
+begin
+   -- Work with resource
+   Process(R);
+   
+   -- Resource automatically released on normal exit
+   Release_Resource(R);
+   
+exception
+   when others =>
+      -- Resource automatically released on exception
+      Release_Resource(R);
+      raise;
+      
+   -- Contract ensures resource safety
+   Contract_Cases =>
+      (True => Resource_Count = Resource_Count'Old);
+end Process_With_Resource;</code></pre>
+                </div>
+                <p>
+                    Uses Ada's controlled types to guarantee resource safety.
+                </p>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Common Exception Contract Pitfalls</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Pitfall: Overly Broad Contracts</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">Exceptional_Cases =>
+   (others => True); -- All exceptions allowed</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Solution: Precise Exception Specification</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">Exceptional_Cases =>
+   (Invalid_Input => not Valid_Input,
+    Timeout_Error  => Processing_Time > 500,
+    others         => False);</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Pitfall: Ignoring Exception Context</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">Exceptional_Cases =>
+   (others => True); -- No context provided</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Solution: Context-Rich Contracts</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">Exceptional_Cases =>
+   (Invalid_Input =>
+      Exception_Message'Length > 0 and
+      Contains_Numeric_Value(Exception_Message));</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Error Recovery Patterns for Safety-Critical Systems</h2>
+        <p>
+            In safety-critical systems, error recovery isn't optional - it's a fundamental requirement. Ada provides patterns for implementing robust recovery strategies.
+        </p>
+        
+        <h3>Recovery Pattern Taxonomy</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>1. Retry Pattern</h4>
+                <p>
+                    For transient errors that may resolve with repetition:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Read_Sensor_With_Retry (
+   ID      : Sensor_ID;
+   Retries : Natural := 3) return Float is
+   Value : Float;
+begin
+   for Attempt in 1..Retries loop
+      begin
+         Read_Sensor(ID, Value);
+         return Value;
+      exception
+         when Timeout_Error =>
+            if Attempt = Retries then
+               raise;
+            end if;
+            delay Milliseconds(100);
+      end;
+   end loop;
+   raise Sensor_Failure;
+   
+   -- Contract specifies retry behavior
+   Contract_Cases =>
+      (True => 
+         (if Read_Sensor_With_Retry'Result /= Float'Last then
+            Valid_Sensor_Value(Read_Sensor_With_Retry'Result)));
+end Read_Sensor_With_Retry;</code></pre>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>2. Fallback Pattern</h4>
+                <p>
+                    For providing degraded functionality when primary fails:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Get_Temperature return Celsius is
+   Value : Celsius;
+begin
+   Read_Primary_Sensor(Value);
+   return Value;
+   
+exception
+   when Sensor_Error =>
+      -- Switch to fallback sensor
+      Read_Fallback_Sensor(Value);
+      Log_Degraded_Mode("Primary sensor failed");
+      return Value;
+      
+   when Critical_Error =>
+      -- No fallback available
+      raise;
+      
+   -- Contract specifies fallback behavior
+   Contract_Cases =>
+      (True => 
+         Valid_Temperature(Get_Temperature'Result) or
+         System_In_Degraded_Mode); 
+end Get_Temperature;</code></pre>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>3. Circuit Breaker Pattern</h4>
+                <p>
+                    For preventing cascading failures in dependent systems:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">with Ada.Atomic_Counters;
+
+package Circuit_Breaker is
+   Max_Failures : constant := 5;
+   Reset_Time   : constant Time_Span := Seconds(30);
+   
+   type Breaker_State is (Closed, Open, Half_Open);
+   
+   protected Breaker is
+      function Is_Closed return Boolean;
+      procedure Record_Failure;
+      procedure Record_Success;
+      procedure Check_State;
+   private
+      State        : Breaker_State := Closed;
+      Failure_Count : Ada.Atomic_Counters.Atomic_Counter;
+      Last_Failure : Time := Clock;
+   end Breaker;
+   
+   -- Usage pattern
+   macro with Circuit_Breaker; use Circuit_Breaker;
+   
+   procedure Call_With_Circuit_Breaker is
+   begin
+      Breaker.Check_State;
+      if Breaker.Is_Closed then
+         Call_Dependent_System;
+      else
+         raise Service_Unavailable;
+      end if;
+   exception
+      when others =>
+         Breaker.Record_Failure;
+         raise;
+   end Call_With_Circuit_Breaker;</code></pre>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>4. State Restoration Pattern</h4>
+                <p>
+                    For ensuring system integrity after error recovery:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Process_Command (
+   Cmd : Command_Type) with
+   Pre  => System_Ready,
+   Post => Command_Processed,
+   Exceptional_Cases =>
+      (others => System_State_Restored) is
+      
+   Original_State : System_State := Get_Current_State;
+begin
+   -- Save state for potential restoration
+   Save_State_For_Recovery(Original_State);
+   
+   -- Process command
+   Validate(Cmd);
+   Execute(Cmd);
+   
+exception
+   when others =>
+      -- Restore to known good state
+      Restore_State(Original_State);
+      Log_Recovery("Command processing failed");
+      raise;
+      
+   -- Contract ensures state restoration
+   Contract_Cases =>
+      (True => System_State_Valid);
+end Process_Command;</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="callout-primary">
+            <h4>DO-178C Error Recovery Requirements</h4>
+            <p>
+                For avionics software at DAL A, error recovery must satisfy:
+            </p>
+            <ul>
+                <li>Degraded functionality must be safe</li>
+                <li>Recovery procedures must be verified</li>
+                <li>Error conditions must be fully specified</li>
+                <li>Recovery cannot introduce new hazards</li>
+                <li>System must maintain safe state during recovery</li>
+            </ul>
+            <p>
+                Ada's exception contracts and verification tools provide the only practical path to meeting these requirements without prohibitive verification costs.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Combining Exceptions with Design by Contract</h2>
+        <p>
+            The real power of Ada's exception system emerges when combined with Design by Contract, creating a complete framework for specifying and verifying error behavior.
+        </p>
+        
+        <h3>Contract-Exception Integration Patterns</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>1. Preconditions as Exception Prevention</h4>
+                <p>
+                    Use preconditions to prevent exceptions:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Calculate_Factorial (N : Natural) return Positive with
+   Pre  => N <= 12,  -- Prevents overflow
+   Post => Calculate_Factorial'Result > 0;
+   
+-- Implementation can now assume N <= 12
+function Calculate_Factorial (N : Natural) return Positive is
+begin
+   if N = 0 then
+      return 1;
+   else
+      return N * Calculate_Factorial(N-1);
+   end if;
+end Calculate_Factorial;</code></pre>
+                </div>
+                <p>
+                    With the precondition, the implementation no longer needs to check for overflow.
+                </p>
+            </div>
+            
+            <div class="column">
+                <h4>2. Exceptions as Contract Violations</h4>
+                <p>
+                    Use exceptions to handle contract violations:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Set_Temperature (
+   Sensor_ID : in     Sensor_ID;
+   Value     : in     Celsius;
+   Success   :    out Boolean) with
+   Pre  => Value in VALID_TEMPERATURE_RANGE,
+   Post => (if Success then 
+            Temperature(Sensor_ID) = Value);
+            
+-- Implementation with contract enforcement
+procedure Set_Temperature (
+   Sensor_ID : in     Sensor_ID;
+   Value     : in     Celsius;
+   Success   :    out Boolean) is
+begin
+   if Value not in VALID_TEMPERATURE_RANGE then
+      Success := False;
+      return;
+   end if;
+   
+   Temperature(Sensor_ID) := Value;
+   Success := True;
+   
+exception
+   when others =>
+      Success := False;
+      raise;  -- Contract violation will be caught by verification
+end Set_Temperature;</code></pre>
+                </div>
+                <p>
+                    The exception handler ensures the postcondition holds even when exceptions occur.
+                </p>
+            </div>
+        </div>
+        
+        <h3>Verification of Contract-Exception Integration</h3>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">-- Complete specification with exception contracts
+function Process_Command (
+   Cmd : Command_Type) return Response_Type with
+   Pre  => Valid_Command(Cmd),
+   Contract_Cases =>
+      (Cmd.Priority = High =>
+         (Response.Timestamp <= Clock + Milliseconds(50)),
+       Cmd.Priority = Medium =>
+         (Response.Timestamp <= Clock + Milliseconds(200))),
+   Exceptional_Cases =>
+      (Timeout_Error =>
+         (Response.Timestamp > Clock + Milliseconds(200) and
+          Response.Error_Code = Timeout),
+       Invalid_Command =>
+         (Response.Error_Code = Format_Error)),
+   Post => 
+      (Response.Status = Success and
+       Response.Timestamp <= Clock + Milliseconds(200))
+      or
+      (Response.Status = Error and
+       Response.Error_Code /= Unknown_Error);
+
+-- Verification evidence
+-- [gnatprove] medium: Post might fail
+-- [gnatprove] when Timeout_Error is raised:
+-- [gnatprove]   Response.Timestamp > Clock + Milliseconds(200)
+-- [gnatprove]   so Response.Status = Error
+-- [gnatprove]   and Response.Error_Code = Timeout
+-- [gnatprove]   therefore Post is satisfied</code></pre>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Contract-Exception Anti-Patterns</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Avoid: Redundant Checks</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">function Calculate (X : Float) return Float with
+   Pre => X > 0.0;
+   
+-- Implementation
+function Calculate (X : Float) return Float is
+begin
+   -- Redundant check - violates DRY principle
+   if X <= 0.0 then
+      raise Invalid_Input;
+   end if;
+   -- ...
+end Calculate;</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Prefer: Contract Enforcement</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">function Calculate (X : Float) return Float with
+   Pre => X > 0.0;
+   
+-- Implementation (no redundant check)
+function Calculate (X : Float) return Float is
+begin
+   -- Can safely assume X > 0.0
+   return Log(X);
+end Calculate;</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Avoid: Exception Swallowing</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">procedure Process is
+begin
+   -- ...
+exception
+   when others =>
+      null; -- Silent failure
+end Process;</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Prefer: Contextual Handling</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">procedure Process is
+begin
+   -- ...
+exception
+   when E : others =>
+      Log_Error("Processing failed: " &amp; Exception_Information(E));
+      raise; -- Or propagate with context
+end Process;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note-box">
+            <h3>Verification Strategy for Contract-Exception Integration</h3>
+            <ol>
+                <li><strong>Static verification:</strong> Use gnatprove to verify no contract violations can occur</li>
+                <li><strong>Runtime verification:</strong> Compile with -gnata to catch violations during testing</li>
+                <li><strong>Exception path testing:</strong> Verify all exception handlers through testing</li>
+                <li><strong>Recovery validation:</strong> Confirm system state after recovery</li>
+                <li><strong>Formal proof:</strong> For critical components, use SPARK for mathematical verification</li>
+            </ol>
+            <p>
+                This multi-layered approach ensures comprehensive verification of error handling behavior.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Real-World Error Management Case Studies</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Boeing 787 Dreamliner Flight Control</h3>
+                <p>
+                    Error management in the flight control system:
+                </p>
+                <ul>
+                    <li>Structured exception taxonomy by system component</li>
+                    <li>Multiple recovery levels (graceful degradation)</li>
+                    <li>Formal verification of all critical error paths</li>
+                    <li>Complete traceability from requirements to error handling</li>
+                    <li>Tool-qualified exception handling code</li>
+                </ul>
+                <p>
+                    The Ada-based approach reduced error-related certification evidence by 40% compared to previous Boeing models.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Medical Infusion Pump System</h3>
+                <p>
+                    Error handling in a life-critical infusion pump:
+                </p>
+                <ul>
+                    <li>Strict separation of recoverable vs. fatal errors</li>
+                    <li>Multiple fallback mechanisms for critical operations</li>
+                    <li>State restoration guarantees after errors</li>
+                    <li>Formal contracts specifying error behavior</li>
+                    <li>Complete verification of all error recovery paths</li>
+                </ul>
+                <p>
+                    This implementation prevented numerous potential failure modes that had caused recalls in previous pump models.
+                </p>
+            </div>
+        </div>
+        
+        <div class="two-column">
+            <div class="column">
+                <h3>Avionics Error Management Pattern</h3>
+                <p>
+                    A robust error handling pattern from DO-178C certified code:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Flight_Control.Errors with
+   SPARK_Mode => On
+is
+   
+   -- Error severity levels
+   type Error_Severity is (Warning, Error, Critical, Fatal);
+   
+   -- Error record with context
+   type Error_Record (Severity : Error_Severity := Warning) is record
+      Code        : Error_Code;
+      Timestamp   : Time;
+      Component   : Component_ID;
+      Description : Unbounded_String;
+      case Severity is
+         when Warning | Error | Critical =>
+            Recovery_Action : Recovery_Procedure;
+         when Fatal =>
+            null;
+      end case;
+   end record;
+   
+   -- Error handling interface
+   procedure Handle_Error (E : Error_Record);
+   function Current_Error return Error_Record;
+   function System_Degraded return Boolean;
+   
+   -- Contracts specify error behavior
+   Contract_Cases =>
+      (System_Degraded => 
+         Current_Error.Severity in Warning..Critical,
+       not System_Degraded => 
+         Current_Error.Severity = Warning);
+   
+end Flight_Control.Errors;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Certification Evidence Package</h3>
+                <p>
+                    The complete error management certification package included:
+                </p>
+                <ul>
+                    <li>Formal error taxonomy specification</li>
+                    <li>Exception contracts for all critical components</li>
+                    <li>Verification reports proving no unhandled exceptions</li>
+                    <li>Test evidence for all error recovery paths</li>
+                    <li>Formal proof of critical error handling properties</li>
+                    <li>Problem reports and resolution evidence</li>
+                </ul>
+                <p>
+                    This comprehensive evidence package enabled successful certification with minimal audit findings.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Exercises: Building Verified Error Management Systems</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Exercise 1: Avionics Sensor Error Handling</h3>
+                <p>
+                    Design an error management system for aircraft sensors:
+                </p>
+                <ul>
+                    <li>Create a structured exception taxonomy for sensor errors</li>
+                    <li>Implement retry and fallback patterns for critical sensors</li>
+                    <li>Add contracts to specify error behavior</li>
+                    <li>Verify that all error paths maintain system safety</li>
+                    <li>Prove that no unhandled exceptions can occur</li>
+                </ul>
+                <p>
+                    <strong>Challenge:</strong> Demonstrate that the system cannot enter an unsafe state due to sensor errors.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Exercise 2: Medical Device Error Recovery</h3>
+                <p>
+                    Build an error recovery system for an infusion pump:
+                </p>
+                <ul>
+                    <li>Design a circuit breaker pattern for critical components</li>
+                    <li>Implement state restoration guarantees</li>
+                    <li>Create exception contracts for all safety-critical operations</li>
+                    <li>Structure the system for modular verification</li>
+                    <li>Generate complete certification evidence</li>
+                </ul>
+                <p>
+                    <strong>Challenge:</strong> Prove that the pump will never deliver an unsafe dose due to error conditions.
+                </p>
+            </div>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Error Management Verification Strategy</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Static Verification</h4>
+                    <ul>
+                        <li>Use gnatprove to verify no unhandled exceptions</li>
+                        <li>Prove exception contracts hold</li>
+                        <li>Verify resource safety during propagation</li>
+                        <li>Confirm error recovery guarantees</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h4>Runtime Verification</h4>
+                    <ul>
+                        <li>Compile with -gnata for runtime checks</li>
+                        <li>Test all exception paths</li>
+                        <li>Validate recovery procedures</li>
+                        <li>Measure error handling performance</li>
+                    </ul>
+                </div>
+            </div>
+            <p>
+                For highest safety levels, both static and runtime verification are required to demonstrate comprehensive error management.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Next Steps: Generics and Template Programming</h2>
+        <p>
+            Now that you've mastered Ada's exception handling system, you're ready to explore how to create reusable, verifiable components through generics. In the next tutorial, we'll dive into Ada's powerful generic programming system, showing how to:
+        </p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Upcoming: Generics and Template Programming</h3>
+                <ul>
+                    <li>Create reusable components with formal parameters</li>
+                    <li>Specify constraints on generic parameters</li>
+                    <li>Verify generic code correctness</li>
+                    <li>Combine generics with Design by Contract</li>
+                    <li>Apply generics to safety-critical patterns</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Practice Challenge</h3>
+                <p>
+                    Enhance your avionics sensor system with generics:
+                </p>
+                <ul>
+                    <li>Create generic sensor interface packages</li>
+                    <li>Add constraints to ensure type safety</li>
+                    <li>Implement contracts for generic operations</li>
+                    <li>Verify that instantiations maintain safety properties</li>
+                    <li>Create a verification plan for generic components</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>The Path to Verified Reusability</h4>
+            <p>
+                Exception handling provides the foundation for building reliable systems, but generics enable building reliable systems <em>efficiently</em>. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
+            </p>
+            <p>
+                This integrated approach is why Ada remains the language of choice for organizations that need both reliability and development efficiency. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but <em>economically sustainable</em> throughout its lifecycle.
+            </p>
+        </div>
+    </div>
+</div>

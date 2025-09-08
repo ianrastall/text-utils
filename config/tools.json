@@ -1,0 +1,32 @@
+[
+	{
+		"slug": "line-operations",
+		"name": "Line Operations",
+		"icon": "subject",
+		"description": "Perform various operations on lines of text."
+	},
+    {
+        "slug": "text-info",
+        "name": "Text Info",
+        "icon": "analytics",
+        "description": "Provides statistics on user-supplied text input."
+    },
+    {
+        "slug": "find-replace",
+        "name": "Find & Replace",
+        "icon": "find_replace",
+        "description": "Find and replace text using strings or regex with advanced options."
+    },
+    {
+        "slug": "hashing-tool",
+        "name": "Hashing Tool",
+        "icon": "lock",
+        "description": "Hash, encode, and decode text using various algorithms and formats."
+    },
+    {
+        "slug": "coding-tutorials",
+        "name": "Coding Tutorials",
+        "icon": "data_object",
+        "description": "Tutorials for various programming languages, sorted by language and topic."
+    }
+]

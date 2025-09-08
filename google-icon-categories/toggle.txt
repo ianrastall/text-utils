@@ -1,0 +1,13 @@
+check_box	e834
+check_box_outline_blank	e835
+indeterminate_check_box	e909
+radio_button_checked	e837
+radio_button_unchecked	e836
+star	e838
+star_border	e83a
+star_border_purple500	f099
+star_half	e839
+star_outline	f06f
+star_purple500	f09a
+toggle_off	e9f5
+toggle_on	e9f6

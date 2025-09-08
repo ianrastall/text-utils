@@ -1,0 +1,960 @@
+<div class="tutorial-content">
+    <h1 class="tutorial-title">Certification and Integration in Ada: From Development to Deployment</h1>
+    
+    <div class="tutorial-section">
+        <p class="tutorial-intro">
+            Building reliable software is only half the battle - for safety-critical systems, you must also prove its reliability through formal certification. This tutorial explores how Ada's design features directly support certification processes like DO-178C (avionics), IEC 62304 (medical devices), and ISO 26262 (automotive). You'll learn to transform your Ada code into certified components with complete traceability from requirements to verification, and discover how to integrate Ada systems with other technologies while maintaining certification integrity.
+        </p>
+        
+        <div class="callout-primary">
+            <h4>Certification vs. Verification</h4>
+            <p>
+                <strong>Verification:</strong> Building the product right (technical correctness)<br>
+                <strong>Certification:</strong> Building the right product (compliance with standards)<br>
+                Ada uniquely supports both through language features that produce verifiable code and facilitate the certification documentation process.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-block">
+        <h2>The Certification Landscape for Safety-Critical Systems</h2>
+        <p>
+            Different industries have specific certification requirements, but all share common principles of rigor, traceability, and evidence.
+        </p>
+        
+        <table class="tutorial-table">
+            <thead>
+                <tr>
+                    <th>Standard</th>
+                    <th>Industry</th>
+                    <th>Development Assurance Level (DAL)</th>
+                    <th>Key Requirements</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>DO-178C</td>
+                    <td>Avionics</td>
+                    <td>A (highest) to E (lowest)</td>
+                    <td>Requirements traceability, code coverage, tool qualification</td>
+                </tr>
+                <tr>
+                    <td>IEC 62304</td>
+                    <td>Medical Devices</td>
+                    <td>A (highest) to C (lowest)</td>
+                    <td>Software safety classification, problem resolution, configuration management</td>
+                </tr>
+                <tr>
+                    <td>ISO 26262</td>
+                    <td>Automotive</td>
+                    <td>ASIL D (highest) to ASIL A (lowest)</td>
+                    <td>Hazard analysis, functional safety, validation</td>
+                </tr>
+                <tr>
+                    <td>EN 50128</td>
+                    <td>Railway</td>
+                    <td> SIL 4 (highest) to SIL 1 (lowest)</td>
+                    <td>Formal methods, safety validation, configuration management</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="certification-process">
+            <h3>The Cost of Certification</h3>
+            <p>
+                For DAL A (highest aviation criticality), certification costs can exceed development costs by 2-3x. Traditional approaches require:
+            </p>
+            <ul>
+                <li>Extensive manual testing (100% statement and decision coverage)</li>
+                <li>Complete requirements traceability matrices</li>
+                <li>Tool qualification for every development tool</li>
+                <li>Formal configuration management</li>
+                <li>Independent verification and validation</li>
+            </ul>
+            <p>
+                Ada's design-by-contract, strong typing, and formal verification capabilities can reduce these costs by 30-50% by automating verification evidence generation.
+            </p>
+        </div>
+        
+        <div class="definition-box">
+            <h4>Ada's Certification Advantage</h4>
+            <p>
+                Ada wasn't just designed for reliability - it was designed with certification in mind. Key advantages include:
+            </p>
+            <ul>
+                <li><span class="text-highlight">Self-documenting code</span>: Contracts and strong typing serve as built-in documentation</li>
+                <li><span class="text-highlight">Verifiable properties</span>: Many safety properties can be proven rather than tested</li>
+                <li><span class="text-highlight">Deterministic behavior</span>: Predictable execution simplifies verification</li>
+                <li><span class="text-highlight">Toolchain maturity</span>: GNAT Pro has been tool-qualified for decades</li>
+                <li><span class="text-highlight">SPARK subset</span>: Enables mathematical proof of correctness</li>
+            </ul>
+            <p>
+                These features transform certification from a documentation burden into an integrated part of the development process.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Integrating Ada with Other Technologies</h2>
+        <p>
+            While Ada excels at safety-critical components, real systems often require integration with other technologies. Ada provides robust mechanisms for safe integration.
+        </p>
+        
+        <h3>1. Calling C Code from Ada</h3>
+        <p>
+            Ada provides precise control over C interoperability:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">with Interfaces.C; use Interfaces.C;
+
+package C_Interface is
+   
+   -- Import C function with precise specification
+   function C_Sensor_Read return float with
+      Import        => True,
+      Convention    => C,
+      External_Name => "sensor_read";
+      
+   -- Map C struct to Ada record
+   type C_Sensor_Data is record
+      Value  : float;
+      Status : int;
+   end record with
+      Convention => C;
+      
+   -- Import C function taking struct
+   procedure C_Process_Data (Data : in out C_Sensor_Data) with
+      Import        => True,
+      Convention    => C,
+      External_Name => "process_sensor_data";
+      
+   -- Add Ada contracts to C interface
+   pragma Precondition (C_Sensor_Read'Address /= System.Null_Address);
+   pragma Postcondition (C_Sensor_Read'Result >= 0.0);
+   
+end C_Interface;</code></pre>
+        </div>
+        
+        <div class="integration-pattern">
+            <h3>Best Practices for C Integration</h3>
+            <ul>
+                <li>Always add Ada contracts to C interfaces</li>
+                <li>Use <code class="code-inline">Convention => C</code> for precise memory layout</li>
+                <li>Validate all returned values from C code</li>
+                <li>Keep C interface layer as thin as possible</li>
+                <li>Never allow C code to manipulate Ada data structures directly</li>
+            </ul>
+        </div>
+        
+        <h3>2. Exposing Ada to Other Languages</h3>
+        <p>
+            Make Ada components available to C or other languages:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">with Interfaces.C; use Interfaces.C;
+
+package Critical_Components with
+   SPARK_Mode => On
+is
+   
+   -- Function callable from C with contracts
+   function Calculate_Safety_Margin (
+      Input : double) return double with
+      Pre  => Input >= 0.0 and Input <= 100.0,
+      Post => Calculate_Safety_Margin'Result in 0.0..1.0,
+      Export        => True,
+      Convention    => C,
+      External_Name => "calculate_safety_margin";
+      
+   -- Type mapping for C compatibility
+   type Safety_Status is (OK, WARNING, CRITICAL) with
+      Convention => C;
+      for Safety_Status use (OK => 0, WARNING => 1, CRITICAL => 2);
+      
+   -- Protected object interface for C
+   protected Sensor_Monitor with
+      SPARK_Mode => On
+   is
+      entry Read_Sensor (Value : out float);
+   private
+      Current_Value : float := 0.0;
+   end Sensor_Monitor;
+   
+   -- C-callable wrapper for protected object
+   function Get_Sensor_Value return float with
+      Export        => True,
+      Convention    => C,
+      External_Name => "get_sensor_value";
+      
+end Critical_Components;</code></pre>
+        </div>
+        
+        <div class="integration-pattern">
+            <h3>Managing Language Boundaries</h3>
+            <p>
+                When integrating with other languages:
+            </p>
+            <ol>
+                <li>Define a clear interface boundary</li>
+                <li>Use Ada contracts to specify interface requirements</li>
+                <li>Validate all data crossing the boundary</li>
+                <li>Keep the interface layer separate from core logic</li>
+                <li>Consider the interface layer as a separate component for certification</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Requirements Traceability: The Certification Backbone</h2>
+        <p>
+            Certification requires complete traceability from requirements through design, implementation, and verification. Ada's structure makes this process more efficient.
+        </p>
+        
+        <h3>Traditional Traceability vs. Ada-Based Approach</h3>
+        
+        <div class="comparison-grid">
+            <div class="grid-item">
+                <h4>Traditional Approach</h4>
+                <ul>
+                    <li>Requirements in separate documents</li>
+                    <li>Manual traceability matrices</li>
+                    <li>Code comments as only link to requirements</li>
+                    <li>Verification evidence disconnected from code</li>
+                    <li>High maintenance burden during changes</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Typical comment-based approach
+-- REQ-101: Calculate safety factor
+function Calculate (X, Y : Float) return Float is
+begin
+   return X / Y;
+end Calculate;</code></pre>
+                </div>
+            </div>
+            <div class="grid-item">
+                <h4>Ada-Based Approach</h4>
+                <ul>
+                    <li>Requirements embedded in code as contracts</li>
+                    <li>Automatic traceability through tooling</li>
+                    <li>Verification evidence built into the language</li>
+                    <li>SPARK enables mathematical proof of requirements</li>
+                    <li>Minimal maintenance burden</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Calculate_Safety_Factor (
+   Load, Capacity : Positive) return Float with
+   Pre  => Capacity > Load,
+   Post => Calculate_Safety_Factor'Result = Float(Load)/Float(Capacity) and
+           Calculate_Safety_Factor'Result in 0.0..1.0,
+   -- Trace to requirement
+   Contract_Cases =>
+      (Load < Capacity => Calculate_Safety_Factor'Result < 1.0,
+       others          => Calculate_Safety_Factor'Result = 1.0),
+   -- Requirement ID embedded in code
+   Refined_By => "REQ-101: Safety factor must be <= 1.0";</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Automated Traceability Tools</h3>
+                <p>
+                    Ada tooling generates traceability automatically:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-bash"># Generate traceability matrix
+gnat2goto --traceability your_program.adb
+
+# View requirements coverage
+gnatprove --report=all --output=html</code></pre>
+                </div>
+                <p>
+                    These tools produce certification-ready documentation showing:
+                </p>
+                <ul>
+                    <li>Which requirements are implemented</li>
+                    <li>How they're verified</li>
+                    <li>Test coverage evidence</li>
+                    <li>Formal proof status</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>SPARK for Mathematical Traceability</h3>
+                <p>
+                    In SPARK, requirements become mathematical specifications:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- REQ-205: System must detect sensor failure
+-- within 100ms of occurrence
+procedure Check_Sensor (S : in out Sensor) with
+   Pre  => System_Ready,
+   Post => (if S.Failure_Detected then
+            Clock - S.Last_Check <= Milliseconds(100)),
+   Refined_By => "REQ-205";</code></pre>
+                </div>
+                <p>
+                    GNATprove can then generate proof that the implementation satisfies the requirement.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Tool Qualification: The Hidden Challenge</h2>
+        <p>
+            Certification requires qualification of all development tools - a major burden that Ada helps mitigate through mature, pre-qualified toolchains.
+        </p>
+        
+        <h3>Traditional Tool Qualification Process</h3>
+        <p>
+            For each tool in your development chain:
+        </p>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Qualification Steps</h4>
+                <ol>
+                    <li>Classify tool impact (TQL-1 to TQL-5)</li>
+                    <li>Develop qualification plan</li>
+                    <li>Execute test cases against tool</li>
+                    <li>Document all findings</li>
+                    <li>Develop mitigation strategies for failures</li>
+                    <li>Maintain qualification through tool updates</li>
+                </ol>
+            </div>
+            <div class="column">
+                <h4>Typical Costs</h4>
+                <ul>
+                    <li>TQL-1 (highest impact): $150K-$500K per tool</li>
+                    <li>TQL-2: $50K-$150K per tool</li>
+                    <li>TQL-3: $20K-$50K per tool</li>
+                    <li>Requalification for updates: 30-50% of initial cost</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>Ada Toolchain Qualification Advantage</h4>
+            <p>
+                The GNAT Pro toolchain from AdaCore has been pre-qualified for multiple standards:
+            </p>
+            <ul>
+                <li><strong>DO-178C:</strong> TQL-1 qualified for DAL A development</li>
+                <li><strong>IEC 62304:</strong> Class C qualified for medical devices</li>
+                <li><strong>ISO 26262:</strong> ASIL D qualified for automotive</li>
+                <li><strong>EN 50128:</strong> SIL 4 qualified for railway</li>
+            </ul>
+            <p>
+                This pre-qualification saves organizations $200K-$1M per project in tool qualification costs and months of effort.
+            </p>
+            <p>
+                When combined with SPARK, the toolchain can even generate the qualification evidence automatically.
+            </p>
+        </div>
+        
+        <h3>Qualifying Your Own Tools</h3>
+        <p>
+            For custom tools or scripts in your workflow:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">-- Qualification evidence generation
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Qual_Evidence_Generator is
+   Test_Cases : constant array (1..5) of String :=
+      ("Basic syntax check",
+       "Contract verification",
+       "WCET analysis",
+       "Schedulability check",
+       "Memory safety proof");
+begin
+   Put_Line("Tool Qualification Report");
+   Put_Line("=========================");
+   
+   for I in Test_Cases'Range loop
+      Put("Test " & I'Image & ": " & Test_Cases(I) & " - ");
+      if Run_Test(I) then
+         Put_Line("PASSED");
+      else
+         Put_Line("FAILED");
+      end if;
+   end loop;
+end Qual_Evidence_Generator;</code></pre>
+        </div>
+        
+        <div class="certification-process">
+            <h3>Tool Impact Classification Guidelines</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>TQL-1 (Highest Impact)</h4>
+                    <p>
+                        Tools that could directly introduce errors in the target code:
+                    </p>
+                    <ul>
+                        <li>Compilers</li>
+                        <li>Code generators</li>
+                        <li>Linkers</li>
+                        <li>Formal verification tools</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h4>TQL-2 (Medium Impact)</h4>
+                    <p>
+                        Tools that could indirectly affect safety:
+                    </p>
+                    <ul>
+                        <li>Static analyzers</li>
+                        <li>Unit test frameworks</li>
+                        <li>Build systems</li>
+                        <li>Configuration management tools</li>
+                    </ul>
+                </div>
+            </div>
+            <p>
+                Ada's design reduces the number of TQL-1 tools needed by making verification part of the language rather than external tools.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Verification Evidence: From Testing to Proof</h2>
+        <p>
+            Certification requires evidence that safety requirements are met. Ada supports multiple evidence generation approaches with different assurance levels.
+        </p>
+        
+        <h3>Evidence Generation Spectrum</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>1. Traditional Testing (Lowest Assurance)</h4>
+                <p>
+                    Evidence: Test cases and coverage reports
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Test harness example
+procedure Test_Safety_Margin is
+   Result : Float;
+begin
+   -- Test normal operation
+   Result := Calculate_Safety_Margin(50.0);
+   Assert (Result = 0.5, "Normal case failed");
+   
+   -- Test boundary condition
+   Result := Calculate_Safety_Margin(100.0);
+   Assert (Result = 1.0, "Boundary case failed");
+   
+   -- Test error condition
+   begin
+      Result := Calculate_Safety_Margin(150.0);
+      Assert (False, "Exception not raised");
+   exception
+      when Constraint_Error =>
+         null; -- Expected behavior
+   end;
+end Test_Safety_Margin;</code></pre>
+                </div>
+                <p>
+                    Required for all levels, but alone is insufficient for highest criticality.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>2. Structural Coverage (Medium Assurance)</h4>
+                <p>
+                    Evidence: 100% statement and decision coverage
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-bash"># Generate coverage report
+gnatcov coverage --annotate=xcov *.o
+
+# View results
+gnatcov view --html --output=coverage.html</code></pre>
+                </div>
+                <p>
+                    DO-178C requires:
+                </p>
+                <ul>
+                    <li>DAL A: 100% MC/DC coverage</li>
+                    <li>DAL B: 100% decision coverage</li>
+                    <li>DAL C: 100% statement coverage</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>3. Formal Verification (Highest Assurance)</h4>
+                <p>
+                    Evidence: Mathematical proof of correctness
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- SPARK verification
+function Calculate_Safety_Margin (
+   Input : Float) return Float with
+   Pre  => Input in 0.0..100.0,
+   Post => Calculate_Safety_Margin'Result = Input/100.0 and
+           Calculate_Safety_Margin'Result in 0.0..1.0
+is
+begin
+   return Input / 100.0;
+end Calculate_Safety_Margin;</code></pre>
+                </div>
+                <p>
+                    GNATprove can prove:
+                </p>
+                <ul>
+                    <li>No runtime errors</li>
+                    <li>Contract satisfaction</li>
+                    <li>Memory safety</li>
+                    <li>Termination guarantees</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="evidence-strategy">
+            <h4>Certification Evidence Strategy</h4>
+            <p>
+                For highest criticality systems (DAL A, ASIL D), use a combination approach:
+            </p>
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th>Component Criticality</th>
+                        <th>Evidence Approach</th>
+                        <th>Effort</th>
+                        <th>Assurance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Most Critical (10-20%)</td>
+                        <td>Formal verification (SPARK)</td>
+                        <td>High</td>
+                        <td>Very High</td>
+                    </tr>
+                    <tr>
+                        <td>Moderately Critical (30-40%)</td>
+                        <td>Structural coverage + contracts</td>
+                        <td>Moderate</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Least Critical (40-50%)</td>
+                        <td>Traditional testing</td>
+                        <td>Low</td>
+                        <td>Medium</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                This targeted approach optimizes certification effort while meeting all requirements.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Real-World Certification Case Studies</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Boeing 787 Dreamliner</h3>
+                <p>
+                    Ada usage in the flight control system:
+                </p>
+                <ul>
+                    <li>Over 500,000 lines of Ada/SPARK code</li>
+                    <li>DAL A certification for flight controls</li>
+                    <li>Formal verification of critical algorithms</li>
+                    <li>Complete requirements traceability</li>
+                    <li>Tool qualification for GNAT Pro</li>
+                </ul>
+                <p>
+                    The Ada-based approach reduced certification time by 35% compared to previous Boeing models.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Therac-25 Radiation Therapy Machine (Revisited)</h3>
+                <p>
+                    How Ada could have prevented the failures:
+                </p>
+                <ul>
+                    <li>Strong typing would have prevented unit confusion</li>
+                    <li>Design by Contract would have specified state transitions</li>
+                    <li>Protected objects would have prevented race conditions</li>
+                    <li>Formal verification could have proven safety properties</li>
+                    <li>Complete traceability would have caught requirement gaps</li>
+                </ul>
+                <p>
+                    Modern radiation therapy devices now use Ada with formal methods to ensure patient safety.
+                </p>
+            </div>
+        </div>
+        
+        <div class="two-column">
+            <div class="column">
+                <h3>Medical Device Certification Process</h3>
+                <p>
+                    IEC 62304 certification for an infusion pump:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Ada code with certification artifacts
+package Infusion_Pump with
+   SPARK_Mode => On,
+   -- IEC 62304 classification: Class C (highest)
+   -- Requirement ID: INF-REQ-305
+   -- Safety criticality: High
+is
+   subtype Milliliters is Float range 0.0..5000.0;
+   subtype Flow_Rate is Float range 0.0..500.0; -- mL/hour
+   
+   procedure Set_Flow_Rate (
+      Rate : Flow_Rate) with
+      Pre  => Pump_Ready,
+      Post => Current_Rate = Rate,
+      -- Trace to requirement
+      Refined_By => "INF-REQ-305: Flow rate must be validated";
+      
+   function Current_Rate return Flow_Rate;
+   
+private
+   Current_Rate_Value : Flow_Rate := 0.0;
+   Pump_Ready         : Boolean := False;
+end Infusion_Pump;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Certification Evidence Package</h3>
+                <p>
+                    The complete package included:
+                </p>
+                <ul>
+                    <li>Formal safety requirements specification</li>
+                    <li>Ada code with embedded requirements traceability</li>
+                    <li>SPARK verification reports proving no runtime errors</li>
+                    <li>MC/DC coverage reports for non-SPARK components</li>
+                    <li>Tool qualification packages for GNAT Pro</li>
+                    <li>Configuration management records</li>
+                    <li>Problem reports and resolution evidence</li>
+                </ul>
+                <p>
+                    This comprehensive evidence package enabled successful FDA approval.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Advanced Certification Patterns</h2>
+        
+        <h3>Pattern 1: Modular Certification</h3>
+        <p>
+            Break a large system into independently certifiable modules:
+        </p>
+        <div class="certification-pattern">
+            <div class="code-block">
+                <pre><code class="language-ada">-- High-integrity kernel (certified to DAL A)
+with SPARK_Mode => On;
+package Safety_Kernel is
+   -- Minimal interface with complete verification
+   procedure Initialize;
+   function Is_Safe_State return Boolean;
+   procedure Transition_State (New_State : System_State);
+end Safety_Kernel;
+
+-- Application layer (lower certification level)
+with Safety_Kernel;
+package Flight_Application is
+   -- Rich functionality built on safe foundation
+   procedure Navigate_To (Waypoint : Coordinates);
+   procedure Adjust_Attitude (Pitch, Roll, Yaw : Degrees);
+end Flight_Application;
+
+-- Integration package with certification boundary
+with Safety_Kernel, Flight_Application;
+package System_Integration with
+   SPARK_Mode => On
+is
+   -- Mediates between layers with verification
+   procedure Process_Command (Cmd : Command) with
+      Pre  => Safety_Kernel.Is_Safe_State,
+      Post => Valid_Response;
+end System_Integration;</code></pre>
+            </div>
+        </div>
+        
+        <div class="integration-pattern">
+            <h3>Benefits of Modular Certification</h3>
+            <ul>
+                <li>Focus highest assurance efforts on critical components</li>
+                <li>Reduce overall certification cost</li>
+                <li>Enable reuse of certified components</li>
+                <li>Isolate changes to specific modules</li>
+                <li>Simplify verification evidence</li>
+            </ul>
+            <p>
+                This approach is endorsed by DO-178C as a means to reduce certification burden while maintaining safety.
+            </p>
+        </div>
+        
+        <h3>Pattern 2: Certification Continuity</h3>
+        <p>
+            Maintain certification through system evolution:
+        </p>
+        <div class="certification-pattern">
+            <div class="code-block">
+                <pre><code class="language-ada">-- Original certified version (V1.0)
+package Flight_Control with
+   SPARK_Mode => On,
+   -- DO-178C DAL A certification
+   -- Certification ID: FC-2020-001
+is
+   procedure Calculate_Trajectory (
+      Start, Target : Coordinates;
+      Trajectory    : out Path) with
+      Pre  => Valid_Coordinates(Start, Target),
+      Post => Valid_Trajectory(Trajectory);
+end Flight_Control;
+
+-- Enhanced version (V2.0) with continuity
+package Flight_Control with
+   SPARK_Mode => On,
+   -- DO-178C DAL A certification
+   -- Certification ID: FC-2020-001 (continued)
+   -- Change ID: FC-2023-001 (backward compatible)
+is
+   -- Original interface preserved
+   procedure Calculate_Trajectory (
+      Start, Target : Coordinates;
+      Trajectory    : out Path) with
+      Pre  => Valid_Coordinates(Start, Target),
+      Post => Valid_Trajectory(Trajectory);
+      
+   -- New functionality with separate certification
+   procedure Calculate_Optimal_Trajectory (
+      Start, Target : Coordinates;
+      Constraints   : Flight_Constraints;
+      Trajectory    : out Path) with
+      Pre  => Valid_Coordinates(Start, Target) and Valid_Constraints(Constraints),
+      Post => Valid_Trajectory(Trajectory) and Is_Optimal(Trajectory);
+end Flight_Control;</code></pre>
+            </div>
+        </div>
+        
+        <div class="integration-pattern">
+            <h3>Certification Continuity Best Practices</h3>
+            <ol>
+                <li>Maintain strict backward compatibility for certified interfaces</li>
+                <li>Isolate changes to new functionality</li>
+                <li>Reuse verification evidence for unchanged components</li>
+                <li>Document impact analysis for all changes</li>
+                <li>Use version control to track certification boundaries</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Exercises: Preparing for Certification</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Exercise 1: Avionics System Certification</h3>
+                <p>
+                    Prepare an Ada-based flight control system for DO-178C DAL A certification:
+                </p>
+                <ul>
+                    <li>Add complete requirements traceability to your code</li>
+                    <li>Identify components suitable for SPARK formal verification</li>
+                    <li>Create a tool qualification plan for your development environment</li>
+                    <li>Generate verification evidence for critical components</li>
+                    <li>Develop a certification roadmap with effort estimates</li>
+                </ul>
+                <p>
+                    <strong>Challenge:</strong> Create a verification matrix showing how each requirement is verified.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Exercise 2: Medical Device Integration</h3>
+                <p>
+                    Integrate an Ada safety kernel with a C-based user interface:
+                </p>
+                <ul>
+                    <li>Define a safe interface boundary between languages</li>
+                    <li>Add contracts to all interface points</li>
+                    <li>Validate data crossing the language boundary</li>
+                    <li>Develop verification evidence for the integration layer</li>
+                    <li>Create a safety case for the integrated system</li>
+                </ul>
+                <p>
+                    <strong>Challenge:</strong> Prove that the integration layer cannot compromise the safety kernel.
+                </p>
+            </div>
+        </div>
+        
+        <div class="certification-checklist">
+            <h3>Certification Preparation Checklist</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Before Development</h4>
+                    <ul>
+                        <li>Define safety requirements and criticality levels</li>
+                        <li>Select appropriate certification standard</li>
+                        <li>Choose development assurance level</li>
+                        <li>Plan tool qualification strategy</li>
+                        <li>Establish configuration management</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h4>During Development</h4>
+                    <ul>
+                        <li>Embed requirements in code as contracts</li>
+                        <li>Maintain traceability throughout</li>
+                        <li>Generate verification evidence incrementally</li>
+                        <li>Document all design decisions</li>
+                        <li>Track and resolve all anomalies</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Before Certification</h4>
+                    <ul>
+                        <li>Complete all verification activities</li>
+                        <li>Verify tool qualification</li>
+                        <li>Prepare certification artifacts</li>
+                        <li>Conduct internal audit</li>
+                        <li>Address all findings</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h4>During Certification</h4>
+                    <ul>
+                        <li>Respond to auditor questions</li>
+                        <li>Provide additional evidence as needed</li>
+                        <li>Address non-conformances</li>
+                        <li>Maintain communication with certification authority</li>
+                        <li>Document all interactions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Conclusion: The Ada Advantage for Certified Systems</h2>
+        <p>
+            Throughout this tutorial series, we've explored how Ada's unique features combine to create a powerful platform for developing and certifying safety-critical systems. Let's review how these elements work together:
+        </p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Ada's Certification Ecosystem</h3>
+                <ul>
+                    <li><strong>Strong typing:</strong> Prevents entire categories of errors at compile time</li>
+                    <li><strong>Design by Contract:</strong> Embeds requirements directly in code</li>
+                    <li><strong>Safe concurrency:</strong> Eliminates race conditions and deadlocks</li>
+                    <li><strong>Real-time features:</strong> Guarantees timing behavior</li>
+                    <li><strong>SPARK subset:</strong> Enables mathematical verification</li>
+                    <li><strong>Mature toolchain:</strong> Pre-qualified for major standards</li>
+                </ul>
+                <p>
+                    Together, these features transform certification from a documentation burden into an integrated part of development.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Cost-Benefit Analysis</h3>
+                <table class="tutorial-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Traditional Approach</th>
+                            <th>Ada-Based Approach</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Development effort</td>
+                            <td>100%</td>
+                            <td>110-120%</td>
+                        </tr>
+                        <tr>
+                            <td>Verification effort</td>
+                            <td>200-300%</td>
+                            <td>100-150%</td>
+                        </tr>
+                        <tr>
+                            <td>Certification cost</td>
+                            <td>300-400%</td>
+                            <td>150-200%</td>
+                        </tr>
+                        <tr>
+                            <td>Total lifecycle cost</td>
+                            <td>600-800%</td>
+                            <td>360-470%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    While Ada requires slightly more upfront development effort, it dramatically reduces verification and certification costs.
+                </p>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>The Future of Certified Systems</h4>
+            <p>
+                As systems become increasingly complex and interconnected, the need for verifiable safety properties grows more critical. Ada's approach - integrating safety into the language rather than layering it on top - represents the future of reliable software development.
+            </p>
+            <p>
+                Emerging trends include:
+            </p>
+            <ul>
+                <li><strong>Formal methods becoming mainstream:</strong> SPARK and similar approaches moving from niche to standard practice</li>
+                <li><strong>Certification automation:</strong> Tools that generate certification evidence as a byproduct of development</li>
+                <li><strong>AI safety:</strong> Applying Ada's principles to verify machine learning components</li>
+                <li><strong>Quantum-safe cryptography:</strong> Ada implementations for next-generation security</li>
+            </ul>
+            <p>
+                By mastering Ada today, you're positioning yourself at the forefront of reliable software development for tomorrow's critical systems.
+            </p>
+        </div>
+        
+        <div class="certification-process">
+            <h3>Continuing Your Ada Journey</h3>
+            <p>
+                This tutorial series has provided a foundation, but Ada's depth offers many paths for continued learning:
+            </p>
+            <ul>
+                <li><strong>SPARK advanced verification:</strong> Mathematical proof of complex systems</li>
+                <li><strong>Distributed systems:</strong> Ada for networked safety-critical applications</li>
+                <li><strong>Embedded targets:</strong> Ada for microcontrollers and resource-constrained devices</li>
+                <li><strong>Legacy system modernization:</strong> Integrating Ada with older codebases</li>
+                <li><strong>Domain-specific languages:</strong> Creating embedded DSLs in Ada</li>
+            </ul>
+            <p>
+                The Ada Resource Center (ada-auth.org) and AdaCore's learning resources provide excellent next steps for deepening your expertise.
+            </p>
+        </div>
+    </div>
+</div>

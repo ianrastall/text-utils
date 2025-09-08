@@ -1,0 +1,12 @@
+{
+  "files": [
+    "tutorial-ada-01-introduction.html",
+    "tutorial-ada-02-strong-typing.html",
+    "tutorial-ada-03-subprograms.html",
+    "tutorial-ada-04-design-by-contract.html",
+    "tutorial-ada-05-exception-handling.html",
+    "tutorial-ada-06-concurrency.html",
+    "tutorial-ada-07-real-time.html",
+    "tutorial-ada-13-certification.html"
+  ]
+}

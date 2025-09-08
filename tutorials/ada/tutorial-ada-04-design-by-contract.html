@@ -1,0 +1,563 @@
+<div class="tutorial-content">
+    <h1 class="tutorial-title">Design by Contract in Ada: Formal Verification for Safety-Critical Systems</h1>
+    
+    <div class="tutorial-section">
+        <p class="tutorial-intro">
+            Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in critical systems.
+        </p>
+        
+        <div class="callout-primary">
+            <h4>From Testing to Proving</h4>
+            <p>
+                Traditional development: "Let's write code and see if it works."<br>
+                Ada with contracts: "Let's specify exactly how it must work, then verify compliance."
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-block">
+        <h2>The Contract Paradigm: Beyond Unit Testing</h2>
+        <p>
+            While unit tests verify specific input/output pairs, contracts define <span class="text-highlight">universal properties</span> that must hold for all possible executions. This shift from testing to specification is fundamental to building truly reliable systems.
+        </p>
+        
+        <div class="comparison-grid">
+            <div class="grid-item">
+                <h4>Traditional Unit Testing</h4>
+                <ul>
+                    <li>Verifies specific test cases</li>
+                    <li>Cannot prove absence of errors</li>
+                    <li>Documentation separate from code</li>
+                    <li>Brittle to refactoring</li>
+                    <li>Runtime verification only</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Typical test case
+Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");</code></pre>
+                </div>
+            </div>
+            <div class="grid-item">
+                <h4>Design by Contract</h4>
+                <ul>
+                    <li>Specifies universal properties</li>
+                    <li>Can prove absence of certain errors</li>
+                    <li>Documentation embedded in code</li>
+                    <li>Self-documenting through specifications</li>
+                    <li>Verification at multiple levels (compile, run, formal)</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Factorial (N : Natural) return Positive with
+   Pre  => N <= 12,
+   Post => Factorial'Result > 0 and
+           (if N > 0 then Factorial'Result mod N = 0);</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="definition-box">
+            <h4>Contract Components Explained</h4>
+            <div class="two-column">
+                <div class="column">
+                    <h5>Preconditions (<code class="code-inline">Pre</code>)</h5>
+                    <p>
+                        Requirements that must be true for the caller before invoking the subprogram. They define the subprogram's domain of responsibility.
+                    </p>
+                    <ul>
+                        <li>Specify valid input ranges</li>
+                        <li>Define required state conditions</li>
+                        <li>Enforce interface contracts</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h5>Postconditions (<code class="code-inline">Post</code>)</h5>
+                    <p>
+                        Guarantees provided by the subprogram after execution. They define what the subprogram promises to deliver.
+                    </p>
+                    <ul>
+                        <li>Specify output properties</li>
+                        <li>Document state changes</li>
+                        <li>Define relationships between inputs and outputs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Implementing Contracts in Ada 2012+</h2>
+        
+        <h3>Basic Contract Syntax</h3>
+        <p>
+            Contracts are specified using aspect syntax directly in the subprogram declaration:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">function Square_Root (X : Float) return Float with
+   Pre  => X >= 0.0,
+   Post => Square_Root'Result * Square_Root'Result = X and
+           Square_Root'Result >= 0.0;</code></pre>
+        </div>
+        
+        <div class="note-box">
+            <h3>Key Syntax Notes</h3>
+            <ul>
+                <li>Contracts use <code class="code-inline">=></code> (implies) rather than <code class="code-inline">:=</code></li>
+                <li><code class="code-inline">'Result</code> refers to the function's return value</li>
+                <li>Multiple conditions can be combined with <code class="code-inline">and</code>, <code class="code-inline">or</code></li>
+                <li>Contracts can reference parameters and global variables</li>
+            </ul>
+        </div>
+        
+        <h3>Advanced Contract Features</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Old Values in Postconditions</h4>
+                <p>
+                    Reference original parameter values using <code class="code-inline">Old</code>:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Increment (X : in out Integer) with
+   Pre  => X < Integer'Last,
+   Post => X = X'Old + 1;</code></pre>
+                </div>
+                <p>
+                    Without <code class="code-inline">Old</code>, <code class="code-inline">X</code> in the postcondition would refer to the updated value.
+                </p>
+            </div>
+            
+            <div class="column">
+                <h4>Class-wide Preconditions</h4>
+                <p>
+                    For dispatching operations, use <code class="code-inline">Pre'Class</code>:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Process (S : Sensor'Class) with
+   Pre'Class => S.Is_Active;</code></pre>
+                </div>
+                <p>
+                    Ensures the precondition applies to all derived types in the hierarchy.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Real-World Contract Applications</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Aviation System: Flight Control</h3>
+                <p>
+                    Contracts for a critical flight control function:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Adjust_Elevator (
+   Current_Angle : in     Elevator_Angle;
+   Target_Angle  : in     Elevator_Angle;
+   Rate_Limit    : in     Angle_Rate;
+   New_Angle     :    out Elevator_Angle) with
+   Pre  => abs (Target_Angle - Current_Angle) <= MAX_MANEUVER,
+   Pre  => Rate_Limit <= MAX_RATE,
+   Post => abs (New_Angle - Current_Angle) <= Rate_Limit and
+           New_Angle in Current_Angle-10 .. Current_Angle+10 and
+           (if Target_Angle > Current_Angle then New_Angle > Current_Angle) and
+           (if Target_Angle < Current_Angle then New_Angle < Current_Angle);</code></pre>
+                </div>
+                <p>
+                    These contracts ensure physically impossible maneuvers cannot be commanded.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Medical Device: Drug Infusion</h3>
+                <p>
+                    Contracts for a life-critical infusion calculation:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Calculate_Infusion_Rate (
+   Patient_Weight : Weight_Kg;
+   Drug_Concentration : Concentration;
+   Dosage : Dosage_Mg_Per_Kg) return Flow_Rate_ML_Per_Hour with
+   Pre  => Patient_Weight > 0.0 and
+           Drug_Concentration > 0.0 and
+           Dosage >= MIN_DOSE and Dosage <= MAX_DOSE,
+   Post => Calculate_Infusion_Rate'Result >= MIN_FLOW_RATE and
+           Calculate_Infusion_Rate'Result <= MAX_FLOW_RATE and
+           abs (Calculate_Infusion_Rate'Result * Drug_Concentration - 
+                Patient_Weight * Dosage) < TOLERANCE;</code></pre>
+                </div>
+                <p>
+                    Prevents dangerous dosage errors through mathematical verification.
+                </p>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>The Therac-25 Radiation Therapy Machine</h3>
+            <p>
+                In the 1980s, a software error in the Therac-25 radiation therapy machine caused massive overdoses, resulting in patient deaths. The error occurred because:
+            </p>
+            <ul>
+                <li>No preconditions checked input sequence validity</li>
+                <li>No postconditions verified safe radiation levels</li>
+                <li>State transitions weren't formally specified</li>
+            </ul>
+            <p>
+                With Ada's contracts, these safety properties could have been specified and verified:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">procedure Deliver_Radiation (
+   Mode : Radiation_Mode;
+   Dose : Radiation_Dose) with
+   Pre  => (if Mode = ELECTRON then Dose <= MAX_ELECTRON_DOSE) and
+           (if Mode = X_RAY then Dose <= MAX_XRAY_DOSE) and
+           System_State = READY,
+   Post => Radiation_Active = (Dose > 0.0);</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Type Invariants: Protecting Data Integrity</h2>
+        <p>
+            While pre/post conditions govern subprogram behavior, type invariants ensure data structure consistency throughout the program's execution.
+        </p>
+        
+        <h3>Defining and Using Invariants</h3>
+        <div class="code-block">
+            <pre><code class="language-ada">type Temperature_Sensor is record
+   ID      : Sensor_ID;
+   Reading : Celsius;
+   Status  : Sensor_Status;
+end record with
+   Type_Invariant => 
+      (if Status = Operational then Reading in VALID_TEMPERATURE_RANGE) and
+      (Status /= Failed or Alert_History'Length > 0);
+
+function Is_Consistent (S : Temperature_Sensor) return Boolean is
+   (S.Status /= Operational or S.Reading in VALID_TEMPERATURE_RANGE);</code></pre>
+        </div>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>When Invariants Are Checked</h4>
+                <ul>
+                    <li>At the end of object initialization</li>
+                    <li>After any operation that could modify the object</li>
+                    <li>At subprogram boundaries when objects are passed</li>
+                    <li>Explicitly with <code class="code-inline">Assert (S in Temperature_Sensor)</code></li>
+                </ul>
+            </div>
+            <div class="column">
+                <h4>Best Practices</h4>
+                <ul>
+                    <li>Define invariants for all critical data structures</li>
+                    <li>Keep them simple and verifiable</li>
+                    <li>Use them to enforce domain constraints</li>
+                    <li>Combine with subprogram contracts for complete verification</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Practical Application: Database Record Integrity</h3>
+            <p>
+                Ensure database records maintain consistency:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">type Patient_Record is record
+   ID           : Patient_ID;
+   Name         : String (1..100);
+   Weight       : Weight_Kg;
+   Height       : Height_Cm;
+   BMI          : BMI_Value;
+   Last_Updated : Time;
+end record with
+   Type_Invariant =>
+      Weight > 0.0 and
+      Height > 0.0 and
+      BMI = Weight / (Height/100.0)**2 and
+      BMI in 10.0..100.0 and
+      Last_Updated <= Clock;</code></pre>
+            </div>
+            <p>
+                This invariant ensures BMI is always correctly calculated and within valid ranges.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Verification Levels: From Runtime Checks to Formal Proof</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Level 1: Runtime Contract Checking</h3>
+                <p>
+                    Basic enforcement during execution:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-bash">gnatmake -gnata your_program.adb</code></pre>
+                </div>
+                <p>
+                    This compiles with runtime checks for all contracts. Violations raise <code class="code-inline">Assert_Failure</code>.
+                </p>
+                <ul>
+                    <li>Catches errors during testing</li>
+                    <li>Adds minimal runtime overhead</li>
+                    <li>Essential for safety-critical deployments</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Level 2: Static Verification</h3>
+                <p>
+                    Prove contracts hold without execution:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-bash">gnatprove --level=1 --report=all your_program.adb</code></pre>
+                </div>
+                <p>
+                    Uses formal methods to prove contracts are always satisfied.
+                </p>
+                <ul>
+                    <li>Verifies absence of runtime errors</li>
+                    <li>Requires precise contracts</li>
+                    <li>Higher assurance than testing alone</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Level 3: SPARK Formal Verification</h3>
+                <p>
+                    Mathematical proof of correctness:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- In SPARK subset
+function Factorial (N : Natural) return Positive with
+   Pre  => N <= 12,
+   Post => Factorial'Result = (if N = 0 then 1 else N * Factorial(N-1));</code></pre>
+                </div>
+                <p>
+                    SPARK's simplified subset enables complete formal verification.
+                </p>
+                <ul>
+                    <li>Proves functional correctness</li>
+                    <li>Verifies absence of all runtime errors</li>
+                    <li>Required for highest safety certifications</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>Verification Level Comparison</h4>
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th>Verification Level</th>
+                        <th>Confidence</th>
+                        <th>Effort</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Runtime Checking</td>
+                        <td>Medium</td>
+                        <td>Low</td>
+                        <td>General safety-critical systems</td>
+                    </tr>
+                    <tr>
+                        <td>Static Verification</td>
+                        <td>High</td>
+                        <td>Moderate</td>
+                        <td>Certified safety systems (DO-178C Level B)</td>
+                    </tr>
+                    <tr>
+                        <td>Formal Proof (SPARK)</td>
+                        <td>Very High</td>
+                        <td>High</td>
+                        <td>Highest safety systems (DO-178C Level A)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Advanced Contract Patterns</h2>
+        
+        <h3>Pattern 1: State Machine Contracts</h3>
+        <p>
+            Specify valid state transitions for critical systems:
+        </p>
+        <div class="code-block">
+            <pre><code class="language-ada">type System_State is (Off, Initializing, Ready, Running, Degraded, Failed);
+
+function Valid_Transition (Current, Next : System_State) return Boolean is
+   (case Current is
+      when Off        => Next = Initializing,
+      when Initializing => Next in Ready | Failed,
+      when Ready      => Next in Running | Degraded | Failed,
+      when Running    => Next in Degraded | Failed,
+      when Degraded   => Next in Running | Failed,
+      when Failed     => Next = Failed);
+
+procedure Transition (Current : in out System_State; Next : System_State) with
+   Pre  => Valid_Transition(Current, Next),
+   Post => Current = Next and
+           (if Current = Failed then Next = Failed);</code></pre>
+        </div>
+        
+        <div class="note-box">
+            <h3>Why State Machine Contracts Matter</h3>
+            <p>
+                In the 2004 Mars Exploration Rover mission, a state machine error caused Spirit rover to repeatedly reboot. Formal state contracts would have prevented this by ensuring only valid transitions could occur.
+            </p>
+        </div>
+        
+        <h3>Pattern 2: Data Flow Contracts</h3>
+        <p>
+            Verify complex data transformations:
+        </p>
+        <div class="code-block">
+            <pre><code class="language-ada">function Process_Sensor_Data (Raw : Sensor_Array) return Processed_Data with
+   Pre  => Raw'Length > 0 and Raw'Length <= MAX_SENSOR_COUNT,
+   Pre  => (for all I in Raw'Range => Raw(I).Quality > MIN_QUALITY),
+   Post => Processed_Data'Result'Length = Raw'Length and
+           (for all I in Processed_Data'Result'Range =>
+              Processed_Data'Result(I).Value in VALID_RANGE);</code></pre>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Avoiding Common Contract Mistakes</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Mistake: Overly Complex Contracts</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Hard to verify and understand
+Pre => (A and (B or C)) xor (D and not E);</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Solution: Break into Helper Functions</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">function Valid_Configuration (C : Config) return Boolean is
+   (C.A and (C.B or C.C));
+   
+function Safe_Operation (C : Config) return Boolean is
+   (C.D and not C.E);
+   
+Pre => Valid_Configuration(C) xor Safe_Operation(C);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Exercises: Building Contract-First Systems</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Exercise 1: Elevator Control System</h3>
+                <p>
+                    Design a contract-first elevator control system:
+                </p>
+                <ul>
+                    <li>Define preconditions for all movement operations</li>
+                    <li>Specify postconditions that ensure physical safety</li>
+                    <li>Create invariants for elevator state consistency</li>
+                    <li>Verify that impossible states are contractually prohibited</li>
+                </ul>
+                <p>
+                    <strong>Challenge:</strong> Prove that the elevator cannot move with doors open.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Exercise 2: Financial Transaction System</h3>
+                <p>
+                    Implement contracts for a banking transaction:
+                </p>
+                <ul>
+                    <li>Preconditions ensuring valid accounts and amounts</li>
+                    <li>Postconditions preserving accounting invariants</li>
+                    <li>Type invariants for account consistency</li>
+                    <li>Contracts that prevent race conditions</li>
+                </ul>
+                <p>
+                    <strong>Challenge:</strong> Prove that total system funds remain constant.
+                </p>
+            </div>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Verification Strategy</h3>
+            <ol>
+                <li>Start with runtime checking (<code class="code-inline">-gnata</code>)</li>
+                <li>Add contracts incrementally, starting with critical operations</li>
+                <li>Use <code class="code-inline">gnatprove --level=1</code> to identify provable contracts</li>
+                <li>Refine contracts based on verification results</li>
+                <li>For critical components, move to SPARK for full verification</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Next Steps: Concurrency and Contracts</h2>
+        <p>
+            With Design by Contract mastered, you're ready to combine these techniques with Ada's built-in concurrency model. In the next tutorial, we'll explore how to:
+        </p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Upcoming: Safe Concurrency with Contracts</h3>
+                <ul>
+                    <li>Apply contracts to task interfaces</li>
+                    <li>Use protected objects with formal specifications</li>
+                    <li>Verify absence of race conditions</li>
+                    <li>Combine contracts with real-time scheduling</li>
+                    <li>Formally verify concurrent system properties</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Practice Challenge</h3>
+                <p>
+                    Enhance your elevator system with concurrency:
+                </p>
+                <ul>
+                    <li>Create tasks for elevator movement and door control</li>
+                    <li>Specify contracts for task interactions</li>
+                    <li>Use protected objects with invariants for shared state</li>
+                    <li>Verify that conflicting operations cannot occur</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="callout-primary">
+            <h4>The Path to Verified Systems</h4>
+            <p>
+                Design by Contract transforms Ada from a safe language into a <em>verifiable</em> language. When combined with strong typing and formal methods, it provides a pathway from traditional development to mathematically verified software. This is why Ada remains the language of choice for systems where failure is not just expensive, but catastrophic.
+            </p>
+            <p>
+                As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but <em>provably correct</em> within its specified domain.
+            </p>
+        </div>
+    </div>
+</div>

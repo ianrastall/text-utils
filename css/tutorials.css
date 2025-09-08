@@ -1,0 +1,483 @@
+/* Tutorial-specific styles */
+.tutorial-content {
+    overflow-y: auto;
+    padding: 1rem;
+    background: var(--bs-gray-900);
+    border-radius: 0.5rem;
+    border: 1px solid var(--bs-gray-700);
+}
+
+/* CSS Variables */
+:root {
+    --accent-color-rgb: 70, 130, 180; /* Default steelblue in RGB */
+}
+
+/* Typography and Section Styling */
+.tutorial-section {
+    margin-bottom: 2.5rem;
+}
+
+.tutorial-title {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--accent-color, cadetblue);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--bs-gray-700);
+}
+
+.tutorial-intro {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--bs-light);
+    margin-bottom: 1.2rem;
+    border-bottom: none;
+    letter-spacing: 0.5px;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.section-block {
+    margin-bottom: 2rem;
+}
+
+/* Section Dividers */
+hr.section-divider, 
+.section-divider {
+    height: 1px;
+    background-color: var(--bs-gray-700);
+    border: none;
+    margin: 2.5rem 0;
+    width: 100%;
+}
+
+/* Grid and Card Layouts */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.feature-card {
+    background: var(--bs-dark);
+    border: 1px solid var(--bs-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.grid-item {
+    background: var(--bs-dark);
+    border: 1px solid var(--bs-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.two-column {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+/* Code Blocks and Output */
+.code-block {
+    position: relative;
+    background-color: #22262e; /* Slightly lighter than default dark background */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Light border */
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.code-block pre {
+    padding: 1rem;
+    margin: 0;
+}
+
+.code-block code {
+    font-family: 'Fira Code', monospace;
+    color: var(--bs-light);
+}
+
+.code-inline {
+    font-family: 'Fira Code', monospace;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.15rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Syntax highlighting for Ada */
+.language-ada .keyword, 
+code .keyword,
+.language-ada b {
+    color: #569CD6;
+    font-weight: normal;
+}
+
+.language-ada .comment, 
+code .comment,
+.language-ada i {
+    color: #608B4E;
+    font-style: italic;
+}
+
+.language-ada .string, 
+code .string {
+    color: #CE9178;
+}
+
+.language-ada .type, 
+code .type {
+    color: #4EC9B0;
+}
+
+.code-output {
+    background-color: #2b303b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin: 1rem 0 1.5rem 0;
+    padding: 0.75rem 1rem;
+    font-family: 'Fira Code', monospace;
+    color: #B5CEA8;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.run-code-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+/* Information Boxes */
+.note-box, .warning-box, .tip-box, .definition-box, .ada-concept {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.note-box {
+    background-color: rgba(var(--bs-info-rgb), 0.1);
+    border-left: 4px solid var(--bs-info);
+}
+
+.warning-box {
+    background-color: rgba(var(--bs-warning-rgb), 0.1);
+    border-left: 4px solid var(--bs-warning);
+}
+
+.tip-box {
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+    border-left: 4px solid var(--bs-success);
+}
+
+.definition-box {
+    background-color: rgba(111, 66, 193, 0.1);
+    border-left: 4px solid #6f42c1;
+}
+
+.ada-concept {
+    border-left: 4px solid var(--accent-color);
+    background-color: rgba(var(--bs-gray-900-rgb), 0.15);
+}
+
+/* Callouts */
+.callout-primary, .callout-secondary {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.callout-secondary {
+    background-color: rgba(var(--bs-secondary-rgb), 0.1);
+    border: 1px solid rgba(var(--bs-secondary-rgb), 0.2);
+}
+
+/* Table Styling */
+.tutorial-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    background-color: #22262e;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tutorial-table thead {
+    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.3);
+}
+
+.tutorial-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 500;
+    color: var(--bs-light);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tutorial-table tbody tr:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.03); /* Zebra striping */
+}
+
+.tutorial-table tbody tr:hover {
+    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.1);
+}
+
+.tutorial-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Practice Tasks */
+.practice-task {
+    background-color: rgba(var(--bs-secondary-rgb), 0.2);
+    border-left: 4px solid var(--accent-color, cadetblue);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.practice-task h3 {
+    color: var(--accent-color, cadetblue);
+    margin-bottom: 0.75rem;
+}
+
+/* Highlighting and Icons */
+.text-highlight {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.critical-system-icon {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+.contract-highlight {
+    background-color: rgba(100, 149, 237, 0.15);
+    border: 1px solid rgba(100, 149, 237, 0.3);
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-family: 'Fira Code', monospace;
+}
+
+/* Quiz Section */
+.quiz-section {
+    background: var(--bs-dark);
+    border: 1px solid var(--bs-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+/* Form Elements */
+.tutorial-nav .form-select {
+    background-color: var(--bs-gray-900) !important;
+}
+
+.tutorial-nav .form-select:disabled {
+    background-color: var(--bs-gray-800) !important;
+    opacity: 0.75;
+}
+
+/* Pattern Documentation Styles */
+.type-pattern {
+    border: 1px solid var(--bs-gray-700);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+.pattern-title {
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.physical-units-demo {
+    background-color: rgba(70, 130, 180, 0.1);
+    border-left: 3px solid rgba(70, 130, 180, 0.5);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+/* Contract Documentation Styles */
+.contract-example {
+    background-color: rgba(47, 79, 79, 0.05);
+    border-left: 3px solid rgba(47, 79, 79, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.verification-level {
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1.2rem 0;
+}
+
+.level-1 { 
+    background-color: rgba(255, 165, 0, 0.1); 
+    border-left: 4px solid orange; 
+}
+
+.level-2 { 
+    background-color: rgba(30, 144, 255, 0.1); 
+    border-left: 4px solid blue; 
+}
+
+.level-3 { 
+    background-color: rgba(128, 0, 128, 0.1); 
+    border-left: 4px solid purple; 
+}
+
+.contract-pattern {
+    border: 1px solid var(--bs-gray-700);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+/* Concurrency Documentation Styles */
+.concurrency-pattern {
+    border: 1px solid var(--bs-gray-700);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+.task-structure {
+    background-color: rgba(25, 25, 112, 0.05);
+    border-left: 3px solid rgba(25, 25, 112, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.protected-object {
+    background-color: rgba(0, 128, 0, 0.05);
+    border-left: 3px solid rgba(0, 128, 0, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.real-world-example {
+    border: 1px solid var(--bs-secondary);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+.exercise-card {
+    border: 1px solid var(--bs-gray-700);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+/* Real-Time Documentation Styles */
+.real-time-pattern {
+    border: 1px solid var(--bs-gray-700);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+.time-model {
+    background-color: rgba(139, 0, 0, 0.05);
+    border-left: 3px solid rgba(139, 0, 0, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.scheduling-analysis {
+    background-color: rgba(0, 0, 139, 0.05);
+    border-left: 3px solid rgba(0, 0, 139, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.temporal-contract {
+    background-color: rgba(0, 100, 0, 0.05);
+    border-left: 3px solid rgba(0, 100, 0, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.certification-path {
+    border: 1px solid var(--bs-secondary);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+/* Certification Documentation Styles */
+.certification-pattern {
+    border: 1px solid var(--bs-gray-700);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+}
+
+.certification-process {
+    background-color: rgba(128, 0, 128, 0.05);
+    border-left: 3px solid rgba(128, 0, 128, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.integration-pattern {
+    background-color: rgba(0, 128, 128, 0.05);
+    border-left: 3px solid rgba(0, 128, 128, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.evidence-strategy {
+    background-color: rgba(70, 130, 180, 0.05);
+    border-left: 3px solid rgba(70, 130, 180, 0.7);
+    padding: 0.8rem;
+    margin: 1rem 0;
+}
+
+.certification-checklist {
+    background-color: rgba(255, 215, 0, 0.1);
+    border-left: 3px solid gold;
+    padding: 1rem;
+    margin: 1.2rem 0;
+    border-radius: 4px;
+}
+
+/* Icon Block Styles */
+.icon-block {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}

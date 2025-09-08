@@ -1,0 +1,7 @@
+add_alert	e003
+auto_delete	ea4c
+error	e000
+error_outline	e001
+notification_important	e004
+warning	e002
+warning_amber	f083

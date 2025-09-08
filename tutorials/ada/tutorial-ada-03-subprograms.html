@@ -1,0 +1,784 @@
+<div class="tutorial-content">
+    <h1 class="tutorial-title">Ada Subprograms: Procedures, Functions, and Packages</h1>
+    
+    <div class="tutorial-section">
+        <p class="tutorial-intro">
+            While many languages treat functions and procedures as interchangeable, Ada makes a deliberate semantic distinction that enforces clear design principles. This tutorial explores Ada's rigorous approach to subprograms and packages - the foundation of its modular design philosophy. You'll learn how Ada's packaging system creates strong encapsulation boundaries, enables precise visibility control, and supports the development of verifiable components for safety-critical systems. Through practical examples, we'll demonstrate how these features transform code organization from a maintenance challenge into a reliability asset.
+        </p>
+        
+        <div class="callout-primary">
+            <h4>Subprograms as Contracts</h4>
+            <p>
+                In Ada, subprograms aren't just code containers - they're <span class="text-highlight">formal contracts</span> between callers and callees. This perspective shifts development from "making code work" to "specifying how it must work," creating the foundation for verifiable systems.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-block">
+        <h2>Procedures vs. Functions: Semantic Distinctions</h2>
+        <p>
+            Unlike languages that treat all subprograms as functions (even when they don't return values), Ada enforces a clear semantic distinction between procedures and functions that reflects their intended purpose.
+        </p>
+        
+        <div class="comparison-grid">
+            <div class="grid-item">
+                <h4>Procedures</h4>
+                <ul>
+                    <li>Perform actions with side effects</li>
+                    <li>No return value (by design)</li>
+                    <li>Parameters can be <code class="code-inline">in</code>, <code class="code-inline">out</code>, or <code class="code-inline">in out</code></li>
+                    <li>Represent "commands" in the system</li>
+                    <li>Should be used when the primary purpose is state modification</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">procedure Set_Temperature (
+   Sensor_ID : in     Sensor-Identifier;
+   Value     : in     Celsius;
+   Success   :    out Boolean) is
+   -- Implementation
+begin
+   -- Modify system state
+   Temperature_Values(Sensor_ID) := Value;
+   Success := True;
+exception
+   when others =>
+      Success := False;
+end Set_Temperature;</code></pre>
+                </div>
+            </div>
+            <div class="grid-item">
+                <h4>Functions</h4>
+                <ul>
+                    <li>Compute and return values</li>
+                    <li>Must have a return value</li>
+                    <li>Parameters typically <code class="code-inline">in</code> only</li>
+                    <li>Represent "queries" in the system</li>
+                    <li>Should be free of side effects (ideally)</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">function Get_Temperature (
+   Sensor_ID : Sensor-Identifier) return Celsius is
+   -- Implementation
+begin
+   -- Return value without modifying state
+   return Temperature_Values(Sensor_ID);
+   
+   -- No exception handler needed - 
+   -- functions should not mask errors
+end Get_Temperature;</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>The Command-Query Separation Principle</h3>
+            <p>
+                Bertrand Meyer's principle states: "Asking a question should not change the answer." Ada enforces this at the language level:
+            </p>
+            <ul>
+                <li>Functions should not modify visible state</li>
+                <li>Procedures should not return values (beyond status)</li>
+                <li>Mixing these roles creates subtle bugs that are hard to verify</li>
+            </ul>
+            <p>
+                Violating this principle was a contributing factor in the Therac-25 radiation therapy machine failures. Ada's semantic distinction prevents this class of errors by design.
+            </p>
+        </div>
+        
+        <div class="definition-box">
+            <h4>Parameter Modes: The Contract Language</h4>
+            <p>
+                Ada's parameter modes form a precise contract language:
+            </p>
+            <div class="two-column">
+                <div class="column">
+                    <h5><code class="code-inline">in</code> Parameters</h5>
+                    <ul>
+                        <li>Input only (read-only)</li>
+                        <li>Corresponds to precondition elements</li>
+                        <li>Must have valid values on entry</li>
+                        <li>Cannot be modified in the subprogram</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h5><code class="code-inline">out</code> Parameters</h5>
+                    <ul>
+                        <li>Output only (write-only)</li>
+                        <li>Corresponds to postcondition elements</li>
+                        <li>Must be assigned before return</li>
+                        <li>Initial value is undefined</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="two-column">
+                <div class="column">
+                    <h5><code class="code-inline">in out</code> Parameters</h5>
+                    <ul>
+                        <li>Input and output</li>
+                        <li>Corresponds to both pre and postconditions</li>
+                        <li>Must have valid initial value</li>
+                        <li>Must maintain validity after modification</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h5>Best Practices</h5>
+                    <ul>
+                        <li>Prefer <code class="code-inline">in</code> for most parameters</li>
+                        <li>Use <code class="code-inline">out</code> for primary results</li>
+                        <li>Limit <code class="code-inline">in out</code> to necessary cases</li>
+                        <li>Avoid global variables as substitutes for parameters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Packages: The Foundation of Modularity</h2>
+        <p>
+            While many languages use classes as the primary modularization unit, Ada uses packages - a more flexible construct that supports multiple organization patterns.
+        </p>
+        
+        <h3>Package Structure and Visibility Control</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Package Specification</h4>
+                <p>
+                    The public interface (what callers see):
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Temperature_Sensors is
+   
+   -- Public types
+   subtype Sensor_ID is Positive range 1..100;
+   subtype Celsius is Float range -273.15..1000.0;
+   
+   -- Public constants
+   MAX_SENSORS : constant := 100;
+   
+   -- Public subprograms
+   procedure Initialize;
+   function Is_Initialized return Boolean;
+   procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius);
+   function Get_Last_Value (ID : Sensor_ID) return Celsius;
+   
+private
+   -- Private implementation details
+   Initialized : Boolean := False;
+   Last_Values : array (Sensor_ID) of Celsius := (others => 0.0);
+   
+end Temperature_Sensors;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h4>Package Body</h4>
+                <p>
+                    The implementation (hidden from callers):
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package body Temperature_Sensors is
+   
+   procedure Initialize is
+   begin
+      -- ...
+   end Initialize;
+   
+   function Is_Initialized return Boolean is
+   begin
+      return Initialized;
+   end Is_Initialized;
+   
+   procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius) is
+   begin
+      Last_Values(ID) := Value;
+   end Read_Sensor;
+   
+   function Get_Last_Value (ID : Sensor_ID) return Celsius is
+   begin
+      return Last_Values(ID);
+   end Get_Last_Value;
+   
+end Temperature_Sensors;</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note-box">
+            <h3>Public vs. Private vs. Body Visibility</h3>
+            <p>
+                Ada provides three distinct visibility levels:
+            </p>
+            <ul>
+                <li><strong>Public</strong>: Visible to all clients (declarations before <code class="code-inline">private</code>)</li>
+                <li><strong>Private</strong>: Visible to child packages but not clients (declarations after <code class="code-inline">private</code>)</li>
+                <li><strong>Body</strong>: Visible only within the package (local to the package body)</li>
+            </ul>
+            <p>
+                This granular control prevents "information leakage" and allows progressive refinement of interfaces without breaking compatibility.
+            </p>
+        </div>
+        
+        <h3>Private Types for Information Hiding</h3>
+        <p>
+            Ada's type system integrates directly with its packaging system, allowing you to expose operations while hiding implementations:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">package Sensor_Management is
+   
+   -- Full type visibility (all details visible)
+   type Sensor_Record is record
+      Status  : Status_Type;
+   end record;
+   
+   -- Private type (only operations visible)
+   type Sensor_Handle is private;
+   
+   -- Limited private type (only assignment and testing for equality)
+   type Sensor_Controller is limited private;
+   
+   -- Public operations on private types
+   function Create_Sensor (ID : Positive) return Sensor_Handle;
+   procedure Read_Value (S : Sensor_Handle; Value : out Float);
+   
+private
+   -- Implementation details hidden from clients
+   type Sensor_Handle is record
+      -- ...
+   end record;
+   
+   type Sensor_Controller is record
+      -- Complex implementation
+   end record;
+   
+end Sensor_Management;</code></pre>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Abstract Data Types in Ada</h3>
+            <p>
+                Private types provide true Abstract Data Types (ADT):
+            </p>
+            <ul>
+                <li>Clients can only use declared operations</li>
+                <li>Implementation can change without affecting clients</li>
+                <li>Limited private types prevent even assignment by clients</li>
+                <li>Abstract types can be extended with tagged types</li>
+            </ul>
+            <p>
+                This is particularly valuable in safety-critical systems where internal representation changes should never propagate to clients.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Hierarchical Design with Child Packages</h2>
+        <p>
+            Ada's unique child package system provides hierarchical organization with controlled visibility:
+        </p>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Parent Package</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Temperature_Sensors is
+   
+   subtype Sensor_ID is Positive range 1..100;
+   subtype Celsius is Float range -273.15..1000.0;
+   
+   procedure Initialize;
+   function Is_Initialized return Boolean;
+   
+   -- Child packages will extend this interface
+   -- No private part needed for parent-only declaration
+   
+end Temperature_Sensors;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h4>Child Package</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Temperature_Sensors.Hardware is
+   
+   -- Child can see parent's public items
+   procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius);
+   function Get_Last_Timestamp (ID : Sensor_ID) return Ada.Real_Time.Time;
+   
+private
+   -- Private to this child package
+   Last_Timestamps : array (Sensor_ID) of Ada.Real_Time.Time;
+   
+end Temperature_Sensors.Hardware;</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">-- Child package body
+with Ada.Real_Time; use Ada.Real_Time;
+
+package body Temperature_Sensors.Hardware is
+   
+   procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius) is
+      Now : Time := Clock;
+   begin
+      Last_Timestamps(ID) := Now;
+   end Read_Sensor;
+   
+   function Get_Last_Timestamp (ID : Sensor_ID) return Time is
+   begin
+      return Last_Timestamps(ID);
+   end Get_Last_Timestamp;
+   
+end Temperature_Sensors.Hardware;</code></pre>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Child Package Visibility Rules</h3>
+            <p>
+                Unlike inheritance in OOP, Ada's hierarchical packages follow precise visibility rules:
+            </p>
+            <ul>
+                <li>Children can see parent's public <em>and</em> private declarations</li>
+                <li>Parents cannot see child declarations</li>
+                <li>Siblings cannot see each other's declarations</li>
+                <li>Clients can selectively import specific parts of the hierarchy</li>
+            </ul>
+            <p>
+                This enables subsystem architecture that maps cleanly to the logical structure of your domain.
+            </p>
+        </div>
+        
+        <h3>Private Child Packages</h3>
+        <p>
+            For true implementation encapsulation, Ada provides private child packages:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">-- Parent package
+package Temperature_Sensors is
+   -- Public interface
+   procedure Initialize;
+   -- ...
+private
+   -- Private part visible to children
+   Initialized : Boolean := False;
+end Temperature_Sensors;
+
+-- Private child package (visible only to parent)
+private package Temperature_Sensors.Initialization is
+   procedure Perform_Hardware_Init;
+end Temperature_Sensors.Initialization;
+
+-- Parent package body
+package body Temperature_Sensors is
+   -- Parent body can see private child
+   with Temperature_Sensors.Initialization;
+   
+   procedure Initialize is
+   begin
+      Initialized := True;
+   end Initialize;
+end Temperature_Sensors;
+
+-- Private child body
+package body Temperature_Sensors.Initialization is
+   procedure Perform_Hardware_Init is
+   begin
+      null;
+   end Perform_Hardware_Init;
+end Temperature_Sensors.Initialization;</code></pre>
+        </div>
+        
+        <div class="note-box">
+            <h3>Organizing Large Systems</h3>
+            <p>
+                Ada's hierarchical package system scales to large systems:
+            </p>
+            <ul>
+                <li>Top-level packages define major subsystems</li>
+                <li>First-level children define public components</li>
+                <li>Private children hide implementation details</li>
+                <li>Deep hierarchies reflect deep domain structure</li>
+            </ul>
+            <p>
+                This hierarchical approach has been successfully used in systems with millions of lines of code, such as air traffic control systems and satellite control software.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Advanced Packaging Techniques</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Generic Packages</h3>
+                <p>
+                    Parameterized packages for reusable components:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">generic
+   type Item_Type is private;
+   with function "=" (Left, Right : Item_Type) return Boolean is <>;
+package Math_Utils is
+   function Square (X : Float) return Float;
+   function Cube (X : Float) return Float;
+end Math_Utils;</code></pre>
+                </div>
+                <p>
+                    Generic packages allow type-safe reuse without inheritance or dynamic dispatch overhead.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Package Hierarchies</h3>
+                <p>
+                    Building multi-level architectures:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Sensors is
+   -- Base interface
+   type Sensor_ID is new Positive;
+end Sensors;</code></pre>
+                </div>
+                <p>
+                    Child packages extend the parent namespace:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Sensors.Temperature is
+   function Read (ID : Sensor_ID) return Float;
+   -- ...
+end Sensors.Temperature;</code></pre>
+                </div>
+                <p>
+                    This creates a clean, hierarchical organization while maintaining strong typing.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Separate Units</h3>
+                <p>
+                    Breaking large implementations into manageable units:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">package body Sensors is
+   procedure Initialize is
+   begin
+      -- ...
+   end Initialize;
+   
+   procedure Read_Sensor (ID : Sensor_ID) is
+      separate; -- Implementation in separate file
+   end Read_Sensor;
+end Sensors;
+
+-- In file sensors-read_sensor.adb
+separate (Sensors)
+procedure Read_Sensor (ID : Sensor_ID) is
+begin
+   -- Detailed implementation
+   null;
+end Read_Sensor;</code></pre>
+                </div>
+                <p>
+                    Separate units maintain logical cohesion while allowing physical separation of complex implementations.
+                </p>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>Best Practices for Imports</h4>
+            <div class="two-column">
+                <div class="column">
+                    <h5>Preferred Approach</h5>
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Specific imports
+with Temperature_Sensors.Hardware;
+use Temperature_Sensors;
+
+procedure Read_All is
+   Value : Celsius;
+begin
+   for ID in Sensor_ID loop
+      -- ...
+   end loop;
+end Read_All;</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h5>Avoid This</h5>
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Import everything
+with Temperature_Sensors;
+with Temperature_Sensors.Hardware;
+with Temperature_Sensors.Diagnostics;
+with Ada.Text_IO;
+with Ada.Real_Time;
+-- ... several more
+
+-- Excessive use clauses
+use Temperature_Sensors;
+use Temperature_Sensors.Hardware;
+use Ada.Text_IO;
+-- ...</code></pre>
+                    </div>
+                </div>
+            </div>
+            <p>
+                Specific imports and selective use clauses maintain namespace clarity and prevent accidental name conflicts.
+            </p>
+        </div>
+        
+        <h3>GNAT Project Files for Large Systems</h3>
+        <p>
+            For production systems, GNAT project files provide build system integration:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">project Flight_Control_System is
+   
+   type Build_Type is ("debug", "production");
+   Build : Build_Type := "debug";
+   
+   for Source_Dirs use ("src", "src/sensors", "src/control");
+   for Object_Dir use "obj/" &amp; Build;
+   for Main use ("flight_control.adb");
+   
+   package Compiler is
+      case Build is
+         when "debug" =>
+            for Default_Switches ("Ada") use 
+               ("-gnata", "-gnatwa", "-g", "-O0");
+         when "production" =>
+            for Default_Switches ("Ada") use 
+               ("-O2", "-gnatp", "-gnatn");
+      end case;
+   end Compiler;
+   
+   package Builder is
+      for Default_Switches ("Ada") use ("-j8");
+   end Builder;
+   
+   package Linker is
+      for Default_Switches ("Ada") use ("-Wl,-Map=obj/mapfile");
+   end Linker;
+   
+end Flight_Control_System;</code></pre>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Project Organization Tips</h3>
+            <ul>
+                <li>Use hierarchical project structures for large systems</li>
+                <li>Place package specifications in separate files from bodies</li>
+                <li>Mirror filesystem hierarchy to package hierarchy</li>
+                <li>Use scenario variables to control different build configurations</li>
+                <li>Package bodies can be split using separate units for maintenance</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Package Initialization and Elaboration Control</h2>
+        <p>
+            Ada's elaboration model (initialization of packages) has unique features for safety-critical systems:
+        </p>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Implicit Initialization</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Sensors is
+   -- Variables initialize at elaboration
+   Sensor_Count : Natural := 0;
+   Initialized  : Boolean := False;
+   
+   -- ...
+end Sensors;</code></pre>
+                </div>
+                <p>
+                    This approach is convenient but can lead to elaboration order issues in complex systems.
+                </p>
+            </div>
+            <div class="column">
+                <h4>Explicit Initialization</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Sensors is
+   -- No implicit initialization
+   Sensor_Count : Natural;
+   Initialized  : Boolean;
+   
+   -- Explicit initialization
+   procedure Initialize;
+   
+   -- ...
+end Sensors;
+
+package body Sensors is
+   procedure Initialize is
+   begin
+      Sensor_Count := 0;
+      Initialized := False;
+      -- Additional setup
+   end Initialize;
+end Sensors;</code></pre>
+                </div>
+                <p>
+                    Explicit initialization is preferred for safety-critical systems with complex startup sequences.
+                </p>
+            </div>
+        </div>
+        
+        <h3>Advanced Initialization Control</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Elaboration Pragmas</h3>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Sensors is
+   pragma Elaborate_Body;
+   -- ...
+end Sensors;
+
+package Sensors.Hardware is
+   pragma Elaborate_All (Sensors);
+   -- ...
+end Sensors.Hardware;</code></pre>
+                </div>
+                <p>
+                    Elaboration pragmas control initialization order, ensuring dependencies are properly satisfied.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Controlled Types</h3>
+                <p>
+                    Ada's controlled types provide hooks into object lifecycle:
+                </p>
+                <ul>
+                    <li><code class="code-inline">Initialize</code> - Called at object creation</li>
+                    <li><code class="code-inline">Adjust</code> - Called after assignment</li>
+                    <li><code class="code-inline">Finalize</code> - Called at scope exit</li>
+                </ul>
+                <p>
+                    These enable RAII-like patterns and resource management with guaranteed cleanup.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Aspect Initialization</h3>
+                <div class="code-block">
+                    <pre><code class="language-ada">package Sensors with
+   Initializes => (Sensor_Count, Initialized) is
+   
+   function Is_Ready return Boolean with
+      Depends => (Result => Initialized);
+      
+   procedure Initialize with
+      Global => (Output => (Sensor_Count, Initialized));
+      
+private
+   Sensor_Count : Natural := 0;
+   Initialized  : Boolean := False;
+end Sensors;</code></pre>
+                </div>
+                <p>
+                    In SPARK, initialization aspects allow formal verification of proper initialization sequences.
+                </p>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Elaboration Order Issues</h3>
+            <p>
+                One of the most common issues in large Ada systems is elaboration order problems. To prevent these:
+            </p>
+            <ul>
+                <li>Minimize use of package-level initialization</li>
+                <li>Use explicit <code class="code-inline">Initialize</code> procedures with clear documentation</li>
+                <li>Apply <code class="code-inline">pragma Elaborate_Body</code> to packages with complex bodies</li>
+                <li>Use <code class="code-inline">pragma Elaborate_All</code> to force deep elaboration</li>
+                <li>In safety-critical systems, formalize initialization with SPARK aspects</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Verification and Certification of Ada Components</h2>
+        <p>
+            Ada's packaging and subprogram model is designed to support formal verification and certification:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">package Critical_Sensors with
+   SPARK_Mode => On
+is
+   
+   -- Public types with constraints
+   subtype Sensor_ID is Positive range 1..MAX_SENSORS;
+   subtype Celsius is Float range -273.15..1000.0;
+   subtype Valid_Celsius is Celsius range -50.0..150.0;
+   
+   -- State management
+   function Is_Initialized return Boolean;
+   procedure Initialize with
+      Global => (Output => Initialized),
+      Post   => Is_Initialized;
+      
+   -- Sensor operations with contracts
+   procedure Read_Sensor (
+      ID    : in  Sensor_ID;
+      Value : out Celsius) with
+      Pre    => Is_Initialized,
+      Global => (Input => Initialized, In_Out => Last_Values),
+      Post   => Last_Values(ID) = Value;
+      
+   function Get_Last_Value (
+      ID : Sensor_ID) return Celsius with
+      Pre    => Is_Initialized,
+      Global => (Input => (Initialized, Last_Values));
+      
+private
+   -- Implementation details hidden
+   Initialized : Boolean := False;
+   Last_Values : array (Sensor_ID) of Celsius := (others => 0.0);
+   
+end Critical_Sensors;</code></pre>
+        </div>
+        
+        <div class="callout-primary">
+            <h4>Certification Benefits</h4>
+            <p>
+                Ada's package design directly supports safety certification:
+            </p>
+            <ul>
+                <li>Clear component boundaries align with safety segregation</li>
+                <li>Information hiding ensures fault containment</li>
+                <li>Explicit dependencies support complete traceability</li>
+                <li>SPARK annotations enable mathematical proof of correctness</li>
+            </ul>
+            <p>
+                For DO-178C Level A certification (aviation), Ada packages provide natural units of verification and certification.
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">package Pacemaker_Control with
+   SPARK_Mode => On
+is
+private
+   
+end Pacemaker_Control;</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
