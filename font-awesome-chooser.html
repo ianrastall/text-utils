@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Awesome Chooser - Text Utilities</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+            gap: 0.75rem; padding: 0.5rem;
+        }
+        .icon-item {
+            background-color: #2a2a2a; border: 1px solid #444; border-radius: 0.25rem;
+            aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.15s ease-out;
+        }
+        .icon-item:hover, .icon-item:focus {
+            transform: translateY(-3px); background-color: #3a3a3a;
+            border-color: var(--accent-color, #DEB887);
+            box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 222,184,135), 0.3);
+            outline: none;
+        }
+        .icon-item.active {
+            background-color: var(--accent-color, #DEB887) !important;
+            border-color: var(--accent-color, #DEB887) !important;
+            transform: scale(0.95); box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+        .icon-item .fa { font-size: 24px; color: #fff; }
+        .icon-item.active .fa { color: var(--accent-text-color, #000); }
+        #gridPlaceholder { grid-column: 1/-1; text-align: center; padding: 2rem; }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <div class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4 d-flex align-items-center">
+                            <span class="material-icons me-3" style="font-size:36px;" aria-hidden="true">code</span>
+                            Font Awesome Chooser
+                        </h2>
+                        <p class="text-white-50 mb-4">Browse Font Awesome icons, filter by name, and generate code snippets.</p>
+                        <form id="faChooserForm" onsubmit="return false;">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-5">
+                                    <label for="categorySelect" class="form-label">Category</label>
+                                    <select id="categorySelect" class="form-select">
+                                        <option value="">-- Select a Category --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="codeFormatSelect" class="form-label">Code Format</label>
+                                    <select id="codeFormatSelect" class="form-select">
+                                        <option value="html" selected>HTML</option>
+                                        <option value="css_before">CSS (::before)</option>
+                                        <option value="react">React (JSX)</option>
+                                        <option value="js_dom">JavaScript (DOM)</option>
+                                        <option value="icon_name">Icon Name</option>
+                                        <option value="codepoint">Codepoint</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                     <label for="searchFilter" class="form-label">Search Icons in Category</label>
+                                     <input type="search" id="searchFilter" class="form-control" placeholder="Filter by name..." disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Icons (<span id="iconCount" aria-live="polite">0</span>)</label>
+                                <div id="loadingIndicator" class="text-muted my-2" style="display:none;">Loading...</div>
+                                <div id="iconsGrid" class="icons-grid" role="grid" aria-label="Icon Selection Grid" style="min-height:120px;">
+                                    <div id="gridPlaceholder" class="text-muted">Select a category to view icons.</div>
+                                </div>
+                            </div>
+                        </form>
+                        <hr class="border-secondary my-4">
+                        <div class="mb-3">
+                            <label for="outputSnippet" class="form-label">Selected Icon & Code Snippet</label>
+                            <textarea id="outputSnippet" class="form-control font-monospace" rows="6" readonly placeholder="Select an icon to generate code."></textarea>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="button" class="btn btn-edit d-flex align-items-center" id="copyBtn"><span class="material-icons me-2" aria-hidden="true">content_copy</span>Copy</button>
+                            <button type="button" class="btn btn-clear d-flex align-items-center" id="clearBtn"><span class="material-icons me-2" aria-hidden="true">clear</span>Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div id="footer-placeholder"></div>
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script>
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+            function applyTheme(theme) {
+                htmlElement.className = '';
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+        async function loadToolsSidebar() {
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+                tools.sort((a, b) => a.name.localeCompare(b.name));
+                const currentPage = 'font-awesome-chooser';
+                const sidebarHtml = tools.map(tool => {
+                    const isActive = tool.slug === currentPage;
+                    const activeClass = isActive ? ' active' : '';
+                    const iconHtml = tool.icon ?
+                        (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                            `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                            `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                        `<span class="me-2" style="width: 24px;"></span>`;
+                    return `
+                        <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                            ${iconHtml}
+                            <span>${tool.name}</span>
+                        </a>
+                    `;
+                }).join('');
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+            } catch (error) {
+                document.getElementById('dynamic-sidebar').innerHTML = `<div class="alert alert-danger col-12">Failed to load tools.</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            await ComponentLoader.loadAll();
+            initThemeSwitcher();
+            loadToolsSidebar();
+        });
+    </script>
+    <script src="js/font-awesome-chooser.js"></script>
+</body>
+</html>
