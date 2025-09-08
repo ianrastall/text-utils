@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curly Quoter - Text Utilities</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        #curly-quoter-tool #mainTextArea { height: 200px; resize: vertical; }
+    </style>
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+    <div id="curly-quoter-tool" class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="material-icons me-3" aria-hidden="true" style="font-size: 36px;">format_quote</span>
+                            <h2 class="m-0">Curly Quoter</h2>
+                        </div>
+                        <p class="text-white-50 mb-4">Convert straight quotes to curly quotes and back for various languages.</p>
+                        <form id="curlyForm">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label for="languageType" class="form-label">Language Style</label>
+                                    <select id="languageType" class="form-select">
+                                        <option value="en" selected>English (“ ” ‘ ’)</option>
+                                        <option value="fr">French (« » ‹ ›)</option>
+                                        <option value="de">German („ “ ‚ ‘)</option>
+                                        <option value="sv">Swedish (” ” ’ ’)</option>
+                                        <option value="no">Norwegian (« » ‘ ’)</option>
+                                        <option value="fi">Finnish (” ” ’ ’)</option>
+                                        <option value="ja">Japanese (「 」『 』)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <fieldset>
+                                        <legend class="form-label fs-6">Output Type</legend>
+                                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input" type="radio" name="quoteOutputType" id="literalOutput" value="literal" checked>
+                                                <label class="form-check-label" for="literalOutput">Literal Characters</label>
+                                            </div>
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input" type="radio" name="quoteOutputType" id="htmlOutput" value="html">
+                                                <label class="form-check-label" for="htmlOutput">HTML Entities</label>
+                                            </div>
+                                            <div class="ms-2">
+                                                <label for="entityType" class="form-label visually-hidden">Entity Type</label>
+                                                <select id="entityType" class="form-select form-select-sm" style="width: auto;" disabled>
+                                                    <option value="named">Named (&ldquo;)</option>
+                                                    <option value="numeric">Numeric (&#8220;)</option>
+                                                    <option value="unicode">Hex (&#x201C;)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mainTextArea" class="form-label">Text</label>
+                                <textarea class="form-control font-monospace" id="mainTextArea" placeholder="Enter text with 'straight' and &quot;double&quot; quotes here..."></textarea>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="button" id="convertBtn" class="btn btn-task"><span class="material-icons me-1">format_quote</span>To Curly</button>
+                                <button type="button" id="convertBackBtn" class="btn btn-secondary"><span class="material-icons me-1">format_clear</span>To Straight</button>
+                                <button type="button" class="btn btn-secondary" id="copyBtn"><span class="material-icons me-1">content_copy</span>Copy</button>
+                                <button type="button" class="btn btn-danger ms-auto" id="clearBtn"><span class="material-icons me-1">clear</span>Clear</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script>
+        // Theme switcher logic (copied from index.html)
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+            function applyTheme(theme) {
+                htmlElement.className = '';
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+        // Sidebar navigation loader (copied from random-numbers.html)
+        async function loadToolsSidebar() {
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+                tools.sort((a, b) => a.name.localeCompare(b.name));
+                // Get the current page slug for active state
+                const currentPage = 'curly-quotes';
+                const sidebarHtml = tools.map(tool => {
+                    const isActive = tool.slug === currentPage;
+                    const activeClass = isActive ? ' active' : '';
+                    const iconHtml = tool.icon ?
+                        (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                            `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                            `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                        `<span class="me-2" style="width: 24px;"></span>`;
+                    return `
+                        <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                            ${iconHtml}
+                            <span>${tool.name}</span>
+                        </a>
+                    `;
+                }).join('');
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+            } catch (error) {
+                document.getElementById('dynamic-sidebar').innerHTML = `<div class="alert alert-danger col-12">Failed to load tools.</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            await ComponentLoader.loadAll();
+            initThemeSwitcher();
+            loadToolsSidebar();
+        });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        'use strict';
+        const dom = {
+            mainTextArea: document.getElementById('mainTextArea'),
+            languageSelect: document.getElementById('languageType'),
+            entitySelect: document.getElementById('entityType'),
+            outputTypeRadios: document.querySelectorAll('input[name="quoteOutputType"]'),
+            convertBtn: document.getElementById('convertBtn'),
+            convertBackBtn: document.getElementById('convertBackBtn'),
+            copyBtn: document.getElementById('copyBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+        };
+        const quotesMap = {
+            en: { d: ["“", "”"], s: ["‘", "’"], h: { d: ["&ldquo;", "&rdquo;"], s: ["&lsquo;", "&rsquo;"] } },
+            fr: { d: ["«\u00A0", "\u00A0»"], s: ["‹\u00A0", "\u00A0›"], h: { d: ["&laquo;&nbsp;", "&nbsp;&raquo;"], s: ["&lsaquo;&nbsp;", "&nbsp;&rsaquo;"] } },
+            de: { d: ["„", "“"], s: ["‚", "‘"], h: { d: ["&bdquo;", "&ldquo;"], s: ["&sbquo;", "&lsquo;"] } },
+            sv: { d: ["”", "”"], s: ["’", "’"], h: { d: ["&rdquo;", "&rdquo;"], s: ["&rsquo;", "&rsquo;"] } },
+            no: { d: ["«", "»"], s: ["‘", "’"], h: { d: ["&laquo;", "&raquo;"], s: ["&lsquo;", "&rsquo;"] } },
+            fi: { d: ["”", "”"], s: ["’", "’"], h: { d: ["&rdquo;", "&rdquo;"], s: ["&rsquo;", "&rsquo;"] } },
+            ja: { d: ["「", "」"], s: ["『", "』"], h: { d: ["&#x300C;", "&#x300D;"], s: ["&#x300E;", "&#x300F;"] } }
+        };
+        const backConverter = {
+            double: /[“”„”「」]/g, single: /[‘’‚’『』]/g,
+            doubleEntity: /&ldquo;|&rdquo;|&bdquo;|&#8220;|&#8221;|&#8222;|&#x300C;|&#x300D;|&#x201C;|&#x201D;|&#x201E;/g,
+            singleEntity: /&lsquo;|&rsquo;|&sbquo;|&#8216;|&#8217;|&#8218;|&#x2018;|&#x2019;|&#x201A;/g
+        };
+        function showToast(message, variant = 'info') {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            toastContainer.style.zIndex = '1100';
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${variant} border-0`;
+            toastEl.setAttribute('role', 'alert');
+            const toastBody = document.createElement('div');
+            toastBody.className = 'd-flex';
+            const bodyText = document.createElement('div');
+            bodyText.className = 'toast-body';
+            bodyText.textContent = message;
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'btn-close btn-close-white me-2 m-auto';
+            closeBtn.setAttribute('data-bs-dismiss', 'toast');
+            toastBody.append(bodyText, closeBtn);
+            toastEl.appendChild(toastBody);
+            document.body.appendChild(toastContainer);
+            new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+            toastEl.addEventListener('hidden.bs.toast', () => toastContainer.remove());
+        }
+        function getQuoteStyle() {
+            const mode = document.querySelector('input[name="quoteOutputType"]:checked')?.value || 'literal';
+            const lang = dom.languageSelect.value;
+            const entity = dom.entitySelect.value;
+            const map = quotesMap[lang];
+            const [dOpenLit, dCloseLit] = map.d;
+            const [sOpenLit, sCloseLit] = map.s;
+            if (mode === 'literal') { return { d: [dOpenLit, dCloseLit], s: [sOpenLit, sCloseLit] }; }
+            if (mode === 'html') {
+                if (entity === 'named') { return map.h; }
+                if (entity === 'numeric') {
+                    const toNumeric = str => [...str].map(char => `&#${char.charCodeAt(0)};`).join('');
+                    return { d: [toNumeric(dOpenLit), toNumeric(dCloseLit)], s: [toNumeric(sOpenLit), toNumeric(sCloseLit)] };
+                }
+                if (entity === 'unicode') { // Hex
+                    const toHex = str => [...str].map(char => `&#x${char.charCodeAt(0).toString(16).toUpperCase()};`).join('');
+                    return { d: [toHex(dOpenLit), toHex(dCloseLit)], s: [toHex(sOpenLit), toHex(sCloseLit)] };
+                }
+            }
+            return { d: [dOpenLit, dCloseLit], s: [sOpenLit, sCloseLit] };
+        }
+        function isApostrophe(text, i) {
+            if (text[i] !== "'") return false;
+            const prev = text[i - 1] || ' ';
+            const next = text[i + 1] || ' ';
+            if (/\s/.test(prev) && /\s/.test(next)) return false;
+            if (/\w/.test(prev) && (next === 's' || next === 't' || next === 'm' || next === 'd' || next === 've' || next === 'll' || next === 're')) return true;
+            if (prev.toLowerCase() === 'n' && next.toLowerCase() === 't' && text[i-2] && /\w/.test(text[i-2])) return true;
+            if (/\d/.test(prev) && next === 's') return true;
+            return false;
+        }
+        function convertToCurly() {
+            const text = dom.mainTextArea.value;
+            const style = getQuoteStyle();
+            if (!style) { return showToast('Could not get quote style.', 'danger'); }
+            const [dOpen, dClose] = style.d;
+            const [sOpen, sClose] = style.s;
+            let result = [];
+            let stack = [];
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (isApostrophe(text, i)) {
+                    result.push(sClose); continue;
+                }
+                if (char === "'") {
+                    const top = stack[stack.length - 1];
+                    if (top === "'") { result.push(sClose); stack.pop(); } 
+                    else { result.push(sOpen); stack.push("'"); }
+                } else if (char === '"') {
+                    const top = stack[stack.length - 1];
+                    if (top === '"') { result.push(dClose); stack.pop(); } 
+                    else { result.push(dOpen); stack.push('"'); }
+                } else {
+                    result.push(char);
+                }
+            }
+            dom.mainTextArea.value = result.join('');
+            showToast('Converted to curly quotes.', 'success');
+        }
+        function convertToStraight() {
+            let text = dom.mainTextArea.value;
+            text = text.replace(/«[ \t\u00A0]*/g, '"');      // Opening double with space
+            text = text.replace(/[ \t\u00A0]*»/g, '"');      // Closing double with space
+            text = text.replace(/‹[ \t\u00A0]*/g, "'");      // Opening single with space
+            text = text.replace(/[ \t\u00A0]*›/g, "'");      // Closing single with space
+            text = text.replace(/&laquo;&nbsp;/g, '"').replace(/&nbsp;&raquo;/g, '"');
+            text = text.replace(/&lsaquo;&nbsp;/g, "'").replace(/&nbsp;&rsaquo;/g, "'");
+            text = text.replace(backConverter.double, '"').replace(backConverter.doubleEntity, '"');
+            text = text.replace(backConverter.single, "'").replace(backConverter.singleEntity, "'");
+            dom.mainTextArea.value = text;
+            showToast('Converted back to straight quotes.', 'success');
+        }
+        dom.convertBtn.addEventListener('click', convertToCurly);
+        dom.convertBackBtn.addEventListener('click', convertToStraight);
+        dom.copyBtn.addEventListener('click', () => {
+            if (!dom.mainTextArea.value) return showToast('Nothing to copy.', 'info');
+            navigator.clipboard.writeText(dom.mainTextArea.value)
+                .then(() => showToast('Text copied!', 'success'))
+                .catch(err => showToast('Copy failed.', 'danger'));
+        });
+        dom.clearBtn.addEventListener('click', () => {
+            dom.mainTextArea.value = '';
+            showToast('Cleared text.', 'info');
+            dom.mainTextArea.focus();
+        });
+        dom.outputTypeRadios.forEach(radio => {
+            radio.addEventListener('change', () => dom.entitySelect.disabled = (document.querySelector('input[name="quoteOutputType"]:checked').value !== "html"));
+        });
+        dom.entitySelect.disabled = true;
+    });
+    </script>
+</body>
+</html>

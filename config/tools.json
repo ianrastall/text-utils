@@ -40,5 +40,11 @@
         "name": "Random Number Generator",
         "icon": "casino",
         "description": "Generate random numbers with options for range, quantity, decimals, uniqueness, and sorting."
+    },
+    {
+        "slug": "curly-quotes",
+        "name": "Curly Quoter",
+        "icon": "format_quote",
+        "description": "Convert straight quotes to curly quotes and back for various languages."
     }
 ]
