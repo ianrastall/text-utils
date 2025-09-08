@@ -85,7 +85,7 @@
     dom.langSelect.addEventListener("change", () => generateCode(state.lastSelectedCp));
     dom.copyCodeBtn.addEventListener("click", () => copyToClipboard(dom.codeOutput.value, "Output copied!"));
     dom.clearCodeBtn.addEventListener("click", clearCode);
-    dom.gridContainer.addEventListener("scroll", renderGrid);
+  // Removed scroll event: no need to re-render grid on scroll with CSS Grid layout
     dom.gridContainer.addEventListener("keydown", handleGridKeyDown);
   }
 
