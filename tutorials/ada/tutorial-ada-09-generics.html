@@ -215,9 +215,7 @@ Sorted_Ints : Int_Array := Integer_Sort(Unsorted_Ints);</code></pre>
         <div class="two-column">
             <div class="column">
                 <h4>1. Private Type Formal</h4>
-                <p>
-                    Most flexible but least constrained:
-                </p>
+                <p>Most flexible but least constrained:</p>
                 <div class="code-block">
                     <pre><code class="language-ada">generic
    type Element is private;
@@ -227,13 +225,11 @@ package Containers is
    -- Must provide all needed operations
 end Containers;</code></pre>
                 </div>
-                    Requires explicit operations to be passed as formal subprograms.
-                </p>
+                <p>Requires explicit operations to be passed as formal subprograms.</p>
             </div>
             <div class="column">
-                <p>
-                    For types that shouldn't be copied:
-                </p>
+                <h4>2. Limited Private Type Formal</h4>
+                <p>For types that shouldn't be copied:</p>
                 <div class="code-block">
                     <pre><code class="language-ada">generic
    type Element is limited private;
@@ -243,61 +239,10 @@ package Resources is
    -- Prevents unsafe copying of resources
 end Resources;</code></pre>
                 </div>
-                <p>
-                    Essential for resource handles, files, and devices.
-                </p>
+                <p>Essential for resource handles, files, and devices.</p>
             </div>
-                <div class="tutorial-content">
-                    <h1 class="tutorial-title">Generics and Template Programming in Ada: Verified Reusability</h1>
-
-                    <div class="tutorial-section">
-                        <p class="tutorial-intro">
-                            While many languages treat generics as mere syntactic sugar, Ada transforms them into powerful verification tools for safety-critical systems. This tutorial explores how Ada's rigorously defined generic system enables the development of reusable components that maintain strong typing guarantees and verifiable properties. You'll learn to create generic code that isn't just flexible, but <em>provably correct</em> across all possible instantiations - turning code reuse from a potential verification burden into a verification asset.
-                        </p>
-                        <div class="callout-primary">
-                            <h4>Generics Philosophy</h4>
-                            <p>
-                                <strong>Traditional view:</strong> "Generics introduce verification complexity that scales with instantiations"<br>
-                                <strong>Ada approach:</strong> "Generics enable verification that scales <em>inversely</em> with reuse"<br>
-                                Ada demonstrates that properly designed generics don't multiply verification effort - they dramatically reduce it while enhancing reliability.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="section-block">
-                        <h2>Why Traditional Generics Fail in Safety-Critical Systems</h2>
-                        <p>
-                            Conventional generic/template systems often introduce unacceptable risks in safety-critical contexts. Understanding these pitfalls is essential to appreciating Ada's safer alternative.
-                        </p>
-                        <div class="two-column">
-                            <div class="column">
-                                <h3>Common Generic System Deficiencies</h3>
-                                <ul>
-                                    <li>Unconstrained type parameters creating hidden type errors</li>
-                                    <li>Template metaprogramming complexity that defies verification</li>
-                                    <li>Implicit code generation that obscures execution paths</li>
-                                    <li>Lack of formal contracts for generic units</li>
-                                    <li>Unbounded instantiation complicating verification scope</li>
-                                </ul>
-                            </div>
-                            <div class="column">
-                                <h3>Real-World Consequences</h3>
-                                <ul>
-                                    <li>Medical device recalls due to generic container errors</li>
-                                    <li>Avionics system failures from improper generic instantiation</li>
-                                    <li>Certification delays from unverifiable template code</li>
-                                    <li>Hidden memory corruption from unsafe type conversions</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="warning-box">
-                            <h3>The Therac-25 Revisited: A Generics Perspective</h3>
-                            <p>
-                                While the Therac-25 radiation therapy machine failures weren't directly caused by generics (the system predated modern generic languages), similar failures have occurred in systems using unconstrained generics:
-                            </p>
-                            <ul>
-                                <li>Medical devices where generic containers mishandled sensor data types</li>
-                                <li>Avionics systems where improper generic instantiation caused state corruption</li>
+        </div>
+        <!-- End two-column block, now continue with single-column content -->
                                 <li>Industrial controllers where unconstrained generics led to memory corruption</li>
                             </ul>
                             <p>
