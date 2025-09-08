@@ -20,7 +20,21 @@ A collection of interactive web-based tools and educational tutorials for text p
 ## Project Structure
 
 ```text
-.  # ...existing code...
+.
+├── components/         # Shared HTML components (header, footer, etc.)
+├── config/             # Tool and tutorial configuration files
+├── css/                # Stylesheets (Bootstrap, custom, tutorials)
+├── font-awesome-categories/  # Font Awesome icon category lists
+├── google-icon-categories/   # Google icon category lists
+├── img/                # Site images and logos
+├── includes/           # Data files (trivia, unicode, user data, etc.)
+├── js/                 # JavaScript for tools, tutorials, and UI
+│   └── cdn/            # Prettier and other CDN JS dependencies
+├── tutorials/          # Programming tutorials (Ada, etc.)
+│   └── ada/            # Ada tutorial HTML and index
+├── *.html              # Main tool and landing pages
+├── README.md           # This file
+└── LICENSE             # License information
 ```
 
 ## Getting Started
