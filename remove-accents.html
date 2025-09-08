@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Accents - Text Utilities</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <h2 class="d-flex align-items-center mb-4">
+                            <span class="material-icons me-3" style="font-size:36px;" aria-hidden="true">format_clear</span>
+                            Remove Accents
+                        </h2>
+                        <p class="text-white-50 mb-4">Removes diacritical marks and accents from text using an improved algorithm.</p>
+                        <form id="accent-form">
+                            <div class="mb-3">
+                                <label for="inputText" class="form-label">Text to Process</label>
+                                <textarea class="form-control font-monospace" id="inputText" rows="10" placeholder="Enter or paste accented text here (e.g., naïve, résumé, façade, über)..." autofocus></textarea>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="button" class="btn btn-task d-flex align-items-center" id="removeAccentsBtn">
+                                    <span class="material-icons me-2" aria-hidden="true">format_clear</span>
+                                    <span id="processBtn-text">Remove Accents</span>
+                                </button>
+                                <button type="button" class="btn btn-edit d-flex align-items-center" id="pasteBtn">
+                                    <span class="material-icons me-2" aria-hidden="true">content_paste</span>Paste
+                                </button>
+                                <button type="button" class="btn btn-edit d-flex align-items-center" id="copyBtn">
+                                    <span class="material-icons me-2" aria-hidden="true">content_copy</span>Copy
+                                </button>
+                                <button type="button" class="btn btn-secondary d-flex align-items-center" id="undoBtn" style="display: none;">
+                                    <span class="material-icons me-2" aria-hidden="true">undo</span>Undo
+                                </button>
+                                <button type="button" class="btn btn-clear d-flex align-items-center" id="clearBtn">
+                                    <span class="material-icons me-2" aria-hidden="true">clear</span>Clear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script>
+        // Theme switcher logic (copied from index.html)
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+            function applyTheme(theme) {
+                htmlElement.className = '';
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+        // Sidebar navigation loader (copied from random-numbers.html)
+        async function loadToolsSidebar() {
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+                tools.sort((a, b) => a.name.localeCompare(b.name));
+                // Get the current page slug for active state
+                const currentPage = 'remove-accents';
+                const sidebarHtml = tools.map(tool => {
+                    const isActive = tool.slug === currentPage;
+                    const activeClass = isActive ? ' active' : '';
+                    const iconHtml = tool.icon ?
+                        (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                            `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                            `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                        `<span class="me-2" style="width: 24px;"></span>`;
+                    return `
+                        <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                            ${iconHtml}
+                            <span>${tool.name}</span>
+                        </a>
+                    `;
+                }).join('');
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+            } catch (error) {
+                document.getElementById('dynamic-sidebar').innerHTML = `<div class="alert alert-danger col-12">Failed to load tools.</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            await ComponentLoader.loadAll();
+            initThemeSwitcher();
+            loadToolsSidebar();
+        });
+    </script>
+    <script>
+    const AccentRemover = (() => {
+        'use strict';
+        const dom = {};
+        const state = {
+            lastValue: '',
+            isProcessing: false
+        };
+        function init() {
+            cacheDOM();
+            bindEventListeners();
+        }
+        function cacheDOM() {
+            dom.textarea = document.getElementById('inputText');
+            dom.removeBtn = document.getElementById('removeAccentsBtn');
+            dom.processBtnText = document.getElementById('processBtn-text');
+            dom.pasteBtn = document.getElementById('pasteBtn');
+            dom.copyBtn = document.getElementById('copyBtn');
+            dom.clearBtn = document.getElementById('clearBtn');
+            dom.undoBtn = document.getElementById('undoBtn');
+        }
+        function bindEventListeners() {
+            dom.removeBtn.addEventListener('click', handleRemoveAccents);
+            dom.pasteBtn.addEventListener('click', handlePaste);
+            dom.copyBtn.addEventListener('click', handleCopy);
+            dom.clearBtn.addEventListener('click', handleClear);
+            dom.undoBtn.addEventListener('click', handleUndo);
+            dom.textarea.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    handleRemoveAccents();
+                }
+            });
+        }
+        function render() {
+            dom.undoBtn.style.display = state.lastValue ? 'inline-flex' : 'none';
+            if (state.isProcessing) {
+                dom.removeBtn.disabled = true;
+                dom.processBtnText.textContent = 'Processing...';
+            } else {
+                dom.removeBtn.disabled = false;
+                dom.processBtnText.textContent = 'Remove Accents';
+            }
+        }
+        function saveUndoState() {
+            state.lastValue = dom.textarea.value;
+            render();
+        }
+        function handleRemoveAccents() {
+            if (state.isProcessing || !dom.textarea.value) return;
+            saveUndoState();
+            state.isProcessing = true;
+            render();
+            setTimeout(() => {
+                const text = dom.textarea.value;
+                const characterMap = {
+                    'ø': 'o', 'Ø': 'O', 'æ': 'ae', 'Æ': 'AE', 'ß': 'ss', 
+                    'ł': 'l', 'Ł': 'L', 'đ': 'd', 'Đ': 'D'
+                };
+                let result = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                result = result.replace(/[øØæÆßłŁđĐ]/g, char => characterMap[char]);
+                dom.textarea.value = result;
+                state.isProcessing = false;
+                render();
+                showToast('Accents removed!', 'success');
+            }, 50);
+        }
+        function handleUndo() {
+            if (!state.lastValue) return;
+            const currentValue = dom.textarea.value;
+            dom.textarea.value = state.lastValue;
+            state.lastValue = currentValue;
+            render();
+            showToast('Undo successful.', 'info');
+        }
+        async function handlePaste() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    saveUndoState();
+                    dom.textarea.value = text;
+                    showToast('Pasted from clipboard.', 'success');
+                }
+            } catch (err) {
+                showToast('Paste failed. Browser permission may be denied.', 'danger');
+            }
+        }
+        async function handleCopy() {
+            const textToCopy = dom.textarea.value;
+            if (!textToCopy) return showToast('Nothing to copy.', 'info');
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                showToast('Copied to clipboard!', 'success');
+            } catch (err) {
+                showToast('Copy failed.', 'danger');
+            }
+        }
+        function handleClear() {
+            if (!dom.textarea.value) return;
+            saveUndoState();
+            dom.textarea.value = '';
+            showToast('Text cleared.', 'info');
+        }
+        function showToast(message, type = 'success') {
+            const containerId = 'toast-container-accents';
+            let container = document.getElementById(containerId);
+            if (!container) {
+                container = document.createElement('div');
+                container.id = containerId;
+                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                container.style.zIndex = '1100';
+                document.body.appendChild(container);
+            }
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${type} border-0 show`;
+            toastEl.setAttribute('role', 'alert');
+            const dFlex = document.createElement('div');
+            dFlex.className = 'd-flex';
+            const body = document.createElement('div');
+            body.className = 'toast-body';
+            body.textContent = message;
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'btn-close btn-close-white me-2 m-auto';
+            closeBtn.setAttribute('aria-label', 'Close');
+            closeBtn.onclick = () => toastEl.remove();
+            dFlex.appendChild(body);
+            dFlex.appendChild(closeBtn);
+            toastEl.appendChild(dFlex);
+            container.appendChild(toastEl);
+            setTimeout(() => {
+                if (toastEl) toastEl.remove();
+            }, 3000);
+        }
+        return { init };
+    })();
+    document.addEventListener('DOMContentLoaded', AccentRemover.init);
+    </script>
+</body>
+</html>

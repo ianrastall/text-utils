@@ -46,5 +46,11 @@
         "name": "Curly Quoter",
         "icon": "format_quote",
         "description": "Convert straight quotes to curly quotes and back for various languages."
+    },
+    {
+        "slug": "remove-accents",
+        "name": "Remove Accents",
+        "icon": "format_clear",
+        "description": "Removes diacritical marks and accents from text using an improved algorithm."
     }
 ]
