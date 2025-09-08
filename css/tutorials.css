@@ -5,11 +5,12 @@
     background: var(--bs-gray-900);
     border-radius: 0.5rem;
     border: 1px solid var(--bs-gray-700);
-    font-size: 1.15rem;
-    line-height: 1.7;
+    font-size: 1.2rem; /* Increased from 1.15rem */
+    line-height: 1.8; /* Increased from 1.7 */
     font-family: 'Roboto', Arial, sans-serif;
     max-width: 900px;
     margin: 2rem auto;
+    color: #ffffff; /* Ensure white text by default */
 }
 
 /* CSS Variables */
@@ -19,11 +20,11 @@
 
 /* Typography and Section Styling */
 .tutorial-section {
-    margin-bottom: 2.2rem;
+    margin-bottom: 2.5rem; /* Increased spacing */
 }
 
 .tutorial-title {
-    font-size: 2.1rem;
+    font-size: 2.5rem; /* Increased from 2.1rem */
     font-weight: 600;
     color: var(--accent-color, cadetblue);
     margin-bottom: 1.5rem;
@@ -33,28 +34,69 @@
 }
 
 .tutorial-intro {
-    font-size: 1.18rem;
+    font-size: 1.3rem; /* Increased from 1.18rem */
     margin-bottom: 2rem;
-    color: #e0e0e0;
+    color: #e8e8e8; /* Lighter than before for better contrast */
+    line-height: 1.7;
 }
 
 h2 {
-    font-size: 1.45rem;
+    font-size: 1.6rem; /* Increased from 1.45rem */
     font-weight: 500;
-    color: var(--bs-light);
-    margin-bottom: 1.1rem;
+    color: #ffffff; /* Pure white instead of var(--bs-light) */
+    margin-bottom: 1.3rem; /* Increased margin */
     border-bottom: none;
     letter-spacing: 0.3px;
 }
 
 h3 {
-    font-size: 1.18rem;
+    font-size: 1.35rem; /* Increased from 1.18rem */
+    font-weight: 500;
+    margin-bottom: 1rem; /* Increased margin */
+    color: #ffffff; /* Ensure white text */
+}
+
+h4 {
+    font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 0.8rem;
+    color: #ffffff;
+}
+
+h5 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.7rem;
+    color: #ffffff;
+}
+
+/* Ensure all paragraph text is readable */
+p {
+    color: #e8e8e8;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+/* List styling improvements */
+ul, ol {
+    color: #e8e8e8;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+li {
+    margin-bottom: 0.4rem;
+    color: #e8e8e8;
+}
+
+/* Strong/bold text should be more visible */
+strong, b {
+    color: #ffffff;
+    font-weight: 600;
 }
 
 .section-block {
-    margin-bottom: 1.7rem;
+    margin-bottom: 2rem; /* Increased from 1.7rem */
 }
 
 /* Section Dividers */
@@ -70,64 +112,93 @@ hr.section-divider,
 /* Grid and Card Layouts */
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Increased min width */
+    gap: 2rem; /* Increased gap */
+    margin: 2rem 0; /* Increased margin */
 }
 
 .feature-card {
     background: var(--bs-dark);
     border: 1px solid var(--bs-secondary);
     border-radius: 8px;
-    padding: 1.2rem;
+    padding: 1.5rem; /* Increased padding */
+}
+
+.feature-card h3, .feature-card h4, .feature-card h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.feature-card p, .feature-card li {
+    color: #e8e8e8;
 }
 
 .comparison-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Increased min width */
+    gap: 2rem; /* Increased gap */
+    margin: 2rem 0; /* Increased margin */
 }
 
 .grid-item {
     background: var(--bs-dark);
     border: 1px solid var(--bs-secondary);
     border-radius: 8px;
-    padding: 1.2rem;
+    padding: 1.5rem; /* Increased padding */
+}
+
+.grid-item h3, .grid-item h4, .grid-item h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.grid-item p, .grid-item li {
+    color: #e8e8e8;
 }
 
 .two-column {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin: 1.5rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Increased min width */
+    gap: 2.5rem; /* Increased gap */
+    margin: 2rem 0; /* Increased margin */
+}
+
+.column h3, .column h4, .column h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.column p, .column li {
+    color: #e8e8e8;
 }
 
 /* Code Blocks and Output */
 .code-block {
     position: relative;
-    background-color: #22262e; /* Slightly lighter than default dark background */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Light border */
-    border-radius: 6px;
-    margin: 1.5rem 0;
+    background-color: #1a1d23; /* Darker background for better contrast */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Slightly lighter border */
+    border-radius: 8px; /* Increased border radius */
+    margin: 2rem 0; /* Increased margin */
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow */
 }
 
-
 .code-block pre {
-    padding: 1rem;
+    padding: 1.5rem; /* Increased padding */
     margin: 0;
     white-space: pre-wrap;
     word-break: break-word;
     overflow-x: auto;
+    font-size: 1.05rem; /* Increased font size */
+    line-height: 1.6; /* Better line spacing */
 }
 
 .code-block code {
-    font-family: 'Fira Code', monospace;
-    color: var(--bs-light);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    color: #f8f8f2; /* Lighter code text */
     white-space: pre-wrap;
     word-break: break-word;
+    font-size: 1.05rem; /* Ensure consistent sizing */
 }
 
 pre, code, .code-block {
@@ -135,105 +206,151 @@ pre, code, .code-block {
     word-break: break-word !important;
 }
 
-/* Accessibility: Replace any dark red with lightcoral for better contrast */
-.text-danger, .danger, .highlight-red, .ada-red, .critical, .error, .important {
-    color: lightcoral !important;
-}
-
 .code-inline {
-    font-family: 'Fira Code', monospace;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 0.15rem 0.3rem;
-    border-radius: 3px;
-    font-size: 0.9em;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    background-color: rgba(255, 255, 255, 0.15); /* Lighter background */
+    color: #ffffff; /* White text for inline code */
+    padding: 0.2rem 0.4rem; /* Increased padding */
+    border-radius: 4px; /* Increased border radius */
+    font-size: 1.05rem; /* Increased font size */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Add subtle border */
 }
 
 /* Syntax highlighting for Ada */
 .language-ada .keyword, 
 code .keyword,
 .language-ada b {
-    color: #569CD6;
+    color: #8ac8ff; /* Brighter blue for keywords */
     font-weight: normal;
 }
 
 .language-ada .comment, 
 code .comment,
 .language-ada i {
-    color: #608B4E;
+    color: #7cb668; /* Brighter green for comments */
     font-style: italic;
 }
 
 .language-ada .string, 
 code .string {
-    color: #CE9178;
+    color: #ffb366; /* Brighter orange for strings */
 }
 
 .language-ada .type, 
 code .type {
-    color: #4EC9B0;
+    color: #66d9d9; /* Brighter cyan for types */
 }
 
 .code-output {
-    background-color: #2b303b;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    margin: 1rem 0 1.5rem 0;
-    padding: 0.75rem 1rem;
-    font-family: 'Fira Code', monospace;
-    color: #B5CEA8;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    background-color: #1e2329; /* Darker output background */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    margin: 1.5rem 0 2rem 0; /* Increased margins */
+    padding: 1rem 1.5rem; /* Increased padding */
+    font-family: 'Fira Code', 'Courier New', monospace;
+    color: #a8e6a3; /* Brighter green for output */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    font-size: 1.05rem; /* Increased font size */
+    line-height: 1.5;
+}
+
+/* Accessibility: Replace any dark red with lightcoral for better contrast */
+.text-danger, .danger, .highlight-red, .ada-red, .critical, .error, .important {
+    color: #ff7675 !important; /* Brighter coral red for better visibility */
 }
 
 .run-code-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.75rem; /* Increased spacing */
+    right: 0.75rem; /* Increased spacing */
+    background-color: var(--accent-color, cadetblue);
+    color: var(--accent-text-color, #000);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }
 
 /* Information Boxes */
 .note-box, .warning-box, .tip-box, .definition-box, .ada-concept {
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: 0 0.25rem 0.25rem 0;
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    border-radius: 0 8px 8px 0; /* Increased border radius */
+    font-size: 1.1rem; /* Increased font size */
+    line-height: 1.6;
 }
 
 .note-box {
-    background-color: rgba(var(--bs-info-rgb), 0.1);
-    border-left: 4px solid var(--bs-info);
+    background-color: rgba(var(--bs-info-rgb), 0.15); /* Slightly more opaque */
+    border-left: 5px solid var(--bs-info); /* Thicker border */
+    color: #e8e8e8;
 }
 
 .warning-box {
-    background-color: rgba(var(--bs-warning-rgb), 0.1);
-    border-left: 4px solid var(--bs-warning);
+    background-color: rgba(var(--bs-warning-rgb), 0.15); /* Slightly more opaque */
+    border-left: 5px solid var(--bs-warning); /* Thicker border */
+    color: #e8e8e8;
 }
 
 .tip-box {
-    background-color: rgba(var(--bs-success-rgb), 0.1);
-    border-left: 4px solid var(--bs-success);
+    background-color: rgba(var(--bs-success-rgb), 0.15); /* Slightly more opaque */
+    border-left: 5px solid var(--bs-success); /* Thicker border */
+    color: #e8e8e8;
 }
 
 .definition-box {
-    background-color: rgba(111, 66, 193, 0.1);
-    border-left: 4px solid #6f42c1;
+    background-color: rgba(111, 66, 193, 0.15); /* Slightly more opaque */
+    border-left: 5px solid #8b5cf6; /* Brighter purple and thicker border */
+    color: #e8e8e8;
 }
 
 .ada-concept {
-    border-left: 4px solid var(--accent-color);
-    background-color: rgba(var(--bs-gray-900-rgb), 0.15);
+    border-left: 5px solid var(--accent-color); /* Thicker border */
+    background-color: rgba(var(--bs-gray-800-rgb, 52, 58, 64), 0.3); /* More opaque background */
+    color: #e8e8e8;
+}
+
+/* Ensure headings in info boxes are visible */
+.note-box h3, .note-box h4, .note-box h5,
+.warning-box h3, .warning-box h4, .warning-box h5,
+.tip-box h3, .tip-box h4, .tip-box h5,
+.definition-box h3, .definition-box h4, .definition-box h5,
+.ada-concept h3, .ada-concept h4, .ada-concept h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+/* Ensure list items in info boxes are visible */
+.note-box li, .warning-box li, .tip-box li, .definition-box li, .ada-concept li {
+    color: #e8e8e8;
 }
 
 /* Callouts */
 .callout-primary, .callout-secondary {
-    background-color: rgba(var(--bs-primary-rgb), 0.1);
-    border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
+    background-color: rgba(var(--bs-primary-rgb), 0.15); /* More opaque */
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.3); /* Stronger border */
+    border-radius: 12px; /* Increased border radius */
+    padding: 2rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    font-size: 1.1rem; /* Increased font size */
+    color: #e8e8e8;
 }
 
 .callout-secondary {
-    background-color: rgba(var(--bs-secondary-rgb), 0.1);
-    border: 1px solid rgba(var(--bs-secondary-rgb), 0.2);
+    background-color: rgba(var(--bs-secondary-rgb), 0.15); /* More opaque */
+    border: 1px solid rgba(var(--bs-secondary-rgb), 0.3); /* Stronger border */
+}
+
+/* Ensure headings in callouts are visible */
+.callout-primary h3, .callout-primary h4, .callout-primary h5,
+.callout-secondary h3, .callout-secondary h4, .callout-secondary h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+/* Ensure list items in callouts are visible */
+.callout-primary li, .callout-secondary li {
+    color: #e8e8e8;
 }
 
 /* Table Styling */
@@ -241,36 +358,39 @@ code .type {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 6px;
+    border-radius: 10px; /* Increased border radius */
     overflow: hidden;
-    margin: 1.5rem 0;
-    background-color: #22262e;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin: 2rem 0; /* Increased margin */
+    background-color: #1a1d23; /* Darker background */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+    font-size: 1.1rem; /* Increased font size */
 }
 
 .tutorial-table thead {
-    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.3);
+    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.4); /* More opaque */
 }
 
 .tutorial-table th {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.5rem; /* Increased padding */
     text-align: left;
-    font-weight: 500;
-    color: var(--bs-light);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600; /* Bolder weight */
+    color: #ffffff; /* Pure white for headers */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* Lighter border */
+    font-size: 1.15rem; /* Larger header text */
 }
 
 .tutorial-table td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.5rem; /* Increased padding */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Lighter border */
+    color: #e8e8e8; /* Light gray for data */
 }
 
 .tutorial-table tbody tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.03); /* Zebra striping */
+    background-color: rgba(255, 255, 255, 0.05); /* Slightly more visible zebra striping */
 }
 
 .tutorial-table tbody tr:hover {
-    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.1);
+    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.15); /* More visible hover */
 }
 
 .tutorial-table tbody tr:last-child td {
@@ -279,45 +399,70 @@ code .type {
 
 /* Practice Tasks */
 .practice-task {
-    background-color: rgba(var(--bs-secondary-rgb), 0.2);
-    border-left: 4px solid var(--accent-color, cadetblue);
-    padding: 1rem;
-    margin: 1.5rem 0;
-    border-radius: 0 0.25rem 0.25rem 0;
+    background-color: rgba(var(--bs-secondary-rgb), 0.25); /* More opaque */
+    border-left: 5px solid var(--accent-color, cadetblue); /* Thicker border */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    border-radius: 0 8px 8px 0; /* Increased border radius */
+    font-size: 1.1rem; /* Increased font size */
+    color: #e8e8e8;
 }
 
 .practice-task h3 {
     color: var(--accent-color, cadetblue);
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem; /* Increased margin */
+    font-size: 1.3rem; /* Larger heading */
+}
+
+.practice-task h4, .practice-task h5 {
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+}
+
+.practice-task p, .practice-task li {
+    color: #e8e8e8;
 }
 
 /* Highlighting and Icons */
 .text-highlight {
     color: var(--accent-color);
-    font-weight: 500;
+    font-weight: 600; /* Bolder weight */
+    font-size: 1.05em; /* Slightly larger */
 }
 
 .critical-system-icon {
     color: var(--accent-color);
-    font-size: 1.2rem;
-    margin-right: 0.5rem;
+    font-size: 1.3rem; /* Increased size */
+    margin-right: 0.75rem; /* Increased spacing */
 }
 
 .contract-highlight {
-    background-color: rgba(100, 149, 237, 0.15);
-    border: 1px solid rgba(100, 149, 237, 0.3);
-    border-radius: 4px;
-    padding: 0.5rem;
-    font-family: 'Fira Code', monospace;
+    background-color: rgba(100, 149, 237, 0.2); /* More opaque */
+    border: 1px solid rgba(100, 149, 237, 0.4); /* Stronger border */
+    border-radius: 6px; /* Increased border radius */
+    padding: 0.75rem; /* Increased padding */
+    font-family: 'Fira Code', 'Courier New', monospace;
+    color: #ffffff; /* White text */
+    font-size: 1.05rem; /* Increased font size */
 }
 
 /* Quiz Section */
 .quiz-section {
     background: var(--bs-dark);
     border: 1px solid var(--bs-secondary);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
+    border-radius: 12px; /* Increased border radius */
+    padding: 2rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.quiz-section h3, .quiz-section h4, .quiz-section h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.quiz-section p, .quiz-section li {
+    color: #e8e8e8;
 }
 
 /* Form Elements */
@@ -332,175 +477,331 @@ code .type {
 
 /* Pattern Documentation Styles */
 .type-pattern {
-    border: 1px solid var(--bs-gray-700);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border: 1px solid var(--bs-gray-600); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    font-size: 1.1rem; /* Increased font size */
+    color: #e8e8e8;
 }
 
 .pattern-title {
     font-weight: bold;
     color: var(--accent-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem; /* Increased margin */
     display: block;
+    font-size: 1.2rem; /* Increased font size */
 }
 
 .physical-units-demo {
-    background-color: rgba(70, 130, 180, 0.1);
-    border-left: 3px solid rgba(70, 130, 180, 0.5);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(70, 130, 180, 0.15); /* More opaque */
+    border-left: 4px solid rgba(70, 130, 180, 0.7); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 /* Contract Documentation Styles */
 .contract-example {
-    background-color: rgba(47, 79, 79, 0.05);
-    border-left: 3px solid rgba(47, 79, 79, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(47, 79, 79, 0.1); /* More opaque */
+    border-left: 4px solid rgba(47, 79, 79, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .verification-level {
-    padding: 1rem;
-    border-radius: 4px;
-    margin: 1.2rem 0;
+    padding: 1.5rem; /* Increased padding */
+    border-radius: 8px; /* Increased border radius */
+    margin: 2rem 0; /* Increased margin */
+    font-size: 1.1rem; /* Increased font size */
+    color: #e8e8e8;
 }
 
 .level-1 { 
-    background-color: rgba(255, 165, 0, 0.1); 
-    border-left: 4px solid orange; 
+    background-color: rgba(255, 165, 0, 0.15); /* More opaque */
+    border-left: 5px solid #ffa500; /* Thicker border */
 }
 
 .level-2 { 
-    background-color: rgba(30, 144, 255, 0.1); 
-    border-left: 4px solid blue; 
+    background-color: rgba(30, 144, 255, 0.15); /* More opaque */
+    border-left: 5px solid #1e90ff; /* Thicker border */
 }
 
 .level-3 { 
-    background-color: rgba(128, 0, 128, 0.1); 
-    border-left: 4px solid purple; 
+    background-color: rgba(128, 0, 128, 0.15); /* More opaque */
+    border-left: 5px solid #8b5cf6; /* Brighter purple and thicker border */
 }
 
 .contract-pattern {
-    border: 1px solid var(--bs-gray-700);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border: 1px solid var(--bs-gray-600); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 /* Concurrency Documentation Styles */
 .concurrency-pattern {
-    border: 1px solid var(--bs-gray-700);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border: 1px solid var(--bs-gray-600); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .task-structure {
-    background-color: rgba(25, 25, 112, 0.05);
-    border-left: 3px solid rgba(25, 25, 112, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(25, 25, 112, 0.1); /* More opaque */
+    border-left: 4px solid rgba(25, 25, 112, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .protected-object {
-    background-color: rgba(0, 128, 0, 0.05);
-    border-left: 3px solid rgba(0, 128, 0, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(0, 128, 0, 0.1); /* More opaque */
+    border-left: 4px solid rgba(0, 128, 0, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .real-world-example {
     border: 1px solid var(--bs-secondary);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .exercise-card {
-    border: 1px solid var(--bs-gray-700);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1rem 0;
+    border: 1px solid var(--bs-gray-600); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 /* Real-Time Documentation Styles */
 .real-time-pattern {
-    border: 1px solid var(--bs-gray-700);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border: 1px solid var(--bs-gray-600); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .time-model {
-    background-color: rgba(139, 0, 0, 0.05);
-    border-left: 3px solid rgba(139, 0, 0, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(139, 0, 0, 0.1); /* More opaque */
+    border-left: 4px solid rgba(139, 0, 0, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .scheduling-analysis {
-    background-color: rgba(0, 0, 139, 0.05);
-    border-left: 3px solid rgba(0, 0, 139, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(0, 0, 139, 0.1); /* More opaque */
+    border-left: 4px solid rgba(0, 0, 139, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .temporal-contract {
-    background-color: rgba(0, 100, 0, 0.05);
-    border-left: 3px solid rgba(0, 100, 0, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(0, 100, 0, 0.1); /* More opaque */
+    border-left: 4px solid rgba(0, 100, 0, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .certification-path {
     border: 1px solid var(--bs-secondary);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 /* Certification Documentation Styles */
 .certification-pattern {
-    border: 1px solid var(--bs-gray-700);
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 1.2rem 0;
+    border: 1px solid var(--bs-gray-600); /* Lighter border */
+    border-radius: 8px; /* Increased border radius */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.05); /* Light background */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .certification-process {
-    background-color: rgba(128, 0, 128, 0.05);
-    border-left: 3px solid rgba(128, 0, 128, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(128, 0, 128, 0.1); /* More opaque */
+    border-left: 4px solid rgba(128, 0, 128, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .integration-pattern {
-    background-color: rgba(0, 128, 128, 0.05);
-    border-left: 3px solid rgba(0, 128, 128, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(0, 128, 128, 0.1); /* More opaque */
+    border-left: 4px solid rgba(0, 128, 128, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .evidence-strategy {
-    background-color: rgba(70, 130, 180, 0.05);
-    border-left: 3px solid rgba(70, 130, 180, 0.7);
-    padding: 0.8rem;
-    margin: 1rem 0;
+    background-color: rgba(70, 130, 180, 0.1); /* More opaque */
+    border-left: 4px solid rgba(70, 130, 180, 0.8); /* Stronger border */
+    padding: 1.2rem; /* Increased padding */
+    margin: 1.5rem 0; /* Increased margin */
+    border-radius: 0 6px 6px 0; /* Rounded corners */
+    color: #e8e8e8;
+    font-size: 1.1rem;
 }
 
 .certification-checklist {
-    background-color: rgba(255, 215, 0, 0.1);
-    border-left: 3px solid gold;
-    padding: 1rem;
-    margin: 1.2rem 0;
-    border-radius: 4px;
+    background-color: rgba(255, 215, 0, 0.15); /* More opaque */
+    border-left: 4px solid #ffd700; /* Stronger gold border */
+    padding: 1.5rem; /* Increased padding */
+    margin: 2rem 0; /* Increased margin */
+    border-radius: 0 8px 8px 0; /* Increased border radius */
+    color: #e8e8e8;
+    font-size: 1.1rem;
+}
+
+/* Ensure headings in specialized sections are visible */
+.type-pattern h3, .type-pattern h4, .type-pattern h5,
+.contract-example h3, .contract-example h4, .contract-example h5,
+.concurrency-pattern h3, .concurrency-pattern h4, .concurrency-pattern h5,
+.real-time-pattern h3, .real-time-pattern h4, .real-time-pattern h5,
+.certification-pattern h3, .certification-pattern h4, .certification-pattern h5,
+.verification-level h3, .verification-level h4, .verification-level h5,
+.task-structure h3, .task-structure h4, .task-structure h5,
+.protected-object h3, .protected-object h4, .protected-object h5,
+.time-model h3, .time-model h4, .time-model h5,
+.scheduling-analysis h3, .scheduling-analysis h4, .scheduling-analysis h5,
+.temporal-contract h3, .temporal-contract h4, .temporal-contract h5,
+.certification-process h3, .certification-process h4, .certification-process h5,
+.integration-pattern h3, .integration-pattern h4, .integration-pattern h5,
+.evidence-strategy h3, .evidence-strategy h4, .evidence-strategy h5,
+.certification-checklist h3, .certification-checklist h4, .certification-checklist h5,
+.real-world-example h3, .real-world-example h4, .real-world-example h5,
+.exercise-card h3, .exercise-card h4, .exercise-card h5,
+.certification-path h3, .certification-path h4, .certification-path h5,
+.physical-units-demo h3, .physical-units-demo h4, .physical-units-demo h5 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+/* Ensure list items in specialized sections are visible */
+.type-pattern li, .contract-example li, .concurrency-pattern li, 
+.real-time-pattern li, .certification-pattern li, .verification-level li,
+.task-structure li, .protected-object li, .time-model li,
+.scheduling-analysis li, .temporal-contract li, .certification-process li,
+.integration-pattern li, .evidence-strategy li, .certification-checklist li,
+.real-world-example li, .exercise-card li, .certification-path li,
+.physical-units-demo li {
+    color: #e8e8e8;
 }
 
 /* Icon Block Styles */
 .icon-block {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
+    gap: 1rem; /* Increased gap */
+    margin-bottom: 0.75rem; /* Increased margin */
+    color: #e8e8e8;
+    font-size: 1.1rem;
+}
+
+/* Additional text readability improvements */
+.tutorial-content em, .tutorial-content i {
+    color: #f0f0f0; /* Light color for emphasis */
+    font-style: italic;
+}
+
+.tutorial-content mark, .tutorial-content .highlight {
+    background-color: rgba(255, 255, 0, 0.3);
+    color: #000000;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+
+/* Ensure links in tutorial content are visible */
+.tutorial-content a {
+    color: var(--accent-color, #5bc0de);
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.tutorial-content a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Fix any remaining small text issues */
+.tutorial-content small, .tutorial-content .small {
+    font-size: 1rem !important; /* Override small text */
+    color: #cccccc;
+}
+
+/* Ensure form elements in tutorials are readable */
+.tutorial-content input, .tutorial-content select, .tutorial-content textarea {
+    font-size: 1.1rem !important;
+    color: #ffffff !important;
+    background-color: #2a2a2a !important;
+    border: 1px solid #555 !important;
+    padding: 0.5rem !important;
+}
+
+/* Ensure buttons in tutorials are readable */
+.tutorial-content button, .tutorial-content .btn {
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem !important;
+}
+
+/* Override any accidentally inherited styles that might make text unreadable */
+.tutorial-content * {
+    /* Prevent any elements from having unreadable font sizes */
+    font-size: inherit;
+}
+
+.tutorial-content .text-muted {
+    color: #cccccc !important; /* Make muted text more visible */
+}
+
+.tutorial-content .text-secondary {
+    color: #b3b3b3 !important; /* Make secondary text more visible */
 }
