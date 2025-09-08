@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Unit Converter - Text Utilities</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        #css-unit-converter .info-icon {
+            font-size: 1rem;
+            vertical-align: middle;
+            cursor: pointer;
+            color: #888;
+        }
+        #css-unit-converter .highlight-input {
+            border-color: var(--accent-color, #DEB887);
+            box-shadow: 0 0 0 0.25rem rgba(var(--accent-color-rgb, 222, 184, 135), 0.25);
+        }
+        #css-unit-converter .result-card {
+            background-color: #343a40;
+            border: 1px solid #444;
+            position: relative;
+            border-top: 2px solid var(--accent-color, #DEB887);
+        }
+        #css-unit-converter .result-card .card-title {
+            color: var(--accent-color, #DEB887);
+            font-weight: bold;
+        }
+        #css-unit-converter .btn-copy {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: #aaa;
+            padding: 0.25rem 0.5rem;
+            line-height: 1;
+            border: none;
+            background-color: transparent;
+        }
+        #css-unit-converter .btn-copy:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+    <div id="css-unit-converter" class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="material-icons me-3" aria-hidden="true" style="font-size: 36px;">straighten</span>
+                            <h2 class="m-0">CSS Unit Converter</h2>
+                        </div>
+                        <p class="text-white-50 mb-4">Convert between px, em, rem, %, pt, vw, vh, etc.</p>
+                        <form onsubmit="return false;">
+                            <div class="row g-3 mb-4 align-items-end">
+                                <div class="col-md-4">
+                                    <label for="inputValue" class="form-label">Input Value</label>
+                                    <input type="number" step="any" id="inputValue" class="form-control form-control-lg" value="16">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sourceUnit" class="form-label">Source Unit</label>
+                                    <select id="sourceUnit" class="form-select form-select-lg">
+                                        <option value="px" selected>Pixels (px)</option>
+                                        <option value="em">Em</option>
+                                        <option value="rem">Rem</option>
+                                        <option value="percent">%</option>
+                                        <option value="pt">Points (pt)</option>
+                                        <option value="vw">Viewport Width (vw)</option>
+                                        <option value="vh">Viewport Height (vh)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="propertyType" class="form-label">CSS Property</label>
+                                    <select id="propertyType" class="form-select form-select-lg">
+                                        <option value="font-size" selected>Font Size</option>
+                                        <option value="dimension">Width/Height/Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+                                        <h5>Font Context</h5>
+                                        <div class="form-check form-switch ms-auto">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="syncParentFont" checked>
+                                            <label class="form-check-label" for="syncParentFont">Sync Parent with Root</label>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label for="rootFontSize" class="form-label">Root Font Size (px)
+                                                <span class="material-icons info-icon" role="button" tabindex="0" data-bs-toggle="tooltip" title="Base font size on the HTML element. Affects 'rem' units." aria-label="Explanation for root font size">info</span>
+                                            </label>
+                                            <input type="number" step="any" min="0.01" id="rootFontSize" class="form-control" value="16">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="parentFontSize" class="form-label">Parent Font Size (px)
+                                                 <span class="material-icons info-icon" role="button" tabindex="0" data-bs-toggle="tooltip" title="Font size of the direct parent element. Affects 'em' and '%' units." aria-label="Explanation for parent font size">info</span>
+                                            </label>
+                                            <input type="number" step="any" min="0.01" id="parentFontSize" class="form-control" value="16">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                     <h5 class="mb-2">Viewport Context</h5>
+                                     <div class="row g-3">
+                                         <div class="col-12">
+                                             <label for="viewportWidth" class="form-label">Viewport Width (px)
+                                                  <span class="material-icons info-icon" role="button" tabindex="0" data-bs-toggle="tooltip" title="Width of the browser viewport. Affects 'vw' units." aria-label="Explanation for viewport width">info</span>
+                                             </label>
+                                             <input type="number" step="1" min="1" id="viewportWidth" class="form-control" value="1920">
+                                         </div>
+                                         <div class="col-12">
+                                             <label for="viewportHeight" class="form-label">Viewport Height (px)
+                                                 <span class="material-icons info-icon" role="button" tabindex="0" data-bs-toggle="tooltip" title="Height of the browser viewport. Affects 'vh' units." aria-label="Explanation for viewport height">info</span>
+                                             </label>
+                                             <input type="number" step="1" min="1" id="viewportHeight" class="form-control" value="1080">
+                                         </div>
+                                     </div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap mb-4">
+                                 <button type="button" id="resetBtn" class="btn btn-clear d-flex align-items-center">
+                                     <span class="material-icons me-2">restart_alt</span>Reset Defaults
+                                 </button>
+                             </div>
+                            <div class="mb-3">
+                                <h4 class="mb-3">Conversion Results</h4>
+                                <div id="resultsList" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3" aria-live="polite">
+                                     </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script>
+        // Theme switcher logic (copied from index.html)
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+            function applyTheme(theme) {
+                htmlElement.className = '';
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+        // Sidebar navigation loader (copied from random-numbers.html)
+        async function loadToolsSidebar() {
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+                tools.sort((a, b) => a.name.localeCompare(b.name));
+                // Get the current page slug for active state
+                const currentPage = 'css-unit-converter';
+                const sidebarHtml = tools.map(tool => {
+                    const isActive = tool.slug === currentPage;
+                    const activeClass = isActive ? ' active' : '';
+                    const iconHtml = tool.icon ?
+                        (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                            `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                            `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                        `<span class="me-2" style="width: 24px;"></span>`;
+                    return `
+                        <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                            ${iconHtml}
+                            <span>${tool.name}</span>
+                        </a>
+                    `;
+                }).join('');
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+            } catch (error) {
+                document.getElementById('dynamic-sidebar').innerHTML = `<div class="alert alert-danger col-12">Failed to load tools.</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            await ComponentLoader.loadAll();
+            initThemeSwitcher();
+            loadToolsSidebar();
+        });
+    </script>
+    <script>
+    // ...existing JS code from PHP version, unchanged...
+    document.addEventListener('DOMContentLoaded', () => {
+        'use strict';
+        // ...existing code...
+        const dom = {
+            inputValue: document.getElementById('inputValue'),
+            sourceUnit: document.getElementById('sourceUnit'),
+            propertyType: document.getElementById('propertyType'),
+            rootFontSize: document.getElementById('rootFontSize'),
+            parentFontSize: document.getElementById('parentFontSize'),
+            viewportWidth: document.getElementById('viewportWidth'),
+            viewportHeight: document.getElementById('viewportHeight'),
+            resultsList: document.getElementById('resultsList'),
+            resetBtn: document.getElementById('resetBtn'),
+            syncParentFont: document.getElementById('syncParentFont')
+        };
+        const TARGET_UNITS = ['px', 'em', 'rem', 'percent', 'pt', 'vw', 'vh'];
+        const UNIT_HELP_TEXTS = {
+            px: "Absolute pixels (typically 1/96th inch)", em: "Relative to parent font size",
+            rem: "Relative to root (HTML) font size", percent: "% of parent font size (for font-size) or containing block (for dimensions)",
+            pt: "Points (1pt = 1/72 inch)", vw: "1% of viewport width", vh: "1% of viewport height",
+        };
+        function debounce(func, delay = 250) {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => { func.apply(this, args); }, delay);
+            };
+        }
+        function showToast(message, variant = 'info') {
+            const existingContainer = document.querySelector('.toast-container');
+            if (existingContainer) existingContainer.remove();
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            toastContainer.style.zIndex = '1100';
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${variant} border-0`;
+            toastEl.innerHTML = `<div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+            toastContainer.appendChild(toastEl);
+            document.body.appendChild(toastContainer);
+            const toastInstance = new bootstrap.Toast(toastEl, { delay: 3000 });
+            toastInstance.show();
+            toastEl.addEventListener('hidden.bs.toast', () => toastContainer.remove());
+        }
+        const converters = {
+            toPx: {
+                px: (val) => val, em: (val, ctx) => val * ctx.parent, rem: (val, ctx) => val * ctx.root,
+                percent: (val, ctx) => (val / 100) * ctx.parent, pt: (val) => val * (96 / 72),
+                vw: (val, ctx) => (val / 100) * ctx.vw, vh: (val, ctx) => (val / 100) * ctx.vh,
+            },
+            fromPx: {
+                px: (px) => px, em: (px, ctx) => px / ctx.parent, rem: (px, ctx) => px / ctx.root,
+                percent: (px, ctx) => (px / ctx.parent) * 100, pt: (px) => px * (72 / 96),
+                vw: (px, ctx) => (px / ctx.vw) * 100, vh: (px, ctx) => (px / ctx.vh) * 100,
+            }
+        };
+        function calculateAndDisplay() {
+            const sourceValue = parseFloat(dom.inputValue.value);
+            if (isNaN(sourceValue)) {
+                dom.resultsList.innerHTML = '<div class="col-12"><p class="text-white-50">Please enter a valid input value.</p></div>';
+                return;
+            }
+            const context = {
+                root: Math.max(0.01, parseFloat(dom.rootFontSize.value) || 16),
+                parent: Math.max(0.01, parseFloat(dom.parentFontSize.value) || 16),
+                vw: Math.max(1, parseFloat(dom.viewportWidth.value) || 1920),
+                vh: Math.max(1, parseFloat(dom.viewportHeight.value) || 1080),
+            };
+            const valueInPx = converters.toPx[dom.sourceUnit.value](sourceValue, context);
+            const results = {};
+            TARGET_UNITS.forEach(unit => {
+                const result = converters.fromPx[unit](valueInPx, context);
+                results[unit] = isNaN(result) ? 'N/A' : parseFloat(result.toFixed(4)).toString();
+            });
+            displayResults(results);
+            highlightDependencies();
+        }
+        function displayResults(results) {
+            dom.resultsList.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            TARGET_UNITS.forEach(unit => {
+                const isPercentForDimension = (unit === 'percent' && dom.propertyType.value === 'dimension');
+                const value = isPercentForDimension ? 'N/A' : (results[unit] ?? 'N/A');
+                const helpText = UNIT_HELP_TEXTS[unit] || '';
+                const unitSymbol = unit === 'percent' ? '%' : unit;
+                const cardCol = document.createElement('div');
+                cardCol.className = 'col';
+                cardCol.innerHTML = `
+                    <div class="card h-100 result-card">
+                        <button class="btn btn-copy" aria-label="Copy ${unitSymbol} value" title="Copy"><span class="material-icons" style="font-size:1rem;">content_copy</span></button>
+                        <div class="card-body">
+                             <h6 class="card-title text-uppercase mb-1">${unitSymbol}</h6>
+                             <p class="card-text fs-4 font-monospace mb-2" data-value="${value}">${value}</p>
+                             <small class="text-white-50 d-block">${helpText}</small>
+                        </div>
+                    </div>`;
+                const copyBtn = cardCol.querySelector('.btn-copy');
+                if (value === 'N/A') {
+                    copyBtn.disabled = true;
+                } else {
+                    copyBtn.addEventListener('click', () => navigator.clipboard.writeText(value).then(() => showToast(`Copied ${value}${unitSymbol} to clipboard.`, 'success')));
+                }
+                fragment.appendChild(cardCol);
+            });
+            dom.resultsList.appendChild(fragment);
+        }
+        function handleFontSync() {
+            dom.parentFontSize.disabled = dom.syncParentFont.checked;
+            if (dom.syncParentFont.checked) {
+                dom.parentFontSize.value = dom.rootFontSize.value;
+            }
+            calculateAndDisplay();
+        }
+        function highlightDependencies() {
+            [dom.rootFontSize, dom.parentFontSize, dom.viewportWidth, dom.viewportHeight].forEach(el => el.classList.remove('highlight-input'));
+            const deps = { em: [dom.parentFontSize], rem: [dom.rootFontSize], percent: [dom.parentFontSize], vw: [dom.viewportWidth], vh: [dom.viewportHeight] }[dom.sourceUnit.value];
+            if (deps) deps.forEach(el => !el.disabled && el.classList.add('highlight-input'));
+        }
+        function initialize() {
+            dom.inputValue.value = '16'; dom.sourceUnit.value = 'px'; dom.propertyType.value = 'font-size';
+            dom.rootFontSize.value = '16'; dom.viewportWidth.value = '1920'; dom.viewportHeight.value = '1080';
+            dom.syncParentFont.checked = true;
+            handleFontSync();
+        }
+        function resetDefaults() {
+            initialize();
+            showToast('Context reset to defaults.', 'info');
+        }
+        const debouncedCalculate = debounce(calculateAndDisplay, 250);
+        Object.values(dom).forEach(el => {
+            if (el.id !== 'resetBtn') el.addEventListener('input', debouncedCalculate);
+        });
+        dom.syncParentFont.addEventListener('change', handleFontSync);
+        dom.rootFontSize.addEventListener('input', () => { if (dom.syncParentFont.checked) dom.parentFontSize.value = dom.rootFontSize.value; });
+        dom.resetBtn.addEventListener('click', resetDefaults);
+        new bootstrap.Tooltip(document.body, { selector: '[data-bs-toggle="tooltip"]', trigger: 'hover' });
+        initialize();
+    });
+    </script>
+</body>
+</html>

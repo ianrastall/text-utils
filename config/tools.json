@@ -52,5 +52,11 @@
         "name": "Remove Accents",
         "icon": "format_clear",
         "description": "Removes diacritical marks and accents from text using an improved algorithm."
+    },
+    {
+        "slug": "css-unit-converter",
+        "name": "CSS Unit Converter",
+        "icon": "straighten",
+        "description": "Convert between px, em, rem, %, pt, vw, vh, etc."
     }
 ]
