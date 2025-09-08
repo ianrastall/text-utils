@@ -30,6 +30,14 @@
         "order": 10
     },
     {
+        "slug": "ip-info",
+        "name": "IP Info",
+        "icon": "language",
+        "description": "Displays your public IP address, hostname (PTR), and user agent using client-side APIs.",
+        "category": "Network",
+        "order": 11
+    },
+    {
         "slug": "text-info",
         "name": "Text Info",
         "icon": "analytics",

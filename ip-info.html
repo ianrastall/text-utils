@@ -1,0 +1,64 @@
+<!-- ip-info.html: IP Info Tool (static, JS-powered) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP Info</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="css/tutorials.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body class="bg-dark text-light">
+  <div id="header-container"></div>
+  <div class="container-fluid my-4">
+    <div class="row gx-3 gy-3">
+      <main class="col-md-9">
+        <div class="card bg-dark border-secondary">
+          <div class="card-body">
+            <h2 class="d-flex align-items-center mb-4">
+              <span class="material-icons me-3" style="font-size:36px;" aria-hidden="true">language</span>
+              IP Info
+            </h2>
+            <dl class="row gy-3">
+              <dt class="col-sm-4">Your Public IP Address</dt>
+              <dd class="col-sm-8 d-flex align-items-center">
+                <code id="public-ip-val" class="text-break">Loading...</code>
+                <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="public-ip-val" aria-label="Copy Public IP Address"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+              </dd>
+              <dt class="col-sm-4">Hostname (PTR Record)</dt>
+              <dd class="col-sm-8 d-flex align-items-center">
+                <span id="hostname-val" class="text-break">Loading...</span>
+                <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="hostname-val" aria-label="Copy Hostname"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+              </dd>
+              <dt class="col-sm-4">User Agent</dt>
+              <dd class="col-sm-8 d-flex align-items-center">
+                <span id="user-agent-val" class="text-break"></span>
+                <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="user-agent-val" aria-label="Copy User Agent"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+              </dd>
+            </dl>
+            <button id="refreshBtn" class="btn btn-task mt-4 d-flex align-items-center"><span class="material-icons me-2" aria-hidden="true">refresh</span>Refresh Client Info</button>
+            <p class="small text-muted mt-4">
+              <strong>Note:</strong> Your "Public IP" is what external websites see. The Hostname lookup may be slow or unavailable if no reverse DNS record exists.
+            </p>
+          </div>
+        </div>
+      </main>
+      <aside class="col-md-3">
+        <div class="card bg-dark border-secondary">
+          <div class="card-body p-0">
+            <div id="dynamic-sidebar" class="sidebar"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="footer-container"></div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/component-loader.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/ip-info.js"></script>
+</body>
+</html>
