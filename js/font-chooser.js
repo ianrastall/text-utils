@@ -161,3 +161,5 @@ class FontChooser {
 document.addEventListener('DOMContentLoaded', () => {
     new FontChooser();
 });
+
+});
