@@ -1,0 +1,27 @@
+{
+  "en": {
+    "name": "English (Standard)",
+    "style": "minorWords",
+    "minorWords": ["a", "an", "the", "and", "but", "or", "for", "nor", "on", "at", "to", "by", "with", "of", "in", "from", "as"]
+  },
+  "de": {
+    "name": "German",
+    "style": "capitalizeAll"
+  },
+  "fr": {
+    "name": "French",
+    "style": "capitalizeAll"
+  },
+  "es": {
+    "name": "Spanish",
+    "style": "capitalizeAll"
+  },
+  "it": {
+    "name": "Italian",
+    "style": "capitalizeAll"
+  },
+  "notApplicable": {
+    "name": "N/A",
+    "style": "notApplicable"
+  }
+}

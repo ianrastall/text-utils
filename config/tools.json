@@ -22,6 +22,14 @@
         "order": 9
     },
     {
+        "slug": "case-converter",
+        "name": "Case Converter",
+        "icon": "text_format",
+        "description": "Convert text between different cases like uppercase, lowercase, title case, etc.",
+        "category": "Text",
+        "order": 10
+    },
+    {
         "slug": "text-info",
         "name": "Text Info",
         "icon": "analytics",
