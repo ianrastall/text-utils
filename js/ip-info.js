@@ -7,44 +7,66 @@
     cacheDOM();
     bindSidebar();
     bindHeaderFooter();
-    dom.userAgentVal.textContent = navigator.userAgent || 'Unavailable';
     bindEvents();
-    fetchClientInfo();
+    fetchAllInfo();
   }
 
   function cacheDOM() {
     dom.publicIpEl = document.getElementById('public-ip-val');
     dom.hostnameEl = document.getElementById('hostname-val');
+    dom.asnEl = document.getElementById('asn-val');
+    dom.locationEl = document.getElementById('location-val');
     dom.userAgentVal = document.getElementById('user-agent-val');
+    dom.browserVal = document.getElementById('browser-val');
+    dom.osVal = document.getElementById('os-val');
+    dom.deviceTypeVal = document.getElementById('device-type-val');
+    dom.screenResolutionVal = document.getElementById('screen-resolution-val');
+    dom.colorDepthVal = document.getElementById('color-depth-val');
+    dom.pixelRatioVal = document.getElementById('pixel-ratio-val');
+    dom.cookiesEnabledVal = document.getElementById('cookies-enabled-val');
+    dom.javascriptEnabledVal = document.getElementById('javascript-enabled-val');
+    dom.languageVal = document.getElementById('language-val');
+    dom.timezoneVal = document.getElementById('timezone-val');
     dom.refreshBtn = document.getElementById('refreshBtn');
   }
 
-  async function fetchClientInfo() {
+  async function fetchAllInfo() {
+    // Network info
     dom.publicIpEl.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Fetching...';
     dom.hostnameEl.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Fetching...';
+    dom.asnEl.textContent = 'Loading...';
+    dom.locationEl.textContent = 'Loading...';
     try {
-      const ipResponse = await fetch('https://api64.ipify.org?format=json');
-      if (!ipResponse.ok) throw new Error('Failed to fetch IP');
-      const ipData = await ipResponse.json();
-      const publicIp = ipData.ip;
-      dom.publicIpEl.textContent = publicIp;
-      try {
-        const ptrResponse = await fetch(`https://dns.google/resolve?name=${publicIp.split('.').reverse().join('.')}.in-addr.arpa&type=PTR`);
-        if (!ptrResponse.ok) throw new Error('Failed to fetch hostname');
-        const ptrData = await ptrResponse.json();
-        if (ptrData.Answer && ptrData.Answer.length > 0) {
-          dom.hostnameEl.textContent = ptrData.Answer[0].data.slice(0, -1);
-        } else {
-          dom.hostnameEl.textContent = 'No PTR Record Found';
-        }
-      } catch (e) {
-        dom.hostnameEl.textContent = 'Hostname lookup failed';
+      const ipinfo = await fetch('https://ipinfo.io/json').then(r => r.json());
+      dom.publicIpEl.textContent = ipinfo.ip || 'Not available';
+      dom.hostnameEl.textContent = ipinfo.hostname || 'Not available';
+      dom.asnEl.textContent = ipinfo.org || 'Not available';
+      let locationText = 'Not available';
+      if (ipinfo.city && ipinfo.country) {
+        locationText = `${ipinfo.city}, ${ipinfo.region}, ${ipinfo.country}`;
+        if (ipinfo.postal) locationText += ` (${ipinfo.postal})`;
       }
-    } catch (error) {
-      dom.publicIpEl.textContent = 'Unavailable';
-      dom.hostnameEl.textContent = 'Unavailable';
-      showToast('Could not fetch public IP information.', 'danger');
+      dom.locationEl.textContent = locationText;
+    } catch (e) {
+      dom.publicIpEl.textContent = 'Error loading';
+      dom.hostnameEl.textContent = 'Error loading';
+      dom.asnEl.textContent = 'Error loading';
+      dom.locationEl.textContent = 'Error loading';
     }
+    // Browser/device info
+    dom.userAgentVal.textContent = navigator.userAgent || 'Unavailable';
+    dom.browserVal.textContent = getBrowserName();
+    dom.osVal.textContent = getOSName();
+    dom.deviceTypeVal.textContent = getDeviceType();
+    // Screen info
+    dom.screenResolutionVal.textContent = `${screen.width} × ${screen.height}`;
+    dom.colorDepthVal.textContent = `${screen.colorDepth} bit`;
+    dom.pixelRatioVal.textContent = window.devicePixelRatio || 'Not available';
+    // Capabilities
+    dom.cookiesEnabledVal.textContent = navigator.cookieEnabled ? 'Yes' : 'No';
+    dom.javascriptEnabledVal.textContent = 'Yes';
+    dom.languageVal.textContent = navigator.language || navigator.userLanguage || 'Not available';
+    dom.timezoneVal.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
   function bindEvents() {
@@ -58,13 +80,16 @@
         }
         try {
           await navigator.clipboard.writeText(textToCopy);
-          showToast(`'${textToCopy.substring(0, 20)}...' copied!`, 'success');
+          showToast('Copied to clipboard!', 'success');
         } catch (err) {
           showToast('Copy failed.', 'danger');
         }
       });
     });
-    dom.refreshBtn.addEventListener('click', fetchClientInfo);
+    dom.refreshBtn.addEventListener('click', () => {
+      fetchAllInfo();
+      showToast('Information refreshed successfully!', 'success');
+    });
   }
 
   function showToast(message, variant = 'info') {
@@ -99,6 +124,32 @@
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
   }
 
+  // Browser/OS/device helpers
+  function getBrowserName() {
+    const ua = navigator.userAgent;
+    if (ua.indexOf('Chrome') > -1 && ua.indexOf('Edg') === -1 && ua.indexOf('OPR') === -1) return 'Chrome';
+    if (ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') === -1) return 'Safari';
+    if (ua.indexOf('Firefox') > -1) return 'Firefox';
+    if (ua.indexOf('Edg') > -1) return 'Edge';
+    if (ua.indexOf('OPR') > -1) return 'Opera';
+    if (ua.indexOf('MSIE') > -1 || !!document.documentMode) return 'IE';
+    return 'Unknown';
+  }
+  function getOSName() {
+    const ua = navigator.userAgent;
+    if (ua.indexOf('Win') > -1) return 'Windows';
+    if (ua.indexOf('Mac') > -1) return 'MacOS';
+    if (ua.indexOf('Linux') > -1) return 'Linux';
+    if (ua.indexOf('Android') > -1) return 'Android';
+    if (ua.indexOf('like Mac') > -1) return 'iOS';
+    return 'Unknown';
+  }
+  function getDeviceType() {
+    const ua = navigator.userAgent;
+    if (ua.indexOf('Mobile') > -1) return 'Mobile';
+    if (ua.indexOf('Tablet') > -1) return 'Tablet';
+    return 'Desktop';
+  }
   // Sidebar, header, and footer loading
   function bindSidebar() {
     if (window.loadSidebar) {

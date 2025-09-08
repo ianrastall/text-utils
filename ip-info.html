@@ -21,26 +21,135 @@
               <span class="material-icons me-3" style="font-size:36px;" aria-hidden="true">language</span>
               IP Info
             </h2>
-            <dl class="row gy-3">
-              <dt class="col-sm-4">Your Public IP Address</dt>
-              <dd class="col-sm-8 d-flex align-items-center">
-                <code id="public-ip-val" class="text-break">Loading...</code>
-                <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="public-ip-val" aria-label="Copy Public IP Address"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
-              </dd>
-              <dt class="col-sm-4">Hostname (PTR Record)</dt>
-              <dd class="col-sm-8 d-flex align-items-center">
-                <span id="hostname-val" class="text-break">Loading...</span>
-                <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="hostname-val" aria-label="Copy Hostname"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
-              </dd>
-              <dt class="col-sm-4">User Agent</dt>
-              <dd class="col-sm-8 d-flex align-items-center">
-                <span id="user-agent-val" class="text-break"></span>
-                <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="user-agent-val" aria-label="Copy User Agent"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
-              </dd>
-            </dl>
-            <button id="refreshBtn" class="btn btn-task mt-4 d-flex align-items-center"><span class="material-icons me-2" aria-hidden="true">refresh</span>Refresh Client Info</button>
+            <div class="info-group">
+              <div class="info-title">
+                <span class="material-icons">public</span>
+                Network Information
+              </div>
+              <dl class="row gy-3">
+                <dt class="col-sm-4">Your Public IP Address</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <code id="public-ip-val" class="text-break">Loading...</code>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="public-ip-val" aria-label="Copy Public IP Address"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+                <dt class="col-sm-4">Hostname (PTR Record)</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="hostname-val" class="text-break">Loading...</span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="hostname-val" aria-label="Copy Hostname"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+                <dt class="col-sm-4">Network Provider (ASN)</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="asn-val" class="text-break">Loading...</span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="asn-val" aria-label="Copy ASN"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+                <dt class="col-sm-4">Approximate Location</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="location-val" class="text-break">Loading...</span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="location-val" aria-label="Copy Location"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+              </dl>
+            </div>
+            <div class="info-group">
+              <div class="info-title">
+                <span class="material-icons">devices</span>
+                Browser & Device Information
+              </div>
+              <dl class="row gy-3">
+                <dt class="col-sm-4">User Agent</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="user-agent-val" class="text-break"></span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="user-agent-val" aria-label="Copy User Agent"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+                <dt class="col-sm-4">Browser</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="browser-val" class="text-break"></span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="browser-val" aria-label="Copy Browser Info"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+                <dt class="col-sm-4">Operating System</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="os-val" class="text-break"></span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="os-val" aria-label="Copy OS Info"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+                <dt class="col-sm-4">Device Type</dt>
+                <dd class="col-sm-8 d-flex align-items-center">
+                  <span id="device-type-val" class="text-break"></span>
+                  <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="device-type-val" aria-label="Copy Device Type"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                </dd>
+              </dl>
+            </div>
+            <div class="info-group">
+              <div class="info-title">
+                <span class="material-icons">settings</span>
+                Technical Information
+              </div>
+              <div class="accordion accordion-flush" id="technicalAccordion">
+                <div class="accordion-item bg-dark border-secondary">
+                  <h3 class="accordion-header" id="screenHeading">
+                    <button class="accordion-button collapsed bg-dark text-light" type="button" data-bs-toggle="collapse" data-bs-target="#screenCollapse" aria-expanded="false" aria-controls="screenCollapse">
+                      Screen Details
+                    </button>
+                  </h3>
+                  <div id="screenCollapse" class="accordion-collapse collapse" aria-labelledby="screenHeading" data-bs-parent="#technicalAccordion">
+                    <div class="accordion-body">
+                      <dl class="row gy-2">
+                        <dt class="col-sm-5">Screen Resolution</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="screen-resolution-val" class="text-break"></span>
+                          <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="screen-resolution-val" aria-label="Copy Screen Resolution"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                        </dd>
+                        <dt class="col-sm-5">Color Depth</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="color-depth-val" class="text-break"></span>
+                          <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="color-depth-val" aria-label="Copy Color Depth"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                        </dd>
+                        <dt class="col-sm-5">Pixel Ratio</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="pixel-ratio-val" class="text-break"></span>
+                          <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="pixel-ratio-val" aria-label="Copy Pixel Ratio"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item bg-dark border-secondary">
+                  <h3 class="accordion-header" id="browserHeading">
+                    <button class="accordion-button collapsed bg-dark text-light" type="button" data-bs-toggle="collapse" data-bs-target="#browserCollapse" aria-expanded="false" aria-controls="browserCollapse">
+                      Browser Capabilities
+                    </button>
+                  </h3>
+                  <div id="browserCollapse" class="accordion-collapse collapse" aria-labelledby="browserHeading" data-bs-parent="#technicalAccordion">
+                    <div class="accordion-body">
+                      <dl class="row gy-2">
+                        <dt class="col-sm-5">Cookies Enabled</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="cookies-enabled-val" class="text-break"></span>
+                        </dd>
+                        <dt class="col-sm-5">JavaScript Enabled</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="javascript-enabled-val" class="text-break">Yes</span>
+                        </dd>
+                        <dt class="col-sm-5">Language</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="language-val" class="text-break"></span>
+                          <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="language-val" aria-label="Copy Language"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                        </dd>
+                        <dt class="col-sm-5">Timezone</dt>
+                        <dd class="col-sm-7 d-flex align-items-center">
+                          <span id="timezone-val" class="text-break"></span>
+                          <button class="btn btn-sm btn-edit ms-2 copy-btn" data-target="timezone-val" aria-label="Copy Timezone"><span class="material-icons" style="font-size: 1em;" aria-hidden="true">content_copy</span></button>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button id="refreshBtn" class="btn btn-task mt-4 d-flex align-items-center">
+              <span class="material-icons me-2" aria-hidden="true">refresh</span>
+              Refresh All Information
+            </button>
             <p class="small text-muted mt-4">
-              <strong>Note:</strong> Your "Public IP" is what external websites see. The Hostname lookup may be slow or unavailable if no reverse DNS record exists.
+              <strong>Note:</strong> Your "Public IP" is what external websites see. The Hostname lookup may be slow or unavailable if no reverse DNS record exists. Location data is approximate based on your IP address.
             </p>
           </div>
         </div>
