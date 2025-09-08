@@ -6,6 +6,14 @@
 		"description": "Perform various operations on lines of text."
 	},
     {
+        "slug": "font-chooser",
+        "name": "Font Chooser",
+        "icon": "text_fields",
+        "description": "Preview and select fonts with Google Fonts integration, accessibility checking, and production-ready CSS generation.",
+        "category": "Typography",
+        "order": 8
+    },
+    {
         "slug": "text-info",
         "name": "Text Info",
         "icon": "analytics",
