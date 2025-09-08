@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Generator - Text Utilities</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0V2F0V7FWB');
+    </script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <h2 class="d-flex align-items-center mb-4">
+                            <span class="material-icons me-3" style="font-size:36px;" aria-hidden="true">format_list_numbered</span>
+                            Sequence Generator
+                        </h2>
+
+                        <form id="sequenceForm" class="mb-4">
+                            <fieldset>
+                                <legend class="h5 mb-3">Sequence Options</legend>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6"><label for="startNumber" class="form-label">Start Number</label><input type="number" id="startNumber" value="1" step="any" class="form-control" required></div>
+                                    <div class="col-md-6"><label for="count" class="form-label">Number of Items</label><input type="number" id="count" value="10" min="1" max="50000" class="form-control" required></div>
+                                    <div class="col-md-6"><label for="step" class="form-label">Step</label><input type="number" id="step" value="1" step="any" class="form-control" required></div>
+                                    <div class="col-md-6"><label for="order" class="form-label">Order</label><select id="order" class="form-select"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+                                    <div class="col-md-6"><label for="prependText" class="form-label">Prepend Text</label><input type="text" id="prependText" placeholder="Optional" class="form-control"></div>
+                                    <div class="col-md-6"><label for="appendText" class="form-label">Append Text</label><input type="text" id="appendText" placeholder="Optional" class="form-control"></div>
+                                    <div class="col-md-6"><label for="separator" class="form-label">Separator</label><select id="separator" class="form-select"><option value="\n">Newline</option><option value=" ">Space</option><option value=", ">Comma + Space</option><option value=";">Semicolon</option></select></div>
+                                </div>
+                            </fieldset>
+                            
+                            <div class="d-flex flex-wrap gap-2">
+                                 <button type="submit" class="btn btn-task d-flex align-items-center"><span class="material-icons me-2">playlist_play</span>Generate</button>
+                                 <button type="button" class="btn btn-edit d-flex align-items-center" id="copyBtn"><span class="material-icons me-2">content_copy</span>Copy Result</button>
+                                 <button type="reset" class="btn btn-clear d-flex align-items-center" id="resetBtn"><span class="material-icons me-2">clear_all</span>Reset Form</button>
+                            </div>
+                        </form>
+
+                        <div>
+                            <label for="outputText" class="form-label">Result</label>
+                            <textarea class="form-control font-monospace" id="outputText" rows="10" placeholder="Your sequence will appear here..." readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            await ComponentLoader.loadAll();
+        });
+    </script>
+    <script>
+    const SequenceGenerator = (() => {
+        'use strict';
+        const dom = {};
+
+        function init() {
+            cacheDOM();
+            bindEventListeners();
+        }
+
+        function cacheDOM() {
+            dom.form = document.getElementById('sequenceForm');
+            dom.order = document.getElementById('order');
+            dom.start = document.getElementById('startNumber');
+            dom.count = document.getElementById('count');
+            dom.step = document.getElementById('step');
+            dom.prepend = document.getElementById('prependText');
+            dom.append = document.getElementById('appendText');
+            dom.separator = document.getElementById('separator');
+            dom.output = document.getElementById('outputText');
+            dom.copyBtn = document.getElementById('copyBtn');
+            dom.resetBtn = document.getElementById('resetBtn');
+            dom.srAnnouncer = document.getElementById('sr-announcer');
+        }
+
+        function bindEventListeners() {
+            dom.form.addEventListener('submit', handleGenerate);
+            dom.copyBtn.addEventListener('click', handleCopy);
+            dom.resetBtn.addEventListener('click', handleReset);
+        }
+
+        function validateInputs(start, count, step) {
+            if (isNaN(start) || isNaN(count) || isNaN(step)) {
+                showToast('All number fields must contain valid numbers.', 'danger');
+                return false;
+            }
+            if (count < 1) {
+                showToast('Number of items must be 1 or greater.', 'warning');
+                return false;
+            }
+            if (step === 0) {
+                showToast('Step cannot be zero.', 'warning');
+                return false;
+            }
+            return true;
+        }
+
+        function handleGenerate(e) {
+            e.preventDefault();
+            
+            const start = parseFloat(dom.start.value);
+            const count = parseInt(dom.count.value, 10);
+            const step = parseFloat(dom.step.value);
+            
+            if (!validateInputs(start, count, step)) return;
+
+            const order = dom.order.value;
+            const prepend = dom.prepend.value;
+            const append = dom.append.value;
+            const separator = dom.separator.value === '\\n' ? '\n' : dom.separator.value;
+            
+            const items = [];
+            let currentNum = start;
+
+            for (let i = 0; i < count; i++) {
+                // Format to avoid exponential notation for very large/small numbers
+                const formattedNum = Number.isInteger(currentNum) ? currentNum.toString() : currentNum.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
+                items.push(prepend + formattedNum + append);
+                currentNum += (order === 'asc' ? step : -step);
+            }
+
+            dom.output.value = items.join(separator);
+            const successMsg = `Successfully generated ${count} items.`;
+            showToast(successMsg, 'success');
+            dom.srAnnouncer.textContent = successMsg;
+        }
+        
+        async function handleCopy() {
+            const text = dom.output.value;
+            if (!text) return showToast('Nothing to copy.', 'info');
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Result copied to clipboard!', 'success');
+            } catch (err) {
+                showToast('Failed to copy text.', 'danger');
+            }
+        }
+
+        function handleReset() {
+            dom.output.value = '';
+            showToast('Form has been reset.', 'info');
+        }
+        
+        function showToast(message, type = 'success') {
+            const containerId = 'toast-container-sequence';
+            let container = document.getElementById(containerId);
+            if (!container) {
+                container = document.createElement('div');
+                container.id = containerId;
+                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                container.style.zIndex = '1100';
+                document.body.appendChild(container);
+            }
+            
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${type} border-0 show`;
+            toastEl.setAttribute('role', 'alert');
+            const dFlex = document.createElement('div');
+            dFlex.className = 'd-flex';
+            const body = document.createElement('div');
+            body.className = 'toast-body';
+            body.textContent = message;
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'btn-close btn-close-white me-2 m-auto';
+            closeBtn.setAttribute('aria-label', 'Close');
+            closeBtn.onclick = () => toastEl.remove();
+            dFlex.appendChild(body);
+            dFlex.appendChild(closeBtn);
+            toastEl.appendChild(dFlex);
+            container.appendChild(toastEl);
+            
+            setTimeout(() => { if (toastEl) toastEl.remove(); }, 3000);
+        }
+
+        return { init };
+    })();
+
+    document.addEventListener('DOMContentLoaded', SequenceGenerator.init);
+    </script>
+</body>
+</html>

@@ -28,5 +28,11 @@
         "name": "Coding Tutorials",
         "icon": "data_object",
         "description": "Tutorials for various programming languages, sorted by language and topic."
+    },
+    {
+        "slug": "sequence-generator",
+        "name": "Sequence Generator",
+        "icon": "format_list_numbered",
+        "description": "Creates sequences of numbers with or without additional text."
     }
 ]
