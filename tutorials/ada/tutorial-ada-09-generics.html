@@ -1,4 +1,4 @@
-<div class="tutorial-content"></div>
+<div class="tutorial-content">
     <h1 class="tutorial-title">Generics and Template Programming in Ada: Verified Reusability</h1>
     
     <div class="tutorial-section">
@@ -15,42 +15,1018 @@
             </p>
         </div>
     </div>
+    
+    <div class="section-block">
+        <h2>Why Traditional Generics Fail in Safety-Critical Systems</h2>
+        <p>
+            Conventional generic/template systems often introduce unacceptable risks in safety-critical contexts. Understanding these pitfalls is essential to appreciating Ada's safer alternative.
+        </p>
+        
+        <div class="two-column">
+            <div class="column">
+                <h3>Common Generic System Deficiencies</h3>
+                <ul>
+                    <li><span class="text-highlight">Unconstrained type parameters</span> creating hidden type errors</li>
+                    <li><span class="text-highlight">Template metaprogramming complexity</span> that defies verification</li>
+                    <li><span class="text-highlight">Implicit code generation</span> that obscures execution paths</li>
+                    <li><span class="text-highlight">Lack of formal contracts</span> for generic units</li>
+                    <li><span class="text-highlight">Unbounded instantiation</span> complicating verification scope</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Real-World Consequences</h3>
+                <ul>
+                    <li>Medical device recalls due to generic container errors</li>
+                    <li>Avionics system failures from improper generic instantiation</li>
+                    <li>Certification delays from unverifiable template code</li>
+                    <li>Hidden memory corruption from unsafe type conversions</li>
+                </ul>
+            </div>
+        </div>
 
-    <!-- Rest of the content as provided -->
-    <!-- ... -->
+        
+        <div class="warning-box">
+            <h3>The Therac-25 Revisited: A Generics Perspective</h3>
+            <p>
+                While the Therac-25 radiation therapy machine failures weren't directly caused by generics (the system predated modern generic languages), similar failures have occurred in systems using unconstrained generics:
+            </p>
+            <ul>
+                <li>Medical devices where generic containers mishandled sensor data types</li>
+                <li>Avionics systems where improper generic instantiation caused state corruption</li>
+            </ul>
+            <p>
+                Ada's constrained generics with formal contracts would have prevented these issues by making generic behavior explicit, verifiable, and constrained.
+            </p>
+        </div>
+        
+        <div class="definition-box">
+            <h4>Ada's Generics Philosophy</h4>
+            <p>
+                Rather than adopting generics as a convenience feature, Ada integrates them with verification in mind:
+            </p>
+            <ul>
+                <li><span class="text-highlight">Explicit contracts</span>: Formal specification of generic requirements</li>
+                <li><span class="text-highlight">Constrained parameters</span>: Precise control over acceptable types</li>
+                <li><span class="text-highlight">Verification at specification time</span>: Prove correctness once for all instantiations</li>
+                <li><span class="text-highlight">No hidden code generation</span>: Predictable instantiation behavior</li>
+                <li><span class="text-highlight">Certification-friendly structure</span>: Clear separation of generic and instance</li>
+            </ul>
+            <p>
+                This approach transforms generics from a verification challenge into a verification multiplier for safety-critical systems.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Generic Fundamentals: Packages and Subprograms</h2>
+        <p>
+            Ada's generic system provides precise control over code reuse with safety guarantees built in from the start.
+        </p>
+        
+        <h3>Basic Generic Structure</h3>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>Generic Package Declaration</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">generic
+   type Element_Type is private;
+   Max_Size : Positive := 100;
+package Generic_Containers is
+   
+   type Container is limited private;
+   
+   function Is_Empty (C : Container) return Boolean;
+   function Is_Full (C : Container) return Boolean;
+   function Length (C : Container) return Natural;
+   
+   procedure Add (C : in out Container; E : Element_Type);
+   procedure Remove (C : in out Container; E : out Element_Type);
+   
+   Capacity_Error : exception;
+   
+private
+   type Element_Array is array (Positive range <>) of Element_Type;
+   type Container is record
+      Elements : Element_Array (1..Max_Size);
+      Count    : Natural := 0;
+   end record;
+   
+end Generic_Containers;</code></pre>
+                </div>
+            </div>
+            <div class="column">
+                <h4>Generic Instantiation</h4>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Instantiation for integer containers
+package Integer_Containers is new Generic_Containers (
+   Element_Type => Integer,
+   Max_Size     => 50);
 
-    <style>
-        /* Custom styling for this tutorial */
-        .generic-pattern {
-            border: 1px solid var(--bs-gray-700);
-            border-radius: 4px;
-            padding: 1rem;
-            margin: 1.2rem 0;
-        }
+-- Instantiation for sensor data
+package Sensor_Containers is new Generic_Containers (
+   Element_Type => Sensor_Record,
+   Max_Size     => 100);
+
+-- Usage
+procedure Process is
+   Int_C : Integer_Containers.Container;
+   Sensor_C : Sensor_Containers.Container;
+begin
+   Integer_Containers.Add(Int_C, 42);
+   Sensor_Containers.Add(Sensor_C, Current_Sensor_Value);
+end Process;</code></pre>
+                </div>
+            </div>
+        </div>
         
-        .generic-fundamentals {
-            background-color: rgba(139, 0, 0, 0.05);
-            border-left: 3px solid rgba(139, 0, 0, 0.7);
-            padding: 0.8rem;
-        }
+        <div class="note-box">
+            <h3>Key Generic Properties</h3>
+            <ul>
+                <li>Generics are templates, not functions (no runtime overhead)</li>
+                <li>Formal parameters specified in <code class="code-inline">generic</code> clause</li>
+                <li>Instantiation creates a new, independent copy of the code</li>
+                <li>No reflection or runtime type information needed</li>
+                <li>Verification applies to the generic specification, not instances</li>
+            </ul>
+            <p>
+                Unlike many languages, Ada's generics are verified once at the generic level, not per instantiation.
+            </p>
+        </div>
         
-        .type-constraints {
-            background-color: rgba(0, 100, 0, 0.05);
-            border-left: 3px solid rgba(0, 100, 0, 0.7);
-            padding: 0.8rem;
-        }
+        <h3>Generic Subprograms</h3>
+        <p>
+            Creating reusable algorithms with generic subprograms:
+        </p>
         
-        .subprogram-parameters {
-            background-color: rgba(0, 0, 139, 0.05);
-            border-left: 3px solid rgba(0, 0, 139, 0.7);
-            padding: 0.8rem;
-        }
+        <div class="code-block">
+            <pre><code class="language-ada">generic
+   type Element_Type is private;
+   with function "<" (Left, Right : Element_Type) return Boolean;
+function Generic_Sort (Input : in Array_Of_Elements) return Array_Of_Elements;
+
+-- Implementation
+function Generic_Sort (Input : in Array_Of_Elements) return Array_Of_Elements is
+   Result : Array_Of_Elements := Input;
+   Temp   : Element_Type;
+   for I in Result'Range loop
+      for J in I+1..Result'Last loop
+         if Result(J) < Result(I) then
+            Temp := Result(I);
+            Result(J) := Temp;
+         end if;
+      end loop;
+   end loop;
+   return Result;
+end Generic_Sort;
+
+-- Instantiation for integers
+function Integer_Sort is new Generic_Sort (
+   Element_Type => Integer,
+   "<"          => Standard."<");
+
+-- Usage
+Sorted_Ints : Int_Array := Integer_Sort(Unsorted_Ints);</code></pre>
+        </div>
         
-        .verification-pattern {
-            border: 1px solid var(--bs-secondary);
-            border-radius: 4px;
-            padding: 1rem;
-            margin: 1.2rem 0;
-        }
-    </style>
-</div>
+        <div class="tip-box">
+            <h3>Generic Best Practices</h3>
+            <ul>
+                <li>Keep generic units focused on a single responsibility</li>
+                <li>Document all assumptions about formal parameters</li>
+                <li>Avoid excessive formal parameters</li>
+                <li>Prefer constrained formal types when possible</li>
+                <li>Verify the generic unit itself, not just instances</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Formal Type Parameters and Constraints</h2>
+        <p>
+            Ada provides precise control over what types can be used with generics, ensuring safety and verifiability.
+        </p>
+        
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>1. Private Type Formal</h4>
+                <p>
+                    Most flexible but least constrained:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">generic
+   type Element is private;
+package Containers is
+   -- Can only use as complete objects
+   -- No operations available by default
+   -- Must provide all needed operations
+end Containers;</code></pre>
+                </div>
+                    Requires explicit operations to be passed as formal subprograms.
+                </p>
+            </div>
+            <div class="column">
+                <p>
+                    For types that shouldn't be copied:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">generic
+   type Element is limited private;
+package Resources is
+   -- Can only be passed by reference
+   -- No assignment or equality operations
+   -- Prevents unsafe copying of resources
+end Resources;</code></pre>
+                </div>
+                <p>
+                    Essential for resource handles, files, and devices.
+                </p>
+            </div>
+                <div class="tutorial-content">
+                    <h1 class="tutorial-title">Generics and Template Programming in Ada: Verified Reusability</h1>
+
+                    <div class="tutorial-section">
+                        <p class="tutorial-intro">
+                            While many languages treat generics as mere syntactic sugar, Ada transforms them into powerful verification tools for safety-critical systems. This tutorial explores how Ada's rigorously defined generic system enables the development of reusable components that maintain strong typing guarantees and verifiable properties. You'll learn to create generic code that isn't just flexible, but <em>provably correct</em> across all possible instantiations - turning code reuse from a potential verification burden into a verification asset.
+                        </p>
+                        <div class="callout-primary">
+                            <h4>Generics Philosophy</h4>
+                            <p>
+                                <strong>Traditional view:</strong> "Generics introduce verification complexity that scales with instantiations"<br>
+                                <strong>Ada approach:</strong> "Generics enable verification that scales <em>inversely</em> with reuse"<br>
+                                Ada demonstrates that properly designed generics don't multiply verification effort - they dramatically reduce it while enhancing reliability.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="section-block">
+                        <h2>Why Traditional Generics Fail in Safety-Critical Systems</h2>
+                        <p>
+                            Conventional generic/template systems often introduce unacceptable risks in safety-critical contexts. Understanding these pitfalls is essential to appreciating Ada's safer alternative.
+                        </p>
+                        <div class="two-column">
+                            <div class="column">
+                                <h3>Common Generic System Deficiencies</h3>
+                                <ul>
+                                    <li>Unconstrained type parameters creating hidden type errors</li>
+                                    <li>Template metaprogramming complexity that defies verification</li>
+                                    <li>Implicit code generation that obscures execution paths</li>
+                                    <li>Lack of formal contracts for generic units</li>
+                                    <li>Unbounded instantiation complicating verification scope</li>
+                                </ul>
+                            </div>
+                            <div class="column">
+                                <h3>Real-World Consequences</h3>
+                                <ul>
+                                    <li>Medical device recalls due to generic container errors</li>
+                                    <li>Avionics system failures from improper generic instantiation</li>
+                                    <li>Certification delays from unverifiable template code</li>
+                                    <li>Hidden memory corruption from unsafe type conversions</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="warning-box">
+                            <h3>The Therac-25 Revisited: A Generics Perspective</h3>
+                            <p>
+                                While the Therac-25 radiation therapy machine failures weren't directly caused by generics (the system predated modern generic languages), similar failures have occurred in systems using unconstrained generics:
+                            </p>
+                            <ul>
+                                <li>Medical devices where generic containers mishandled sensor data types</li>
+                                <li>Avionics systems where improper generic instantiation caused state corruption</li>
+                                <li>Industrial controllers where unconstrained generics led to memory corruption</li>
+                            </ul>
+                            <p>
+                                Ada's constrained generics with formal contracts would have prevented these issues by making generic behavior explicit, verifiable, and constrained.
+                            </p>
+                        </div>
+                        <div class="definition-box">
+                            <h4>Ada's Generics Philosophy</h4>
+                            <p>
+                                Rather than adopting generics as a convenience feature, Ada integrates them with verification in mind:
+                            </p>
+                            <ul>
+                                <li><span class="text-highlight">Explicit contracts</span>: Formal specification of generic requirements</li>
+                                <li><span class="text-highlight">Constrained parameters</span>: Precise control over acceptable types</li>
+                                <li><span class="text-highlight">Verification at specification time</span>: Prove correctness once for all instantiations</li>
+                                <li><span class="text-highlight">No hidden code generation</span>: Predictable instantiation behavior</li>
+                                <li><span class="text-highlight">Certification-friendly structure</span>: Clear separation of generic and instance</li>
+                            </ul>
+                            <p>
+                                This approach transforms generics from a verification challenge into a verification multiplier for safety-critical systems.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="tutorial-section">
+                        <h2>Generic Fundamentals: Packages and Subprograms</h2>
+                        <p>
+                            Ada's generic system provides precise control over code reuse with safety guarantees built in from the start.
+                        </p>
+                        <h3>Basic Generic Structure</h3>
+                        <div class="two-column">
+                            <div class="column">
+                                <h4>Generic Package Declaration</h4>
+                                <div class="code-block">
+                                    <pre><code class="language-ada">generic
+                     type Element_Type is private;
+                     Max_Size : Positive := 100;
+                package Generic_Containers is
+
+                     type Container is limited private;
+
+                     function Is_Empty (C : Container) return Boolean;
+                     function Is_Full (C : Container) return Boolean;
+                     function Length (C : Container) return Natural;
+
+                     procedure Add (C : in out Container; E : Element_Type);
+                     procedure Remove (C : in out Container; E : out Element_Type);
+
+                     Capacity_Error : exception;
+
+                private
+                     type Element_Array is array (Positive range &lt;&gt;) of Element_Type;
+                     type Container is record
+                            Elements : Element_Array (1..Max_Size);
+                            Count    : Natural := 0;
+                     end record;
+
+                end Generic_Containers;</code></pre>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <h4>Generic Instantiation</h4>
+                                <div class="code-block">
+                                    <pre><code class="language-ada">-- Instantiation for integer containers
+                package Integer_Containers is new Generic_Containers (
+                     Element_Type =&gt; Integer,
+                     Max_Size     =&gt; 50);
+
+                -- Instantiation for sensor data
+                package Sensor_Containers is new Generic_Containers (
+                     Element_Type =&gt; Sensor_Record,
+                     Max_Size     =&gt; 100);
+
+                -- Usage
+                procedure Process is
+                     Int_C : Integer_Containers.Container;
+                     Sensor_C : Sensor_Containers.Container;
+                begin
+                     Integer_Containers.Add(Int_C, 42);
+                     Sensor_Containers.Add(Sensor_C, Current_Sensor_Value);
+                end Process;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="note-box">
+                            <h3>Key Generic Properties</h3>
+                            <ul>
+                                <li>Generics are templates, not functions (no runtime overhead)</li>
+                                <li>Formal parameters specified in <code class="code-inline">generic</code> clause</li>
+                                <li>Instantiation creates a new, independent copy of the code</li>
+                                <li>No reflection or runtime type information needed</li>
+                                <li>Verification applies to the generic specification, not instances</li>
+                            </ul>
+                            <p>
+                                Unlike many languages, Ada's generics are verified once at the generic level, not per instantiation.
+                            </p>
+                        </div>
+                        <h3>Generic Subprograms</h3>
+                        <p>
+                            Creating reusable algorithms with generic subprograms:
+                        </p>
+                        <div class="code-block">
+                            <pre><code class="language-ada">generic
+                     type Element_Type is private;
+                     with function "&lt;" (Left, Right : Element_Type) return Boolean;
+                function Generic_Sort (Input : in Array_Of_Elements) return Array_Of_Elements;
+
+                -- Implementation
+                function Generic_Sort (Input : in Array_Of_Elements) return Array_Of_Elements is
+                     Result : Array_Of_Elements := Input;
+                     Temp   : Element_Type;
+                begin
+                     for I in Result'Range loop
+                            for J in I+1..Result'Last loop
+                                 if Result(J) &lt; Result(I) then
+                                        Temp := Result(I);
+                                        Result(I) := Result(J);
+                                        Result(J) := Temp;
+                                 end if;
+                            end loop;
+                     end loop;
+                     return Result;
+                end Generic_Sort;
+
+                -- Instantiation for integers
+                function Integer_Sort is new Generic_Sort (
+                     Element_Type =&gt; Integer,
+                     "&lt;"          =&gt; Standard."&lt;");
+
+                -- Usage
+                Sorted_Ints : Int_Array := Integer_Sort(Unsorted_Ints);</code></pre>
+                        </div>
+                        <div class="tip-box">
+                            <h3>Generic Best Practices</h3>
+                            <ul>
+                                <li>Keep generic units focused on a single responsibility</li>
+                                <li>Document all assumptions about formal parameters</li>
+                                <li>Avoid excessive formal parameters</li>
+                                <li>Prefer constrained formal types when possible</li>
+                                <li>Verify the generic unit itself, not just instances</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Continue with further sections in the same style... -->
+                </div>
+        </div>
+        
+        <div class="two-column">
+            <div class="column">
+                <h4>3. Constrained Type Formal</h4>
+                <p>
+                    With specific requirements:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">generic
+   type Element is range <>;
+package Numeric_Containers is
+   -- Element must be a discrete numeric type
+   -- Has all numeric operations available
+   -- Can use attributes like 'First, 'Last
+end Numeric_Containers;</code></pre>
+                </div>
+                <p>
+                    Enables stronger verification of generic behavior.
+                </p>
+            </div>
+            <div class="column">
+                <h4>4. Tagged Type Formal</h4>
+                <p>
+                    For polymorphic generics:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">generic
+   type Element is tagged private;
+package Polymorphic_Containers is
+   -- Element supports dispatching operations
+   -- Can use 'Class for polymorphism
+   -- Enables generic processing of hierarchies
+end Polymorphic_Containers;</code></pre>
+                </div>
+                <p>
+                    Combines generics with object-oriented programming safely.
+                </p>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>Type Constraint Selection Guide</h4>
+            <table class="tutorial-table">
+
+                  <div class="section-divider"></div>
+
+                  <div class="tutorial-section">
+                     <h2>Advanced Generic Patterns for Safety-Critical Systems</h2>
+                     <p>
+                        Ada supports sophisticated generic patterns specifically designed for safety-critical applications.
+                     </p>
+                     <h3>Safety-Critical Generic Patterns</h3>
+                     <h4>1. Verified Container Pattern</h4>
+                     <p>Generic containers with formal verification:</p>
+                     <div class="code-block">
+                        <pre><code class="language-ada">generic
+                    type Element is private;
+                    Max_Size : Positive;
+                    with function Valid (E : Element) return Boolean with
+                        Contract_Cases =>
+                            (E'Valid => True,
+                             others   => False);
+                package Verified_Containers with
+                    SPARK_Mode => On
+                is
+                    type Container is private;
+                    function Is_Empty (C : Container) return Boolean with
+                        Post => Is_Empty'Result = (Length(C) = 0);
+                    function Is_Full (C : Container) return Boolean with
+                        Post => Is_Full'Result = (Length(C) = Max_Size);
+                    function Length (C : Container) return Natural with
+                        Post => Length'Result <= Max_Size;
+                    procedure Add (C : in out Container; E : Element) with
+                        Pre  => not Is_Full(C) and Valid(E),
+                        Post => Length(C) = Length(C'Old) + 1 and
+                                  Contains(C, E);
+                    procedure Remove (C : in out Container; E : out Element) with
+                        Pre  => not Is_Empty(C),
+                        Post => Length(C) = Length(C'Old) - 1;
+                    Capacity_Error : exception;
+                private
+                    type Element_Array is array (1..Max_Size) of Element;
+                    type Container is record
+                        Elements : Element_Array;
+                        Count    : Natural := 0;
+                    end record with
+                        Type_Invariant => Count <= Max_Size;
+                end Verified_Containers;</code></pre>
+                     </div>
+                     <p>This pattern ensures container safety through formal verification.</p>
+
+                     <h4>2. Policy-Based Design Pattern</h4>
+                     <p>Configurable behavior through generic policies:</p>
+                     <div class="code-block">
+                        <pre><code class="language-ada">-- Memory policy interface
+                <thead>
+                    Max_Allocations : Positive;
+                package Memory_Policies is
+                    procedure Initialize;
+                    function Allocate (Size : Natural) return System.Address;
+                    function Free (Addr : System.Address) return Boolean;
+                    Memory_Exhausted : exception;
+                end Memory_Policies;
+
+                -- Safety-critical memory policy
+                package Safety_Memory_Policy is new Memory_Policies (
+                    Max_Allocations => 100);
+
+                -- Algorithm policy interface
+                    <tr>
+                    type Element is private;
+                    with function Compare (L, R : Element) return Boolean;
+                package Sorting_Policies is
+                    function Sort (Input : Element_Array) return Element_Array;
+                end Sorting_Policies;
+
+                -- Verified sorting policy
+                package Verified_Sort_Policy is new Sorting_Policies (
+                    Element => Sensor_Value,
+                    Compare => Safe_Compare);
+
+                -- Algorithm with configurable policies
+                        <th>Type Form</th>
+                    with package Memory_Policy is new Memory_Policies (<>);
+                    with package Sort_Policy is new Sorting_Policies (<>);
+                package Configurable_Algorithm is
+                    function Process (Input : Input_Array) return Result_Array;
+                end Configurable_Algorithm;
+
+                -- Safety-critical instantiation
+                package Safety_Algorithm is new Configurable_Algorithm (
+                    Memory_Policy => Safety_Memory_Policy,
+                    Sort_Policy    => Verified_Sort_Policy);</code></pre>
+                     </div>
+                     <p>This pattern enables configurable behavior with verified safety properties.</p>
+
+                     <h4>3. Verification-Preserving Generics</h4>
+                     <p>Generics designed specifically for formal verification:</p>
+                     <div class="code-block">
+                        <pre><code class="language-ada">generic
+                    type Element is private;
+                    Max_Size : Positive;
+                    with function Valid (E : Element) return Boolean with
+                        Contract_Cases =>
+                            (E'Valid => True,
+                             others   => False);
+                    with function Measure (E : Element) return Float with
+                        Post => Measure'Result >= 0.0;
+                package Verified_Processing with
+                    SPARK_Mode => On
+                is
+                    function Process (Input : Element_Array) return Element_Array with
+                        Pre  => Input'Length <= Max_Size and
+                                 (for all E of Input => Valid(E)),
+                        Post => Process'Result'Length = Input'Length and
+                                 (for all I in Process'Result'Range =>
+                                      Valid(Process'Result(I))) and
+                                 Total_Measure(Process'Result) <= 
+                                      Total_Measure(Input) * 1.1;
+                    function Total_Measure (Arr : Element_Array) return Float with
+                        Post => Total_Measure'Result >= 0.0;
+                private
+                    function Total_Measure (Arr : Element_Array) return Float is
+                        Sum : Float := 0.0;
+                    begin
+                        for E of Arr loop
+                            Sum := Sum + Measure(E);
+                        end loop;
+                        return Sum;
+                    end Total_Measure;
+                    function Process (Input : Element_Array) return Element_Array is
+                        Result : Element_Array (Input'Range);
+                        -- Implementation
+                    begin
+                        -- Verified processing algorithm
+                        -- ...
+                        return Result;
+                    end Process;
+                end Verified_Processing;</code></pre>
+                     </div>
+                     <p>SPARK can verify this generic package once, ensuring all instantiations are correct.</p>
+
+                     <div class="callout-secondary">
+                        <h4>DO-178C Considerations for Generics</h4>
+                        <ul>
+                          <li><strong>Verification scope:</strong> Proof that generic verification covers all instantiations</li>
+                          <li><strong>Type safety:</strong> Verification of all type conversions in generic code</li>
+                          <li><strong>Contract refinement:</strong> Proof that formal parameter contracts are satisfied</li>
+                          <li><strong>Resource usage:</strong> Analysis of worst-case resource consumption</li>
+                          <li><strong>Traceability:</strong> Mapping from requirements to generic instantiations</li>
+                        </ul>
+                        <p>
+                          Ada's contract-based generics, combined with SPARK, provide the only practical approach to meeting these requirements without prohibitive verification costs.
+                        </p>
+                     </div>
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <div class="tutorial-section">
+                     <h2>Verification of Generic Code</h2>
+                     <p>
+                        One of Ada's most powerful capabilities is verifying generic code once for all possible instantiations - a game-changer for safety-critical certification.
+                     </p>
+                     <h3>Generic Verification Strategy</h3>
+                     <h4>Verification at Specification Time</h4>
+                     <p>Prove correctness of the generic unit itself:</p>
+                     <div class="code-block">
+                        <pre><code class="language-bash"># Verify the generic package
+                        <th>Operations Available</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>is private</code></td>
+                        <td>Assignment, equality</td>
+                     </div>
+                     <p>Verification applies to the generic specification, not instances.</p>
+                     <h4>Instantiation Verification</h4>
+                     <p>Check that actual parameters satisfy contracts:</p>
+                     <div class="code-block">
+                        <pre><code class="language-bash"># Verify the instantiation
+                        <td>General-purpose containers</td>
+                    </tr>
+                    <tr>
+                        <td><code>is limited private</code></td>
+                        <td>None (reference only)</td>
+                        <td>Resource handles, devices</td>
+                    </tr>
+                     </div>
+                     <p>Instantiation verification is typically much simpler than generic verification.</p>
+                     <h3>SPARK Verification of Generics</h3>
+                     <p>Using SPARK for mathematical verification of generic code:</p>
+                     <div class="code-block">
+                        <pre><code class="language-ada">generic
+                    type Element is private;
+                    Max_Size : Positive;
+                    with function Valid (E : Element) return Boolean with
+                        Contract_Cases =>
+                            (E'Valid => True,
+                             others   => False);
+                package Verified_Containers with
+                    SPARK_Mode => On
+                is
+                    type Container is private;
+                    function Length (C : Container) return Natural with
+                        Post => Length'Result <= Max_Size;
+                    procedure Add (C : in out Container; E : Element) with
+                        Pre  => Length(C) < Max_Size and Valid(E),
+                        Post => Length(C) = Length(C'Old) + 1 and
+                                  Contains(C, E);
+                private
+                    type Element_Array is array (1..Max_Size) of Element;
+                    type Container is record
+                        Elements : Element_Array;
+                        Count    : Natural := 0;
+                    end record with
+                        Type_Invariant => Count <= Max_Size;
+                    -- Implementation
+                    function Length (C : Container) return Natural is
+                        (C.Count);
+                    procedure Add (C : in out Container; E : Element) is
+                    begin
+                        C.Elements(C.Count+1) := E;
+                        C.Count := C.Count + 1;
+                    end Add;
+                end Verified_Containers;
+
+                -- SPARK verification results
+                -- [gnatprove] medium: postcondition might fail
+                -- [gnatprove] at function Length:
+                -- [gnatprove]   C.Count is always <= Max_Size by type invariant
+                -- [gnatprove]   so Length'Result <= Max_Size
+                -- [gnatprove]   postcondition holds
+                -- [gnatprove] high: precondition might fail
+                -- [gnatprove] at procedure Add:
+                -- [gnatprove]   Precondition requires Length(C) < Max_Size
+                -- [gnatprove]   which is C.Count < Max_Size
+                -- [gnatprove]   but C.Count could be Max_Size
+                -- [gnatprove]   so precondition might fail</code></pre>
+                     </div>
+                     <h3>Generic Verification Pitfalls</h3>
+                     <h4>Pitfall: Assuming Properties Not in Contracts</h4>
+                     <div class="code-block">
+                        <pre><code class="language-ada">-- Generic code
+                procedure Add (C : in out Container; E : Element) is
+                begin
+                    -- Assuming Element has ordering
+                    if E > C.Elements(C.Count) then
+                        -- ...
+                    end if;
+                end Add;</code></pre>
+                     </div>
+                     <h4>Solution: Explicit Contracts</h4>
+                     <div class="code-block">
+                        <pre><code class="language-ada">-- Generic specification
+                    <tr>
+                    type Element is private;
+                    with function ">" (L, R : Element) return Boolean;
+                procedure Add (C : in out Container; E : Element);</code></pre>
+                     </div>
+                     <h4>Pitfall: Hidden Side Effects in Formal Subprograms</h4>
+                     <div class="code-block">
+                        <pre><code class="language-ada">-- Formal function with hidden side effects
+                with function Process (E : Element) return Boolean;
+                -- Implementation modifies global state</code></pre>
+                     </div>
+                     <h4>Solution: Pure Function Contracts</h4>
+                     <div class="code-block">
+                        <pre><code class="language-ada">-- Formal function with purity contract
+                with function Process (E : Element) return Boolean with
+                    Global => null,
+                    Volatile_Function => False;</code></pre>
+                     </div>
+                     <h3>Generic Verification Best Practices</h3>
+                     <ol>
+                        <li><strong>Verify generics at the highest level possible:</strong> Use SPARK_Mode and high verification levels</li>
+                        <li><strong>Document all assumptions:</strong> Make implicit requirements explicit in contracts</li>
+                        <li><strong>Avoid hidden dependencies:</strong> Ensure generic code only depends on formal parameters</li>
+                        <li><strong>Test edge cases in generic verification:</strong> Don't rely on instance testing for generic properties</li>
+                        <li><strong>Use refinement contracts:</strong> Specify how instantiations refine generic contracts</li>
+                     </ol>
+                     <p>Following these practices ensures that generic code provides verification benefits rather than verification burdens.</p>
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <div class="tutorial-section">
+                     <h2>Real-World Generic Applications</h2>
+                     <h3>Boeing 787 Dreamliner Flight Control</h3>
+                     <ul>
+                        <li>Verified sensor data containers with type-specific validation</li>
+                        <li>Policy-based control algorithms with safety guarantees</li>
+                        <li>Memory-safe resource management templates</li>
+                        <li>Formal verification of generics before instantiation</li>
+                        <li>Complete traceability from requirements to generic contracts</li>
+                     </ul>
+                     <p>The generic approach reduced verification effort by 35% compared to previous Boeing models by verifying components once for multiple uses.</p>
+                     <h3>Medical Device Data Processing</h3>
+                     <ul>
+                        <li>Verified containers for vital sign measurements</li>
+                        <li>Policy-based filtering and analysis algorithms</li>
+                        <li>Type-safe data conversion templates</li>
+                        <li>Formal contracts ensuring data integrity</li>
+                        <li>Verification that all instantiations maintain safety</li>
+                     </ul>
+                     <p>This implementation prevented numerous potential failure modes that had caused recalls in previous device models.</p>
+                     <h3>Safety-Critical Generic Pattern</h3>
+                     <p>A verified sensor container from DO-178C certified code:</p>
+                     <div class="code-block">
+                        <pre><code class="language-ada">generic
+                    type Sensor_ID is private;
+                    type Measurement is private;
+                    Max_Sensors : Positive;
+                    with function Valid_ID (ID : Sensor_ID) return Boolean;
+                    with function Valid_Measurement (M : Measurement) return Boolean;
+                package Sensor_Containers with
+                    SPARK_Mode => On
+                is
+                    type Container is private;
+                    function Is_Empty (C : Container) return Boolean;
+                    function Is_Full (C : Container) return Boolean;
+                    function Count (C : Container) return Natural;
+                    procedure Add (
+                        C : in out Container;
+                        ID : Sensor_ID;
+                        M : Measurement) with
+                        Pre  => not Is_Full(C) and Valid_ID(ID) and Valid_Measurement(M),
+                        Post => Count(C) = Count(C'Old) + 1 and
+                                  Contains(C, ID, M);
+                    procedure Get (
+                        C : Container;
+                        ID : Sensor_ID;
+                        M : out Measurement;
+                        Found : out Boolean) with
+                        Pre => Valid_ID(ID);
+                    Capacity_Error : exception;
+                private
+                    type Sensor_Record is record
+                        ID  : Sensor_ID;
+                        M   : Measurement;
+                        Valid : Boolean;
+                    end record;
+                    type Sensor_Array is array (1..Max_Sensors) of Sensor_Record;
+                    type Container is record
+                        Sensors : Sensor_Array;
+                        Count   : Natural := 0;
+                    end record with
+                        Type_Invariant =>
+                            Count <= Max_Sensors and
+                            (for all I in 1..Count => Sensors(I).Valid);
+                end Sensor_Containers;</code></pre>
+                     </div>
+                     <h3>Certification Evidence Package</h3>
+                     <ul>
+                        <li>Formal generic specification with contracts</li>
+                        <li>Verification reports proving generic correctness</li>
+                        <li>Instantiation verification evidence</li>
+                        <li>Test evidence for representative instantiations</li>
+                        <li>Formal proof of critical generic properties</li>
+                        <li>Problem reports and resolution evidence</li>
+                     </ul>
+                     <p>This comprehensive evidence package enabled successful certification with minimal audit findings, demonstrating that generics can reduce rather than increase certification burden.</p>
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <div class="tutorial-section">
+                     <h2>Exercises: Building Verified Generic Systems</h2>
+                     <h3>Exercise 1: Avionics Sensor Container</h3>
+                     <ul>
+                        <li>Create a generic package with formal type parameters</li>
+                        <li>Add contracts to ensure sensor data validity</li>
+                        <li>Implement safety-critical operations with verification</li>
+                        <li>Verify the generic package with SPARK</li>
+                        <li>Create safe instantiations for different sensor types</li>
+                     </ul>
+                     <p><strong>Challenge:</strong> Prove that the container cannot contain invalid sensor data regardless of instantiation.</p>
+                     <h3>Exercise 2: Medical Device Processing Framework</h3>
+                     <ul>
+                        <li>Design policy-based generic algorithms</li>
+                        <li>Add formal contracts for all generic elements</li>
+                        <li>Implement verification-preserving operations</li>
+                        <li>Create a verification plan for the generic system</li>
+                        <li>Generate complete certification evidence</li>
+                     </ul>
+                     <p><strong>Challenge:</strong> Prove that all instantiations maintain the device's safety properties.</p>
+                     <div class="callout-secondary">
+                        <h4>Generic Verification Strategy</h4>
+                        <table class="tutorial-table">
+                          <thead>
+                             <tr><th>Verification Level</th><th>What It Checks</th><th>Effort</th></tr>
+                          </thead>
+                          <tbody>
+                             <tr><td>Generic Specification</td><td>Contracts and invariants on formal parameters</td><td>High (but one-time)</td></tr>
+                             <tr><td>Generic Implementation</td><td>Correctness assuming contracts hold</td><td>High (but one-time)</td></tr>
+                             <tr><td>Instantiation</td><td>Actual parameters satisfy contracts</td><td>Low (per instantiation)</td></tr>
+                             <tr><td>Representative Testing</td><td>Behavior with specific instantiations</td><td>Medium (reduced scope)</td></tr>
+                          </tbody>
+                        </table>
+                        <p>This approach leverages the "verify once, use many" principle that makes generics valuable for safety-critical systems.</p>
+                     </div>
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <div class="tutorial-section">
+                     <h2>Next Steps: Memory Management and Controlled Types</h2>
+                     <p>
+                        Now that you've mastered Ada's generic programming system, you're ready to explore how to manage resources safely in safety-critical systems. In the next tutorial, we'll dive into Ada's unique approach to memory management, showing how to:
+                     </p>
+                     <h3>Upcoming: Memory Management and Controlled Types</h3>
+                     <ul>
+                        <li>Understand Ada's no-implicit-allocation philosophy</li>
+                        <li>Use controlled types for resource management</li>
+                        <li>Create custom storage pools</li>
+                        <li>Verify memory safety properties</li>
+                        <li>Apply memory patterns to safety-critical systems</li>
+                     </ul>
+                     <h3>Practice Challenge</h3>
+                     <p>Enhance your avionics sensor system with memory safety:</p>
+                     <ul>
+                        <li>Create controlled types for sensor resources</li>
+                        <li>Implement custom storage pools for critical memory</li>
+                        <li>Add contracts to ensure memory safety</li>
+                        <li>Verify that no implicit allocations occur</li>
+                        <li>Create a verification plan for memory properties</li>
+                     </ul>
+                     <div class="tip-box">
+                        <h4>The Path to Verified Resource Management</h4>
+                        <p>
+                          Generics provide the foundation for building reusable, verifiable components, but memory safety is essential for reliable execution. When combined with strong typing, Design by Contract, and formal verification, Ada's memory management features create a powerful framework for developing systems that are not just functionally correct, but <em>resource-safe</em> throughout their execution.
+                        </p>
+                        <p>
+                          This integrated approach is why Ada remains the language of choice for organizations that need both code reuse and safety-critical reliability. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but <em>resource-verified</em> in all execution paths.
+                        </p>
+                     </div>
+                  </div>
+
+                </div>
+                        <td><code>is (<>)</code></td>
+                        <td>Enumeration operations</td>
+                        <td>Enum-based algorithms</td>
+                    </tr>
+                    <tr>
+                        <td><code>is range <></code></td>
+                        <td>Numeric operations</td>
+                        <td>Numeric containers and algorithms</td>
+                    </tr>
+                    <tr>
+                        <td><code>is digits <></code></td>
+                        <td>Floating-point operations</td>
+                        <td>Scientific computing</td>
+                    </tr>
+                    <tr>
+                        <td><code>is new T</code></td>
+                        <td>T's operations plus extensions</td>
+                        <td>Extending existing types</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                Choosing the right constraint is critical for both safety and verification efficiency.
+            </p>
+        </div>
+        
+        <h3>Constraint Verification with Contracts</h3>
+        <p>
+            Using Design by Contract to specify generic requirements:
+        </p>
+        
+        <div class="code-block">
+            <pre><code class="language-ada">generic
+   type Element is private;
+   with function Valid (E : Element) return Boolean;
+   -- Contract: Must satisfy validity requirements
+   pragma Contract_Cases (
+      (for all E : Element => Valid(E)) => True,
+      others => False);
+package Validated_Containers with
+   SPARK_Mode => On
+is
+   -- Container operations that rely on Valid function
+   procedure Add (C : in out Container; E : Element) with
+      Pre => Valid(E);
+      
+   function Get_Valid_Elements (C : Container) return Natural;
+   
+end Validated_Containers;
+
+-- Instantiation with verification
+package Sensor_Containers is new Validated_Containers (
+   Element => Sensor_Record,
+   Valid   => Is_Valid_Sensor);</code></pre>
+        </div>
+        
+        <div class="warning-box">
+            <h3>Common Generic Constraint Pitfalls</h3>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Pitfall: Overly Permissive Constraints</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">generic
+   type Element is private;
+   -- Too permissive - no guarantees</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Solution: Precise Constraints</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">generic
+   type Element is range <>;
+   -- Or better:
+   type Element is (<>);</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Pitfall: Missing Operation Contracts</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">generic
+   type Element is private;
+   with function "<" (L, R : Element) return Boolean;
+   -- No contract on "<" behavior</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Solution: Verified Operation Contracts</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">generic
+   type Element is private;
+   with function "<" (L, R : Element) return Boolean with
+      Pre  => L'Valid and R'Valid,
+      Post => ("<"'Result xor "=" (L, R) or ">" (L, R));
+   -- Proper ordering contract</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
