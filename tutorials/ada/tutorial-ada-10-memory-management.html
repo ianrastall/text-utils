@@ -1,16 +1,18 @@
 <div class="tutorial-content">
-    <h1>Memory Management and Controlled Types in Ada: Verified Resource Safety</h1>
-    <p>
+    <h1 class="tutorial-title">Memory Management and Controlled Types in Ada: Verified Resource Safety</h1>
+    <p class="tutorial-intro">
         While most programming languages treat memory allocation as an invisible background process, Ada makes resource management an explicit, verifiable part of the design. This tutorial explores Ada's unique approach to memory safety, where the absence of implicit heap allocation transforms memory management from a source of bugs into a foundation for reliability. You'll learn how to create systems that not only avoid memory errors but <em>prove their absence</em> - a critical capability for safety-critical applications where memory corruption can have catastrophic consequences.
     </p>
 
-    <h4>Memory Management Philosophy</h4>
-    <p>
+    <div class="section-divider"></div>
+    <div class="tutorial-section">
+        <h4>Memory Management Philosophy</h4>
+        <p>
         <strong>Traditional view:</strong> "Memory errors are inevitable - we'll catch them with testing and runtime checks"<br>
         <strong>Ada approach:</strong> "Memory errors are preventable - we'll eliminate them through design and verification"<br>
         This fundamental shift transforms memory safety from a runtime concern into a design-time guarantee, making Ada uniquely suited for systems where memory corruption is not an option.
-    </p>
-
+        </p>
+    </div>
     <div class="section-divider"></div>
 
     <div class="tutorial-section">
