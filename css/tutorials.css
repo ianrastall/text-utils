@@ -8,9 +8,60 @@
     font-size: 1.2rem; /* Increased from 1.15rem */
     line-height: 1.8; /* Increased from 1.7 */
     font-family: 'Roboto', Arial, sans-serif;
-    max-width: 900px;
-    margin: 2rem auto;
+    width: 100%; /* Fill the available width */
+    margin: 0; /* Remove auto centering */
     color: #ffffff; /* Ensure white text by default */
+}
+
+/* Override custom.css #mainOutput styles specifically for tutorials */
+#mainOutput.tutorial-content > *:first-child {
+    margin-top: 0 !important;
+}
+
+#mainOutput.tutorial-content h1, 
+#mainOutput.tutorial-content h2, 
+#mainOutput.tutorial-content h3, 
+#mainOutput.tutorial-content h4, 
+#mainOutput.tutorial-content h5, 
+#mainOutput.tutorial-content h6 {
+    margin-top: 2rem !important;
+    margin-bottom: 1.3rem !important;
+    color: #ffffff !important;
+}
+
+#mainOutput.tutorial-content h1 {
+    font-size: 2.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+#mainOutput.tutorial-content h2 {
+    font-size: 1.6rem !important;
+}
+
+#mainOutput.tutorial-content h3 {
+    font-size: 1.35rem !important;
+    margin-bottom: 1rem !important;
+}
+
+#mainOutput.tutorial-content p, 
+#mainOutput.tutorial-content ul, 
+#mainOutput.tutorial-content ol, 
+#mainOutput.tutorial-content blockquote {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    color: #e8e8e8 !important;
+    font-size: 1.2rem !important;
+    line-height: 1.7 !important;
+}
+
+#mainOutput.tutorial-content ul, 
+#mainOutput.tutorial-content ol {
+    padding-left: 1.5rem !important;
+}
+
+#mainOutput.tutorial-content li {
+    margin-bottom: 0.4rem !important;
+    color: #e8e8e8 !important;
 }
 
 /* CSS Variables */
@@ -40,59 +91,91 @@
     line-height: 1.7;
 }
 
-h2 {
-    font-size: 1.6rem; /* Increased from 1.45rem */
-    font-weight: 500;
-    color: #ffffff; /* Pure white instead of var(--bs-light) */
-    margin-bottom: 1.3rem; /* Increased margin */
+/* More specific selectors to override custom.css */
+.tutorial-content h1,
+#mainOutput.tutorial-content h1 {
+    font-size: 2.5rem !important; /* Increased from 2.1rem */
+    font-weight: 600 !important;
+    color: var(--accent-color, cadetblue) !important;
+    margin-bottom: 1.5rem !important;
+    margin-top: 0 !important;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--bs-gray-700);
+    letter-spacing: 0.5px;
+}
+
+.tutorial-content h2,
+#mainOutput.tutorial-content h2 {
+    font-size: 1.6rem !important; /* Increased from 1.45rem */
+    font-weight: 500 !important;
+    color: #ffffff !important; /* Pure white instead of var(--bs-light) */
+    margin-bottom: 1.3rem !important; /* Increased margin */
+    margin-top: 2rem !important;
     border-bottom: none;
     letter-spacing: 0.3px;
 }
 
-h3 {
-    font-size: 1.35rem; /* Increased from 1.18rem */
-    font-weight: 500;
-    margin-bottom: 1rem; /* Increased margin */
-    color: #ffffff; /* Ensure white text */
+.tutorial-content h3,
+#mainOutput.tutorial-content h3 {
+    font-size: 1.35rem !important; /* Increased from 1.18rem */
+    font-weight: 500 !important;
+    margin-bottom: 1rem !important; /* Increased margin */
+    margin-top: 1.5rem !important;
+    color: #ffffff !important; /* Ensure white text */
 }
 
-h4 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 0.8rem;
-    color: #ffffff;
+.tutorial-content h4,
+#mainOutput.tutorial-content h4 {
+    font-size: 1.2rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 0.8rem !important;
+    margin-top: 1.2rem !important;
+    color: #ffffff !important;
 }
 
-h5 {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 0.7rem;
-    color: #ffffff;
+.tutorial-content h5,
+#mainOutput.tutorial-content h5 {
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 0.7rem !important;
+    margin-top: 1rem !important;
+    color: #ffffff !important;
 }
 
 /* Ensure all paragraph text is readable */
-p {
-    color: #e8e8e8;
-    margin-bottom: 1rem;
-    line-height: 1.7;
+.tutorial-content p,
+#mainOutput.tutorial-content p {
+    color: #e8e8e8 !important;
+    margin-bottom: 1rem !important;
+    margin-top: 1rem !important;
+    line-height: 1.7 !important;
+    font-size: 1.2rem !important;
 }
 
 /* List styling improvements */
-ul, ol {
-    color: #e8e8e8;
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
+.tutorial-content ul, 
+.tutorial-content ol,
+#mainOutput.tutorial-content ul,
+#mainOutput.tutorial-content ol {
+    color: #e8e8e8 !important;
+    margin-bottom: 1rem !important;
+    margin-top: 1rem !important;
+    padding-left: 1.5rem !important;
 }
 
-li {
-    margin-bottom: 0.4rem;
-    color: #e8e8e8;
+.tutorial-content li,
+#mainOutput.tutorial-content li {
+    margin-bottom: 0.4rem !important;
+    color: #e8e8e8 !important;
 }
 
 /* Strong/bold text should be more visible */
-strong, b {
-    color: #ffffff;
-    font-weight: 600;
+.tutorial-content strong, 
+.tutorial-content b,
+#mainOutput.tutorial-content strong,
+#mainOutput.tutorial-content b {
+    color: #ffffff !important;
+    font-weight: 600 !important;
 }
 
 .section-block {
