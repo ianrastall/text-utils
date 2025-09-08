@@ -1,2 +1,2 @@
-# text-utils
+# Text Utilities
 A set of JavaScript tools
