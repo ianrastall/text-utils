@@ -64,5 +64,11 @@
         "name": "Font Awesome Chooser",
         "icon": "code",
         "description": "Browse Font Awesome icons, filter by name, and generate code snippets."
+    },
+    {
+        "slug": "google-icon-chooser",
+        "name": "Google Icon Chooser",
+        "icon": "apps",
+        "description": "Browse Google Material icons, filter by name, and generate code snippets."
     }
 ]
