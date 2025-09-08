@@ -95,10 +95,10 @@ const googleFontsData = {"items": [
   {"family": "Amatic SC", "category": "handwriting", "variants": ["400", "700"]},
   {"family": "Handlee", "category": "handwriting", "variants": ["400"]},
   {"family": "Sacramento", "category": "handwriting", "variants": ["400"]},
+
   {"family": "Courgette", "category": "handwriting", "variants": ["400"]}
 ]};
 
-// --- System Fonts ---
 const systemFonts = {
   all: {
     'Arial': 'Arial, Helvetica, sans-serif',
@@ -129,20 +129,6 @@ const systemFonts = {
     'Liberation Sans': '"Liberation Sans", Arial, sans-serif',
   }
 };
-
-// --- FontChooser class and UI logic ---
-
-// The main UI is rendered server-side in font-chooser.html, so we only need to wire up the logic here.
-
-// Copy the FontChooser class and logic from the PHP version, adapted for static HTML/JS
-
-// ...existing code from the PHP version's <script> block...
-
-// (See previous PHP version for the full FontChooser class implementation)
-
-// Paste the FontChooser class and initialization here:
-
-document.addEventListener('DOMContentLoaded', () => {
 
 // Font Chooser Application - JS Version
 class FontChooser {
