@@ -13,7 +13,7 @@
 </head>
 <body class="bg-black text-light">
     <!-- Header -->
-    <div id="header-content"></div>
+    <div id="header-placeholder"></div>
 
     <div class="container-fluid my-4">
         <div class="row gx-3 gy-3">
@@ -115,7 +115,9 @@
             <aside class="col-md-3">
                 <div class="card bg-dark border-secondary shadow-sm">
                     <div class="card-body p-0">
-                        <div id="sidebar-content"></div>
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
                     </div>
                 </div>
             </aside>
@@ -124,18 +126,45 @@
     <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
     <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
     <!-- Footer -->
-    <div id="footer-content"></div>
+    <div id="footer-placeholder"></div>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/component-loader.js"></script>
     <script>
-    // Load header, sidebar, and footer content
-    window.addEventListener('DOMContentLoaded', function() {
-        window.ComponentLoader && ComponentLoader.loadAll({
-            header: 'components/header-content.html',
-            sidebar: 'components/footer-content.html',
-            footer: 'components/footer-content.html'
+        // Function to load and render the list of tools for sidebar
+        async function loadToolsSidebar() {
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+                tools.sort((a, b) => a.name.localeCompare(b.name));
+                // Get the current page slug for active state
+                const currentPage = 'random-numbers';
+                const sidebarHtml = tools.map(tool => {
+                    const isActive = tool.slug === currentPage;
+                    const activeClass = isActive ? ' active' : '';
+                    const iconHtml = tool.icon ?
+                        (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                            `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                            `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                        `<span class="me-2" style="width: 24px;"></span>`;
+                    return `
+                        <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                            ${iconHtml}
+                            <span>${tool.name}</span>
+                        </a>
+                    `;
+                }).join('');
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+            } catch (error) {
+                document.getElementById('dynamic-sidebar').innerHTML = `<div class="alert alert-danger col-12">Failed to load tools.</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Load header and footer components
+            await ComponentLoader.loadAll();
+            // Load sidebar navigation
+            loadToolsSidebar();
         });
-    });
     </script>
     <script>
     // --- Random Number Generator JS (from PHP version, refactored) ---
