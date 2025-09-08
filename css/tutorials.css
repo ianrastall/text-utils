@@ -107,14 +107,30 @@ hr.section-divider,
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+
 .code-block pre {
     padding: 1rem;
     margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
 }
 
 .code-block code {
     font-family: 'Fira Code', monospace;
     color: var(--bs-light);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+pre, code, .code-block {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+
+/* Accessibility: Replace any dark red with lightcoral for better contrast */
+.text-danger, .danger, .highlight-red, .ada-red, .critical, .error, .important {
+    color: lightcoral !important;
 }
 
 .code-inline {
