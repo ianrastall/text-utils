@@ -6,7 +6,8 @@
     "tutorial-ada-04-design-by-contract.html",
     "tutorial-ada-05-exception-handling.html",
     "tutorial-ada-06-concurrency.html",
-    "tutorial-ada-07-real-time.html",
-    "tutorial-ada-13-certification.html"
+  "tutorial-ada-07-real-time.html",
+  "tutorial-ada-08-object-oriented-programming.html",
+  "tutorial-ada-13-certification.html"
   ]
 }
