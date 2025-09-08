@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Utilities</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-0V2F0V7FWB');
+	</script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        .stats-grid dt, .stats-grid dd {
+            margin: 0.25rem 0;
+            font-weight: normal;
+        }
+        .stats-grid dt {
+            font-weight: bold;
+            color: #adb5bd;
+        }
+        .stats-grid dd {
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <!-- Dynamic Title -->
+                        <h2 class="d-flex align-items-center mb-4" id="dynamic-title">
+                            <span class="material-icons me-3" style="font-size:36px;" id="tool-icon">analytics</span>
+                            <span id="tool-name">Text Info</span>
+                        </h2>
+                        <p class="text-white-50 mb-4" id="tool-description">Provides detailed statistics and readability scores for a piece of text.</p>
+
+                        <div class="mb-3">
+                            <label for="inputText" class="form-label">Your Text</label>
+                            <textarea class="form-control font-monospace" id="inputText" rows="10" placeholder="Paste or type your text here..."></textarea>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-edit" id="pasteBtn"><span class="material-icons me-2">content_paste</span>Paste</button>
+                            <button type="button" class="btn btn-edit" id="copyBtn"><span class="material-icons me-2">content_copy</span>Copy</button>
+                            <button type="button" class="btn btn-clear" id="clearBtn"><span class="material-icons me-2">clear</span>Clear</button>
+                        </div>
+
+                        <hr class="border-secondary my-4">
+
+                        <div id="results-area">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h5 class="d-flex align-items-center"><span class="material-icons me-2" aria-hidden="true">functions</span>Basic Stats</h5>
+                                    <dl class="stats-grid">
+                                        <dt>Words</dt><dd id="res-words">-</dd>
+                                        <dt>Characters</dt><dd id="res-chars">-</dd>
+                                        <dt>Sentences</dt><dd id="res-sentences">-</dd>
+                                        <dt>Paragraphs</dt><dd id="res-paragraphs">-</dd>
+                                        <dt>Avg. Word Length</dt><dd id="res-avgWordLength">-</dd>
+                                        <dt>Longest Word</dt><dd id="res-longestWord">-</dd>
+                                        <dt>Most Frequent</dt><dd id="res-mostFrequent">-</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="d-flex align-items-center"><span class="material-icons me-2" aria-hidden="true">visibility</span>Readability & Speaking</h5>
+                                    <dl class="stats-grid">
+                                        <dt>Syllables (Est.)</dt><dd id="res-syllables">-</dd>
+                                        <dt>Reading Time</dt><dd id="res-readingTime">-</dd>
+                                        <dt>Speaking Time</dt><dd id="res-speakingTime">-</dd>
+                                        <dt>Flesch-Kincaid</dt><dd id="res-fleschKincaid">-</dd>
+                                        <dt>Gunning Fog Index</dt><dd id="res-gunningFog">-</dd>
+                                        <dt>Coleman-Liau</dt><dd id="res-colemanLiau">-</dd>
+                                        <dt>SMOG Index</dt><dd id="res-smog">-</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        // --- Initialize Theme Switcher ---
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+
+            function applyTheme(theme) {
+                htmlElement.className = ''; // Remove all existing classes
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+
+            // Populate the dropdown menu with theme options
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+
+            // Set the initial theme on page load
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+
+        // --- Initialize Page Metadata ---
+        async function initPageMetadata() {
+            const currentSlug = 'text-info'; // Hardcoded for this specific page
+
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+
+                const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
+
+                // Set page title and icon
+                document.getElementById('tool-name').textContent = currentTool.name || 'Text Info';
+                document.getElementById('tool-description').textContent = currentTool.description || 'Provides detailed statistics and readability scores for a piece of text.';
+
+                const iconEl = document.getElementById('tool-icon');
+                if (currentTool.icon) {
+                    if (currentTool.icon.endsWith('.svg') || currentTool.icon.endsWith('.png')) {
+                        iconEl.outerHTML = `<img src="${currentTool.icon}" alt="" style="height:36px; margin-right:15px;" aria-hidden="true">`;
+                    } else {
+                        iconEl.textContent = currentTool.icon;
+                    }
+                }
+
+                // Generate sidebar, marking current page as active
+                const sidebarHtml = tools
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(tool => {
+                        const isActive = tool.slug === currentSlug;
+                        const activeClass = isActive ? ' active' : '';
+                        const iconHtml = tool.icon ?
+                            (tool.icon.endsWith('.svg') ?
+                                `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                                `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                            `<span class="me-2" style="width: 24px;"></span>`;
+
+                        return `
+                            <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                                ${iconHtml}
+                                <span>${tool.name}</span>
+                            </a>
+                        `;
+                    }).join('');
+
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+
+            } catch (error) {
+                console.error('Error initializing page metadata:', error);
+            }
+        }
+
+        // --- Core TextInfo Tool Logic (Unchanged from your original JS) ---
+        const TextInfo = (() => {
+            'use strict';
+            const dom = {};
+            const state = {
+                results: {},
+                isProcessing: false
+            };
+
+            function init() {
+                cacheDOM();
+                bindEventListeners();
+                render(); // Initial render for placeholders
+            }
+
+            function cacheDOM() {
+                dom.textarea = document.getElementById('inputText');
+                dom.pasteBtn = document.getElementById('pasteBtn');
+                dom.copyBtn = document.getElementById('copyBtn');
+                dom.clearBtn = document.getElementById('clearBtn');
+                dom.srAnnouncer = document.getElementById('sr-announcer');
+                // Cache all result `dd` elements
+                dom.results = {
+                    words: document.getElementById('res-words'),
+                    chars: document.getElementById('res-chars'),
+                    sentences: document.getElementById('res-sentences'),
+                    paragraphs: document.getElementById('res-paragraphs'),
+                    avgWordLength: document.getElementById('res-avgWordLength'),
+                    longestWord: document.getElementById('res-longestWord'),
+                    mostFrequent: document.getElementById('res-mostFrequent'),
+                    syllables: document.getElementById('res-syllables'),
+                    readingTime: document.getElementById('res-readingTime'),
+                    speakingTime: document.getElementById('res-speakingTime'),
+                    fleschKincaid: document.getElementById('res-fleschKincaid'),
+                    gunningFog: document.getElementById('res-gunningFog'),
+                    colemanLiau: document.getElementById('res-colemanLiau'),
+                    smog: document.getElementById('res-smog'),
+                };
+            }
+
+            function bindEventListeners() {
+                dom.textarea.addEventListener('input', debounce(analyzeText, 300));
+                dom.pasteBtn.addEventListener('click', handlePaste);
+                dom.copyBtn.addEventListener('click', handleCopy);
+                dom.clearBtn.addEventListener('click', handleClear);
+            }
+
+            function render() {
+                if (state.isProcessing) {
+                    Object.values(dom.results).forEach(el => el.innerHTML = '<span class="spinner-border spinner-border-sm"></span>');
+                    return;
+                }
+                for (const [key, el] of Object.entries(dom.results)) {
+                    el.textContent = state.results[key] ?? '-';
+                }
+            }
+            
+            // --- Core Analysis Logic ---
+            function analyzeText() {
+                state.isProcessing = true;
+                render();
+
+                setTimeout(() => { // Allow UI to update to show spinner
+                    const text = dom.textarea.value;
+                    if (text.trim() === '') {
+                        state.results = {};
+                        state.isProcessing = false;
+                        render();
+                        return;
+                    }
+
+                    const words = getWords(text);
+                    const sentences = getSentences(text);
+                    const wordCount = words.length;
+                    const sentenceCount = sentences.length;
+                    const charCount = text.length;
+                    const paragraphCount = text.split(/\n\s*\n/).filter(p => p.trim() !== '').length;
+
+                    if (wordCount === 0) {
+                        state.results = { chars: charCount, words: 0, sentences: 0, paragraphs: 0 };
+                        state.isProcessing = false;
+                        render();
+                        return;
+                    }
+                    
+                    const syllables = words.reduce((total, word) => total + countSyllables(word), 0);
+                    const complexWords = words.filter(word => countSyllables(word) >= 3).length;
+
+                    state.results = {
+                        words: wordCount,
+                        chars: charCount,
+                        sentences: sentenceCount,
+                        paragraphs: paragraphCount,
+                        avgWordLength: (charCount / wordCount).toFixed(2),
+                        longestWord: getLongestWord(words),
+                        mostFrequent: getMostFrequentWord(words),
+                        syllables: syllables,
+                        readingTime: getReadingTime(wordCount),
+                        speakingTime: getReadingTime(wordCount, 150), // Avg speaking rate
+                        fleschKincaid: calculateFleschKincaid(wordCount, sentenceCount, syllables),
+                        gunningFog: calculateGunningFog(wordCount, sentenceCount, complexWords),
+                        colemanLiau: calculateColemanLiau(wordCount, sentenceCount, text),
+                        smog: calculateSMOG(sentenceCount, complexWords)
+                    };
+                    
+                    state.isProcessing = false;
+                    render();
+                    dom.srAnnouncer.textContent = 'Text analysis complete.';
+                }, 50);
+            }
+            
+            // --- Improved Helper Algorithms ---
+            function getWords(text) { return text.trim().match(/[\w'-]+/g) || []; }
+            function getSentences(text) {
+                const sentences = text.match(/(?<!\b(?:[A-Z][a-z]?)\.)[.?!…]+(\s+|\n+|$)/g) || [];
+                return sentences.filter(s => s.trim().length > 0);
+            }
+            function countSyllables(word) {
+                word = word.toLowerCase().replace(/[^a-z]/g, '');
+                if (word.length <= 3) return 1;
+                word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+                word = word.replace(/^y/, '');
+                const matches = word.match(/[aeiouy]{1,2}/g);
+                return matches ? Math.max(1, matches.length) : 1;
+            }
+            function getLongestWord(words) {
+                return words.reduce((longest, current) => current.length > longest.length ? current : longest, "");
+            }
+            function getMostFrequentWord(words) {
+                if (!words.length) return '';
+                const counts = {};
+                words.forEach(word => {
+                    const lowerWord = word.toLowerCase();
+                    counts[lowerWord] = (counts[lowerWord] || 0) + 1;
+                });
+                return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            }
+            function getReadingTime(wordCount, wpm = 200) {
+                const minutes = wordCount / wpm;
+                if (minutes < 1) return "< 1 min";
+                return `${Math.ceil(minutes)} min`;
+            }
+            
+            // --- Readability Formulas ---
+            function calculateFleschKincaid(words, sentences, syllables) { return (sentences > 0 && words > 0) ? (0.39 * (words / sentences) + 11.8 * (syllables / words) - 15.59).toFixed(2) : 'N/A'; }
+            function calculateGunningFog(words, sentences, complexWords) { return (sentences > 0 && words > 0) ? (0.4 * ((words / sentences) + 100 * (complexWords / words))).toFixed(2) : 'N/A'; }
+            function calculateColemanLiau(words, sentences, text) { const L = (text.replace(/\s/g, '').length / words) * 100; const S = (sentences / words) * 100; return (0.0588 * L - 0.296 * S - 15.8).toFixed(2); }
+            function calculateSMOG(sentences, complexWords) { return sentences >= 30 ? (1.0430 * Math.sqrt(complexWords * (30 / sentences)) + 3.1291).toFixed(2) : 'N/A (< 30 sentences)'; }
+
+            // --- Action Handlers & Utilities ---
+            async function handlePaste() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    dom.textarea.value = text;
+                    showToast('Pasted from clipboard!', 'success');
+                    analyzeText(); // Analyze automatically after paste
+                } catch (err) {
+                    showToast('Paste failed. Browser permission may be denied.', 'danger');
+                }
+            }
+            async function handleCopy() {
+                const text = dom.textarea.value;
+                if (!text) return showToast('Nothing to copy.', 'info');
+                await copyToClipboard(text, 'Text copied to clipboard!');
+            }
+            function handleClear() {
+                dom.textarea.value = '';
+                state.results = {};
+                render();
+                showToast('Cleared text.', 'info');
+            }
+
+            function debounce(func, delay) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); }; }
+            async function copyToClipboard(text, msg) { await navigator.clipboard.writeText(text); showToast(msg, 'success'); }
+            function showToast(msg, type = 'success') {
+                const containerId = 'toast-container-textinfo';
+                let container = document.getElementById(containerId);
+                if (!container) { container = document.createElement('div'); container.id = containerId; container.className = 'toast-container position-fixed bottom-0 end-0 p-3'; container.style.zIndex = '1100'; document.body.appendChild(container); }
+                const toastEl = document.createElement('div'); toastEl.className = `toast align-items-center text-bg-${type} border-0 show`; toastEl.setAttribute('role', 'alert');
+                const dFlex = document.createElement('div'); dFlex.className = 'd-flex';
+                const body = document.createElement('div'); body.className = 'toast-body'; body.textContent = msg;
+                const closeBtn = document.createElement('button'); closeBtn.type = 'button'; closeBtn.className = 'btn-close btn-close-white me-2 m-auto'; closeBtn.setAttribute('aria-label', 'Close');
+                closeBtn.onclick = () => toastEl.remove();
+                dFlex.appendChild(body); dFlex.appendChild(closeBtn); toastEl.appendChild(dFlex); container.appendChild(toastEl);
+                setTimeout(() => { if (toastEl) toastEl.remove(); }, 3000);
+            }
+            
+            return { init };
+        })();
+
+        // --- Initialize Everything ---
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Load header and footer components first
+            await ComponentLoader.loadAll();
+            
+            // Initialize theme switcher after header is loaded
+            initThemeSwitcher();
+            
+            // Initialize page metadata and tool functionality
+            await initPageMetadata();
+            TextInfo.init();
+            
+            // Set current year
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>

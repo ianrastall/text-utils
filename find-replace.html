@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Utilities</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-0V2F0V7FWB');
+	</script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        /* Local styles for the line-numbered textarea component */
+        .line-numbered-container {
+            display: flex;
+            background-color: #2a2a2a; /* Match Bootstrap's dark form control */
+            font-family: monospace;
+            font-size: 1em;
+            line-height: 1.5;
+            overflow: hidden; /* Ensures the border-radius is applied to children */
+        }
+        .line-numbers-gutter {
+            flex-shrink: 0;
+            padding: .375rem .75rem;
+            color: #6c757d; /* Muted gray for numbers */
+            text-align: right;
+            user-select: none;
+            overflow-y: hidden; /* Gutter scroll is handled by JS */
+            margin: 0;
+        }
+        .line-numbered-container textarea.form-control {
+            flex-grow: 1;
+            border: none !important;
+            box-shadow: none !important;
+            resize: vertical;
+            padding-left: .5rem !important; /* Give a little space from the gutter */
+            line-height: 1.5; /* Critical for alignment */
+            margin: 0;
+        }
+        .line-numbered-container textarea.form-control:focus {
+            border-color: transparent !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <!-- Dynamic Title -->
+                        <h2 class="card-title mb-4 d-flex align-items-center" id="dynamic-title">
+                            <span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true" id="tool-icon">find_replace</span>
+                            <span id="tool-name">Find & Replace</span>
+                        </h2>
+
+                        <p class="text-white-50 mb-4" id="tool-description">Find and replace text using strings or regex with advanced options.</p>
+
+                        <div class="post-content">
+                            <form onsubmit="return false;">
+                                <div class="mb-3">
+                                    <label for="inputText" class="form-label">Text to Process</label>
+                                    <div class="line-numbered-container form-control p-0 h-auto">
+                                        <pre id="lineNumbers" class="line-numbers-gutter">1</pre>
+                                        <textarea class="form-control font-monospace"
+                                                  id="inputText"
+                                                  rows="10"
+                                                  placeholder="Enter or paste text here..."
+                                                  autofocus
+                                                  wrap="off"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="findText" class="form-label">Find</label>
+                                        <input type="text" class="form-control" id="findText" placeholder="Text or /regex/">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="replaceText" class="form-label">Replace With</label>
+                                        <input type="text" class="form-control" id="replaceText" placeholder="Replacement text (use $1 or \\1)">
+                                    </div>
+                                </div>
+                                <small class="form-text text-white-50 d-block mt-2 mb-3">
+                                    <strong>Tip:</strong> In plain text mode, different newline types (e.g., Windows `\r\n`) are matched as a single `\n` character. Use `\n` in the "Replace With" field to insert a line break.
+                                </small>
+
+                                <div class="mb-3 d-flex flex-wrap gap-3 align-items-center">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="caseSensitive">
+                                        <label class="form-check-label" for="caseSensitive">Case Sensitive</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="useRegex">
+                                        <label class="form-check-label" for="useRegex">Use Regular Expression</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="multilineMode" checked>
+                                        <label class="form-check-label" for="multilineMode">Multiline (^, $)</label>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2 flex-wrap mb-3">
+                                    <button type="button" class="btn btn-task d-flex align-items-center" id="replaceAllBtn">
+                                        <span class="material-icons me-2" aria-hidden="true">find_replace</span>Replace All
+                                    </button>
+                                    <button type="button" class="btn btn-edit d-flex align-items-center" id="revertBtn" disabled>
+                                         <span class="material-icons me-2" aria-hidden="true">undo</span>Revert
+                                    </button>
+                                    <button type="button" class="btn btn-edit d-flex align-items-center" id="pasteBtn">
+                                         <span class="material-icons me-2" aria-hidden="true">content_paste</span>Paste
+                                    </button>
+                                    <button type="button" class="btn btn-edit d-flex align-items-center" id="copyBtn">
+                                         <span class="material-icons me-2" aria-hidden="true">content_copy</span>Copy Result
+                                    </button>
+                                    <button type="button" class="btn btn-clear d-flex align-items-center" id="clearBtn">
+                                         <span class="material-icons me-2" aria-hidden="true">clear</span>Clear All
+                                    </button>
+                                </div>
+
+                                <div id="matchCount" class="text-muted" style="min-height: 1.5em;" aria-live="polite" aria-atomic="true"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+
+    <script>
+        // --- Initialize Theme Switcher ---
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+
+            function applyTheme(theme) {
+                htmlElement.className = ''; // Remove all existing classes
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+
+            // Populate the dropdown menu with theme options
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+
+            // Set the initial theme on page load
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+
+        // --- Initialize Page Metadata ---
+        async function initPageMetadata() {
+            const currentSlug = 'find-replace'; // Hardcoded for this specific page
+
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+
+                const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
+
+                // Set page title and description
+                document.getElementById('tool-name').textContent = currentTool.name || 'Find & Replace';
+                document.getElementById('tool-description').textContent = currentTool.description || 'Find and replace text using strings or regex with advanced options.';
+
+                // Set icon
+                const iconEl = document.getElementById('tool-icon');
+                if (currentTool.icon) {
+                    if (currentTool.icon.endsWith('.svg') || currentTool.icon.endsWith('.png')) {
+                        iconEl.outerHTML = `<img src="${currentTool.icon}" alt="" style="height: 36px; margin-right: 15px;" id="tool-icon" aria-hidden="true" />`;
+                    } else {
+                        // Material Icon - already set in HTML
+                        iconEl.textContent = currentTool.icon;
+                    }
+                }
+
+                // Generate sidebar, marking current page as active
+                const sidebarHtml = tools
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(tool => {
+                        const isActive = tool.slug === currentSlug;
+                        const activeClass = isActive ? ' active' : '';
+                        const iconHtml = tool.icon ?
+                            (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                                `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                                `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                            `<span class="me-2" style="width: 24px;"></span>`;
+
+                        return `
+                            <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                                ${iconHtml}
+                                <span>${tool.name}</span>
+                            </a>
+                        `;
+                    }).join('');
+
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+
+            } catch (error) {
+                console.error('Error initializing page meta', error);
+            }
+        }
+
+        // --- Find & Replace Tool Logic ---
+        (function() {
+            'use strict';
+            // --- State ---
+            let previousText = '';
+
+            // --- Get DOM Elements ---
+            const lineNumbers = document.getElementById('lineNumbers');
+            const multilineModeCheckbox = document.getElementById('multilineMode');
+            const textarea = document.getElementById('inputText');
+            const findInput = document.getElementById('findText');
+            const replaceInput = document.getElementById('replaceText');
+            const caseSensitiveCheckbox = document.getElementById('caseSensitive');
+            const useRegexCheckbox = document.getElementById('useRegex');
+            const matchCountDisplay = document.getElementById('matchCount');
+            const replaceAllBtn = document.getElementById('replaceAllBtn');
+            const revertBtn = document.getElementById('revertBtn');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            if (!lineNumbers || !multilineModeCheckbox || !textarea || !findInput || !replaceInput || !caseSensitiveCheckbox || !useRegexCheckbox || !matchCountDisplay || !replaceAllBtn || !revertBtn || !pasteBtn || !copyBtn || !clearBtn) {
+                console.error("Find/Replace Tool Error: One or more required UI elements not found.");
+                if (matchCountDisplay) matchCountDisplay.textContent = "Error: Tool UI failed to load.";
+                return;
+            }
+            
+            // --- Helper Functions ---
+            const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            };
+
+            // --- Core Logic ---
+            function updateLineNumbers() {
+                requestAnimationFrame(() => {
+                    const lines = textarea.value.split('\n');
+                    const lineCount = lines.length;
+                    const numberText = Array.from({ length: lineCount }, (_, i) => i + 1).join('\n');
+                    lineNumbers.textContent = numberText;
+                });
+            }
+
+            function createRegex() {
+                const findValue = findInput.value;
+                if (!findValue) return null;
+
+                const isCaseSensitive = caseSensitiveCheckbox.checked;
+                const useRegex = useRegexCheckbox.checked;
+                const isMultiline = multilineModeCheckbox.checked;
+                const flags = 'g' + (isCaseSensitive ? '' : 'i') + 'u' + (isMultiline ? 'm' : '');
+                
+                let pattern;
+                if (useRegex) {
+                    pattern = findValue;
+                } else {
+                    // For plain text search, normalize user-entered newlines
+                    // to match the textarea's internally-normalized newlines (\n).
+                    const normalizedFindValue = findValue.replace(/\r\n?/g, '\n');
+                    pattern = escapeRegExp(normalizedFindValue);
+                }
+                
+                return new RegExp(pattern, flags);
+            }
+            
+            function updateMatchCount() {
+                try {
+                    const regex = createRegex();
+                    if (!regex) {
+                        matchCountDisplay.textContent = '';
+                        return;
+                    }
+                    const matches = textarea.value.match(regex);
+                    const count = matches ? matches.length : 0;
+
+                    if (count === 0) {
+                        matchCountDisplay.textContent = 'No matches found.';
+                    } else {
+                        matchCountDisplay.textContent = `${count} match${count > 1 ? 'es' : ''} found.`;
+                    }
+                } catch (error) {
+                    if (error instanceof SyntaxError && useRegexCheckbox.checked) {
+                        matchCountDisplay.textContent = 'Error: Invalid Regular Expression.';
+                    } else {
+                        matchCountDisplay.textContent = `Error: ${error.message}`;
+                    }
+                }
+            }
+
+            function performReplaceAll() {
+                if (!findInput.value) {
+                    showToast('The "Find" field cannot be empty.', 'warning');
+                    findInput.focus();
+                    return;
+                }
+
+                try {
+                    const regex = createRegex();
+                    if (!regex) return;
+
+                    const originalText = textarea.value;
+                    const matches = originalText.match(regex);
+                    const count = matches ? matches.length : 0;
+
+                    if (count === 0) {
+                        showToast('No matches found to replace.', 'info');
+                        matchCountDisplay.textContent = 'No matches found.';
+                        return;
+                    }
+                    
+                    previousText = originalText;
+                    
+                    const finalReplaceValue = replaceInput.value.replace(/(?<!\\)\\(\d+)/g, '$$$1');
+                    const resultText = originalText.replace(regex, finalReplaceValue);
+                    textarea.value = resultText;
+                    revertBtn.disabled = false;
+
+                    const message = `Replaced ${count} occurrence${count > 1 ? 's' : ''}.`;
+                    showToast(message, 'success');
+                    matchCountDisplay.textContent = message;
+                    textarea.focus();
+                    
+                    updateLineNumbers();
+                } catch (error) {
+                    if (error instanceof SyntaxError && useRegexCheckbox.checked) {
+                        showToast('Invalid Regular Expression', 'danger');
+                        matchCountDisplay.textContent = 'Error: Invalid Regular Expression.';
+                    } else {
+                        showToast('An error occurred during replacement.', 'danger');
+                        matchCountDisplay.textContent = `Error: ${error.message}`;
+                        console.error("Replacement Error:", error);
+                    }
+                }
+            }
+            
+            function revertLastChange() {
+                if (previousText) {
+                    textarea.value = previousText;
+                    previousText = '';
+                    revertBtn.disabled = true;
+                    showToast('Last replacement has been reverted.', 'success');
+                    updateLineNumbers();
+                    updateMatchCount();
+                    textarea.focus();
+                }
+            }
+            
+            async function pasteText() {
+                try {
+                    if (!navigator.clipboard?.readText) {
+                        throw new Error('Clipboard paste not supported or permission denied.');
+                    }
+                    const text = await navigator.clipboard.readText();
+                    textarea.value = text;
+                    revertBtn.disabled = true;
+                    previousText = '';
+                    showToast('Pasted from clipboard', 'success');
+                    updateLineNumbers();
+                    updateMatchCount();
+                    textarea.focus();
+                } catch (err) {
+                    showToast(`Paste failed: ${err.message}`, 'danger');
+                    console.error('Paste Error:', err);
+                }
+            }
+
+            async function copyText() {
+                 if (!textarea.value) {
+                     showToast('Nothing to copy', 'info');
+                     return;
+                 }
+                try {
+                     if (!navigator.clipboard?.writeText) {
+                         throw new Error('Clipboard copy not supported or permission denied.');
+                     }
+                    await navigator.clipboard.writeText(textarea.value);
+                    showToast('Result copied to clipboard', 'success');
+                } catch (err) {
+                    showToast(`Copy failed: ${err.message}`, 'danger');
+                    console.error('Copy Error:', err);
+                }
+            }
+
+            function clearText() {
+                textarea.value = '';
+                findInput.value = '';
+                replaceInput.value = '';
+                caseSensitiveCheckbox.checked = false;
+                useRegexCheckbox.checked = false;
+                multilineModeCheckbox.checked = true;
+                matchCountDisplay.textContent = '';
+                revertBtn.disabled = true;
+                previousText = '';
+                showToast('Cleared all fields', 'info');
+                updateLineNumbers();
+                textarea.focus();
+            }
+            
+            function showToast(message, variant = 'info') {
+                const toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                toastContainer.style.zIndex = '1100';
+
+                const toastEl = document.createElement('div');
+                toastEl.className = `toast align-items-center text-bg-${variant} border-0`;
+                toastEl.setAttribute('role', 'alert');
+                toastEl.setAttribute('aria-live', 'assertive');
+                toastEl.setAttribute('aria-atomic', 'true');
+
+                const toastBody = document.createElement('div');
+                toastBody.className = 'toast-body';
+                toastBody.textContent = message;
+
+                const closeButton = document.createElement('button');
+                closeButton.type = 'button';
+                closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+                closeButton.setAttribute('data-bs-dismiss', 'toast');
+                closeButton.setAttribute('aria-label', 'Close');
+                
+                const flexContainer = document.createElement('div');
+                flexContainer.className = 'd-flex';
+                flexContainer.appendChild(toastBody);
+                flexContainer.appendChild(closeButton);
+                toastEl.appendChild(flexContainer);
+
+                document.body.appendChild(toastContainer);
+                toastContainer.appendChild(toastEl);
+                
+                if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+                    const toastInstance = new bootstrap.Toast(toastEl, { autohide: true, delay: 3000 });
+                    toastInstance.show();
+                    toastEl.addEventListener('hidden.bs.toast', () => { toastContainer.remove(); });
+                } else {
+                    console.warn("Bootstrap Toast component not found.");
+                }
+            }
+
+            // --- Event listeners ---
+            replaceAllBtn.addEventListener('click', performReplaceAll);
+            revertBtn.addEventListener('click', revertLastChange);
+            pasteBtn.addEventListener('click', pasteText);
+            copyBtn.addEventListener('click', copyText);
+            clearBtn.addEventListener('click', clearText);
+
+            textarea.addEventListener('scroll', () => {
+                lineNumbers.scrollTop = textarea.scrollTop;
+            }, { passive: true });
+            
+            const debouncedUpdate = debounce(updateMatchCount, 250);
+            
+            textarea.addEventListener('input', () => {
+                revertBtn.disabled = true;
+                previousText = '';
+                updateLineNumbers();
+                debouncedUpdate();
+            });
+
+            findInput.addEventListener('input', debouncedUpdate);
+            caseSensitiveCheckbox.addEventListener('change', debouncedUpdate);
+            useRegexCheckbox.addEventListener('change', debouncedUpdate);
+            multilineModeCheckbox.addEventListener('change', debouncedUpdate);
+
+            const handleCtrlEnter = (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    performReplaceAll();
+                }
+            };
+            textarea.addEventListener('keydown', handleCtrlEnter);
+            findInput.addEventListener('keydown', handleCtrlEnter);
+            replaceInput.addEventListener('keydown', handleCtrlEnter);
+            
+            updateLineNumbers();
+            updateMatchCount();
+        })();
+
+        // --- Initialize Everything ---
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Load header and footer components first
+            await ComponentLoader.loadAll();
+            
+            // Initialize theme switcher after header is loaded
+            initThemeSwitcher();
+            
+            // Initialize page metadata
+            await initPageMetadata();
+        });
+    </script>
+</body>
+</html>

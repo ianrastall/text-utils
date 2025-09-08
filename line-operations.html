@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Utilities</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-0V2F0V7FWB');
+	</script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <!-- Dynamic Title -->
+                        <h2 class="card-title mb-4 d-flex align-items-center" id="dynamic-title">
+                            <img src="img/text.svg" alt="" style="height: 36px; margin-right: 15px;" id="tool-icon" aria-hidden="true" />
+                            <span id="tool-name">Line Operations</span>
+                        </h2>
+
+                        <p class="text-white-50 mb-4" id="tool-description">Perform various operations on lines of text.</p>
+
+                        <form id="lineOpsForm" class="post-content">
+
+                            <fieldset class="mb-4">
+                                <legend class="h5 mb-3">Input Text</legend>
+                                <div class="mb-3">
+                                    <label for="inputLines" class="form-label fw-bold">Your Lines:</label>
+                                    <textarea class="form-control" id="inputLines" name="inputLines" rows="10" placeholder="Enter or paste text here, one item per line..."></textarea>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-edit btn-sm d-flex align-items-center" data-action="undo" disabled><span class="material-icons me-1" style="font-size:1.1em;" aria-hidden="true">undo</span>Undo</button>
+                                    <button type="button" class="btn btn-edit btn-sm d-flex align-items-center" data-action="redo" disabled><span class="material-icons me-1" style="font-size:1.1em;" aria-hidden="true">redo</span>Redo</button>
+                                    <button type="button" class="btn btn-task btn-sm d-flex align-items-center ms-auto" data-action="copy"><span class="material-icons me-1" style="font-size:1.1em;" aria-hidden="true">content_copy</span>Copy</button>
+                                    <button type="button" class="btn btn-task btn-sm d-flex align-items-center" data-action="paste"><span class="material-icons me-1" style="font-size:1.1em;" aria-hidden="true">content_paste</span>Paste</button>
+                                    <button type="button" class="btn btn-clear btn-sm d-flex align-items-center" data-action="clear"><span class="material-icons me-1" style="font-size:1.1em;" aria-hidden="true">clear</span>Clear</button>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="mb-4" aria-labelledby="sorting-legend">
+                                <legend class="h5 mb-3" id="sorting-legend">Sorting</legend>
+                                <div class="d-flex flex-wrap align-items-center gap-3">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-edit btn-sm" data-action="sort" data-value="alpha">A-Z</button>
+                                        <button type="button" class="btn btn-edit btn-sm" data-action="sort" data-value="alphaDesc">Z-A</button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-edit btn-sm" data-action="sort" data-value="numeric">1-9</button>
+                                        <button type="button" class="btn btn-edit btn-sm" data-action="sort" data-value="numericDesc">9-1</button>
+                                    </div>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="sort" data-value="natural">Natural</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="sort" data-value="length">By Length</button>
+                                    <div class="form-check form-switch ms-auto">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="caseSensitive">
+                                        <label class="form-check-label" for="caseSensitive">Case-sensitive</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="mb-4" aria-labelledby="operations-legend">
+                                <legend class="h5 mb-3" id="operations-legend">Operations</legend>
+                                 <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="operate" data-value="reverse">Reverse</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="operate" data-value="shuffle">Shuffle</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="operate" data-value="unique">Remove Duplicates</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="operate" data-value="trim">Trim Spaces</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="operate" data-value="unwrap">Unwrap Lines</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="filter" data-value="empty">Remove Empty</button>
+                                    <button type="button" class="btn btn-edit btn-sm" data-action="operate" data-value="removeZeroWidth">Remove Zero-Width</button>
+                                    <div class="input-group input-group-sm" style="width: auto;">
+                                        <span class="input-group-text">Wrap:</span>
+                                        <input type="number" id="wrapLength" value="80" min="1" class="form-control" style="width:60px;">
+                                        <button type="button" class="btn btn-edit" data-action="operate" data-value="hardwrap">Go</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset aria-labelledby="modify-legend">
+                                <legend class="h5 mb-3" id="modify-legend">Filter, Modify & Number</legend>
+                                <div class="row g-3">
+                                    <div class="col-lg-12">
+                                        <label for="filterText" class="form-label">Filter Lines Containing</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" id="filterText" class="form-control" placeholder="Text to match...">
+                                            <button type="button" class="btn btn-edit" data-action="filter" data-value="keep">Keep</button>
+                                            <button type="button" class="btn btn-edit" data-action="filter" data-value="remove">Remove</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="prefix" class="form-label">Add Prefix</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" id="prefix" class="form-control" placeholder="Prefix text">
+                                            <button type="button" class="btn btn-edit" aria-label="Add Prefix" data-action="prefix"><span class="material-icons" style="font-size:1.2em;" aria-hidden="true">keyboard_arrow_left</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="suffix" class="form-label">Add Suffix</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" id="suffix" class="form-control" placeholder="Suffix text">
+                                            <button type="button" class="btn btn-edit" aria-label="Add Suffix" data-action="suffix"><span class="material-icons" style="font-size:1.2em;" aria-hidden="true">keyboard_arrow_right</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <label class="form-label">Number Lines</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">Start</span>
+                                            <input type="number" id="startNumber" value="1" class="form-control">
+                                            <span class="input-group-text">Step</span>
+                                            <input type="number" id="stepNumber" value="1" min="1" class="form-control">
+                                            <button type="button" class="btn btn-edit" data-action="number" aria-label="Number Lines"><span class="material-icons" style="font-size:1.2em;" aria-hidden="true">format_list_numbered</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <!-- Sidebar will be injected here by JavaScript -->
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+
+    <script>
+        // --- Initialize Theme Switcher ---
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+
+            function applyTheme(theme) {
+                htmlElement.className = ''; // Remove all existing classes
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+
+            // Populate the dropdown menu with theme options
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+
+            // Set the initial theme on page load
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+
+        // --- Initialize Page Metadata ---
+        async function initPageMetadata() {
+            const currentSlug = 'line-operations'; // Hardcoded for this specific page
+
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+
+                const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
+
+                // Set page title and description
+                document.getElementById('tool-name').textContent = currentTool.name || 'Line Operations';
+                document.getElementById('tool-description').textContent = currentTool.description || 'Perform various operations on lines of text.';
+
+                // Set icon
+                const iconEl = document.getElementById('tool-icon');
+                if (currentTool.icon) {
+                    if (currentTool.icon.endsWith('.svg') || currentTool.icon.endsWith('.png')) {
+                        iconEl.src = currentTool.icon;
+                        iconEl.classList.remove('d-none');
+                    } else {
+                        // If it's a Material Icon, replace the <img> with a <span>
+                        iconEl.outerHTML = `<span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true">${currentTool.icon}</span>`;
+                    }
+                }
+
+                // Generate sidebar, marking current page as active
+                const sidebarHtml = tools
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(tool => {
+                        const isActive = tool.slug === currentSlug;
+                        const activeClass = isActive ? ' active' : '';
+                        const iconHtml = tool.icon ?
+                            (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                                `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                                `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                            `<span class="me-2" style="width: 24px;"></span>`;
+
+                        return `
+                            <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                                ${iconHtml}
+                                <span>${tool.name}</span>
+                            </a>
+                        `;
+                    }).join('');
+
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+
+            } catch (error) {
+                console.error('Error initializing page meta', error);
+            }
+        }
+
+        // --- Core Line Operations Tool Logic (Unchanged from your original JS) ---
+        const LineOperationsTool = (() => {
+            // --- Config & State ---
+            const config = { maxHistory: 30, inputSizeLimit: 2 * 1024 * 1024 }; // 2MB limit
+            const state = { history: [], historyIndex: -1 };
+            const dom = {}; // To cache DOM elements
+
+            // --- Main Initializer ---
+            function init() {
+                cacheDOM();
+                bindEventListeners();
+                createToastContainer();
+                saveState(dom.input.value); // Save initial empty state
+                updateUndoRedoButtons();
+            }
+
+            // --- DOM & Events ---
+            function cacheDOM() {
+                dom.form = document.getElementById('lineOpsForm');
+                dom.input = document.getElementById('inputLines');
+                dom.caseSensitive = document.getElementById('caseSensitive');
+                dom.wrapLength = document.getElementById('wrapLength');
+                dom.filterText = document.getElementById('filterText');
+                dom.prefix = document.getElementById('prefix');
+                dom.suffix = document.getElementById('suffix');
+                dom.startNumber = document.getElementById('startNumber');
+                dom.stepNumber = document.getElementById('stepNumber');
+                dom.undoBtn = document.querySelector('[data-action="undo"]');
+                dom.redoBtn = document.querySelector('[data-action="redo"]');
+            }
+
+            function bindEventListeners() {
+                dom.form.addEventListener('click', handleFormClick);
+                let debounceTimer;
+                dom.input.addEventListener('input', () => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => saveState(dom.input.value), 500);
+                });
+                document.addEventListener('keydown', handleKeyboardShortcuts);
+            }
+
+            function handleFormClick(e) {
+                const target = e.target.closest('button[data-action]');
+                if (!target) return;
+                
+                const action = target.dataset.action;
+                const value = target.dataset.value;
+                
+                if (getLines(true).length > config.inputSizeLimit) {
+                    showToast('Input text is too large to process.', 'danger');
+                    return;
+                }
+
+                const operations = {
+                    sort: () => performSort(value),
+                    operate: () => performOperation(value),
+                    filter: () => performFilter(value),
+                    prefix: addPrefix,
+                    suffix: addSuffix,
+                    number: numberLines,
+                    copy: copyToClipboard,
+                    paste: pasteText,
+                    clear: clearFields,
+                    undo: undo,
+                    redo: redo
+                };
+
+                if (operations[action]) {
+                    operations[action]();
+                }
+            }
+            
+            function handleKeyboardShortcuts(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+                    if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) { e.preventDefault(); redo(); }
+                }
+            }
+            
+            // --- History Management ---
+            function saveState(text) {
+                if (state.history[state.historyIndex] === text) return;
+                state.history = state.history.slice(0, state.historyIndex + 1);
+                state.history.push(text);
+                if (state.history.length > config.maxHistory) {
+                    state.history.shift();
+                } else {
+                    state.historyIndex++;
+                }
+                updateUndoRedoButtons();
+            }
+            
+            function undo() {
+                if (state.historyIndex > 0) {
+                    state.historyIndex--;
+                    updateTextarea(state.history[state.historyIndex], false);
+                    showToast('Undo', 'info');
+                }
+                updateUndoRedoButtons();
+            }
+
+            function redo() {
+                if (state.historyIndex < state.history.length - 1) {
+                    state.historyIndex++;
+                    updateTextarea(state.history[state.historyIndex], false);
+                    showToast('Redo', 'info');
+                }
+                updateUndoRedoButtons();
+            }
+            
+            function updateUndoRedoButtons() {
+                dom.undoBtn.disabled = state.historyIndex <= 0;
+                dom.redoBtn.disabled = state.historyIndex >= state.history.length - 1;
+            }
+
+            // --- Core Operation Functions ---
+            function performSort(type) {
+                const caseSensitive = dom.caseSensitive.checked;
+                let lines = getLines();
+                const compare = (a, b) => caseSensitive ? a.localeCompare(b) : a.localeCompare(b, undefined, { sensitivity: 'base' });
+
+                switch(type) {
+                    case 'alpha': lines.sort(compare); break;
+                    case 'alphaDesc': lines.sort((a, b) => compare(b, a)); break;
+                    case 'numeric': lines.sort((a, b) => parseFloat(a) - parseFloat(b)); break;
+                    case 'numericDesc': lines.sort((a, b) => parseFloat(b) - parseFloat(a)); break;
+                    case 'natural': lines.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: caseSensitive ? 'variant' : 'base' })); break;
+                    case 'length': lines.sort((a, b) => a.length - b.length); break;
+                }
+                updateTextarea(lines.join('\n'));
+                showToast(`Sorted: ${type}`);
+            }
+            
+            function performOperation(type) {
+                let lines = getLines();
+                switch(type) {
+                    case 'reverse': lines.reverse(); break;
+                    case 'shuffle': for (let i = lines.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [lines[i], lines[j]] = [lines[j], lines[i]]; } break;
+                    case 'unique': const seen = new Set(); lines = lines.filter(line => { const key = dom.caseSensitive.checked ? line : line.toLowerCase(); if (seen.has(key)) return false; seen.add(key); return true; }); break;
+                    case 'trim': lines = lines.map(line => line.trim()); break;
+                    case 'unwrap': lines = [lines.join(' ')]; break;
+                    case 'removeZeroWidth': const zeroWidthRegex = /[\u200B-\u200D\uFEFF\u00AD\u2060]/g; lines = lines.map(line => line.replace(zeroWidthRegex, '')); break;
+                    case 'hardwrap': const wrapLength = parseInt(dom.wrapLength.value) || 80; const regex = new RegExp(`(.{1,${wrapLength}})(\\s+|$)`, 'g'); lines = lines.join(' ').match(regex) || []; lines = lines.map(l => l.trim()); break;
+                }
+                updateTextarea(lines.join('\n'));
+                showToast(`Performed: ${type}`);
+            }
+            
+            function performFilter(type) {
+                let lines = getLines();
+                const originalCount = lines.length;
+                const filterText = dom.filterText.value;
+                const compare = (line, text) => dom.caseSensitive.checked ? line.includes(text) : line.toLowerCase().includes(text.toLowerCase());
+                
+                switch(type) {
+                    case 'empty': lines = lines.filter(line => line.trim() !== ''); break;
+                    case 'keep': if (!filterText) return showToast('Enter text to keep.', 'warning'); lines = lines.filter(line => compare(line, filterText)); break;
+                    case 'remove': if (!filterText) return showToast('Enter text to remove.', 'warning'); lines = lines.filter(line => !compare(line, filterText)); break;
+                }
+                updateTextarea(lines.join('\n'));
+                showToast(`Filtered: ${lines.length} of ${originalCount} lines remaining.`);
+            }
+            
+            function addPrefix() {
+                const prefix = dom.prefix.value;
+                const lines = getLines().map(line => prefix + line);
+                updateTextarea(lines.join('\n'));
+                showToast('Added prefix');
+            }
+
+            function addSuffix() {
+                const suffix = dom.suffix.value;
+                const lines = getLines().map(line => line + suffix);
+                updateTextarea(lines.join('\n'));
+                showToast('Added suffix');
+            }
+            
+            function numberLines() {
+                let currentNum = parseInt(dom.startNumber.value, 10) || 1;
+                const step = parseInt(dom.stepNumber.value, 10) || 1;
+                const lines = getLines().map(line => {
+                    const numberedLine = `${currentNum}. ${line}`;
+                    currentNum += step;
+                    return numberedLine;
+                });
+                updateTextarea(lines.join('\n'));
+                showToast(`Lines numbered.`);
+            }
+
+            // --- Helper & Utility Functions ---
+            function getLines(raw = false) {
+                return raw ? dom.input.value : dom.input.value.split(/\r\n|\r|\n/);
+            }
+            
+            function updateTextarea(text, shouldSaveState = true) {
+                dom.input.value = text;
+                if (shouldSaveState) saveState(text);
+                dom.input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            async function copyToClipboard() {
+                const text = getLines(true);
+                if (!text) return showToast('Nothing to copy.', 'warning');
+                await navigator.clipboard.writeText(text);
+                showToast('Copied to clipboard!');
+            }
+
+            async function pasteText() {
+                const text = await navigator.clipboard.readText();
+                updateTextarea(text);
+                showToast('Pasted from clipboard!');
+            }
+            
+            function clearFields() {
+                updateTextarea('');
+                dom.filterText.value = '';
+                dom.prefix.value = '';
+                dom.suffix.value = '';
+                showToast('Input cleared');
+            }
+            
+            // --- Secure & Accessible Toast Notification System ---
+            function showToast(message, type = 'success') {
+                const toastContainer = document.getElementById('toastPlacement');
+                if (!toastContainer) return;
+
+                const toastEl = document.createElement('div');
+                toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+                toastEl.setAttribute('role', 'alert');
+                toastEl.setAttribute('aria-live', 'assertive');
+                
+                const dFlex = document.createElement('div');
+                dFlex.className = 'd-flex';
+                
+                const body = document.createElement('div');
+                body.className = 'toast-body';
+                body.textContent = message; // SECURITY: Use textContent, not innerHTML
+
+                const closeBtn = document.createElement('button');
+                closeBtn.type = 'button';
+                closeBtn.className = 'btn-close btn-close-white me-2 m-auto';
+                closeBtn.setAttribute('data-bs-dismiss', 'toast');
+                closeBtn.setAttribute('aria-label', 'Close');
+
+                dFlex.appendChild(body);
+                dFlex.appendChild(closeBtn);
+                toastEl.appendChild(dFlex);
+                toastContainer.appendChild(toastEl);
+                
+                const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 3000 });
+                toast.show();
+                
+                // Announce to screen readers
+                const srAnnouncer = document.getElementById('sr-announcements');
+                if (srAnnouncer) srAnnouncer.textContent = `${type}: ${message}`;
+
+                toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+            }
+
+            function createToastContainer() {
+                let container = document.getElementById('toastPlacement');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toastPlacement';
+                    container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    document.body.appendChild(container);
+                    
+                    // ACCESSIBILITY: Add screen reader announcement region
+                    const srAnnouncer = document.createElement('div');
+                    srAnnouncer.id = 'sr-announcements';
+                    srAnnouncer.setAttribute('aria-live', 'polite');
+                    srAnnouncer.className = 'visually-hidden'; // Bootstrap class to hide visually
+                    document.body.appendChild(srAnnouncer);
+                }
+            }
+
+            // --- Public API ---
+            return { init };
+        })();
+
+        // --- Initialize Everything ---
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Load header and footer components first
+            await ComponentLoader.loadAll();
+            
+            // Initialize theme switcher after header is loaded
+            initThemeSwitcher();
+            
+            // Initialize page metadata and tool functionality
+            await initPageMetadata();
+            LineOperationsTool.init();
+            
+            // Set current year
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>
