@@ -110,38 +110,22 @@
   }
 
   function renderGrid() {
-    const containerRect = dom.gridContainer.getBoundingClientRect();
-    state.itemsPerRow = Math.max(1, Math.floor(containerRect.width / (state.rowHeight * 0.8)));
-    const totalRows = Math.ceil(state.activeItems.length / state.itemsPerRow);
-    dom.gridSizer.style.height = `${totalRows * state.rowHeight}px`;
-    const scrollTop = dom.gridContainer.scrollTop;
-    const startIndex = Math.floor(scrollTop / state.rowHeight) * state.itemsPerRow;
-    const endIndex = Math.min(state.activeItems.length, startIndex + (Math.ceil(containerRect.height / state.rowHeight) * state.itemsPerRow) + (state.itemsPerRow * 2));
-    const fragment = document.createDocumentFragment();
-    for (let i = startIndex; i < endIndex; i++) {
-      const cp = state.activeItems[i];
-      if (cp === undefined || (cp >= 0xD800 && cp <= 0xDFFF)) continue;
+    dom.grid.innerHTML = '';
+    state.activeItems.forEach((cp, i) => {
+      if (cp === undefined || (cp >= 0xD800 && cp <= 0xDFFF)) return;
       const char = String.fromCodePoint(cp);
       const isCombining = (cp >= 0x0300 && cp <= 0x036F);
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "btn btn-edit char-btn";
-      btn.textContent = isCombining ? `\u25CC${char}` : char;
-      btn.dataset.cp = cp;
-      btn.dataset.index = i;
-      btn.setAttribute('role', 'gridcell');
-      btn.setAttribute('aria-label', `Character: ${char}, Codepoint: U+${cp.toString(16).toUpperCase()}`);
-      const rowIndex = Math.floor(i / state.itemsPerRow);
-      const colIndex = i % state.itemsPerRow;
-      btn.style.position = 'absolute';
-      btn.style.top = `${rowIndex * state.rowHeight}px`;
-      btn.style.left = `${colIndex * (100 / state.itemsPerRow)}%`;
-      btn.style.width = `${100 / state.itemsPerRow}%`;
-      btn.addEventListener("click", () => handleCharClick(cp, i));
-      fragment.appendChild(btn);
-    }
-    dom.grid.innerHTML = '';
-    dom.grid.appendChild(fragment);
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'char-cell';
+      cell.textContent = isCombining ? `\u25CC${char}` : char;
+      cell.dataset.cp = cp;
+      cell.dataset.index = i;
+      cell.setAttribute('role', 'gridcell');
+      cell.setAttribute('aria-label', `Character: ${char}, Codepoint: U+${cp.toString(16).toUpperCase()}`);
+      cell.addEventListener('click', () => handleCharClick(cp, i));
+      dom.grid.appendChild(cell);
+    });
   }
 
   function handleGridKeyDown(e) {
@@ -181,8 +165,15 @@
     const hex = cp.toString(16).toUpperCase();
     const lang = dom.langSelect.value;
     let output = '';
+    // Try to get block info from data
+    let blockName = findBlockName(cp);
+    let blockInfo = '';
+    if (state.data && state.data.blocks && state.data.blocks[blockName]) {
+      const blockArr = state.data.blocks[blockName];
+      if (blockArr && blockArr.length > 2) blockInfo = blockArr[2];
+    }
     if (lang === "info") {
-      dom.codeOutput.value = `Character: ${char}\nBlock: ${findBlockName(cp)}\nCodepoint: U+${hex}\nDecimal: ${cp}`;
+      dom.codeOutput.value = `Character: ${char}\nBlock: ${blockName}${blockInfo ? ` (${blockInfo})` : ''}\nCodepoint: U+${hex}\nDecimal: ${cp}`;
       return;
     }
     if (lang === 'raw') { dom.codeOutput.value = char; return; }
@@ -195,7 +186,7 @@
       case "php": output = `"\\u{${hex}}"`; break;
       case "json": output = `"${jsEscape.replace(/\{|\}/g, '')}"`; break;
     }
-    dom.codeOutput.value = output;
+    dom.codeOutput.value = `${output}\n\nCharacter: ${char}\nBlock: ${blockName}${blockInfo ? ` (${blockInfo})` : ''}\nCodepoint: U+${hex}\nDecimal: ${cp}`;
   }
 
   function findBlockName(cp) {

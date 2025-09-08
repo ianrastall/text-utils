@@ -10,10 +10,40 @@
   <link rel="stylesheet" href="css/tutorials.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <style>
-    #charGridContainer { height: 400px; overflow-y: auto; position: relative; }
-    #charGridSizer { position: relative; width: 100%; }
-    #charGrid { position: absolute; top: 0; left: 0; right: 0; }
-    .char-btn { font-size: 1.6rem; padding: 0.25rem; aspect-ratio: 1/1; }
+    #charGridContainer {
+      height: 400px;
+      overflow-y: auto;
+      background: #23272b;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+    }
+    #charGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+      gap: 0.5rem;
+      min-height: 300px;
+    }
+    .char-cell {
+      background: #fff;
+      color: #222;
+      border: 1px solid #bbb;
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+      aspect-ratio: 1/1;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s;
+      overflow: hidden;
+      user-select: none;
+    }
+    .char-cell:hover, .char-cell:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px #007bff33;
+      outline: none;
+      z-index: 2;
+    }
     #codeOutput { min-height: 120px !important; height: 120px !important; resize: vertical !important; box-sizing: border-box !important; }
     .code-output-container { position: relative; z-index: 1; }
     #codeOutput.form-control { height: auto !important; min-height: 120px !important; }
