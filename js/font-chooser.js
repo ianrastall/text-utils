@@ -1,5 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-
 // --- Google Fonts List (curated, as in PHP) ---
 const googleFontsData = {"items": [
   // SANS-SERIF
@@ -146,20 +144,18 @@ const systemFonts = {
 
 // Font Chooser Application - JS Version
 class FontChooser {
-    constructor() {
-        this.currentFont = null;
-        this.currentSource = 'google';
-        this.googleFonts = googleFontsData?.items || [];
-        this.availableWeights = ['400'];
-        this.pendingFontLoad = null; // Track pending font loads
-        this.init();
-    }
-    // ...all methods from the PHP version's JS, unchanged...
-    // (For brevity, see the PHP version's <script> block for the full implementation)
+  constructor() {
+    this.currentFont = null;
+    this.currentSource = 'google';
+    this.googleFonts = googleFontsData?.items || [];
+    this.availableWeights = ['400'];
+    this.pendingFontLoad = null; // Track pending font loads
+    this.init();
+  }
+  // ...all methods from the PHP version's JS, unchanged...
+  // (For brevity, see the PHP version's <script> block for the full implementation)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new FontChooser();
-});
-
+  new FontChooser();
 });
