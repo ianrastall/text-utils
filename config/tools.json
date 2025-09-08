@@ -14,6 +14,14 @@
         "order": 8
     },
     {
+        "slug": "unicode-chooser",
+        "name": "Unicode Chooser",
+        "icon": "text_fields",
+        "description": "Browse, search, and copy Unicode characters with code point and language-specific escaping.",
+        "category": "Characters",
+        "order": 9
+    },
+    {
         "slug": "text-info",
         "name": "Text Info",
         "icon": "analytics",

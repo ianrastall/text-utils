@@ -1,0 +1,91 @@
+<!-- unicode-chooser.html: Unicode character chooser tool (static, JS-powered) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unicode Chooser</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="css/tutorials.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    #charGridContainer { height: 400px; overflow-y: auto; position: relative; }
+    #charGridSizer { position: relative; width: 100%; }
+    #charGrid { position: absolute; top: 0; left: 0; right: 0; }
+    .char-btn { font-size: 1.6rem; padding: 0.25rem; aspect-ratio: 1/1; }
+    #codeOutput { min-height: 120px !important; height: 120px !important; resize: vertical !important; box-sizing: border-box !important; }
+    .code-output-container { position: relative; z-index: 1; }
+    #codeOutput.form-control { height: auto !important; min-height: 120px !important; }
+  </style>
+</head>
+<body class="bg-dark text-light">
+  <div id="header-container"></div>
+  <div class="container-fluid my-4">
+    <div class="row gx-3 gy-3">
+      <main class="col-md-9">
+        <div class="card bg-dark border-secondary">
+          <div class="card-body">
+            <h2 class="d-flex align-items-center mb-4">
+              <span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true">text_fields</span>
+              Unicode Chooser
+            </h2>
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label for="categorySelect" class="form-label">Category</label>
+                <select class="form-select" id="categorySelect"></select>
+              </div>
+              <div class="col-md-4">
+                <label for="blockSelect" class="form-label">Unicode Block</label>
+                <select class="form-select" id="blockSelect"></select>
+              </div>
+              <div class="col-md-4">
+                <label for="searchInput" class="form-label">Search</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="e.g., arrow, 2192...">
+              </div>
+            </div>
+            <div id="charGridContainer" class="p-2 border rounded border-secondary" role="grid" aria-label="Unicode characters">
+              <div id="charGridSizer">
+                <div id="charGrid" class="row row-cols-auto g-1"></div>
+              </div>
+            </div>
+            <div class="row g-3 mt-2">
+              <div class="col-md-8">
+                <div class="code-output-container">
+                  <label for="codeOutput" class="form-label">Generated Code / Info</label>
+                  <textarea class="form-control font-monospace" id="codeOutput" rows="4" readonly style="min-height: 120px; height: 120px; resize: vertical;"></textarea>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="langSelect" class="form-label">Language Escape</label>
+                <select class="form-select" id="langSelect">
+                  <option value="html" selected>HTML (&amp;#cp;)</option>
+                  <option value="css">CSS (\hex)</option>
+                  <option value="javascript">JavaScript (\uHex)</option>
+                  <option value="python">Python (\UHex)</option>
+                  <option value="php">PHP (\u{Hex})</option>
+                  <option value="json">JSON ("\uHex")</option>
+                  <option value="raw">Raw Character</option>
+                  <option value="info">Info Only</option>
+                </select>
+                <div class="d-flex gap-2 flex-wrap mt-2">
+                  <button type="button" class="btn btn-sm btn-edit" id="copyCodeBtn">Copy</button>
+                  <button type="button" class="btn btn-sm btn-clear" id="clearCodeBtn">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <aside class="col-md-3">
+        <div class="card bg-dark border-secondary">
+          <div class="card-body p-0" id="sidebar-container"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="footer-container"></div>
+  <script src="js/component-loader.js"></script>
+  <script src="js/unicode-chooser.js"></script>
+</body>
+</html>
