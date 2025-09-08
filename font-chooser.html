@@ -27,7 +27,210 @@
             </div>
             <p class="text-white-50 mb-4">Preview and select fonts with Google Fonts integration, accessibility checking, and production-ready CSS generation.</p>
             <!-- Font Selection Controls and Preview UI -->
-            <div id="font-chooser-app"></div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100">
+                  <div class="card-header">
+                    <h5 class="mb-0">Font Source</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="radio" name="fontSource" id="sourceGoogle" value="google" checked>
+                      <label class="form-check-label" for="sourceGoogle">
+                        Google Fonts <span class="badge bg-primary ms-1">100+</span>
+                        <small class="d-block text-muted">Curated popular fonts</small>
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="radio" name="fontSource" id="sourceSystem" value="system">
+                      <label class="form-check-label" for="sourceSystem">
+                        System Fonts
+                      </label>
+                    </div>
+                    <div class="mt-3">
+                      <input type="text" class="form-control form-control-sm" id="fontSearch" placeholder="Search fonts...">
+                    </div>
+                    <div class="mt-3" id="categoryFilter">
+                      <label class="form-label small">Category</label>
+                      <select class="form-select form-select-sm" id="fontCategory">
+                        <option value="">All Categories</option>
+                        <option value="serif">Serif</option>
+                        <option value="sans-serif">Sans Serif</option>
+                        <option value="display">Display</option>
+                        <option value="handwriting">Handwriting</option>
+                        <option value="monospace">Monospace</option>
+                      </select>
+                    </div>
+                    <div class="mt-3 border border-secondary rounded p-2" style="height: 500px; overflow-y: auto; background-color: #1a1a1a;" id="fontList">
+                      <div class="text-center py-3">
+                        <div class="loading-spinner"></div>
+                        <div class="small mt-2">Loading fonts...</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="card bg-dark border-secondary mb-3">
+                  <div class="card-header">
+                    <h5 class="mb-0">Preview Settings</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label for="fontSize" class="form-label">Font Size</label>
+                        <div class="input-group">
+                          <input type="range" class="form-range me-2" id="fontSizeRange" min="8" max="72" value="16" style="width: 60%;">
+                          <input type="number" class="form-control" id="fontSize" min="8" max="72" value="16" style="width: 80px;">
+                          <span class="input-group-text">px</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="fontWeight" class="form-label">Font Weight</label>
+                        <select class="form-select" id="fontWeight">
+                          <option value="100">100 - Thin</option>
+                          <option value="300">300 - Light</option>
+                          <option value="400" selected>400 - Regular</option>
+                          <option value="500">500 - Medium</option>
+                          <option value="600">600 - Semi Bold</option>
+                          <option value="700">700 - Bold</option>
+                          <option value="900">900 - Black</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="lineHeight" class="form-label">Line Height</label>
+                        <div class="input-group">
+                          <input type="range" class="form-range me-2" id="lineHeightRange" min="1" max="3" step="0.1" value="1.5" style="width: 60%;">
+                          <input type="number" class="form-control" id="lineHeight" min="1" max="3" step="0.1" value="1.5" style="width: 80px;">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="letterSpacing" class="form-label">Letter Spacing</label>
+                        <div class="input-group">
+                          <input type="range" class="form-range me-2" id="letterSpacingRange" min="-5" max="10" step="0.5" value="0" style="width: 60%;">
+                          <input type="number" class="form-control" id="letterSpacing" min="-5" max="10" step="0.5" value="0" style="width: 80px;">
+                          <span class="input-group-text">px</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label for="textColor" class="form-label">Text Color</label>
+                        <div class="input-group">
+                          <input type="color" class="form-control form-control-color" id="textColor" value="#ffffff">
+                          <input type="text" class="form-control" id="textColorHex" value="#ffffff" maxlength="7">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label for="bgColor" class="form-label">Background Color</label>
+                        <div class="input-group">
+                          <input type="color" class="form-control form-control-color" id="bgColor" value="#1a1a1a">
+                          <input type="text" class="form-control" id="bgColorHex" value="#1a1a1a" maxlength="7">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Contrast Ratio</label>
+                        <div id="contrastRatio" class="form-control-plaintext">
+                          <span class="contrast-badge contrast-pass">21:1 AAA</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                      <div class="col-md-6">
+                        <label for="textSample" class="form-label">Text Sample</label>
+                        <select class="form-select" id="textSample">
+                          <option value="custom">Custom Text</option>
+                          <option value="alphabet">Alphabet</option>
+                          <option value="paragraph" selected>Paragraph</option>
+                          <option value="headings">Headings</option>
+                          <option value="numbers">Numbers & Symbols</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="devicePreview" class="form-label">Device Preview</label>
+                        <select class="form-select" id="devicePreview">
+                          <option value="desktop" selected>Desktop</option>
+                          <option value="tablet">Tablet</option>
+                          <option value="mobile">Mobile</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="mt-3" id="customTextContainer">
+                      <label for="customText" class="form-label">Custom Text</label>
+                      <textarea class="form-control" id="customText" rows="2" placeholder="Enter your custom text...">The quick brown fox jumps over the lazy dog.</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="card bg-dark border-secondary mb-3">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Preview</h5>
+                    <div>
+                      <button class="btn btn-sm btn-outline-secondary" id="resetPreview">
+                        <span class="material-icons" style="font-size: 16px;">refresh</span> Reset
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="font-preview-area" id="fontPreview">
+                      <div id="previewContent">
+                        <p>The quick brown fox jumps over the lazy dog.</p>
+                        <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                        <p>abcdefghijklmnopqrstuvwxyz</p>
+                        <p>0123456789</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card bg-dark border-secondary">
+                  <div class="card-header">
+                    <h5 class="mb-0">Production-Ready CSS</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                      <small>
+                        <strong>💡 Tip:</strong> While we show 100+ popular fonts here, you can manually edit the Google Fonts URL in the generated code to use any of the 1400+ fonts available at <a href="https://fonts.google.com" target="_blank" class="alert-link">fonts.google.com</a>
+                      </small>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="css-tab" data-bs-toggle="tab" data-bs-target="#css-panel" type="button">CSS</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="import-tab" data-bs-toggle="tab" data-bs-target="#import-panel" type="button">Import</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="scss-tab" data-bs-toggle="tab" data-bs-target="#scss-panel" type="button">SCSS</button>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane fade show active" id="css-panel" role="tabpanel">
+                        <div class="code-output position-relative">
+                          <button class="btn btn-sm btn-primary copy-button" data-target="cssCode">
+                            <span class="material-icons" style="font-size: 14px;">content_copy</span> Copy
+                          </button>
+                          <pre id="cssCode" class="mb-0"><code>/* Select a font to generate CSS */</code></pre>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="import-panel" role="tabpanel">
+                        <div class="code-output position-relative">
+                          <button class="btn btn-sm btn-primary copy-button" data-target="importCode">
+                            <span class="material-icons" style="font-size: 14px;">content_copy</span> Copy
+                          </button>
+                          <pre id="importCode" class="mb-0"><code>/* Select a font to generate import */</code></pre>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="scss-panel" role="tabpanel">
+                        <div class="code-output position-relative">
+                          <button class="btn btn-sm btn-primary copy-button" data-target="scssCode">
+                            <span class="material-icons" style="font-size: 14px;">content_copy</span> Copy
+                          </button>
+                          <pre id="scssCode" class="mb-0"><code>/* Select a font to generate SCSS */</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
