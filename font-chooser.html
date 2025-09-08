@@ -15,7 +15,7 @@
   </style>
 </head>
 <body class="bg-dark text-light">
-  <div id="header-container"></div>
+  <div id="header-placeholder"></div>
   <div class="container-fluid my-4">
     <div class="row gx-3 gy-3">
       <main class="col-md-9">
@@ -32,11 +32,11 @@
         </div>
       </main>
       <aside class="col-md-3">
-        <div id="sidebar-container"></div>
+        <div id="dynamic-sidebar"></div>
       </aside>
     </div>
   </div>
-  <div id="footer-container"></div>
+  <div id="footer-placeholder"></div>
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-body">Code copied to clipboard!</div>
@@ -44,16 +44,7 @@
   </div>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/component-loader.js"></script>
+  <script src="js/main.js"></script>
   <script src="js/font-chooser.js"></script>
-  <script>
-    // Theme switcher logic
-    if (localStorage.getItem('theme')) {
-      document.body.classList.toggle('theme-dark', localStorage.getItem('theme') === 'dark');
-    }
-    // Load header, footer, sidebar
-    loadComponent('components/header-content.html', '#header-container');
-    loadComponent('components/footer-content.html', '#footer-container');
-    loadComponent('components/sidebar-content.html', '#sidebar-container');
-  </script>
 </body>
 </html>
