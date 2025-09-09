@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
-    const mainText = document.getElementById('mainText');
-    const entityTypeSelect = document.getElementById('entityTypeSelect');
-    const encodeBtn = document.getElementById('encodeBtn');
-    const decodeBtn = document.getElementById('decodeBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const pasteBtn = document.getElementById('pasteBtn');
-    const clearBtn = document.getElementById('clearBtn');
+const mainText = document.getElementById('mainText');
+const entityTypeSelect = document.getElementById('entityTypeSelect');
+const encodeBtn = document.getElementById('encodeBtn');
+const decodeBtn = document.getElementById('decodeBtn');
+const copyBtn = document.getElementById('copyBtn');
+const pasteBtn = document.getElementById('pasteBtn');
+const clearBtn = document.getElementById('clearBtn');
     
-    // A map of common characters to their named entities
-    const NAMED_ENTITY_MAP = {
+// A map of common characters to their named entities
+const NAMED_ENTITY_MAP = {
         "'": "&apos;", "<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;",
         " ": "&nbsp;", "¡": "&iexcl;", "¢": "&cent;", "£": "&pound;", "¤": "&curren;",
         "¥": "&yen;", "¦": "&brvbar;", "§": "&sect;", "¨": "&uml;", "©": "&copy;",
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "♠": "&spades;", "♣": "&clubs;", "♥": "&hearts;", "♦": "&diams;"
     };
 
-    const encodeEntities = (text, type) => {
+const encodeEntities = (text, type) => {
         if (!text) return '';
         try {
             return [...text].map(char => {
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const decodeHtmlEntities = (text) => {
+const decodeHtmlEntities = (text) => {
         if (!text) return '';
         try {
             const parser = new DOMParser();
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    encodeBtn.addEventListener('click', () => {
+encodeBtn.addEventListener('click', () => {
         if (!mainText.value) { 
             showToast('Nothing to encode.', 'info'); 
             return; 
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mainText.focus();
     });
 
-    decodeBtn.addEventListener('click', () => {
+decodeBtn.addEventListener('click', () => {
         if (!mainText.value) { 
             showToast('Nothing to decode.', 'info'); 
             return; 
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mainText.focus();
     });
 
-    copyBtn.addEventListener('click', async () => {
+copyBtn.addEventListener('click', async () => {
         if (!mainText.value) { 
             showToast('Nothing to copy.', 'warning'); 
             return; 
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    pasteBtn.addEventListener('click', async () => {
+pasteBtn.addEventListener('click', async () => {
         try {
             mainText.value = await navigator.clipboard.readText();
             showToast('Pasted from clipboard.', 'info');
@@ -132,14 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    clearBtn.addEventListener('click', () => {
+clearBtn.addEventListener('click', () => {
         mainText.value = '';
         showToast('Cleared text.', 'info');
         mainText.focus();
     });
     
-    // Toast notification function
-    function showToast(message, variant = 'info') {
+// Toast notification function
+function showToast(message, variant = 'info') {
         let container = document.getElementById('toastContainer');
         if (!container) {
             container = document.createElement('div');
@@ -178,4 +178,4 @@ document.addEventListener('DOMContentLoaded', () => {
         
         toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
-});
+

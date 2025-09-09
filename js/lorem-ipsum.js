@@ -128,6 +128,4 @@ const LoremGenerator = (() => {
     return { init };
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
-    LoremGenerator.init();
-});
+
