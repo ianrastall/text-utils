@@ -110,5 +110,13 @@
         "description": "A two-panel converter with live preview and formatting options.",
         "category": "Text",
         "order": 12
+    },
+    {
+        "slug": "css-gradient",
+        "name": "CSS Gradient Generator",
+        "icon": "palette",
+        "description": "Visually create linear, radial, and conic CSS gradients. Drag color stops, copy code, or download PNG.",
+        "category": "CSS",
+        "order": 13
     }
 ]
