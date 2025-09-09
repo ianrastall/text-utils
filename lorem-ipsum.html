@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator - Text Utils</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'">
+    <link rel="stylesheet" href="css/custom.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/css/custom.css'">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body class="bg-dark text-light">
+
+    <div id="header-placeholder"></div>
+
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4 d-flex align-items-center">
+                            <span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true">article</span>
+                            Lorem Ipsum Generator
+                        </h2>
+
+                        <form id="loremForm" class="mb-4">
+                            <fieldset>
+                                <legend class="h5 mb-3">Generator Options</legend>
+                                <div class="row g-3">
+                                    <div class="col-md-6 col-lg-3"><label for="generateType" class="form-label">Type</label><select id="generateType" class="form-select"><option value="paragraphs" selected>Paragraphs</option><option value="sentences">Sentences</option><option value="words">Words</option><option value="characters">Characters</option></select></div>
+                                    <div class="col-md-6 col-lg-3"><label for="generateCount" class="form-label">Quantity</label><input type="number" class="form-control" id="generateCount" value="5" min="1"></div>
+                                    <div class="col-md-6 col-lg-3"><label for="dictionary" class="form-label">Style</label><select id="dictionary" class="form-select"><option value="latin" selected>Classic Latin</option><option value="english">Plain English</option></select></div>
+                                    <div class="col-md-6 col-lg-3"><label for="htmlWrap" class="form-label">HTML</label><select id="htmlWrap" class="form-select"><option value="none" selected>None</option><option value="p">Wrap in &lt;p&gt; tags</option><option value="li">Create &lt;ul&gt; list</option></select></div>
+                                </div>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="startWithLorem" checked><label class="form-check-label" for="startWithLorem">Start with "Lorem ipsum dolor sit amet..."</label></div></div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12"><button type="submit" class="btn btn-task w-100"><span class="material-icons me-2" aria-hidden="true">auto_awesome</span>Generate</button></div>
+                                </div>
+                            </fieldset>
+                        </form>
+
+                        <div id="outputSection" style="display: none;">
+                            <hr class="border-secondary my-4">
+                            <ul class="nav nav-tabs" id="outputTabs" role="tablist">
+                                <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#preview-pane" type="button" role="tab">Preview</button></li>
+                                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#html-pane" type="button" role="tab">HTML</button></li>
+                                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#text-pane" type="button" role="tab">Plain Text</button></li>
+                            </ul>
+                            <div class="tab-content border border-top-0 p-3" id="outputTabsContent">
+                                <div class="tab-pane fade show active" id="preview-pane" role="tabpanel" style="min-height: 200px; max-height: 400px; overflow-y: auto;"></div>
+                                <div class="tab-pane fade" id="html-pane" role="tabpanel"><textarea id="htmlOutput" class="form-control font-monospace" rows="10" readonly></textarea></div>
+                                <div class="tab-pane fade" id="text-pane" role="tabpanel"><textarea id="textOutput" class="form-control font-monospace" rows="10" readonly></textarea></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div id="statsBar" class="text-muted small"></div>
+                                <div class="d-flex gap-2">
+                                    <button id="copyHtmlBtn" type="button" class="btn btn-edit btn-sm">Copy HTML</button>
+                                    <button id="copyTextBtn" type="button" class="btn btn-edit btn-sm">Copy Plain Text</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div id="sidebar-placeholder">
+                    <div class="card bg-dark border-secondary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/bootstrap.bundle.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'"></script>
+    <script src="js/component-loader.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/js/component-loader.js'"></script>
+    <script src="js/main.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/js/main.js'"></script>
+    <script src="js/lorem-ipsum.js"></script>
+</body>
+</html>

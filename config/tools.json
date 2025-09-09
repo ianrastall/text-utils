@@ -60,6 +60,14 @@
         "order": 16
     },
     {
+        "slug": "lorem-ipsum",
+        "name": "Lorem Ipsum Generator",
+        "icon": "article",
+        "description": "Generate versatile placeholder text with advanced options.",
+        "category": "Text",
+        "order": 17
+    },
+    {
         "slug": "html-tag-remover",
         "name": "HTML Tag Remover",
         "icon": "code_off",
