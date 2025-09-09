@@ -47,15 +47,17 @@
         "slug": "find-replace",
         "name": "Find & Replace",
         "icon": "find_replace",
-        "description": "Find and replace text using strings or regex with advanced options."
-    },
-    {
-        "slug": "find-replace",
-        "name": "Find & Replace",
-        "icon": "find_replace",
         "description": "Find and replace text using strings or regex with advanced options.",
         "category": "Text",
         "order": 15
+    },
+    {
+        "slug": "html-entities",
+        "name": "HTML Entity Encoder & Decoder",
+        "icon": "code",
+        "description": "Encodes non-ASCII characters to HTML Hex, Decimal, or Named entities and decodes them back.",
+        "category": "Text",
+        "order": 16
     },
     {
         "slug": "html-tag-remover",
