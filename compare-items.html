@@ -271,8 +271,53 @@
     }
     if (typeof loadSidebar === 'function') loadSidebar();
 
-    // --- File import logic ---
     document.addEventListener('DOMContentLoaded', function() {
+        // --- Session Save/Load ---
+        const SESSION_KEY = 'compareItemsSession';
+        function saveSession() {
+            const itemInputs = Array.from(itemsContainer.querySelectorAll('input')).map(i => i.value.trim()).filter(Boolean);
+            const session = {
+                items: itemInputs,
+                results,
+                pairs,
+                pairIndex
+            };
+            try {
+                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+            } catch (e) {
+                console.error("Failed to save session:", e);
+            }
+        }
+        function loadSession() {
+            let session;
+            try {
+                session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            } catch (e) {}
+            if (!session || !Array.isArray(session.items) || session.items.length === 0) {
+                showToast('No previous session found.');
+                return;
+            }
+            itemsContainer.innerHTML = '';
+            session.items.forEach(line => addItemEntry(line, false)); // Don't re-save during load
+            items = session.items;
+            results = session.results || [];
+            pairs = session.pairs || [];
+            pairIndex = session.pairIndex || 0;
+            if (results.length > 0) {
+                setupStage.classList.add('d-none');
+                compareStage.classList.add('d-none');
+                resultsStage.classList.remove('d-none');
+                showResults(false); // Don't re-save during load
+            } else if (pairs.length > 0) {
+                setupStage.classList.add('d-none');
+                compareStage.classList.remove('d-none');
+                resultsStage.classList.add('d-none');
+                updateCompareUI();
+            } else {
+                 showToast('Session loaded.');
+            }
+        }
+
         // Toast helper
         function showToast(msg) {
             let container = document.querySelector('.toast-container');
@@ -309,23 +354,7 @@
                 setTimeout(() => toastEl.remove(), 2500);
             }
         }
-        // Wire stub buttons to show toast
-        const stubButtons = [
-            document.getElementById('viewBracketBtn'),
-            document.getElementById('pauseBtn'),
-            document.getElementById('shareBtn'),
-            document.getElementById('exportBtn'),
-            document.getElementById('loadSessionBtn')
-        ];
-        stubButtons.forEach(btn => {
-            if (btn) btn.addEventListener('click', () => showToast('Feature coming soon!'));
-        });
-    const clearItemsBtn = document.getElementById('clearItemsBtn');
-        // Clear all items
-        if (clearItemsBtn) clearItemsBtn.addEventListener('click', () => {
-            itemsContainer.innerHTML = '';
-            addItemEntry('');
-        });
+
         // DOM refs
         const importBtn = document.getElementById('importBtn');
         const fileInput = document.getElementById('fileInput');
@@ -348,6 +377,7 @@
         const currentComparison = document.getElementById('currentComparison');
         const totalComparisons = document.getElementById('totalComparisons');
         const resultsTable = document.getElementById('resultsTable');
+        const clearItemsBtn = document.getElementById('clearItemsBtn');
 
         // State
         let items = [];
@@ -356,10 +386,9 @@
         let results = [];
 
         // Add item row
-        function addItemEntry(val = '') {
+        function addItemEntry(val = '', doSave = true) {
             const itemEntry = document.createElement('div');
             itemEntry.className = 'item-entry d-flex align-items-center mb-2';
-            // Drag handle visually disabled for now
             itemEntry.innerHTML = `
                 <span class="drag-handle material-icons me-2 text-muted" style="opacity:0.4;cursor:not-allowed;">drag_handle</span>
                 <input type="text" class="form-control" placeholder="Item name" value="${val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}">
@@ -367,13 +396,18 @@
             `;
             itemEntry.querySelector('.remove-item').addEventListener('click', function() {
                 itemEntry.remove();
+                if (doSave) saveSession();
             });
             itemsContainer.appendChild(itemEntry);
+            if (doSave) saveSession();
         }
-    // Accessibility: add aria-labels to main action buttons
-    if (selectItem1) selectItem1.setAttribute('aria-label', 'Choose left item as winner');
-    if (selectItem2) selectItem2.setAttribute('aria-label', 'Choose right item as winner');
-    if (tieBtn) tieBtn.setAttribute('aria-label', 'Mark this pair as a tie');
+
+        // Clear all items
+        if (clearItemsBtn) clearItemsBtn.addEventListener('click', () => {
+            itemsContainer.innerHTML = '';
+            addItemEntry('');
+            saveSession();
+        });
 
         // Add item button
         if (addItemBtn) addItemBtn.addEventListener('click', () => addItemEntry(''));
@@ -384,30 +418,27 @@
                 const text = await navigator.clipboard.readText();
                 const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
                 lines.forEach(line => addItemEntry(line));
-            } catch (e) { alert('Paste failed.'); }
+                saveSession();
+            } catch (e) { showToast('Paste failed.'); }
         });
 
         // Import from file
         if (importBtn && fileInput && itemsContainer) {
-            importBtn.addEventListener('click', function() {
+            importBtn.addEventListener('click', () => {
                 fileInput.value = '';
                 fileInput.click();
             });
-            fileInput.addEventListener('change', function(e) {
+            fileInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = function(evt) {
+                reader.onload = (evt) => {
                     let lines = [];
                     try {
                         if (file.name.endsWith('.json')) {
                             const arr = JSON.parse(evt.target.result);
                             if (Array.isArray(arr)) {
-                                if (arr.length && typeof arr[0] === 'object' && arr[0].name) {
-                                    lines = arr.map(o => o.name || '');
-                                } else {
-                                    lines = arr.map(String);
-                                }
+                                lines = arr.map(o => (typeof o === 'object' && o.name) ? o.name : String(o));
                             }
                         } else {
                             lines = evt.target.result.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
@@ -418,6 +449,7 @@
                     }
                     itemsContainer.innerHTML = '';
                     lines.forEach(line => addItemEntry(line));
+                    saveSession();
                 };
                 reader.readAsText(file);
             });
@@ -425,10 +457,13 @@
 
         // Start comparing
         if (startBtn) startBtn.addEventListener('click', () => {
-            // Gather items
+            const format = document.querySelector('input[name="tournamentFormat"]:checked').value;
+            if (format !== 'round') {
+                showToast('Only Round Robin is implemented.');
+                return;
+            }
             items = Array.from(itemsContainer.querySelectorAll('input')).map(i => i.value.trim()).filter(Boolean);
-            if (items.length < 2) { alert('Enter at least two items.'); return; }
-            // Generate all pairs (simple round robin for demo)
+            if (items.length < 2) { showToast('Enter at least two items.'); return; }
             pairs = [];
             for (let i = 0; i < items.length; i++) {
                 for (let j = i + 1; j < items.length; j++) {
@@ -436,23 +471,18 @@
                 }
             }
             pairIndex = 0;
-            results = items.map(name => ({ name, wins: 0, losses: 0 }));
+            results = items.map(name => ({ name, wins: 0, losses: 0, rating: 1200 }));
             setupStage.classList.add('d-none');
             compareStage.classList.remove('d-none');
             resultsStage.classList.add('d-none');
             updateCompareUI();
+            saveSession();
         });
 
         // Update compare UI
         function updateCompareUI() {
-            if (!pairs.length) {
-                progressBar.style.width = '0%';
-                currentComparison.textContent = '0';
-                totalComparisons.textContent = '0';
-                return;
-            }
-            if (pairIndex >= pairs.length) {
-                showResults();
+            if (!pairs.length || pairIndex >= pairs.length) {
+                if (items.length >= 2) showResults();
                 return;
             }
             const [a, b] = pairs[pairIndex];
@@ -460,38 +490,44 @@
             item2Name.textContent = b;
             currentComparison.textContent = pairIndex + 1;
             totalComparisons.textContent = pairs.length;
-            progressBar.style.width = (pairs.length ? ((pairIndex + 1) / pairs.length * 100) : 0) + '%';
+            progressBar.style.width = (pairs.length > 0 ? ((pairIndex + 1) / pairs.length * 100) : 0) + '%';
         }
 
         // Handle selection
         function handleSelection(winnerIdx) {
             const [a, b] = pairs[pairIndex];
-            if (winnerIdx === 0) {
+            if (winnerIdx === 0) { // Left wins
                 results.find(r => r.name === a).wins++;
                 results.find(r => r.name === b).losses++;
-            } else if (winnerIdx === 1) {
+            } else if (winnerIdx === 1) { // Right wins
                 results.find(r => r.name === b).wins++;
                 results.find(r => r.name === a).losses++;
             }
             pairIndex++;
             updateCompareUI();
+            saveSession();
         }
         if (selectItem1) selectItem1.addEventListener('click', () => handleSelection(0));
         if (selectItem2) selectItem2.addEventListener('click', () => handleSelection(1));
-        if (tieBtn) tieBtn.addEventListener('click', () => { pairIndex++; updateCompareUI(); });
+        if (tieBtn) tieBtn.addEventListener('click', () => {
+            pairIndex++;
+            updateCompareUI();
+            saveSession();
+        });
 
         // Show results
-        function showResults() {
+        function showResults(doSave = true) {
             compareStage.classList.add('d-none');
             resultsStage.classList.remove('d-none');
-            // Sort by wins desc
             const sorted = [...results].sort((a, b) => b.wins - a.wins);
             resultsTable.innerHTML = '';
             sorted.forEach((r, i) => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${i + 1}</td><td>${r.name}</td><td>-</td><td>${r.wins}</td><td>${r.losses}</td><td>${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%</td>`;
+                let safeName = r.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                tr.innerHTML = `<td>${i + 1}</td><td>${safeName}</td><td>-</td><td>${r.wins}</td><td>${r.losses}</td><td>${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%</td>`;
                 resultsTable.appendChild(tr);
             });
+            if (doSave) saveSession();
         }
 
         // New tournament
@@ -500,20 +536,25 @@
             compareStage.classList.add('d-none');
             resultsStage.classList.add('d-none');
             itemsContainer.innerHTML = '';
+            items = [];
+            pairs = [];
+            results = [];
+            pairIndex = 0;
             addItemEntry('');
+            saveSession();
         });
 
-        // Save results (CSV)
-        if (saveResultsBtn) saveResultsBtn.addEventListener('click', () => {
-            let csv = 'Rank,Item,Wins,Losses,Win%\n';
+        // Save/Export results (CSV)
+        function exportResults() {
+            let csv = 'Rank,Item,Rating,Wins,Losses,Win%\n';
             const sorted = [...results].sort((a, b) => b.wins - a.wins);
             sorted.forEach((r, i) => {
                 let safeName = r.name;
                 if (/^[=+\-@]/.test(safeName)) safeName = '\t' + safeName;
-                safeName = safeName.replace(/\r|\n/g, ' ');
-                csv += `${i + 1},"${safeName.replace(/"/g,'""')}",${r.wins},${r.losses},${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%\n`;
+                safeName = `"${safeName.replace(/"/g, '""')}"`;
+                csv += `${i + 1},${safeName},${r.rating},${r.wins},${r.losses},${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%\n`;
             });
-            const blob = new Blob([csv], { type: 'text/csv' });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -522,7 +563,53 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+        if (saveResultsBtn) saveResultsBtn.addEventListener('click', exportResults);
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) exportBtn.addEventListener('click', exportResults);
+
+        // --- Stub/Placeholder Implementations ---
+        const viewBracketBtn = document.getElementById('viewBracketBtn');
+        if (viewBracketBtn) viewBracketBtn.addEventListener('click', () => {
+            const bracketDiv = document.getElementById('bracketVisualization');
+            bracketDiv.innerHTML = `<div class="alert alert-info">Bracket visualization is not yet implemented.</div>`;
+            bracketDiv.style.display = 'block';
         });
+
+        const pauseBtn = document.getElementById('pauseBtn');
+        if (pauseBtn) pauseBtn.addEventListener('click', () => showToast('Pause feature is not yet implemented.'));
+
+        const shareBtn = document.getElementById('shareBtn');
+        if (shareBtn) shareBtn.addEventListener('click', () => {
+            if (navigator.share) {
+                let text = 'Tournament Results:\n';
+                const sorted = [...results].sort((a, b) => b.wins - a.wins);
+                sorted.forEach((r, i) => {
+                    text += `${i + 1}. ${r.name} (${r.wins} wins)\n`;
+                });
+                navigator.share({
+                    title: 'Comparison Results',
+                    text: text,
+                }).catch(err => showToast('Could not share.'));
+            } else if (navigator.clipboard) {
+                 let text = 'Tournament Results:\n';
+                const sorted = [...results].sort((a, b) => b.wins - a.wins);
+                sorted.forEach((r, i) => {
+                    text += `${i + 1}. ${r.name} (Wins: ${r.wins}, Losses: ${r.losses})\n`;
+                });
+                navigator.clipboard.writeText(text).then(() => showToast('Results copied to clipboard!'));
+            } else {
+                showToast('Share/Copy not supported on this browser.');
+            }
+        });
+        
+        // Load session button
+        if (loadSessionBtn) loadSessionBtn.addEventListener('click', loadSession);
+
+        // Accessibility
+        if (selectItem1) selectItem1.setAttribute('aria-label', 'Choose left item as winner');
+        if (selectItem2) selectItem2.setAttribute('aria-label', 'Choose right item as winner');
+        if (tieBtn) tieBtn.setAttribute('aria-label', 'Mark this pair as a tie');
     });
     </script>
 </body>
