@@ -50,6 +50,14 @@
         "description": "Find and replace text using strings or regex with advanced options."
     },
     {
+        "slug": "find-replace",
+        "name": "Find & Replace",
+        "icon": "find_replace",
+        "description": "Find and replace text using strings or regex with advanced options.",
+        "category": "Text",
+        "order": 15
+    },
+    {
         "slug": "html-tag-remover",
         "name": "HTML Tag Remover",
         "icon": "code_off",
