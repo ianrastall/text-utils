@@ -86,5 +86,14 @@
     <script src="js/component-loader.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/js/component-loader.js'"></script>
     <script src="js/main.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/js/main.js'"></script>
     <script src="js/lorem-ipsum.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ComponentLoader !== 'undefined') {
+                ComponentLoader.loadHeader();
+                ComponentLoader.loadFooter();
+                if (typeof loadSidebar === 'function') loadSidebar();
+            }
+        });
+    </script>
 </body>
 </html>
