@@ -118,5 +118,13 @@
         "description": "Visually create linear, radial, and conic CSS gradients. Drag color stops, copy code, or download PNG.",
         "category": "CSS",
         "order": 13
+    },
+    {
+        "slug": "color-chooser",
+        "name": "Color Chooser",
+        "icon": "palette",
+        "description": "Select named or custom colors and generate corresponding code snippets for various programming languages.",
+        "category": "CSS",
+        "order": 14
     }
 ]

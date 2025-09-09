@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Chooser - Text Utilities</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-black text-light">
+    <div id="header-placeholder"></div>
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4 d-flex align-items-center" id="dynamic-title">
+                            <span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true" id="tool-icon">palette</span>
+                            <span id="tool-name">Color Chooser</span>
+                        </h2>
+                        <p class="text-white-50 mb-4" id="tool-description">Select named or custom colors and generate corresponding code snippets for various programming languages.</p>
+                        <div class="post-content">
+                            <form onsubmit="return false;" class="row g-3 align-items-end p-3 mb-4 rounded" style="background-color: #1E1E1E;">
+                                <div class="col-md-4">
+                                    <label for="colorCategory" class="form-label">Color Category</label>
+                                    <select id="colorCategory" class="form-select">
+                                        <option value="">--Select Category--</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="colorName" class="form-label">Color Name</label>
+                                    <select id="colorName" class="form-select">
+                                        <option value="">--Select Color--</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="languageSelect" class="form-label">Language Format</label>
+                                    <select id="languageSelect" class="form-select"></select>
+                                </div>
+                            </form>
+                            <div class="row g-3 align-items-center mb-4">
+                                 <div class="col-md-auto">
+                                    <input type="color" id="customColorInput" class="form-control form-control-color" value="#FFFFFF" title="Choose a custom color" style="width: 5rem; height: 3rem;">
+                                </div>
+                                <div class="col-md-auto">
+                                    <button type="button" class="btn btn-task d-flex align-items-center" id="eyedropperBtn">
+                                        <span class="material-icons me-2">colorize</span> Eyedropper
+                                    </button>
+                                </div>
+                                <div class="col-md-auto">
+                                    <div id="colorDisplay" class="border rounded" style="width: 5rem; height: 3rem; background-color: #FFFFFF; border-color: #444 !important;" title="Current Color"></div>
+                                </div>
+                                <div class="col">
+                                    <label for="colorOutput" class="form-label visually-hidden">Color Code Output</label>
+                                    <div class="position-relative">
+                                        <textarea id="colorOutput" class="form-control font-monospace" rows="4" readonly placeholder="Select a color or language..."></textarea>
+                                        <button type="button" class="btn btn-sm btn-edit position-absolute top-0 end-0 m-2" id="copyBtn" title="Copy Code">
+                                             <span class="material-icons" style="font-size: 1.1rem;">content_copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="border-secondary my-4">
+                            <h4 class="mb-3">Find Named Color by Code</h4>
+                            <form id="colorSearchForm" onsubmit="return false;">
+                                <div class="input-group">
+                                    <input type="text" id="colorInput" class="form-control" placeholder="Enter hex (e.g., #FF0000) or RGB (e.g., 255, 0, 0)">
+                                    <button type="submit" class="btn btn-task d-flex align-items-center">
+                                         <span class="material-icons me-2">search</span>Set & Find
+                                    </button>
+                                </div>
+                            </form>
+                            <div id="colorSearchResult" class="mt-3" style="min-height: 48px;" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar"></nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div id="footer-placeholder"></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // ... All the JS logic from your draft goes here ...
+    </script>
+</body>
+</html>
