@@ -176,6 +176,7 @@ function showToast(message, variant = 'info') {
         const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
         toast.show();
         
-        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
-    }
+            toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+        }
+    });
 
