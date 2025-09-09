@@ -243,7 +243,187 @@
     ComponentLoader.loadHeader();
     ComponentLoader.loadFooter();
     if (typeof loadSidebar === 'function') loadSidebar();
-    // TODO: Implement full tournament logic as in your enhanced design
+
+    // --- File import logic ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM refs
+        const importBtn = document.getElementById('importBtn');
+        const fileInput = document.getElementById('fileInput');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const startBtn = document.getElementById('startBtn');
+        const loadSessionBtn = document.getElementById('loadSessionBtn');
+        const selectItem1 = document.getElementById('selectItem1');
+        const selectItem2 = document.getElementById('selectItem2');
+        const tieBtn = document.getElementById('tieBtn');
+        const newTournamentBtn = document.getElementById('newTournamentBtn');
+        const saveResultsBtn = document.getElementById('saveResultsBtn');
+        const setupStage = document.getElementById('setupStage');
+        const compareStage = document.getElementById('compareStage');
+        const resultsStage = document.getElementById('resultsStage');
+        const item1Name = document.getElementById('item1Name');
+        const item2Name = document.getElementById('item2Name');
+        const progressBar = document.getElementById('progressBar');
+        const currentComparison = document.getElementById('currentComparison');
+        const totalComparisons = document.getElementById('totalComparisons');
+        const resultsTable = document.getElementById('resultsTable');
+
+        // State
+        let items = [];
+        let pairs = [];
+        let pairIndex = 0;
+        let results = [];
+
+        // Add item row
+        function addItemEntry(val = '') {
+            const itemEntry = document.createElement('div');
+            itemEntry.className = 'item-entry d-flex align-items-center mb-2';
+            itemEntry.innerHTML = `
+                <span class="drag-handle material-icons me-2">drag_handle</span>
+                <input type="text" class="form-control" placeholder="Item name" value="${val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}">
+                <button type="button" class="btn btn-sm btn-danger ms-2 remove-item"><span class="material-icons">remove</span></button>
+            `;
+            itemEntry.querySelector('.remove-item').addEventListener('click', function() {
+                itemEntry.remove();
+            });
+            itemsContainer.appendChild(itemEntry);
+        }
+
+        // Add item button
+        if (addItemBtn) addItemBtn.addEventListener('click', () => addItemEntry(''));
+
+        // Paste from clipboard
+        if (pasteBtn) pasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                lines.forEach(line => addItemEntry(line));
+            } catch (e) { alert('Paste failed.'); }
+        });
+
+        // Import from file
+        if (importBtn && fileInput && itemsContainer) {
+            importBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                fileInput.click();
+            });
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    let lines = [];
+                    try {
+                        if (file.name.endsWith('.json')) {
+                            const arr = JSON.parse(evt.target.result);
+                            if (Array.isArray(arr)) lines = arr.map(String);
+                        } else {
+                            lines = evt.target.result.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                        }
+                    } catch (err) {
+                        alert('Could not parse file.');
+                        return;
+                    }
+                    itemsContainer.innerHTML = '';
+                    lines.forEach(line => addItemEntry(line));
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        // Start comparing
+        if (startBtn) startBtn.addEventListener('click', () => {
+            // Gather items
+            items = Array.from(itemsContainer.querySelectorAll('input')).map(i => i.value.trim()).filter(Boolean);
+            if (items.length < 2) { alert('Enter at least two items.'); return; }
+            // Generate all pairs (simple round robin for demo)
+            pairs = [];
+            for (let i = 0; i < items.length; i++) {
+                for (let j = i + 1; j < items.length; j++) {
+                    pairs.push([items[i], items[j]]);
+                }
+            }
+            pairIndex = 0;
+            results = items.map(name => ({ name, wins: 0, losses: 0 }));
+            setupStage.classList.add('d-none');
+            compareStage.classList.remove('d-none');
+            resultsStage.classList.add('d-none');
+            updateCompareUI();
+        });
+
+        // Update compare UI
+        function updateCompareUI() {
+            if (pairIndex >= pairs.length) {
+                showResults();
+                return;
+            }
+            const [a, b] = pairs[pairIndex];
+            item1Name.textContent = a;
+            item2Name.textContent = b;
+            currentComparison.textContent = pairIndex + 1;
+            totalComparisons.textContent = pairs.length;
+            progressBar.style.width = ((pairIndex + 1) / pairs.length * 100) + '%';
+        }
+
+        // Handle selection
+        function handleSelection(winnerIdx) {
+            const [a, b] = pairs[pairIndex];
+            if (winnerIdx === 0) {
+                results.find(r => r.name === a).wins++;
+                results.find(r => r.name === b).losses++;
+            } else if (winnerIdx === 1) {
+                results.find(r => r.name === b).wins++;
+                results.find(r => r.name === a).losses++;
+            }
+            pairIndex++;
+            updateCompareUI();
+        }
+        if (selectItem1) selectItem1.addEventListener('click', () => handleSelection(0));
+        if (selectItem2) selectItem2.addEventListener('click', () => handleSelection(1));
+        if (tieBtn) tieBtn.addEventListener('click', () => { pairIndex++; updateCompareUI(); });
+
+        // Show results
+        function showResults() {
+            compareStage.classList.add('d-none');
+            resultsStage.classList.remove('d-none');
+            // Sort by wins desc
+            const sorted = [...results].sort((a, b) => b.wins - a.wins);
+            resultsTable.innerHTML = '';
+            sorted.forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${i + 1}</td><td>${r.name}</td><td>-</td><td>${r.wins}</td><td>${r.losses}</td><td>${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%</td>`;
+                resultsTable.appendChild(tr);
+            });
+        }
+
+        // New tournament
+        if (newTournamentBtn) newTournamentBtn.addEventListener('click', () => {
+            setupStage.classList.remove('d-none');
+            compareStage.classList.add('d-none');
+            resultsStage.classList.add('d-none');
+            itemsContainer.innerHTML = '';
+            addItemEntry('');
+        });
+
+        // Save results (CSV)
+        if (saveResultsBtn) saveResultsBtn.addEventListener('click', () => {
+            let csv = 'Rank,Item,Wins,Losses,Win%\n';
+            const sorted = [...results].sort((a, b) => b.wins - a.wins);
+            sorted.forEach((r, i) => {
+                csv += `${i + 1},"${r.name.replace(/"/g,'""')}",${r.wins},${r.losses},${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'compare-items-results.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    });
     </script>
 </body>
 </html>
