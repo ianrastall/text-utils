@@ -102,5 +102,13 @@
         "name": "Google Icon Chooser",
         "icon": "apps",
         "description": "Browse Google Material icons, filter by name, and generate code snippets."
+    },
+    {
+        "slug": "md-html",
+        "name": "Markdown ↔ HTML Converter",
+        "icon": "transform",
+        "description": "A two-panel converter with live preview and formatting options.",
+        "category": "Text",
+        "order": 12
     }
 ]

@@ -1,0 +1,243 @@
+<!-- md-html.html - Markdown ↔ HTML Converter (static, JS, Bootstrap 5) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown ↔ HTML Converter - Text Utilities</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    #markdownInput, #html-preview-pane, #htmlOutput {
+      max-height: 65vh;
+    }
+  </style>
+</head>
+<body class="bg-black text-light">
+  <!-- Header -->
+  <div id="header-container"></div>
+
+  <div class="container-fluid my-4">
+    <div class="row gx-3 gy-3">
+      <main class="col-md-9">
+        <div class="card bg-dark border-secondary">
+          <div class="card-body">
+            <h2 class="card-title mb-4 d-flex align-items-center">
+              <span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true">transform</span>
+              Markdown ↔ HTML Converter
+            </h2>
+            <p class="text-white-50 mb-4">A two-panel converter with live preview and formatting options.</p>
+            <div class="row g-3">
+              <div class="col-md-6 d-flex flex-column">
+                <label for="markdownInput" class="form-label fw-bold">Markdown</label>
+                <textarea id="markdownInput" class="form-control font-monospace flex-grow-1" style="min-height: 300px; resize: vertical;" placeholder="Enter Markdown..."></textarea>
+                <div id="mdStats" class="form-text text-end">0 characters, 0 lines</div>
+              </div>
+              <div class="col-md-6 d-flex flex-column">
+                <ul class="nav nav-tabs" id="html-tabs">
+                  <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#html-preview-pane">Preview</a></li>
+                  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#html-code-pane">HTML</a></li>
+                </ul>
+                <div class="tab-content flex-grow-1 d-flex flex-column">
+                  <div id="html-preview-pane" class="tab-pane fade show active p-3 border border-top-0 rounded-bottom flex-grow-1" style="min-height: 300px; overflow-y: auto;"></div>
+                  <div id="html-code-pane" class="tab-pane fade flex-grow-1">
+                    <textarea id="htmlOutput" class="form-control font-monospace h-100" style="min-height: 300px; resize: vertical;" placeholder="HTML output..."></textarea>
+                  </div>
+                </div>
+                <div id="htmlStats" class="form-text text-end">0 characters</div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-12">
+                <fieldset class="card bg-dark border-secondary p-3">
+                  <legend class="h6">Options & Actions</legend>
+                  <div class="row g-3 align-items-center">
+                    <div class="col-lg-6 d-flex flex-wrap gap-3">
+                      <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="livePreviewCheck" checked><label class="form-check-label" for="livePreviewCheck">Live Preview</label></div>
+                      <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="tablesCheck" checked><label class="form-check-label" for="tablesCheck">Tables</label></div>
+                      <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="taskListsCheck" checked><label class="form-check-label" for="taskListsCheck">Task Lists</label></div>
+                      <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="strikethroughCheck" checked><label class="form-check-label" for="strikethroughCheck">Strikethrough</label></div>
+                      <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="emojiCheck"><label class="form-check-label" for="emojiCheck">Emoji</label></div>
+                    </div>
+                    <div class="col-lg-6 d-flex flex-wrap gap-2 justify-content-lg-end">
+                      <button type="button" id="toMdBtn" class="btn btn-edit"><span class="material-icons me-1">arrow_back</span> To Markdown</button>
+                      <button type="button" id="copyMdBtn" class="btn btn-edit"><span class="material-icons me-1">content_copy</span> Copy MD</button>
+                      <button type="button" id="copyHtmlBtn" class="btn btn-edit"><span class="material-icons me-1">content_copy</span> Copy HTML</button>
+                      <button type="button" id="clearBtn" class="btn btn-clear"><span class="material-icons me-1">delete_sweep</span> Clear</button>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <aside class="col-md-3">
+        <div class="card bg-dark border-secondary">
+          <div class="card-body p-0" id="sidebar-container"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div id="footer-container"></div>
+
+  <!-- JS dependencies -->
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.3/dist/turndown.min.js"></script>
+  <script src="https://unpkg.com/turndown-plugin-gfm@1.0.2/dist/turndown-plugin-gfm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.11/dist/purify.min.js"></script>
+  <script src="js/component-loader.js"></script>
+  <script>
+  // Load header, footer, sidebar
+  loadComponent('components/header-content.html', 'header-container');
+  loadComponent('components/footer-content.html', 'footer-container');
+  loadComponent('components/sidebar-content.html', 'sidebar-container');
+  </script>
+  <script>
+const MarkdownConverter = (() => {
+    'use strict';
+    const dom = {};
+    const converters = {};
+    function init() {
+        cacheDOM();
+        initializeConverters();
+        bindEventListeners();
+        loadSampleContent();
+        handleConversion();
+    }
+    function cacheDOM() {
+        dom.markdownInput = document.getElementById('markdownInput');
+        dom.htmlOutput = document.getElementById('htmlOutput');
+        dom.htmlPreview = document.getElementById('html-preview-pane');
+        dom.mdStats = document.getElementById('mdStats');
+        dom.htmlStats = document.getElementById('htmlStats');
+        dom.options = {
+            livePreview: document.getElementById('livePreviewCheck'),
+            tables: document.getElementById('tablesCheck'),
+            taskLists: document.getElementById('taskListsCheck'),
+            strikethrough: document.getElementById('strikethroughCheck'),
+            emoji: document.getElementById('emojiCheck'),
+        };
+        dom.toMdBtn = document.getElementById('toMdBtn');
+        dom.copyMdBtn = document.getElementById('copyMdBtn');
+        dom.copyHtmlBtn = document.getElementById('copyHtmlBtn');
+        dom.clearBtn = document.getElementById('clearBtn');
+    }
+    function initializeConverters() {
+        converters.showdown = new showdown.Converter();
+        converters.turndown = new TurndownService({ hr: '---', bulletListMarker: '*', codeBlockStyle: 'fenced' });
+        converters.turndown.use(turndownPluginGfm.gfm);
+        updateConverterOptions();
+    }
+    function bindEventListeners() {
+        dom.markdownInput.addEventListener('input', () => {
+            if (dom.options.livePreview.checked) handleConversion();
+            updateStats();
+        });
+        dom.htmlOutput.addEventListener('input', updateStats);
+        Object.values(dom.options).forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                updateConverterOptions();
+                if (dom.options.livePreview.checked) handleConversion();
+            });
+        });
+        dom.toMdBtn.addEventListener('click', handleReverseConversion);
+        dom.copyMdBtn.addEventListener('click', () => copyToClipboard(dom.markdownInput.value, 'Markdown copied'));
+        dom.copyHtmlBtn.addEventListener('click', () => copyToClipboard(dom.htmlOutput.value, 'HTML copied'));
+        dom.clearBtn.addEventListener('click', () => {
+            dom.markdownInput.value = '';
+            handleConversion();
+            showToast('Content cleared', 'info');
+        });
+    }
+    function handleConversion() {
+        try {
+            const md = dom.markdownInput.value;
+            const rawHtml = converters.showdown.makeHtml(md);
+            const cleanHtml = DOMPurify.sanitize(rawHtml);
+            dom.htmlPreview.innerHTML = cleanHtml;
+            dom.htmlOutput.value = cleanHtml;
+            updateStats();
+        } catch (error) {
+            showToast('Error converting to HTML.', 'danger');
+            console.error("Showdown Error:", error);
+        }
+    }
+    function handleReverseConversion() {
+        try {
+            const html = dom.htmlOutput.value;
+            const md = converters.turndown.turndown(html);
+            dom.markdownInput.value = md;
+            handleConversion();
+            updateStats();
+            showToast('Converted to Markdown', 'success');
+        } catch (error) {
+            showToast('Error converting to Markdown.', 'danger');
+            console.error("Turndown Error:", error);
+        }
+    }
+    function updateConverterOptions() {
+        converters.showdown.setOption('tables', dom.options.tables.checked);
+        converters.showdown.setOption('tasklists', dom.options.taskLists.checked);
+        converters.showdown.setOption('strikethrough', dom.options.strikethrough.checked);
+        converters.showdown.setOption('emoji', dom.options.emoji.checked);
+        converters.showdown.setOption('openLinksInNewWindow', true);
+    }
+    function updateStats() {
+        const mdText = dom.markdownInput.value;
+        const htmlText = dom.htmlOutput.value;
+        dom.mdStats.textContent = `${mdText.length} characters, ${mdText.split('\n').length} lines`;
+        dom.htmlStats.textContent = `${htmlText.length} characters`;
+    }
+    function loadSampleContent() {
+        dom.markdownInput.value = `# Welcome!\n\nThis is a live Markdown to HTML converter.\n\n- Type Markdown in the left panel.\n- See the rendered HTML in the right panel.\n\n## Features\n- Tables, task lists, strikethrough, and emoji support via options.\n- Secure preview using DOMPurify.\n\n| Feature | Status |\n|---|---|\n| Live Preview | ✅ |\n| GFM Tables | ✅ |\n| Task Lists | ✅ |\n`;
+    }
+    async function copyToClipboard(text, successMessage) {
+        if (!text) return showToast('Nothing to copy.', 'info');
+        try {
+            await navigator.clipboard.writeText(text);
+            showToast(`${successMessage}!`, 'success');
+        } catch (err) {
+            showToast('Copy failed.', 'danger');
+        }
+    }
+    function showToast(message, type = 'success') {
+        const containerId = 'toast-container-md';
+        let container = document.getElementById(containerId);
+        if (!container) {
+            container = document.createElement('div');
+            container.id = containerId;
+            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            container.style.zIndex = '1100';
+            document.body.appendChild(container);
+        }
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-bg-${type} border-0 show`;
+        toastEl.setAttribute('role', 'alert');
+        const dFlex = document.createElement('div');
+        dFlex.className = 'd-flex';
+        const body = document.createElement('div');
+        body.className = 'toast-body';
+        body.textContent = message;
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'btn-close btn-close-white me-2 m-auto';
+        closeBtn.setAttribute('aria-label', 'Close');
+        closeBtn.onclick = () => toastEl.remove();
+        dFlex.appendChild(body);
+        dFlex.appendChild(closeBtn);
+        toastEl.appendChild(dFlex);
+        container.appendChild(toastEl);
+        setTimeout(() => toastEl.remove(), 3000);
+    }
+    return { init };
+})();
+document.addEventListener('DOMContentLoaded', MarkdownConverter.init);
+  </script>
+</body>
+</html>
