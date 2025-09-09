@@ -66,9 +66,14 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-secondary" id="addItemBtn">
-                                        <span class="material-icons me-1">add</span>Add Item
-                                    </button>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-secondary" id="addItemBtn">
+                                            <span class="material-icons me-1">add</span>Add Item
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-clear" id="clearItemsBtn">
+                                            <span class="material-icons me-1">clear</span>Clear
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-4">
@@ -175,13 +180,18 @@
                                     <tbody id="resultsTable"></tbody>
                                 </table>
                             </div>
-                            <div class="d-flex justify-content-center gap-3 mt-4">
-                                <button class="btn btn-task d-flex align-items-center" id="newTournamentBtn" type="button">
-                                    <span class="material-icons me-1">add</span>New Tournament
-                                </button>
-                                <button class="btn btn-edit d-flex align-items-center" id="saveResultsBtn" type="button">
-                                    <span class="material-icons me-1">save</span>Save Results
-                                </button>
+                            <div class="d-flex flex-column align-items-center gap-3 mt-4">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-task d-flex align-items-center" id="newTournamentBtn" type="button">
+                                        <span class="material-icons me-1">add</span>New Tournament
+                                    </button>
+                                    <button class="btn btn-edit d-flex align-items-center" id="saveResultsBtn" type="button">
+                                        <span class="material-icons me-1">save</span>Save Results
+                                    </button>
+                                </div>
+                                <div class="w-100 text-center text-muted small py-2 border-top">
+                                    <em>More features coming soon: share, bracket view, advanced exports, and more.</em>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -246,6 +256,12 @@
 
     // --- File import logic ---
     document.addEventListener('DOMContentLoaded', function() {
+    const clearItemsBtn = document.getElementById('clearItemsBtn');
+        // Clear all items
+        if (clearItemsBtn) clearItemsBtn.addEventListener('click', () => {
+            itemsContainer.innerHTML = '';
+            addItemEntry('');
+        });
         // DOM refs
         const importBtn = document.getElementById('importBtn');
         const fileInput = document.getElementById('fileInput');
