@@ -58,6 +58,14 @@
         "order": 12
     },
     {
+        "slug": "compare-items",
+        "name": "Compare Items",
+        "icon": "compare_arrows",
+        "description": "Pairwise tournament tool with Elo, Glicko-2, TrueSkill, multiple formats, bracket view, and export.",
+        "category": "Ranking",
+        "order": 13
+    },
+    {
         "slug": "hashing-tool",
         "name": "Hashing Tool",
         "icon": "lock",
