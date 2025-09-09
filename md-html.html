@@ -17,7 +17,7 @@
 </head>
 <body class="bg-black text-light">
   <!-- Header -->
-  <div id="header-container"></div>
+  <div id="header-placeholder"></div>
 
   <div class="container-fluid my-4">
     <div class="row gx-3 gy-3">
@@ -76,14 +76,14 @@
       </main>
       <aside class="col-md-3">
         <div class="card bg-dark border-secondary">
-          <div class="card-body p-0" id="sidebar-container"></div>
+          <div class="card-body p-0" id="sidebar-placeholder"></div>
         </div>
       </aside>
     </div>
   </div>
 
   <!-- Footer -->
-  <div id="footer-container"></div>
+  <div id="footer-placeholder"></div>
 
   <!-- JS dependencies -->
   <script src="js/bootstrap.bundle.min.js"></script>
@@ -93,10 +93,10 @@
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.11/dist/purify.min.js"></script>
   <script src="js/component-loader.js"></script>
   <script>
-  // Load header, footer, sidebar
-  loadComponent('components/header-content.html', 'header-container');
-  loadComponent('components/footer-content.html', 'footer-container');
-  loadComponent('components/sidebar-content.html', 'sidebar-container');
+    // Use the ComponentLoader utility to load header, sidebar, and footer
+    ComponentLoader.loadComponent('header-placeholder', 'components/header-content.html');
+    ComponentLoader.loadComponent('footer-placeholder', 'components/footer-content.html');
+    ComponentLoader.loadComponent('sidebar-placeholder', 'components/sidebar-content.html');
   </script>
   <script>
 const MarkdownConverter = (() => {
