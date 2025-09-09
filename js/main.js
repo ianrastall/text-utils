@@ -60,7 +60,7 @@ async function loadSidebar() {
 function initThemeSwitcher() {
     const themes = [
         'burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet',
-        'darkteal', 'goldenyellow', 'forestgreen', 'deepruby', 'mutedcoral', 'softpink', 'lightcyan', 'lightgray', 'neongreen', 'brightyellow'
+        'goldenyellow', 'mutedcoral', 'softpink', 'lightcyan', 'lightgray', 'neongreen', 'brightyellow'
     ];
     const themeDropdown = document.getElementById('accentColorDropdownMenu');
     const htmlElement = document.documentElement;
