@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare Items – Text Utils</title>
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'">
+    <link rel="stylesheet" href="css/custom.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/css/custom.css'">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body class="bg-dark text-light">
     <div id="header-placeholder"></div>
+    <noscript>
+        <div class="bg-dark text-light p-3 border-bottom border-secondary">Text Utils <span class="text-muted">(static header fallback)</span></div>
+    </noscript>
     <div class="container-fluid my-4">
         <div class="row gx-3 gy-3">
             <main class="col-md-9">
@@ -237,25 +240,86 @@
             <aside class="col-md-3">
                 <div class="card bg-dark border-secondary">
                     <div class="card-body p-0">
-                        <div id="dynamic-sidebar" class="sidebar"></div>
+                        <div id="dynamic-sidebar" class="sidebar">
+                            <noscript>
+                                <div class="p-3 text-muted">Sidebar (static fallback)</div>
+                            </noscript>
+                        </div>
                     </div>
                 </div>
             </aside>
         </div>
     </div>
     <div id="footer-placeholder"></div>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/component-loader.js"></script>
-    <script src="js/main.js"></script>
+    <noscript>
+        <div class="bg-dark text-light p-3 border-top border-secondary text-center">Text Utils <span class="text-muted">(static footer fallback)</span></div>
+    </noscript>
+    <script src="js/bootstrap.bundle.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'"></script>
+    <script src="js/component-loader.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/js/component-loader.js'"></script>
+    <script src="js/main.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/ianrastall/text-utils@main/js/main.js'"></script>
     <!-- The main Compare Items JS logic would go here. For brevity, only the UI skeleton and event hooks are included. -->
     <script>
-    // Load header, footer, and sidebar dynamically
-    ComponentLoader.loadHeader();
-    ComponentLoader.loadFooter();
+    // Load header, footer, and sidebar dynamically, fallback to static if missing
+    if (typeof ComponentLoader !== 'undefined') {
+        ComponentLoader.loadHeader();
+        ComponentLoader.loadFooter();
+    } else {
+        document.getElementById('header-placeholder').innerHTML = '<div class="bg-dark text-light p-3 border-bottom border-secondary">Text Utils <span class="text-muted">(static header fallback)</span></div>';
+        document.getElementById('footer-placeholder').innerHTML = '<div class="bg-dark text-light p-3 border-top border-secondary text-center">Text Utils <span class="text-muted">(static footer fallback)</span></div>';
+        var sidebar = document.getElementById('dynamic-sidebar');
+        if (sidebar) sidebar.innerHTML = '<div class="p-3 text-muted">Sidebar (static fallback)</div>';
+    }
     if (typeof loadSidebar === 'function') loadSidebar();
 
     // --- File import logic ---
     document.addEventListener('DOMContentLoaded', function() {
+        // Toast helper
+        function showToast(msg) {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                container.style.zIndex = '1100';
+                document.body.appendChild(container);
+            }
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast align-items-center text-bg-dark border-0';
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+            const dFlex = document.createElement('div');
+            dFlex.className = 'd-flex';
+            const toastBody = document.createElement('div');
+            toastBody.className = 'toast-body';
+            toastBody.textContent = msg;
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'btn-close btn-close-white me-2 m-auto';
+            closeBtn.setAttribute('data-bs-dismiss', 'toast');
+            closeBtn.setAttribute('aria-label', 'Close');
+            dFlex.appendChild(toastBody);
+            dFlex.appendChild(closeBtn);
+            toastEl.appendChild(dFlex);
+            container.appendChild(toastEl);
+            if (window.bootstrap && window.bootstrap.Toast) {
+                const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+                toast.show();
+                toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+            } else {
+                setTimeout(() => toastEl.remove(), 2500);
+            }
+        }
+        // Wire stub buttons to show toast
+        const stubButtons = [
+            document.getElementById('viewBracketBtn'),
+            document.getElementById('pauseBtn'),
+            document.getElementById('shareBtn'),
+            document.getElementById('exportBtn'),
+            document.getElementById('loadSessionBtn')
+        ];
+        stubButtons.forEach(btn => {
+            if (btn) btn.addEventListener('click', () => showToast('Feature coming soon!'));
+        });
     const clearItemsBtn = document.getElementById('clearItemsBtn');
         // Clear all items
         if (clearItemsBtn) clearItemsBtn.addEventListener('click', () => {
@@ -295,8 +359,9 @@
         function addItemEntry(val = '') {
             const itemEntry = document.createElement('div');
             itemEntry.className = 'item-entry d-flex align-items-center mb-2';
+            // Drag handle visually disabled for now
             itemEntry.innerHTML = `
-                <span class="drag-handle material-icons me-2">drag_handle</span>
+                <span class="drag-handle material-icons me-2 text-muted" style="opacity:0.4;cursor:not-allowed;">drag_handle</span>
                 <input type="text" class="form-control" placeholder="Item name" value="${val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}">
                 <button type="button" class="btn btn-sm btn-danger ms-2 remove-item"><span class="material-icons">remove</span></button>
             `;
@@ -305,6 +370,10 @@
             });
             itemsContainer.appendChild(itemEntry);
         }
+    // Accessibility: add aria-labels to main action buttons
+    if (selectItem1) selectItem1.setAttribute('aria-label', 'Choose left item as winner');
+    if (selectItem2) selectItem2.setAttribute('aria-label', 'Choose right item as winner');
+    if (tieBtn) tieBtn.setAttribute('aria-label', 'Mark this pair as a tie');
 
         // Add item button
         if (addItemBtn) addItemBtn.addEventListener('click', () => addItemEntry(''));
@@ -333,12 +402,18 @@
                     try {
                         if (file.name.endsWith('.json')) {
                             const arr = JSON.parse(evt.target.result);
-                            if (Array.isArray(arr)) lines = arr.map(String);
+                            if (Array.isArray(arr)) {
+                                if (arr.length && typeof arr[0] === 'object' && arr[0].name) {
+                                    lines = arr.map(o => o.name || '');
+                                } else {
+                                    lines = arr.map(String);
+                                }
+                            }
                         } else {
                             lines = evt.target.result.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
                         }
                     } catch (err) {
-                        alert('Could not parse file.');
+                        showToast('Could not parse file.');
                         return;
                     }
                     itemsContainer.innerHTML = '';
@@ -370,6 +445,12 @@
 
         // Update compare UI
         function updateCompareUI() {
+            if (!pairs.length) {
+                progressBar.style.width = '0%';
+                currentComparison.textContent = '0';
+                totalComparisons.textContent = '0';
+                return;
+            }
             if (pairIndex >= pairs.length) {
                 showResults();
                 return;
@@ -379,7 +460,7 @@
             item2Name.textContent = b;
             currentComparison.textContent = pairIndex + 1;
             totalComparisons.textContent = pairs.length;
-            progressBar.style.width = ((pairIndex + 1) / pairs.length * 100) + '%';
+            progressBar.style.width = (pairs.length ? ((pairIndex + 1) / pairs.length * 100) : 0) + '%';
         }
 
         // Handle selection
@@ -427,7 +508,10 @@
             let csv = 'Rank,Item,Wins,Losses,Win%\n';
             const sorted = [...results].sort((a, b) => b.wins - a.wins);
             sorted.forEach((r, i) => {
-                csv += `${i + 1},"${r.name.replace(/"/g,'""')}",${r.wins},${r.losses},${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%\n`;
+                let safeName = r.name;
+                if (/^[=+\-@]/.test(safeName)) safeName = '\t' + safeName;
+                safeName = safeName.replace(/\r|\n/g, ' ');
+                csv += `${i + 1},"${safeName.replace(/"/g,'""')}",${r.wins},${r.losses},${((r.wins/(r.wins+r.losses||1))*100).toFixed(1)}%\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
