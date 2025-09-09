@@ -46,6 +46,18 @@ a:hover {
 .theme-tomato { --accent-color: tomato; --accent-color-rgb: 255, 99, 71; --accent-text-color: #000; }
 .theme-violet { --accent-color: violet; --accent-color-rgb: 238, 130, 238; --accent-text-color: #000; }
 
+/* Jewel, Earthy, and Bold Accent Colors */
+.theme-darkteal { --accent-color: #004D61; --accent-color-rgb: 0, 77, 97; --accent-text-color: #FFF; }
+.theme-goldenyellow { --accent-color: #DAA520; --accent-color-rgb: 218, 165, 32; --accent-text-color: #000; }
+.theme-forestgreen { --accent-color: #3E5641; --accent-color-rgb: 62, 86, 65; --accent-text-color: #FFF; }
+.theme-deepruby { --accent-color: #822659; --accent-color-rgb: 130, 38, 89; --accent-text-color: #FFF; }
+.theme-mutedcoral { --accent-color: #FF6F61; --accent-color-rgb: 255, 111, 97; --accent-text-color: #000; }
+.theme-softpink { --accent-color: #FFC1CC; --accent-color-rgb: 255, 193, 204; --accent-text-color: #000; }
+.theme-lightcyan { --accent-color: #A8DADC; --accent-color-rgb: 168, 218, 220; --accent-text-color: #000; }
+.theme-lightgray { --accent-color: #E0E0E0; --accent-color-rgb: 224, 224, 224; --accent-text-color: #000; }
+.theme-neongreen { --accent-color: #00FF85; --accent-color-rgb: 0, 255, 133; --accent-text-color: #000; }
+.theme-brightyellow { --accent-color: #FFEB3B; --accent-color-rgb: 255, 235, 59; --accent-text-color: #000; }
+
 /* Dark Backgrounds -> Light Text */
 .theme-cadetblue { --accent-color: cadetblue; --accent-color-rgb: 95, 158, 160; --accent-text-color: #FFF; }
 .theme-cornflowerblue { --accent-color: cornflowerblue; --accent-color-rgb: 100, 149, 237; --accent-text-color: #FFF; }
