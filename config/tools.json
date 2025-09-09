@@ -50,6 +50,14 @@
         "description": "Find and replace text using strings or regex with advanced options."
     },
     {
+        "slug": "html-tag-remover",
+        "name": "HTML Tag Remover",
+        "icon": "code_off",
+        "description": "Remove HTML/XML tags, trim blank lines, strip all attributes, and minify pasted HTML.",
+        "category": "Text",
+        "order": 12
+    },
+    {
         "slug": "hashing-tool",
         "name": "Hashing Tool",
         "icon": "lock",
