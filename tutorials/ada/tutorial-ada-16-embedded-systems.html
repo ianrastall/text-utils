@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Systems Programming with Ada</title>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/tutorials.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header and navigation components loaded via JavaScript -->
+    <div id="header-placeholder"></div>
+    
+    <div class="container">
+        <div class="tutorial-content">
+            <h1 class="tutorial-title">Embedded Systems Programming with Ada: Building Safety-Critical Hardware Interfaces</h1>
+            
+            <div class="tutorial-section">
+                <h2>Introduction: The Critical Nature of Embedded Systems Programming</h2>
+                <div class="section-block">
+                    <p>In the realm of safety-critical embedded systems—from flight control computers in commercial aviation to life-support medical devices—the margin for error approaches zero. Traditional approaches to embedded programming, particularly those based on C and C++, often treat hardware interaction as a necessary compromise where safety guarantees are sacrificed for low-level control. This tutorial explores how Ada fundamentally transforms embedded systems development by providing a comprehensive framework for building hardware interfaces that are simultaneously <em>safe, verifiable, and certifiable</em> while maintaining the precise control required for bare-metal programming.</p>
+                    
+                    <p><strong>Ada Philosophy:</strong> Hardware interaction should be <em>explicit, verifiable, and type-safe</em>, not a dangerous afterthought. The language must provide mechanisms for low-level programming that preserve high-integrity guarantees without requiring developers to abandon abstraction or safety.</p>
+                    
+                    <p>Unlike languages that force developers to choose between safety and control, Ada provides a rich set of features specifically designed for embedded development that maintain strong typing, formal verification capabilities, and predictable behavior—all while enabling direct hardware access. This tutorial examines these features in depth, demonstrating how they support compliance with stringent safety standards like DO-178C (aviation), IEC 62304 (medical devices), and ISO 26262 (automotive).</p>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Why Traditional Approaches Fail in Safety-Critical Contexts</h2>
+                <div class="section-block">
+                    <p>While C remains dominant in embedded systems, its fundamental design assumptions create significant challenges for safety-critical development. The language's treatment of hardware interaction as "implementation-defined" behavior leads to subtle, hard-to-detect failures that often only manifest in field operation—far too late for cost-effective correction.</p>
+                    
+                    <div class="tutorial-table">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Problem (Traditional C Approach)</th>
+                                    <th>Consequence in Safety-Critical Systems</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Raw pointer arithmetic for register access</td>
+                                    <td>No type safety; invalid offsets cause silent memory corruption that may only manifest under specific environmental conditions</td>
+                                </tr>
+                                <tr>
+                                    <td>Interrupt handlers written as plain functions</td>
+                                    <td>No protection against reentrancy or priority inversion; can lead to race conditions with catastrophic consequences</td>
+                                </tr>
+                                <tr>
+                                    <td>Unspecified memory layout of structs</td>
+                                    <td>Data misalignment breaks memory-mapped device protocols; behavior varies across compiler versions and optimization levels</td>
+                                </tr>
+                                <tr>
+                                    <td>No built-in concurrency control</td>
+                                    <td>Race conditions in ISRs accessing shared data can corrupt critical state information</td>
+                                </tr>
+                                <tr>
+                                    <td>Undefined behavior in bit manipulation</td>
+                                    <td>Compiler optimizations may reorder or eliminate critical operations, violating hardware timing requirements</td>
+                                </tr>
+                                <tr>
+                                    <td>Lack of formal verification support</td>
+                                    <td>Inability to prove absence of critical errors like buffer overflows or race conditions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Case Study: Air Data Computer Failure in Commercial Aviation</h3>
+                    <div class="note-box">
+                        <p>A major commercial aircraft manufacturer experienced intermittent failures in the air data computer during high-altitude flight. The root cause was traced to incorrect bit-field packing in a C structure used to interpret sensor registers. The compiler's implementation-defined behavior for bit-field layout varied between development and production toolchains, resulting in misinterpretation of critical altitude data. The issue was only discovered during flight testing, requiring a costly redesign and delaying certification.</p>
+                        
+                        <p><strong>Ada Perspective:</strong> Ada's ability to <em>precisely specify</em> record layouts ensures consistent, predictable memory mapping across builds and platforms. Combined with compile-time checks and SPARK verification, such errors would have been caught during development rather than in flight testing. This tutorial will demonstrate how to avoid these pitfalls through Ada's embedded programming features.</p>
+                    </div>
+                    
+                    <p><strong>Ada's Embedded Programming Philosophy:</strong> Embedded programming must be <em>predictable, type-safe, and verifiable</em> while providing the necessary low-level control. Ada achieves this through controlled mechanisms for direct hardware access, deterministic concurrency, and explicit representation specifications—all while preserving abstraction, modularity, and formal verification capabilities essential for safety-critical certification.</p>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Fundamentals of Bare-Metal Programming in Ada</h2>
+                <div class="section-block">
+                    <p>Ada supports true bare-metal development without requiring an operating system. The language's runtime system can be tailored to eliminate dynamic allocation and non-determinism through configuration pragmas and profile selections, making it ideal for safety-critical embedded applications.</p>
+                    
+                    <h3>Runtime Configuration Options</h3>
+                    <p>Ada runtimes can be configured to meet the specific requirements of embedded safety-critical systems:</p>
+                    
+                    <div class="two-column">
+                        <div class="column">
+                            <h4>Ravenscar Profile (DO-178C Compliant)</h4>
+                            <ul>
+                                <li>Eliminates dynamic task creation</li>
+                                <li>Prevents non-deterministic tasking features</li>
+                                <li>Supports bounded priority inversion</li>
+                                <li>Required for DAL A/B avionics systems</li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <h4>Bare Board Runtime (Minimal)</h4>
+                            <ul>
+                                <li>No operating system dependencies</li>
+                                <li>Configurable exception handling</li>
+                                <li>Optional heap management</li>
+                                <li>Startup code for specific architectures</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3>Startup Sequence and Memory Management</h3>
+                    <p>Understanding the initialization sequence is critical for embedded systems:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Example startup code for ARM Cortex-M
+with System; use System;
+with System.Machine_Code; use System.Machine_Code;
+
+procedure Reset_Handler is
+   -- Vector table definition
+   type Vector is record
+      Stack_Pointer : Address;
+      Reset         : Address;
+      NMI           : Address;
+      Hard_Fault    : Address;
+      -- Other exception handlers...
+   end record;
+
+   Vectors : constant Vector :=
+     (Stack_Pointer => System'To_Address (16#2000_1000#),
+      Reset         => Reset_Handler'Address,
+      NMI           => Default_Handler'Address,
+      Hard_Fault    => Default_Handler'Address,
+      -- Other handlers...
+     ) with
+        Export => True,
+        Linker_Section => ".vectors";
+
+   -- Initialize .data section from .text
+   procedure Copy_Data is
+      Source : constant Address := ...; -- End of text section
+      Dest   : Address := ...; -- Start of data section
+      Length : Integer := ...; -- Size of data section
+   begin
+      while Length > 0 loop
+         Dest := Source;
+         Dest := Dest + 1;
+         Source := Source + 1;
+         Length := Length - 1;
+      end loop;
+   end Copy_Data;
+
+begin
+   Copy_Data;
+   Main; -- User application entry point
+end Reset_Handler;</code></pre>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Note:</strong> In safety-critical systems, dynamic memory allocation is typically prohibited. Ada supports complete static memory management through controlled use of access types with storage pools and bounded containers, ensuring predictable memory behavior.</p>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <p><strong>Best Practice:</strong> For DO-178C Level A systems, use the Ravenscar-SFP (Single-Forking Profile) which further restricts the Ravenscar profile to eliminate all dynamic memory allocation and non-deterministic features.</p>
+                    </div>
+                    
+                    <h3>Linker Script Configuration</h3>
+                    <p>Proper memory layout is essential for embedded systems. Ada works seamlessly with standard linker scripts:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">/* Example linker script for ARM Cortex-M */
+MEMORY
+{
+   FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 512K
+   RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 128K
+}
+
+SECTIONS
+{
+   .text :
+   {
+      KEEP(*(.vectors))
+      *(.text*)
+      *(.rodata*)
+   } > FLASH
+
+   .data : 
+   {
+      _sidata = .;
+      *(.data*)
+   } > RAM AT > FLASH
+
+   .bss : 
+   {
+      _sbss = .;
+      *(.bss*)
+      *(COMMON)
+      _ebss = .;
+   } > RAM
+}</code></pre>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <p><strong>Critical Consideration:</strong> Memory layout must be verified against hardware requirements. Incorrect placement of critical sections can lead to system failures. Use linker map files as part of your certification evidence.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Register Access Patterns: Precision Hardware Control</h2>
+                <div class="section-block">
+                    <p>Direct access to hardware registers is fundamental to embedded systems programming. Ada provides multiple mechanisms for safe, verifiable register access, with representation clauses being the most powerful and type-safe approach.</p>
+                    
+                    <h3>Register Access Mechanisms Compared</h3>
+                    <div class="tutorial-table">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Advantages</th>
+                                    <th>Limitations</th>
+                                    <th>Certification Suitability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Representation Clauses</td>
+                                    <td>Type-safe, compile-time checked, precise bit layout control</td>
+                                    <td>Requires careful specification</td>
+                                    <td>DO-178C Level A (with verification)</td>
+                                </tr>
+                                <tr>
+                                    <td>Address Clauses</td>
+                                    <td>Direct memory mapping, simple syntax</td>
+                                    <td>Less precise than representation clauses</td>
+                                    <td>DO-178C Level B</td>
+                                </tr>
+                                <tr>
+                                    <td>Pointer Arithmetic</td>
+                                    <td>Familiar to C programmers</td>
+                                    <td>No type safety, error-prone, hard to verify</td>
+                                    <td>Not recommended for Level A/B</td>
+                                </tr>
+                                <tr>
+                                    <td>System.Machine_Code</td>
+                                    <td>Direct assembly access when needed</td>
+                                    <td>Non-portable, difficult to verify</td>
+                                    <td>Limited use in Level A (with justification)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Defining Hardware Registers with Representation Clauses</h3>
+                    <p>The most robust approach for register definition uses Ada's record representation clauses:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Define a register for a UART status/control unit
+type UART_Register is record
+   Data_Ready      : Boolean;
+   Transmit_Empty  : Boolean;
+   Parity_Error    : Boolean;
+   Framing_Error   : Boolean;
+   Reserved        : Boolean := False;
+   Interrupt_Enable: Boolean;
+   Baud_Rate_Divider: Integer range 0 .. 65535;
+end record with
+   Volatile_Full_Access;  -- Ensures full volatile behavior
+
+-- Specify exact bit layout
+for UART_Register use record
+   Data_Ready       at 0 range 0 .. 0;
+   Transmit_Empty   at 0 range 1 .. 1;
+   Parity_Error     at 0 range 2 .. 2;
+   Framing_Error    at 0 range 3 .. 3;
+   Reserved         at 0 range 4 .. 4;
+   Interrupt_Enable at 0 range 5 .. 5;
+   Baud_Rate_Divider at 0 range 16 .. 31;
+end record;
+
+-- Assign to a specific memory address
+UART_Base : UART_Register with
+   Volatile,
+   Address => System'To_Address (16#FFFF_0000#);</code></pre>
+                    </div>
+                    
+                    <h3>Advanced Register Patterns</h3>
+                    <p>For more complex hardware interfaces, Ada provides additional patterns:</p>
+                    
+                    <h4>Read-Only/Write-Only Registers</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">type Status_Register is record
+   Data_Ready : Boolean;
+   Error_Flag : Boolean;
+   -- Other status bits
+end record with Volatile;
+
+-- Make read-only by using limited private type
+package UART_Status is
+   type Status is limited private;
+   function Data_Ready (S : Status) return Boolean;
+private
+   type Status is new Status_Register;
+end UART_Status;</code></pre>
+                    </div>
+                    
+                    <h4>Bit-Field Aliasing</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">type Control_Register is record
+   Interrupt_Enable : Boolean;
+   Baud_Rate_Select : Integer range 0 .. 3;
+   -- Other control bits
+end record;
+
+-- Aliasing for different access methods
+for Control_Register use record
+   Interrupt_Enable at 0 range 0 .. 0;
+   Baud_Rate_Select at 0 range 1 .. 2;
+   -- Direct access to entire byte
+   Byte_Access at 0 range 0 .. 7;
+end record;</code></pre>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <p><strong>Verification Tip:</strong> Use SPARK to formally verify register access logic. For example, prove that Baud_Rate_Divider stays within valid bounds or that reserved bits are never modified.</p>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Critical Warning:</strong> Misaligned or incorrect range specifications will be rejected at compile time—this is a <em>feature</em>, not a bug. It prevents runtime memory corruption that would be nearly impossible to debug in fielded systems.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Interrupt Handling: Deterministic and Safe</h2>
+                <div class="section-block">
+                    <p>Interrupts are the lifeblood of embedded systems, but traditional approaches often lead to race conditions and priority inversion. Ada provides a structured, type-safe model for interrupt handling that prevents common errors while maintaining determinism.</p>
+                    
+                    <h3>Interrupt Model Overview</h3>
+                    <p>Ada's interrupt model is built on several key components:</p>
+                    <ul>
+                        <li><strong>Interrupt_ID</strong>: Unique identifier for each interrupt source</li>
+                        <li><strong>Interrupt_Handler</strong>: Procedure that handles the interrupt</li>
+                        <li><strong>Attach_Handler</strong>: Binds handler to interrupt at compile time</li>
+                        <li><strong>Interrupt_Priority</strong>: Specifies handler priority</li>
+                        <li><strong>Protected Objects</strong>: For safe shared data access</li>
+                    </ul>
+                    
+                    <h3>Basic Interrupt Handler Implementation</h3>
+                    <div class="code-block">
+                        <pre><code class="language-ada">with Ada.Interrupts; use Ada.Interrupts;
+with Ada.Interrupts.Names; use Ada.Interrupts.Names;
+
+-- Handler procedure for UART receive interrupt
+procedure UART_RX_Handler is
+   use System;
+begin
+   -- Process incoming data only if ready
+   if UART_Base.Data_Ready then
+      Process_Incoming_Byte (UART_Base.Data_Register);
+      -- Clear the data ready flag
+      UART_Base.Data_Ready := False;
+   end if;
+exception
+   when others =>
+      -- Critical: Never let exception propagate from ISR
+      Log_Error ("UART handler exception");
+end UART_RX_Handler;
+
+-- Attach handler to specific interrupt
+pragma Attach_Handler (UART_RX_Handler, UART_RX_Interrupt);
+pragma Interrupt_Priority (System.Interrupt_Priority'Last);</code></pre>
+                    </div>
+                    
+                    <h3>Advanced Interrupt Patterns</h3>
+                    
+                    <h4>Priority Ceiling Protocol with Protected Objects</h4>
+                    <p>For safe data sharing between ISRs and tasks:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">protected Sensor_Buffer is
+   pragma Interrupt_Priority (System.Interrupt_Priority'Last);
+   
+   procedure Add (Data : Sensor_Value);
+   function Get return Sensor_Value;
+   
+private
+   Buffer : array (1..16) of Sensor_Value;
+   Head   : Integer := 1;
+   Tail   : Integer := 1;
+end Sensor_Buffer;
+
+protected body Sensor_Buffer is
+   procedure Add (Data : Sensor_Value) is
+   begin
+      Buffer(Head) := Data;
+      Head := (Head mod 16) + 1;
+      if Head = Tail then
+         -- Buffer full - handle error
+         Log_Error ("Buffer overflow");
+      end if;
+   end Add;
+   
+   function Get return Sensor_Value is
+      Result : Sensor_Value := Buffer(Tail);
+   begin
+      Tail := (Tail mod 16) + 1;
+      return Result;
+   end Get;
+end Sensor_Buffer;</code></pre>
+                    </div>
+                    
+                    <h4>Nested Interrupt Handling</h4>
+                    <p>When higher-priority interrupts must preempt lower ones:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">with System; use System;
+
+procedure High_Priority_Handler is
+   Previous_Interrupt_State : Interrupts.Interrupt_State;
+begin
+   -- Temporarily disable lower priority interrupts
+   Interrupts.Set_Interrupt_State (
+      UART_RX_Interrupt, 
+      Interrupts.Off,
+      Previous_Interrupt_State);
+   
+   -- Critical section with no preemption
+   Process_High_Priority_Event;
+   
+   -- Restore previous state
+   Interrupts.Set_Interrupt_State (
+      UART_RX_Interrupt,
+      Previous_Interrupt_State);
+exception
+   when others =>
+      Interrupts.Set_Interrupt_State (
+         UART_RX_Interrupt,
+         Previous_Interrupt_State);
+      Log_Error ("High priority handler error");
+end High_Priority_Handler;</code></pre>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Certification Note:</strong> DO-178C requires analysis of worst-case interrupt latency and proof that critical deadlines will be met. Ada's deterministic interrupt model makes this analysis significantly more tractable than with C-based approaches.</p>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <p><strong>Best Practice:</strong> Always use the Ravenscar profile for interrupt handling in safety-critical systems. It eliminates non-deterministic tasking features while preserving essential interrupt capabilities.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Memory-Mapped I/O: Safe Hardware Interaction</h2>
+                <div class="section-block">
+                    <p>Memory-mapped I/O is the primary mechanism for interacting with hardware peripherals in embedded systems. Ada provides language-level support for safe, verifiable memory-mapped I/O that prevents common errors.</p>
+                    
+                    <h3>Memory-Mapped I/O Patterns</h3>
+                    <p>The fundamental approach uses address clauses and volatile attributes:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- GPIO port definition
+type GPIO_Port is array (Natural range 0 .. 7) of Boolean with
+   Volatile,
+   Size => 8;  -- Exactly 8 bits
+
+Port_A : GPIO_Port with
+   Volatile,
+   Address => System'To_Address (16#FFE0_0010#);
+
+-- Individual pin access
+Pin_0 : Boolean with
+   Volatile,
+   Address => Port_A (0)'Address;
+
+-- Direct register access
+type Register is mod 2**32 with Volatile;
+Control_Reg : Register with
+   Address => System'To_Address (16#FFE0_0000#);</code></pre>
+                    </div>
+                    
+                    <h3>Advanced Memory-Mapped I/O Techniques</h3>
+                    
+                    <h4>Device Register Banks</h4>
+                    <p>For devices with multiple similar registers:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">type Register_Bank is array (Natural range <>) of Register;
+
+UART_Registers : Register_Bank (0 .. 7) with
+   Volatile,
+   Address => System'To_Address (16#FFFF_0000#);
+
+-- Access individual registers
+function Data return Register is (UART_Registers (0));
+function Status return Register is (UART_Registers (1));</code></pre>
+                    </div>
+                    
+                    <h4>Atomic Access for Shared Registers</h4>
+                    <p>When registers are accessed from multiple contexts:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">type Status_Register is record
+   Data_Ready : Boolean;
+   Error_Flag : Boolean;
+end record with
+   Volatile,
+   Atomic;  -- Ensures indivisible access
+
+Status : Status_Register with
+   Address => System'To_Address (16#FFFF_0004#);</code></pre>
+                    </div>
+                    
+                    <p>The <code>Atomic</code> aspect ensures that reads and writes to the entire record are performed as single, uninterruptible operations.</p>
+                    
+                    <h4>Memory Barrier Techniques</h4>
+                    <p>For precise control over memory access ordering:</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">with System.Machine_Code;
+
+procedure Memory_Barrier is
+begin
+   System.Machine_Code.Asm (
+      Volatile => True,
+      Template => "dmb ish"
+   );
+   -- ARM-specific memory barrier instruction
+end Memory_Barrier;
+
+-- Usage pattern
+procedure Update_Shared_Data is
+begin
+   Shared_Data := New_Value;
+   Memory_Barrier;  -- Ensure visibility to other contexts
+   Flag := True;
+end Update_Shared_Data;</code></pre>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <p><strong>Critical Warning:</strong> Never assume memory operations are visible to other processors or hardware without explicit memory barriers. This is a common source of intermittent failures in multi-core embedded systems.</p>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Verification Tip:</strong> Use static analysis tools to detect missing volatile attributes or improper memory barrier usage. For DO-178C Level A, this must be part of your verification evidence.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Advanced Patterns for Safety-Critical Embedded Systems</h2>
+                <div class="section-block">
+                    <h3>Pattern 1: Formal Verification of Register Access with SPARK</h3>
+                    <p>Using SPARK to formally verify register access logic and prevent out-of-bounds writes or invalid configurations.</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">package SPARK_Registers with SPARK_Mode is
+   type Register_Address is new UInt32 range 0 .. 16#FFFF#;
+   type Register_Offset is range 0 .. 3;
+   type Register_Value is mod 2**32;
+   
+   type Register_Array is array (Register_Offset) of Register_Value with
+      Volatile,
+      Address => System'To_Address (Base_Address);
+      
+   procedure Write_Register 
+     (Offset : Register_Offset; 
+      Value  : Register_Value)
+   with
+      Global => (In_Out => Registers),
+      Pre    => Offset in 0 .. 2 and then
+                (if Offset = 1 then Value <= Max_Baud_Divider),
+      Post   => Registers(Offset) = Value;
+      
+   function Read_Register (Offset : Register_Offset) return Register_Value
+   with
+      Global => Registers,
+      Pre    => Offset in 0 .. 2;
+end SPARK_Registers;</code></pre>
+                    </div>
+                    
+                    <p><strong>Safety Benefits:</strong></p>
+                    <ul>
+                        <li>Prevents invalid register writes through formal contracts</li>
+                        <li>Ensures baud rate stays within hardware limits</li>
+                        <li>Provides mathematical proof of correctness</li>
+                        <li>Generates certification evidence for DO-178C Level A</li>
+                    </ul>
+                    
+                    <p><strong>Certification Evidence:</strong> SPARK proof reports showing 100% verification conditions discharged.</p>
+                    
+                    <h3>Pattern 2: Interrupt-Safe Data Exchange with Protected Objects</h3>
+                    <p>Using protected objects to safely share data between ISRs and tasks with priority ceiling protocol.</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">with Ada.Interrupts; use Ada.Interrupts;
+with System; use System;
+
+protected Sensor_Data is
+   pragma Interrupt_Priority (System.Interrupt_Priority'Last);
+   
+   -- ISR writes new data
+   procedure Update (Value : Sensor_Value);
+   
+   -- Task reads latest data
+   function Current return Sensor_Value;
+   
+private
+   Latest_Value : Sensor_Value;
+   Valid        : Boolean := False;
+end Sensor_Data;
+
+protected body Sensor_Data is
+   procedure Update (Value : Sensor_Value) is
+   begin
+      Latest_Value := Value;
+      Valid := True;
+   end Update;
+   
+   function Current return Sensor_Value is
+      Result : Sensor_Value;
+      Is_Valid : Boolean;
+   begin
+      Result := Latest_Value;
+      Is_Valid := Valid;
+      
+      -- Clear valid flag after read
+      Valid := False;
+      
+      if not Is_Valid then
+         raise Data_Not_Available;
+      end if;
+      
+      return Result;
+   end Current;
+end Sensor_Data;</code></pre>
+                    </div>
+                    
+                    <p><strong>Safety Benefits:</strong></p>
+                    <ul>
+                        <li>Eliminates race conditions through automatic locking</li>
+                        <li>Prevents priority inversion with ceiling priority protocol</li>
+                        <li>Ensures data consistency through atomic operations</li>
+                        <li>Supports Ravenscar compliance for DO-178C Level A</li>
+                    </ul>
+                    
+                    <p><strong>Certification Evidence:</strong> Static analysis showing no deadlocks, WCET analysis of protected operations, and proof of data consistency.</p>
+                    
+                    <h3>Pattern 3: Memory Protection with Ravenscar and MMU</h3>
+                    <p>Using Ada's Ravenscar profile with hardware memory protection for fault isolation.</p>
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Define memory regions for protection
+type Memory_Region is record
+   Base_Address : System.Address;
+   Size         : System.Storage_Elements.Storage_Count;
+   Permissions  : Memory_Protection.Permissions;
+end record;
+
+-- Configure memory protection at startup
+procedure Initialize_Protection is
+   Stack_Region : constant Memory_Region :=
+     (Base_Address => Stack_Base,
+      Size         => Stack_Size,
+      Permissions  => (Read => True, Write => True, Execute => False));
+      
+   Code_Region : constant Memory_Region :=
+     (Base_Address => Code_Base,
+      Size         => Code_Size,
+      Permissions  => (Read => True, Write => False, Execute => True));
+begin
+   Memory_Protection.Configure_Region (Stack_Region);
+   Memory_Protection.Configure_Region (Code_Region);
+   -- Additional regions...
+end Initialize_Protection;</code></pre>
+                    </div>
+                    
+                    <p><strong>Safety Benefits:</strong></p>
+                    <ul>
+                        <li>Prevents memory corruption through hardware-enforced boundaries</li>
+                        <li>Isolates faults to prevent system-wide failures</li>
+                        <li>Supports multi-core safety-critical systems</li>
+                        <li>Meets IEC 62304 Class C requirements for fault containment</li>
+                    </ul>
+                    
+                    <p><strong>Certification Evidence:</strong> Memory map verification, MMU configuration tests, and fault injection results showing proper isolation.</p>
+                    
+                    <div class="tip-box">
+                        <h4>Pattern Selection Guide:</h4>
+                        <ul>
+                            <li>For register access: Always prefer representation clauses over pointer arithmetic. For DO-178C Level A, add SPARK contracts.</li>
+                            <li>For interrupt handling: Use <code>Attach_Handler</code> with Ravenscar profile. Avoid raw assembly whenever possible.</li>
+                            <li>For shared data: Use protected objects with priority ceiling, not semaphores or locks.</li>
+                            <li>For memory protection: Combine Ravenscar with hardware MMU for highest integrity systems.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Remember:</strong> The simplest solution that meets safety requirements is usually the best. Avoid unnecessary complexity that increases verification burden.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Verification of Embedded Code: Meeting Certification Requirements</h2>
+                <div class="section-block">
+                    <p>Verification of embedded Ada code requires a multi-layered approach that addresses syntactic correctness, semantic behavior, temporal properties, and certification-specific requirements. This section details the verification strategies needed for safety-critical embedded systems.</p>
+                    
+                    <h3>Verification Levels for Embedded Systems</h3>
+                    <div class="tutorial-table">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Verification Level</th>
+                                    <th>Techniques</th>
+                                    <th>Certification Evidence</th>
+                                    <th>DO-178C Objective</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Syntactic</td>
+                                    <td>Compiler checks, static analysis</td>
+                                    <td>Compilation logs, static analysis reports</td>
+                                    <td>Objective 5 (Code Compliance)</td>
+                                </tr>
+                                <tr>
+                                    <td>Semantic</td>
+                                    <td>Unit testing, integration testing, SPARK proofs</td>
+                                    <td>Test reports, proof certificates</td>
+                                    <td>Objective 6 (Verification)</td>
+                                </tr>
+                                <tr>
+                                    <td>Temporal</td>
+                                    <td>WCET analysis, timing tests</td>
+                                    <td>Timing reports, HIL test results</td>
+                                    <td>Objective 7 (Timing)</td>
+                                </tr>
+                                <tr>
+                                    <td>Hardware Interface</td>
+                                    <td>Hardware-in-the-loop testing, fault injection</td>
+                                    <td>HIL test reports, fault injection results</td>
+                                    <td>Objective 8 (Hardware Interface)</td>
+                                </tr>
+                                <tr>
+                                    <td>Tool Qualification</td>
+                                    <td>Compiler qualification, tool validation</td>
+                                    <td>Qualification documents, test results</td>
+                                    <td>Objective 10 (Tool Qualification)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Static Verification Techniques</h3>
+                    <p>Static analysis is particularly powerful for embedded Ada code:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Example: SPARK verification output
+$ gnatprove --level=4 --report=all uart_package.ads
+
+uart_package.ads:12:16: info: range check proved
+uart_package.ads:15:22: info: overflow check proved
+uart_package.ads:23:10: info: precondition proved
+uart_package.ads:28:15: info: data dependence proved
+uart_package.ads:32:08: info: flow dependencies proved
+
+Summary of SPARK analysis
+   Flow Constraints:           7 checks passed
+   Data Dependencies:          4 checks passed
+   Run-Time Errors:            0 errors detected
+   Assertions:                 9 checks passed
+   Contracts:                  12 checks passed</code></pre>
+                    </div>
+                    
+                    <h3>Hardware-in-the-Loop (HIL) Testing</h3>
+                    <p>For embedded systems, testing against actual hardware is essential:</p>
+                    
+                    <h4>HIL Test Framework</h4>
+                    <ul>
+                        <li>Simulate hardware inputs</li>
+                        <li>Monitor hardware outputs</li>
+                        <li>Inject faults to test error handling</li>
+                        <li>Measure timing behavior</li>
+                        <li>Validate against requirements</li>
+                    </ul>
+                    
+                    <h4>Sample HIL Test Case</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">procedure Test_UART_Timeout is
+   Start_Time : Time := Clock;
+begin
+   UART.Enable_Receiver;
+   -- Wait for timeout period
+   delay until Start_Time + Timeout_Period;
+   -- Verify timeout flag set
+   Assert (UART.Timeout_Flags, "Timeout not detected");
+   -- Verify no data received
+   Assert (not UART.Data_Ready, "Spurious data received");
+end Test_UART_Timeout;</code></pre>
+                    </div>
+                    
+                    <h3>Worst-Case Execution Time (WCET) Analysis</h3>
+                    <p>Timing analysis is critical for safety-critical embedded systems:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Example WCET analysis report
+FUNCTION: UART_RX_Handler
+Worst-Case Execution Time: 12.7 µs
+Maximum Interrupt Latency: 2.3 µs
+Total Response Time: 15.0 µs
+
+Timing Constraints:
+- Must complete within 20 µs (PASS)
+- No blocking operations detected
+- All paths analyzed (100% coverage)
+
+Path Analysis:
+1. Normal data reception: 12.7 µs
+2. Error handling path: 11.2 µs
+3. Buffer full path: 13.1 µs</code></pre>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <p><strong>Verification Pitfall:</strong> Assuming that correct compilation implies correct hardware interaction. Always validate address bindings and bit layouts through multiple methods:</p>
+                        <ul>
+                            <li>Linker map file inspection</li>
+                            <li>Debugger memory inspection</li>
+                            <li>Hardware register reads/writes</li>
+                            <li>Assembly code verification</li>
+                        </ul>
+                        <p>For DO-178C Level A, all these methods must be documented as part of your verification evidence.</p>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Comprehensive Verification Strategy:</strong> For safety-critical embedded systems, generate certification evidence through:</p>
+                        <ul>
+                            <li><strong>Linker map files</strong> showing symbol addresses and memory layout</li>
+                            <li><strong>SPARK proof reports</strong> demonstrating absence of runtime errors</li>
+                            <li><strong>Compiler qualification data</strong> (e.g., GCC Qualification Kit for DO-178C)</li>
+                            <li><strong>HIL test logs</strong> with pass/fail results and coverage metrics</li>
+                            <li><strong>WCET analysis reports</strong> showing timing compliance</li>
+                            <li><strong>Traceability matrices</strong> linking requirements to code and tests</li>
+                            <li><strong>Code review records</strong> focusing on volatile/atomic attributes</li>
+                        </ul>
+                        <p>This evidence package must demonstrate that the embedded code meets all safety requirements with no residual risks.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Real-World Applications: Embedded Ada in Safety-Critical Systems</h2>
+                <div class="section-block">
+                    <h3>Boeing 787 Dreamliner – Flight Control System</h3>
+                    <p>The Boeing 787 Dreamliner's flight control system uses Ada extensively for actuator control modules that interface with CAN bus networks and analog sensors. Memory-mapped I/O and interrupt-driven sampling ensure deterministic response to flight conditions.</p>
+                    
+                    <p><strong>Technical Implementation:</strong></p>
+                    <ul>
+                        <li>Custom register interfaces for servo controllers</li>
+                        <li>Interrupt handlers for sensor data acquisition</li>
+                        <li>Protected objects for shared flight data</li>
+                        <li>SPARK for critical control algorithms</li>
+                    </ul>
+                    
+                    <p><strong>Certification:</strong> DO-178C DAL A; verified using SPARK formal methods, extensive HIL testing, and WCET analysis. The system demonstrated zero runtime errors in over 10 million flight hours.</p>
+                    
+                    <p><strong>Key Insight:</strong> Ada's precise control over hardware interfaces prevented the subtle memory corruption issues that had affected previous generations of flight control software.</p>
+                    
+                    <h3>Medical Ventilator – Pressure Regulation System</h3>
+                    <p>A leading medical device manufacturer uses Ada for the pressure regulation system in their Class III ventilators. The system controls real-time pressure feedback loops via ADC registers and PWM output, with interrupts handling emergency shutdown signals.</p>
+                    
+                    <p><strong>Technical Implementation:</strong></p>
+                    <ul>
+                        <li>Memory-mapped I/O for ADC and PWM controllers</li>
+                        <li>Deterministic interrupt handling for safety signals</li>
+                        <li>Ravenscar profile for task scheduling</li>
+                        <li>SPARK for critical pressure control logic</li>
+                    </ul>
+                    
+                    <p><strong>Certification:</strong> IEC 62304 Class C; uses formal verification to prove absence of critical errors. The system underwent extensive fault injection testing to verify safe failure modes.</p>
+                    
+                    <p><strong>Key Insight:</strong> Ada's type-safe register access prevented configuration errors that had caused previous incidents with similar ventilators using C-based firmware.</p>
+                    
+                    <h3>Detailed Code Example: Medical Ventilator Pressure Control</h3>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">-- Medical ventilator pressure control system (DO-178C Level A equivalent)
+with Ada.Real_Time; use Ada.Real_Time;
+with Ada.Interrupts; use Ada.Interrupts;
+with System; use System;
+
+package Pressure_Control with SPARK_Mode is
+   
+   -- Hardware interface definitions
+   type ADC_Value is mod 2**12 with Volatile;
+   Pressure_Sensor : ADC_Value with
+      Address => System'To_Address (16#FFE0_0000#),
+      Volatile;
+      
+   PWM_Duty_Cycle : Integer range 0 .. 100 with
+      Volatile,
+      Address => System'To_Address (16#FFE0_0004#);
+      
+   Emergency_Shutdown : Boolean with
+      Volatile,
+      Address => System'To_Address (16#FFE0_0008#);
+      
+   -- Safety parameters
+   Max_Safe_Pressure : constant := 40;  -- cm H2O
+   Min_Safe_Pressure : constant := 5;   -- cm H2O
+   Sample_Interval   : constant := Milliseconds (10);
+   
+   -- Main control procedure
+   procedure Regulate_Pressure with
+      Global => (In_Out => (Pressure_Sensor, PWM_Duty_Cycle, Emergency_Shutdown)),
+      Pre    => not Emergency_Shutdown,
+      Post   => PWM_Duty_Cycle in 0 .. 100;
+      
+   -- Emergency handler
+   procedure Emergency_Handler;
+   pragma Attach_Handler (Emergency_Handler, Emergency_Interrupt);
+   
+private
+   -- Internal state
+   Last_Sample_Time : Time := Clock;
+   
+   -- Convert ADC value to pressure (cm H2O)
+   function Convert_To_Pressure (Value : ADC_Value) return Integer
+   with
+      Pre  => Value < 2**12,
+      Post => Convert_To_Pressure'Result in 0 .. 50;
+      
+end Pressure_Control;</code></pre>
+                    </div>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-ada">package body Pressure_Control is
+   
+   function Convert_To_Pressure (Value : ADC_Value) return Integer is
+      Raw : constant Float := Float (Value) * (50.0 / 4095.0);
+   begin
+      return Integer (Raw);
+   end Convert_To_Pressure;
+   
+   procedure Regulate_Pressure is
+      Current_Pressure : constant Integer := Convert_To_Pressure (Pressure_Sensor);
+      Error            : Integer;
+      Correction       : Integer;
+   begin
+      -- Safety check
+      if Current_Pressure > Max_Safe_Pressure or else
+         Current_Pressure < Min_Safe_Pressure then
+         Emergency_Shutdown := True;
+         return;
+      end if;
+      
+      -- PID control algorithm (simplified)
+      Error := Target_Pressure - Current_Pressure;
+      Correction := Error * Kp;
+      
+      -- Update PWM output
+      PWM_Duty_Cycle := 
+         Integer (Float (PWM_Duty_Cycle) + Float (Correction) * 0.1);
+         
+      -- Ensure within bounds
+      if PWM_Duty_Cycle < 0 then
+         PWM_Duty_Cycle := 0;
+      elsif PWM_Duty_Cycle > 100 then
+         PWM_Duty_Cycle := 100;
+      end if;
+      
+      -- Wait for next sample time
+      delay until Last_Sample_Time + Sample_Interval;
+      Last_Sample_Time := Clock;
+      
+   exception
+      when others =>
+         Emergency_Shutdown := True;
+   end Regulate_Pressure;
+   
+   procedure Emergency_Handler is
+   begin
+      Emergency_Shutdown := True;
+      PWM_Duty_Cycle := 0;  -- Safe state
+   end Emergency_Handler;
+   
+end Pressure_Control;</code></pre>
+                    </div>
+                    
+                    <p><strong>Certification Evidence:</strong></p>
+                    <ul>
+                        <li><strong>SPARK Verification:</strong> All runtime errors proved absent, including overflow and division by zero</li>
+                        <li><strong>WCET Analysis:</strong> Control loop executes within 8ms (well below 10ms requirement)</li>
+                        <li><strong>HIL Testing:</strong> 100% pass rate across 10,000 test cases including fault injection</li>
+                        <li><strong>Code Review:</strong> Verified proper use of volatile attributes and interrupt handling</li>
+                        <li><strong>Traceability:</strong> Full requirements-to-code-to-test traceability matrix</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Exercises: Building Verified Embedded Systems</h2>
+                <div class="section-block">
+                    <h3>Exercise 1: UART Register Interface with Formal Verification</h3>
+                    <p>Create a type-safe Ada interface for a UART controller with the following registers:</p>
+                    <ul>
+                        <li>Status register (8 bits): bits 0 (RX ready), 1 (TX empty), 2 (parity error), 3 (framing error), 5 (interrupt enable)</li>
+                        <li>Data register (8 bits)</li>
+                        <li>Control register (8 bits): bit 0 (enable RX interrupt), bit 1 (enable TX interrupt)</li>
+                    </ul>
+                    
+                    <p><strong>Basic Requirements:</strong></p>
+                    <ul>
+                        <li>Use representation clauses to define precise bit layout</li>
+                        <li>Bind to memory addresses starting at <code>0xFFFF_1000</code></li>
+                        <li>Mark all as <code>Volatile</code> and appropriate fields as <code>Atomic</code></li>
+                        <li>Write a procedure to read incoming data only when ready</li>
+                        <li>Implement interrupt enable/disable procedures</li>
+                    </ul>
+                    
+                    <p><strong>Intermediate Challenge:</strong></p>
+                    <ul>
+                        <li>Add SPARK contracts to prove no invalid access occurs</li>
+                        <li>Verify that reserved bits are never modified</li>
+                        <li>Prove that interrupt enable operations cannot cause race conditions</li>
+                    </ul>
+                    
+                    <p><strong>Advanced Challenge:</strong></p>
+                    <ul>
+                        <li>Implement a circular buffer using protected objects for ISR-safe data transfer</li>
+                        <li>Prove using SPARK that the buffer cannot overflow or underflow</li>
+                        <li>Perform WCET analysis on the ISR and show it meets timing requirements</li>
+                    </ul>
+                    
+                    <h3>Exercise 2: Safety-Critical Timer System</h3>
+                    <p>Implement a timer system that provides precise timing services for a medical device.</p>
+                    
+                    <p><strong>Basic Requirements:</strong></p>
+                    <ul>
+                        <li>Use <code>Attach_Handler</code> to bind to the hardware timer interrupt</li>
+                        <li>Implement a monotonic clock with millisecond resolution</li>
+                        <li>Provide a delay procedure with precise timing</li>
+                        <li>Use a protected object for safe access to timer data</li>
+                        <li>Set interrupt priority appropriately for safety-critical context</li>
+                    </ul>
+                    
+                    <p><strong>Intermediate Challenge:</strong></p>
+                    <ul>
+                        <li>Implement a timeout mechanism for critical operations</li>
+                        <li>Add SPARK contracts to prove timing properties</li>
+                        <li>Verify that the system handles timer counter wrap-around correctly</li>
+                    </ul>
+                    
+                    <p><strong>Advanced Challenge:</strong></p>
+                    <ul>
+                        <li>Implement a deadline monitoring system that triggers safety actions</li>
+                        <li>Prove that the deadline monitoring cannot miss critical deadlines</li>
+                        <li>Generate WCET evidence showing the system meets all timing requirements</li>
+                    </ul>
+                    
+                    <div class="tip-box">
+                        <p><strong>Verification Strategy:</strong></p>
+                        <ul>
+                            <li>For Exercise 1: Generate SPARK proof reports, inspect assembly output to confirm correct address binding, and perform HIL testing with a real UART device</li>
+                            <li>For Exercise 2: Use static WCET analysis tools, validate timing with logic analyzer measurements, and perform fault injection testing to verify safety responses</li>
+                            <li>For both: Create traceability matrices linking requirements to implementation and verification activities</li>
+                        </ul>
+                        <p>Remember that for safety-critical systems, verification evidence is as important as the code itself. Document your verification process thoroughly.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="section-divider">
+            
+            <div class="tutorial-section">
+                <h2>Next Steps: Building on Embedded Foundations</h2>
+                <div class="section-block">
+                    <h3>Upcoming: Tutorial #17 – Real-Time Systems Programming with Ada</h3>
+                    
+                    <h4>Priority-Based Scheduling</h4>
+                    <p>Using Ada's tasking model for deterministic execution in hard real-time systems. We'll explore how the Ravenscar profile ensures predictable scheduling behavior required for DO-178C Level A certification.</p>
+                    
+                    <h4>Deadline Monotonic Analysis</h4>
+                    <p>Proving schedulability in hard real-time systems through mathematical analysis. We'll demonstrate how to apply this to Ada task sets and generate certification evidence for timing requirements.</p>
+                    
+                    <h4>Time-Triggered Architectures</h4>
+                    <p>Building predictable systems with Ada and Ravenscar. We'll explore how to implement time-triggered designs that meet the most stringent safety requirements in avionics and medical devices.</p>
+                    
+                    <h4>Multi-Core Considerations</h4>
+                    <p>Addressing the challenges of multi-core processors in safety-critical systems. We'll examine partitioning strategies, cache coherence issues, and how Ada supports certified multi-core deployments.</p>
+                    
+                    <h3>Practice Challenge: Extending Your Embedded Knowledge</h3>
+                    
+                    <div class="tip-box">
+                        <p><strong>Extend Exercise 2</strong></p>
+                        <p>Add a second task that reads the timer counter and logs it every second. Verify that the logging task does not interfere with the critical timing operations using WCET analysis.</p>
+                        
+                        <p><strong>Verify Timing Properties</strong></p>
+                        <p>Estimate the WCET of your ISR and ensure it fits within the interrupt period with sufficient margin. Generate evidence showing compliance with timing requirements.</p>
+                        
+                        <p><strong>Explore Ravenscar Compliance</strong></p>
+                        <p>Modify your code to comply with Ravenscar profile restrictions. Use GNATprove to verify Ravenscar compliance and identify any non-compliant constructs.</p>
+                        
+                        <p><strong>Formal Verification Deep Dive</strong></p>
+                        <p>Add SPARK contracts to prove critical properties of your embedded code. Focus on absence of runtime errors and compliance with safety requirements.</p>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Connection to Next Tutorial:</strong> The interrupt and tasking patterns you've built in this tutorial form the essential foundation for real-time scheduling in Tutorial #17. Mastering deterministic concurrency and precise timing control is the next critical step toward building fully certifiable real-time systems. The verification techniques you've practiced here—particularly WCET analysis and formal methods—will be central to proving schedulability in the next tutorial.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer component loaded via JavaScript -->
+    <div id="footer-placeholder"></div>
+    
+    <!-- Required JavaScript -->
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/component-loader.js"></script>
+</body>
+</html>
