@@ -19,42 +19,40 @@
                 <div class="section-block">
                     <p>While C remains dominant in embedded systems, its fundamental design assumptions create significant challenges for safety-critical development. The language's treatment of hardware interaction as "implementation-defined" behavior leads to subtle, hard-to-detect failures that often only manifest in field operation—far too late for cost-effective correction.</p>
                     
-                    <div class="tutorial-table">
-                        <table class="table table-bordered">
-                            <thead>
+                    <table class="tutorial-table">
+                        <thead>
+                            <tr>
+                                <th>Problem (Traditional C Approach)</th>
+                                <th>Consequence in Safety-Critical Systems</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Raw pointer arithmetic for register access</td>
+                                <td>No type safety; invalid offsets cause silent memory corruption that may only manifest under specific environmental conditions</td>
+                            </tr>
+                            <tr>
+                                <td>Interrupt handlers written as plain functions</td>
+                                <td>No protection against reentrancy or priority inversion; can lead to race conditions with catastrophic consequences</td>
+                            </tr>
                                 <tr>
-                                    <th>Problem (Traditional C Approach)</th>
-                                    <th>Consequence in Safety-Critical Systems</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Raw pointer arithmetic for register access</td>
-                                    <td>No type safety; invalid offsets cause silent memory corruption that may only manifest under specific environmental conditions</td>
-                                </tr>
-                                <tr>
-                                    <td>Interrupt handlers written as plain functions</td>
-                                    <td>No protection against reentrancy or priority inversion; can lead to race conditions with catastrophic consequences</td>
-                                </tr>
-                                <tr>
-                                    <td>Unspecified memory layout of structs</td>
-                                    <td>Data misalignment breaks memory-mapped device protocols; behavior varies across compiler versions and optimization levels</td>
-                                </tr>
-                                <tr>
-                                    <td>No built-in concurrency control</td>
-                                    <td>Race conditions in ISRs accessing shared data can corrupt critical state information</td>
-                                </tr>
-                                <tr>
-                                    <td>Undefined behavior in bit manipulation</td>
-                                    <td>Compiler optimizations may reorder or eliminate critical operations, violating hardware timing requirements</td>
-                                </tr>
-                                <tr>
-                                    <td>Lack of formal verification support</td>
-                                    <td>Inability to prove absence of critical errors like buffer overflows or race conditions</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                <td>Unspecified memory layout of structs</td>
+                                <td>Data misalignment breaks memory-mapped device protocols; behavior varies across compiler versions and optimization levels</td>
+                            </tr>
+                            <tr>
+                                <td>No built-in concurrency control</td>
+                                <td>Race conditions in ISRs accessing shared data can corrupt critical state information</td>
+                            </tr>
+                            <tr>
+                                <td>Undefined behavior in bit manipulation</td>
+                                <td>Compiler optimizations may reorder or eliminate critical operations, violating hardware timing requirements</td>
+                            </tr>
+                            <tr>
+                                <td>Lack of formal verification support</td>
+                                <td>Inability to prove absence of critical errors like buffer overflows or race conditions</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <h3>Case Study: Air Data Computer Failure in Commercial Aviation</h3>
                     <div class="note-box">
@@ -204,44 +202,42 @@ SECTIONS
                     <p>Direct access to hardware registers is fundamental to embedded systems programming. Ada provides multiple mechanisms for safe, verifiable register access, with representation clauses being the most powerful and type-safe approach.</p>
                     
                     <h3>Register Access Mechanisms Compared</h3>
-                    <div class="tutorial-table">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Method</th>
-                                    <th>Advantages</th>
-                                    <th>Limitations</th>
-                                    <th>Certification Suitability</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Representation Clauses</td>
-                                    <td>Type-safe, compile-time checked, precise bit layout control</td>
-                                    <td>Requires careful specification</td>
-                                    <td>DO-178C Level A (with verification)</td>
-                                </tr>
-                                <tr>
-                                    <td>Address Clauses</td>
-                                    <td>Direct memory mapping, simple syntax</td>
-                                    <td>Less precise than representation clauses</td>
-                                    <td>DO-178C Level B</td>
-                                </tr>
-                                <tr>
-                                    <td>Pointer Arithmetic</td>
-                                    <td>Familiar to C programmers</td>
-                                    <td>No type safety, error-prone, hard to verify</td>
-                                    <td>Not recommended for Level A/B</td>
-                                </tr>
-                                <tr>
-                                    <td>System.Machine_Code</td>
-                                    <td>Direct assembly access when needed</td>
-                                    <td>Non-portable, difficult to verify</td>
-                                    <td>Limited use in Level A (with justification)</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="tutorial-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Advantages</th>
+                                <th>Limitations</th>
+                                <th>Certification Suitability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Representation Clauses</td>
+                                <td>Type-safe, compile-time checked, precise bit layout control</td>
+                                <td>Requires careful specification</td>
+                                <td>DO-178C Level A (with verification)</td>
+                            </tr>
+                            <tr>
+                                <td>Address Clauses</td>
+                                <td>Direct memory mapping, simple syntax</td>
+                                <td>Less precise than representation clauses</td>
+                                <td>DO-178C Level B</td>
+                            </tr>
+                            <tr>
+                                <td>Pointer Arithmetic</td>
+                                <td>Familiar to C programmers</td>
+                                <td>No type safety, error-prone, hard to verify</td>
+                                <td>Not recommended for Level A/B</td>
+                            </tr>
+                            <tr>
+                                <td>System.Machine_Code</td>
+                                <td>Direct assembly access when needed</td>
+                                <td>Non-portable, difficult to verify</td>
+                                <td>Limited use in Level A (with justification)</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <h3>Defining Hardware Registers with Representation Clauses</h3>
                     <p>The most robust approach for register definition uses Ada's record representation clauses:</p>
@@ -699,50 +695,48 @@ end Initialize_Protection;</code></pre>
                     <p>Verification of embedded Ada code requires a multi-layered approach that addresses syntactic correctness, semantic behavior, temporal properties, and certification-specific requirements. This section details the verification strategies needed for safety-critical embedded systems.</p>
                     
                     <h3>Verification Levels for Embedded Systems</h3>
-                    <div class="tutorial-table">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Verification Level</th>
-                                    <th>Techniques</th>
-                                    <th>Certification Evidence</th>
-                                    <th>DO-178C Objective</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Syntactic</td>
-                                    <td>Compiler checks, static analysis</td>
-                                    <td>Compilation logs, static analysis reports</td>
-                                    <td>Objective 5 (Code Compliance)</td>
-                                </tr>
-                                <tr>
-                                    <td>Semantic</td>
-                                    <td>Unit testing, integration testing, SPARK proofs</td>
-                                    <td>Test reports, proof certificates</td>
-                                    <td>Objective 6 (Verification)</td>
-                                </tr>
-                                <tr>
-                                    <td>Temporal</td>
-                                    <td>WCET analysis, timing tests</td>
-                                    <td>Timing reports, HIL test results</td>
-                                    <td>Objective 7 (Timing)</td>
-                                </tr>
-                                <tr>
-                                    <td>Hardware Interface</td>
-                                    <td>Hardware-in-the-loop testing, fault injection</td>
-                                    <td>HIL test reports, fault injection results</td>
-                                    <td>Objective 8 (Hardware Interface)</td>
-                                </tr>
-                                <tr>
-                                    <td>Tool Qualification</td>
-                                    <td>Compiler qualification, tool validation</td>
-                                    <td>Qualification documents, test results</td>
-                                    <td>Objective 10 (Tool Qualification)</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="tutorial-table">
+                        <thead>
+                            <tr>
+                                <th>Verification Level</th>
+                                <th>Techniques</th>
+                                <th>Certification Evidence</th>
+                                <th>DO-178C Objective</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Syntactic</td>
+                                <td>Compiler checks, static analysis</td>
+                                <td>Compilation logs, static analysis reports</td>
+                                <td>Objective 5 (Code Compliance)</td>
+                            </tr>
+                            <tr>
+                                <td>Semantic</td>
+                                <td>Unit testing, integration testing, SPARK proofs</td>
+                                <td>Test reports, proof certificates</td>
+                                <td>Objective 6 (Verification)</td>
+                            </tr>
+                            <tr>
+                                <td>Temporal</td>
+                                <td>WCET analysis, timing tests</td>
+                                <td>Timing reports, HIL test results</td>
+                                <td>Objective 7 (Timing)</td>
+                            </tr>
+                            <tr>
+                                <td>Hardware Interface</td>
+                                <td>Hardware-in-the-loop testing, fault injection</td>
+                                <td>HIL test reports, fault injection results</td>
+                                <td>Objective 8 (Hardware Interface)</td>
+                            </tr>
+                            <tr>
+                                <td>Tool Qualification</td>
+                                <td>Compiler qualification, tool validation</td>
+                                <td>Qualification documents, test results</td>
+                                <td>Objective 10 (Tool Qualification)</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <h3>Static Verification Techniques</h3>
                     <p>Static analysis is particularly powerful for embedded Ada code:</p>
