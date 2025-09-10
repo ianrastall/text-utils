@@ -15,6 +15,7 @@
   "tutorial-ada-13-certification.html",
   "tutorial-ada-14-build-systems.html",
   "tutorial-ada-15-testing-frameworks.html",
-  "tutorial-ada-16-embedded-systems.html"
+  "tutorial-ada-16-embedded-systems.html",
+  "tutorial-ada-17-safety-critical-gui.html"
   ]
 }
