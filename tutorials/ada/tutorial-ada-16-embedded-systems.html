@@ -1,30 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded Systems Programming with Ada</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../css/tutorials.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Header and navigation components loaded via JavaScript -->
-    <div id="header-placeholder"></div>
+<div class="tutorial-content">
+    <h1 class="tutorial-title">Embedded Systems Programming with Ada: Building Safety-Critical Hardware Interfaces</h1>
     
-    <div class="container">
-        <div class="tutorial-content">
-            <h1 class="tutorial-title">Embedded Systems Programming with Ada: Building Safety-Critical Hardware Interfaces</h1>
+    <div class="tutorial-section">
+        <h2>Introduction: The Critical Nature of Embedded Systems Programming</h2>
+        <div class="section-block">
+            <p>In the realm of safety-critical embedded systems—from flight control computers in commercial aviation to life-support medical devices—the margin for error approaches zero. Traditional approaches to embedded programming, particularly those based on C and C++, often treat hardware interaction as a necessary compromise where safety guarantees are sacrificed for low-level control. This tutorial explores how Ada fundamentally transforms embedded systems development by providing a comprehensive framework for building hardware interfaces that are simultaneously <em>safe, verifiable, and certifiable</em> while maintaining the precise control required for bare-metal programming.</p>
             
-            <div class="tutorial-section">
-                <h2>Introduction: The Critical Nature of Embedded Systems Programming</h2>
-                <div class="section-block">
-                    <p>In the realm of safety-critical embedded systems—from flight control computers in commercial aviation to life-support medical devices—the margin for error approaches zero. Traditional approaches to embedded programming, particularly those based on C and C++, often treat hardware interaction as a necessary compromise where safety guarantees are sacrificed for low-level control. This tutorial explores how Ada fundamentally transforms embedded systems development by providing a comprehensive framework for building hardware interfaces that are simultaneously <em>safe, verifiable, and certifiable</em> while maintaining the precise control required for bare-metal programming.</p>
-                    
-                    <p><strong>Ada Philosophy:</strong> Hardware interaction should be <em>explicit, verifiable, and type-safe</em>, not a dangerous afterthought. The language must provide mechanisms for low-level programming that preserve high-integrity guarantees without requiring developers to abandon abstraction or safety.</p>
-                    
-                    <p>Unlike languages that force developers to choose between safety and control, Ada provides a rich set of features specifically designed for embedded development that maintain strong typing, formal verification capabilities, and predictable behavior—all while enabling direct hardware access. This tutorial examines these features in depth, demonstrating how they support compliance with stringent safety standards like DO-178C (aviation), IEC 62304 (medical devices), and ISO 26262 (automotive).</p>
-                </div>
-            </div>
+            <p><strong>Ada Philosophy:</strong> Hardware interaction should be <em>explicit, verifiable, and type-safe</em>, not a dangerous afterthought. The language must provide mechanisms for low-level programming that preserve high-integrity guarantees without requiring developers to abandon abstraction or safety.</p>
+            
+            <p>Unlike languages that force developers to choose between safety and control, Ada provides a rich set of features specifically designed for embedded development that maintain strong typing, formal verification capabilities, and predictable behavior—all while enabling direct hardware access. This tutorial examines these features in depth, demonstrating how they support compliance with stringent safety standards like DO-178C (aviation), IEC 62304 (medical devices), and ISO 26262 (automotive).</p>
+        </div>
+    </div>
             
             <hr class="section-divider">
             
@@ -1122,12 +1108,4 @@ end Pressure_Control;</code></pre>
             </div>
         </div>
     </div>
-    
-    <!-- Footer component loaded via JavaScript -->
-    <div id="footer-placeholder"></div>
-    
-    <!-- Required JavaScript -->
-    <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/component-loader.js"></script>
-</body>
-</html>
+</div>
