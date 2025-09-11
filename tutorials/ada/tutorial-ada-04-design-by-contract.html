@@ -96,14 +96,14 @@ Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");</code></pre>
         <div class="code-block">
             <pre><code class="language-ada">function Square_Root (X : Float) return Float with
    Pre  => X >= 0.0,
-   Post => Square_Root'Result * Square_Root'Result = X and
+   Post => abs (Square_Root'Result * Square_Root'Result - X) < 0.00001 and
            Square_Root'Result >= 0.0;</code></pre>
         </div>
         
         <div class="note-box">
             <h3>Key Syntax Notes</h3>
             <ul>
-                <li>Contracts use <code class="code-inline">=></code> (implies) rather than <code class="code-inline">:=</code></li>
+                <li>Contracts use <code class="code-inline">=></code> (arrow syntax) to associate aspects with their expressions</li>
                 <li><code class="code-inline">'Result</code> refers to the function's return value</li>
                 <li>Multiple conditions can be combined with <code class="code-inline">and</code>, <code class="code-inline">or</code></li>
                 <li>Contracts can reference parameters and global variables</li>
@@ -165,8 +165,8 @@ Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");</code></pre>
    Pre  => Rate_Limit <= MAX_RATE,
    Post => abs (New_Angle - Current_Angle) <= Rate_Limit and
            New_Angle in Current_Angle-10 .. Current_Angle+10 and
-           (if Target_Angle > Current_Angle then New_Angle > Current_Angle) and
-           (if Target_Angle < Current_Angle then New_Angle < Current_Angle);</code></pre>
+           (if Target_Angle > Current_Angle then New_Angle >= Current_Angle) and
+           (if Target_Angle < Current_Angle then New_Angle <= Current_Angle);</code></pre>
                 </div>
                 <p>
                     These contracts ensure physically impossible maneuvers cannot be commanded.
@@ -242,7 +242,8 @@ end record with
       (Status /= Failed or Alert_History'Length > 0);
 
 function Is_Consistent (S : Temperature_Sensor) return Boolean is
-   (S.Status /= Operational or S.Reading in VALID_TEMPERATURE_RANGE);</code></pre>
+   ((S.Status /= Operational or S.Reading in VALID_TEMPERATURE_RANGE) and
+    (S.Status /= Failed or Alert_History'Length > 0));</code></pre>
         </div>
         
         <div class="two-column">
@@ -283,9 +284,8 @@ end record with
    Type_Invariant =>
       Weight > 0.0 and
       Height > 0.0 and
-      BMI = Weight / (Height/100.0)**2 and
-      BMI in 10.0..100.0 and
-      Last_Updated <= Clock;</code></pre>
+      abs (BMI - Weight / (Height/100.0)**2) < 0.001 and
+      BMI in 10.0..100.0;</code></pre>
             </div>
             <p>
                 This invariant ensures BMI is always correctly calculated and within valid ranges.
@@ -434,9 +434,9 @@ procedure Transition (Current : in out System_State; Next : System_State) with
             <pre><code class="language-ada">function Process_Sensor_Data (Raw : Sensor_Array) return Processed_Data with
    Pre  => Raw'Length > 0 and Raw'Length <= MAX_SENSOR_COUNT,
    Pre  => (for all I in Raw'Range => Raw(I).Quality > MIN_QUALITY),
-   Post => Processed_Data'Result'Length = Raw'Length and
-           (for all I in Processed_Data'Result'Range =>
-              Processed_Data'Result(I).Value in VALID_RANGE);</code></pre>
+   Post => Process_Sensor_Data'Result'Length = Raw'Length and
+           (for all I in Process_Sensor_Data'Result'Range =>
+              Process_Sensor_Data'Result(I).Value in VALID_RANGE);</code></pre>
         </div>
         
         <div class="warning-box">
