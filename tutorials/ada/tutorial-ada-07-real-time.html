@@ -91,17 +91,21 @@
             <pre><code class="language-ada">with Ada.Real_Time; use Ada.Real_Time;
 
 procedure Time_Demo is
-   Now        : Time := Clock;
-   One_Second : Time_Span := Seconds(1);
-   Ten_Ms     : Time_Span := Milliseconds(10);
-   Five_Us    : Time_Span := Microseconds(5);
+   Now           : Time := Clock;
+   Next_Time     : Time;
+   One_Second    : Time_Span := Seconds(1);
+   Ten_Ms        : Time_Span := Milliseconds(10);
+   Five_Us       : Time_Span := Microseconds(5);
+   Total_Delay   : Time_Span;
+   Delay_Until_Time : Time := Clock + Ten_Ms;
 begin
    -- Absolute time operations
    Next_Time := Now + One_Second;
    
    -- Relative time operations
-   if Delay_Until_Time - Clock >= Ten_Ms then
-      Handle_Timing_Violation;
+   if Delay_Until_Time - Clock < Ten_Ms then
+      -- Handle potential timing violation
+      null;
    end if;
    
    -- Time span arithmetic
@@ -128,36 +132,32 @@ end Time_Demo;</code></pre>
         </p>
         
         <div class="code-block">
-            <pre><code class="language-ada">task Critical_Process is
-   pragma Task_Dispatching_Policy (EDF_Within_Priorities);
-   pragma Deadline (Seconds => 0.010); -- 10ms deadline
-   -- Task definition
+            <pre><code class="language-ada">task type Critical_Process is
+   pragma Priority (System.Priority'Last);
 end Critical_Process;
 
 task body Critical_Process is
+   Period      : constant Time_Span := Milliseconds(10);
+   Next_Release : Time := Clock;
 begin
    loop
-      -- Work that must complete within deadline
+      delay until Next_Release;
+      
+      -- Work that must complete within the 10ms period
       Process_Data;
       
-      -- Optional deadline check
-      if Clock - Start_Time > Milliseconds(10) then
-         raise Deadline_Missed;
-      end if;
+      Next_Release := Next_Release + Period;
    end loop;
-exception
-   when Deadline_Error =>
-      Handle_Deadline_Violation;
 end Critical_Process;</code></pre>
         </div>
         
         <div class="scheduling-analysis">
             <h3>Deadline Best Practices</h3>
             <ul>
-                <li>Specify deadlines at task declaration for static analysis</li>
-                <li>Use runtime checks for critical operations within tasks</li>
-                <li>Combine with contracts for complete verification</li>
-                <li>Verify worst-case execution time (WCET) through analysis</li>
+                <li>Use a periodic task structure with `delay until` for predictable release times.</li>
+                <li>Ensure the Worst-Case Execution Time (WCET) of the loop body is less than the period.</li>
+                <li>Set task priorities according to real-time scheduling protocols like Rate-Monotonic Scheduling.</li>
+                <li>Use schedulability analysis tools to formally verify that all deadlines will be met.</li>
             </ul>
         </div>
         
@@ -342,10 +342,10 @@ end Control_Loop with
     <div class="tutorial-section">
         <h2>Temporal Contracts: Specifying Timing Behavior</h2>
         <p>
-            Building on Design by Contract, Ada allows specification of temporal properties directly in code - creating what we call "temporal contracts."
+            Building on Design by Contract, Ada allows specification of temporal properties directly in code. While the full concept of "temporal contracts" with custom aspects like `Time_Dependency` or `WCET` is a powerful idea for analysis tools, standard Ada uses a combination of `delay until`, `pragma Deadline`, and runtime checks to enforce timing. The following examples illustrate the *concept* of specifying timing behavior.
         </p>
         
-        <h3>Basic Temporal Contracts</h3>
+        <h3>Basic Temporal Contract Concepts</h3>
         
         <div class="two-column">
             <div class="column">
@@ -533,22 +533,22 @@ end Control_Loop;</code></pre>
 end Pacemaker_Controller;
 
 task body Pacemaker_Controller is
-   Beat_Interval : constant Time_Span := Milliseconds(1000);
-   Next_Beat     : Time := Clock;
+   Pacing_Interval : constant Time_Span := Milliseconds(1000); -- e.g., 60 bpm
+   Sense_Interval  : constant Time_Span := Milliseconds(10);
+   Next_Pace_Time  : Time := Clock + Pacing_Interval;
 begin
    loop
-      -- Check heart activity
+      -- Wait for the next sensing interval
+      delay until Clock + Sense_Interval;
+
       if Heartbeat_Detected then
-         -- Reset timer if natural beat detected
-         Next_Beat := Clock + Beat_Interval;
-      elsif Clock >= Next_Beat then
-         -- Generate electrical pulse
+         -- A natural heartbeat was detected, so reset the pacing timer
+         Next_Pace_Time := Clock + Pacing_Interval;
+      elsif Clock >= Next_Pace_Time then
+         -- No natural beat was detected in time, so generate a pace
          Generate_Pulse;
-         Next_Beat := Next_Beat + Beat_Interval;
+         Next_Pace_Time := Next_Pace_Time + Pacing_Interval;
       end if;
-      
-      -- Sleep until next check
-      delay until Clock + Milliseconds(10);
    end loop;
 end Pacemaker_Controller;</code></pre>
                 </div>
