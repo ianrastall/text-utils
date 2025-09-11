@@ -1,3 +1,9 @@
+/* Ensure placeholder text is readable in dark mode */
+input.form-control::placeholder,
+textarea.form-control::placeholder {
+    color: #bbbbbb !important;
+    opacity: 1 !important;
+}
 /**
  * custom.css (v2.6 - Fixed sidebar hover/active states)
  *

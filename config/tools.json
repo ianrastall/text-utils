@@ -160,5 +160,13 @@
         "description": "Select named or custom colors and generate corresponding code snippets for various programming languages.",
         "category": "CSS",
         "order": 14
+    },
+    {
+        "slug": "structured-prompt-builder",
+        "name": "Structured Prompt Builder",
+        "icon": "ballot",
+        "description": "Craft powerful and precise LLM prompts using a structured, YAML-like format.",
+        "category": "AI",
+        "order": 20
     }
 ]
