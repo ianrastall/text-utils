@@ -321,30 +321,26 @@ package Sensor_Exceptions is
    
    Sensor_Error : exception;
    
-   -- Enhanced exception with context
-   type Sensor_Exception is new Exception_Occurrence with private;
-   
-   function Create_Sensor_Error (
-      ID      : Sensor_ID;
-      Message : String;
-      Value   : Float := Float'Last) return Sensor_Exception;
-      
-   function Get_Sensor_ID (E : Sensor_Exception) return Sensor_ID;
-   function Get_Value (E : Sensor_Exception) return Float;
-   
-private
-   type Sensor_Exception is new Exception_Occurrence with record
-      Sensor_ID : System.Sensor_ID;
+   -- Enhanced exception with context using custom record
+   type Sensor_Error_Context is record
+      Sensor_ID : Integer;
       Value     : Float;
+      Message   : Unbounded_String;
    end record;
    
+   procedure Raise_Sensor_Error (
+      Context : Sensor_Error_Context);
+      
+   function Get_Sensor_Context (E : Exception_Occurrence) 
+      return Sensor_Error_Context;
+      
 end Sensor_Exceptions;
 
 -- Usage
-raise Create_Sensor_Error(
-   ID      => 5,
-   Message => "Value out of range",
-   Value   => 150.0);</code></pre>
+Raise_Sensor_Error(
+   (Sensor_ID => 5,
+    Value     => 150.0,
+    Message   => To_Unbounded_String("Value out of range")));</code></pre>
         </div>
         
         <div class="note-box">
@@ -477,22 +473,17 @@ raise Create_Sensor_Error(
                     Preserve context when propagating exceptions:
                 </p>
                 <div class="code-block">
-                    <pre><code class="language-ada">procedure Process_Data is
+                    <pre><code class="language-ada">with Ada.Exceptions; use Ada.Exceptions;
+
+procedure Process_Data is
 begin
    Parse_Input;
 exception
-   when Parse_Error =>
+   when Parse_Error : Parse_Error =>
       -- Preserve original context
       raise Data_Processing_Error with
-         "Input processing failed: " &amp; Exception_Information;
-end Process_Data;
-
--- Exception contract shows chaining
-Exceptional_Cases =>
-   (Data_Processing_Error =>
-      Exception_Message(Data_Processing_Error)'Length > 0 and
-      Exception_Identity(Data_Processing_Error) = Data_Processing_Error and
-      Exception_Occurrence(Data_Processing_Error).Exception_Name = "Parse_Error");</code></pre>
+         "Input processing failed: " & Exception_Message(Parse_Error);
+end Process_Data;</code></pre>
                 </div>
                 <p>
                     Maintains error context through multiple handling layers.
@@ -675,8 +666,6 @@ package Circuit_Breaker is
    end Breaker;
    
    -- Usage pattern
-   macro with Circuit_Breaker; use Circuit_Breaker;
-   
    procedure Call_With_Circuit_Breaker is
    begin
       Breaker.Check_State;
@@ -909,12 +898,14 @@ end Process;</code></pre>
                 <div class="column">
                     <h4>Prefer: Contextual Handling</h4>
                     <div class="code-block">
-                        <pre><code class="language-ada">procedure Process is
+                        <pre><code class="language-ada">with Ada.Exceptions; use Ada.Exceptions;
+
+procedure Process is
 begin
    Perform_Complex_Analysis;
 exception
    when E : others =>
-      Log_Error("Processing failed: " &amp; Exception_Information(E));
+      Log_Error("Processing failed: " & Exception_Information(E));
       raise; -- Or propagate with context
 end Process;</code></pre>
                     </div>
@@ -1010,13 +1001,6 @@ is
    procedure Handle_Error (E : Error_Record);
    function Current_Error return Error_Record;
    function System_Degraded return Boolean;
-   
-   -- Contracts specify error behavior
-   Contract_Cases =>
-      (System_Degraded => 
-         Current_Error.Severity in Warning..Critical,
-       not System_Degraded => 
-         Current_Error.Severity = Warning);
    
 end Flight_Control.Errors;</code></pre>
                 </div>
@@ -1155,4 +1139,3 @@ end Flight_Control.Errors;</code></pre>
             </p>
         </div>
     </div>
-</div>
