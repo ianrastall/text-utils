@@ -35,7 +35,6 @@
    Sensor_ID : in     Sensor_Identifier;
    Value     : in     Celsius;
    Success   :    out Boolean) is
-   -- Implementation
 begin
    -- Modify system state
    Temperature_Values(Sensor_ID) := Value;
@@ -58,7 +57,6 @@ end Set_Temperature;</code></pre>
                 <div class="code-block">
                     <pre><code class="language-ada">function Get_Temperature (
    Sensor_ID : Sensor_Identifier) return Celsius is
-   -- Implementation
 begin
    -- Return value without modifying state
    return Temperature_Values(Sensor_ID);
@@ -206,10 +204,10 @@ end Temperature_Sensors;</code></pre>
    
    procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius) is
       -- This is a placeholder for a real hardware read
-      Current_Reading : constant Celsius := 25.0; -- Simulate hardware reading
+      Current_Reading : constant Celsius := 25.0;
    begin
-      Value := Current_Reading; -- Assign to the OUT parameter
-      Last_Values(ID) := Current_Reading; -- Update the internal state
+      Value := Current_Reading;
+      Last_Values(ID) := Current_Reading;
    end Read_Sensor;
    
    function Get_Last_Value (ID : Sensor_ID) return Celsius is
@@ -245,9 +243,11 @@ end Temperature_Sensors;</code></pre>
         <div class="code-block">
             <pre><code class="language-ada">package Sensor_Management is
    
+   type Status_Type is (Active, Inactive, Failed);
+   
    -- Full type visibility (all details visible)
    type Sensor_Record is record
-      Status  : Status_Type;
+      Status : Status_Type;
    end record;
    
    -- Private type (only operations visible)
@@ -269,7 +269,8 @@ private
    end record;
    
    type Sensor_Controller is record
-      -- Complex implementation
+      Active_Count : Natural := 0;
+      -- Other implementation details
    end record;
    
 end Sensor_Management;</code></pre>
@@ -312,8 +313,9 @@ end Sensor_Management;</code></pre>
    procedure Initialize;
    function Is_Initialized return Boolean;
    
-   -- Child packages will extend this interface
-   -- No private part needed for parent-only declaration
+private
+   -- Private data visible to child packages
+   Initialized : Boolean := False;
    
 end Temperature_Sensors;</code></pre>
                 </div>
@@ -329,7 +331,8 @@ end Temperature_Sensors;</code></pre>
    
 private
    -- Private to this child package
-   Last_Timestamps : array (Sensor_ID) of Ada.Real_Time.Time;
+   type Time_Array is array (Sensor_ID) of Ada.Real_Time.Time;
+   Last_Timestamps : Time_Array;
    
 end Temperature_Sensors.Hardware;</code></pre>
                 </div>
@@ -380,8 +383,11 @@ end Temperature_Sensors.Hardware;</code></pre>
         </p>
         
         <div class="code-block">
-            <pre><code class="language-ada">-- Parent package
+            <pre><code class="language-ada">-- Parent package specification
 package Temperature_Sensors is
+   subtype Sensor_ID is Positive range 1..100;
+   subtype Celsius is Float range -273.15..1000.0;
+   
    -- Public interface
    procedure Initialize;
    function Is_Initialized return Boolean;
@@ -391,28 +397,38 @@ private
    Initialized : Boolean := False;
 end Temperature_Sensors;
 
--- Private child package (visible only to parent)
+-- Private child package specification
 private package Temperature_Sensors.Initialization is
    procedure Perform_Hardware_Init;
 end Temperature_Sensors.Initialization;
 
 -- Parent package body
+with Temperature_Sensors.Initialization;
 package body Temperature_Sensors is
-   -- Parent body can see private child
-   with Temperature_Sensors.Initialization;
    
    procedure Initialize is
    begin
-      -- Call the procedure from the private child
       Temperature_Sensors.Initialization.Perform_Hardware_Init;
       Initialized := True;
    end Initialize;
+   
+   function Is_Initialized return Boolean is
+   begin
+      return Initialized;
+   end Is_Initialized;
+   
+   procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius) is
+   begin
+      Value := 20.0; -- Placeholder implementation
+   end Read_Sensor;
+   
 end Temperature_Sensors;
 
 -- Private child body
 package body Temperature_Sensors.Initialization is
    procedure Perform_Hardware_Init is
    begin
+      -- Hardware initialization code
       null;
    end Perform_Hardware_Init;
 end Temperature_Sensors.Initialization;</code></pre>
@@ -453,7 +469,10 @@ end Temperature_Sensors.Initialization;</code></pre>
 package Generic_Math is
    function Square (X : Numeric_Type) return Numeric_Type;
    function Cube (X : Numeric_Type) return Numeric_Type;
-end Generic_Math;</code></pre>
+end Generic_Math;
+
+-- Instantiation example
+package Integer_Math is new Generic_Math (Integer, "*");</code></pre>
                 </div>
                 <p>
                     Generic packages allow type-safe reuse without inheritance or dynamic dispatch overhead.
@@ -501,7 +520,6 @@ end Sensors.Temperature;</code></pre>
    
    procedure Read_Sensor (ID : Sensor_ID) is
       separate; -- Implementation in separate file
-   end Read_Sensor;
 end Sensors;
 
 -- In file sensors-read_sensor.adb
@@ -532,7 +550,7 @@ procedure Read_All is
    Value : Celsius;
 begin
    for ID in Sensor_ID loop
-      Read_Sensor (ID, Value);
+      Hardware.Read_Sensor (ID, Value);
       Process_Temperature (Value);
    end loop;
 end Read_All;</code></pre>
@@ -571,10 +589,10 @@ use Ada.Text_IO;
             <pre><code class="language-ada">project Flight_Control_System is
    
    type Build_Type is ("debug", "production");
-   Build : Build_Type := "debug";
+   Build : Build_Type := external ("BUILD_MODE", "debug");
    
    for Source_Dirs use ("src", "src/sensors", "src/control");
-   for Object_Dir use "obj/" &amp; Build;
+   for Object_Dir use "obj/" & Build;
    for Main use ("flight_control.adb");
    
    package Compiler is
@@ -640,22 +658,26 @@ end Sensors;</code></pre>
                 <div class="code-block">
                     <pre><code class="language-ada">package Sensors is
    -- No implicit initialization
-   Sensor_Count : Natural;
-   Initialized  : Boolean;
-   
-   -- Explicit initialization
    procedure Initialize;
+   function Is_Initialized return Boolean;
    
    -- ...
+private
+   Sensor_Count : Natural := 0;
+   Initialized  : Boolean := False;
 end Sensors;
 
 package body Sensors is
    procedure Initialize is
    begin
       Sensor_Count := 0;
-      Initialized := False;
-      -- Additional setup
+      Initialized := True;
    end Initialize;
+   
+   function Is_Initialized return Boolean is
+   begin
+      return Initialized;
+   end Is_Initialized;
 end Sensors;</code></pre>
                 </div>
                 <p>
@@ -707,7 +729,7 @@ end Sensors.Hardware;</code></pre>
    Initializes => (Sensor_Count, Initialized) is
    
    function Is_Ready return Boolean with
-      Depends => (Result => Initialized);
+      Depends => (Is_Ready'Result => Initialized);
       
    procedure Initialize with
       Global => (Output => (Sensor_Count, Initialized));
@@ -750,6 +772,9 @@ end Sensors;</code></pre>
             <pre><code class="language-ada">package Critical_Sensors with
    SPARK_Mode => On
 is
+   
+   -- Constants for range constraints
+   MAX_SENSORS : constant := 100;
    
    -- Public types with constraints
    subtype Sensor_ID is Positive range 1..MAX_SENSORS;
@@ -797,14 +822,6 @@ end Critical_Sensors;</code></pre>
             <p>
                 For DO-178C Level A certification (aviation), Ada packages provide natural units of verification and certification.
             </p>
-            <div class="code-block">
-                <pre><code class="language-ada">package Pacemaker_Control with
-   SPARK_Mode => On
-is
-private
-   
-end Pacemaker_Control;</code></pre>
-            </div>
         </div>
     </div>
 </div>
