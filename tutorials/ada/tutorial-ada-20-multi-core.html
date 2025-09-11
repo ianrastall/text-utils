@@ -127,167 +127,90 @@
             <p>Basic Ravenscar implementation for multi-core:</p>
             <div class="code-block">
                 <pre><code class="language-ada">-- System configuration for multi-core Ravenscar
-with System;
-                        <hr class="section-divider">
+with System;</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Memory Models and Consistency for Multi-Core Safety</h2>
+        <div class="section-block">
+            <p>Memory consistency models present significant challenges for safety-critical multi-core systems. Unlike single-core systems where memory operations appear in program order, multi-core systems introduce reordering that can create subtle, hard-to-detect failures.</p>
 
-                        <div class="tutorial-section">
-                            <h2>Memory Models and Consistency for Multi-Core Safety</h2>
-                            <div class="section-block">
-                                <p>Memory consistency models present significant challenges for safety-critical multi-core systems. Unlike single-core systems where memory operations appear in program order, multi-core systems introduce reordering that can create subtle, hard-to-detect failures.</p>
+            <h3>Memory Consistency Models Compared</h3>
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Description</th>
+                        <th>Safety Impact</th>
+                        <th>Certification Suitability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sequential Consistency</td>
+                        <td>All processors see same memory operation order</td>
+                        <td>Predictable behavior; easy to reason about</td>
+                        <td>Ideal but often not implemented in hardware</td>
+                    </tr>
+                    <tr>
+                        <td>Total Store Order (TSO)</td>
+                        <td>x86/x64 memory model; store buffer forwarding</td>
+                        <td>Subtle reordering possible; hard to verify</td>
+                        <td>Requires careful verification</td>
+                    </tr>
+                    <tr>
+                        <td>Relaxed Memory Order</td>
+                        <td>ARM, PowerPC; extensive reordering possible</td>
+                        <td>Extremely hard to reason about; dangerous for safety</td>
+                        <td>Requires strict mitigation for safety</td>
+                    </tr>
+                    <tr>
+                        <td>Ada Memory Model</td>
+                        <td>Language-level guarantees with Ravenscar</td>
+                        <td>Predictable behavior with proper synchronization</td>
+                        <td>DO-178C Level A (with verification)</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                                <h3>Memory Consistency Models Compared</h3>
-                                <table class="tutorial-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Model</th>
-                                            <th>Description</th>
-                                            <th>Safety Impact</th>
-                                            <th>Certification Suitability</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Sequential Consistency</td>
-                                            <td>All processors see same memory operation order</td>
-                                            <td>Predictable behavior; easy to reason about</td>
-                                            <td>Ideal but often not implemented in hardware</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Total Store Order (TSO)</td>
-                                            <td>x86/x64 memory model; store buffer forwarding</td>
-                                            <td>Subtle reordering possible; hard to verify</td>
-                                            <td>Requires careful verification</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Relaxed Memory Order</td>
-                                            <td>ARM, PowerPC; extensive reordering possible</td>
-                                            <td>Extremely hard to reason about; dangerous for safety</td>
-                                            <td>Requires strict mitigation for safety</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ada Memory Model</td>
-                                            <td>Language-level guarantees with Ravenscar</td>
-                                            <td>Predictable behavior with proper synchronization</td>
-                                            <td>DO-178C Level A (with verification)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+            <h3>Ada's Approach to Memory Consistency</h3>
+            <p>Ada provides language-level memory model guarantees that simplify safety-critical multi-core development:</p>
+            <ul>
+                <li>Program order preserved within tasks</li>
+                <li>Explicit synchronization points with protected objects</li>
+                <li>Compiler-enforced memory barriers where needed</li>
+                <li>Predictable behavior with Ravenscar profile</li>
+                <li>Formal verification of memory operations</li>
+            </ul>
 
-                                <h3>Ada's Approach to Memory Consistency</h3>
-                                <p>Ada provides language-level memory model guarantees that simplify safety-critical multi-core development:</p>
-                                <ul>
-                                    <li>Program order preserved within tasks</li>
-                                    <li>Explicit synchronization points with protected objects</li>
-                                    <li>Compiler-enforced memory barriers where needed</li>
-                                    <li>Predictable behavior with Ravenscar profile</li>
-                                    <li>Formal verification of memory operations</li>
-                                </ul>
+            <h3>Safety-Critical Implementation</h3>
+            <ul>
+                <li>Use protected objects for shared data access</li>
+                <li>Avoid low-level memory barriers when possible</li>
+                <li>Verify memory operations with SPARK</li>
+                <li>Document memory model assumptions</li>
+                <li>Test under maximum interference conditions</li>
+            </ul>
 
-                                <h3>Safety-Critical Implementation</h3>
-                                <ul>
-                                    <li>Use protected objects for shared data access</li>
-                                    <li>Avoid low-level memory barriers when possible</li>
-                                    <li>Verify memory operations with SPARK</li>
-                                    <li>Document memory model assumptions</li>
-                                    <li>Test under maximum interference conditions</li>
-                                </ul>
-
-                                <h3>Implementing Safe Shared Data Access</h3>
-                                <div class="code-block">
-                        <pre><code class="language-ada">-- Safety-critical shared data interface
-
+            <h3>Implementing Safe Shared Data Access</h3>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Safety-critical shared data interface
 package Multi_Core_Config is
-   
-                                </div>
-                                <div class="code-block">
-                        <pre><code class="language-ada">-- Protected shared data implementation
    -- Processor core identifiers
    type Core_Id is (Core_1, Core_2, Core_3, Core_4);
    
-                                </div>
-                                <div class="tip-box">
-                                    <p><strong>Memory Model Note:</strong> Protected objects in Ada provide automatic memory barriers that ensure proper visibility of shared data across cores. This eliminates the need for manual memory barrier instructions in most safety-critical applications, reducing verification burden.</p>
-                                </div>
-                            </div>
-                        </div>
-
    -- Task affinity specification
-
-                        <div class="tutorial-section">
-                            <h2>Multi-Core Certification Challenges and Solutions</h2>
-                            <div class="section-block">
-                                <p>Certifying multi-core safety-critical systems presents unique challenges that require specialized approaches. The CAST-32A position paper outlines the key considerations for avionics, but similar principles apply across safety domains.</p>
-                                <h3>CAST-32A Key Considerations</h3>
-                                <table class="tutorial-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Consideration</th>
-                                            <th>Challenge</th>
-                                            <th>Ada Solution</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Interference Channels</td>
-                                            <td>Hidden timing variations from shared resources</td>
-                                            <td>Spatial partitioning, cache/memory isolation, Ravenscar determinism</td>
-                                        </tr>
-                                        <tr>
-                                            <td>WCET Analysis</td>
-                                            <td>Unpredictable timing in multi-core environments</td>
-                                            <td>Task affinity, interference channel analysis, Ravenscar profile</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tool Qualification</td>
-                                            <td>Compiler transformations affecting timing</td>
-                                            <td>GNAT compiler qualification kit, Ravenscar restrictions</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Partitioning Verification</td>
-                                        </tr>
-                <div class="code-block">
-            <pre><code class="language-ada">-- Safety-critical shared data interface
-                                    <li>Interference channel identification and analysis</li>
-                                    <li>Worst-case interference quantification</li>
-                                    <li>Mitigation strategy verification</li>
-                                    <li>WCET analysis with interference accounted for</li>
-                                    <li>Memory consistency verification</li>
-                                    <li>Tool qualification for multi-core behavior</li>
-                                </ul>
-                                <h3>Evidence Generation Techniques</h3>
-                                <ul>
-                                    <li>Hardware performance counter measurements</li>
-                                    <li>Stress testing with maximum interference</li>
-                                    <li>Formal verification of partitioning</li>
-                                    <li>Timing analysis with interference bounds</li>
-                                    <li>Memory model verification with SPARK</li>
-                                    <li>Compiler behavior characterization</li>
-                                </ul>
-                                <h3>Implementing CAST-32A Compliance</h3>
-                                <div class="code-block">
-                        <pre><code class="language-ada">-- CAST-32A compliance verification package
    type Affinity_Set is array (Core_Id) of Boolean;
    
    -- Priority range for safety-critical tasks
-                                </div>
-                                <div class="code-block">
-                        <pre><code class="language-ada">-- CAST-32A compliance verification implementation
    subtype Safety_Critical_Priority is 
       System.Priority range 
          System.Priority'First .. System.Priority'First + 10;
-                                </div>
-                                <div class="warning-box">
-                                    <p><strong>Certification Warning:</strong> DO-178C certification for multi-core systems requires explicit evidence of interference channel analysis and mitigation. Simply stating that the system "works" is insufficient. All interference channels must be identified, analyzed, and shown to have bounded impact on safety-critical tasks.</p>
-                                </div>
-                                <div class="note-box">
-                                    <p><strong>Best Practice:</strong> For DO-178C Level A systems, implement spatial partitioning with dedicated cores for safety-critical tasks, verified cache and memory isolation, and formal verification of interference channel mitigation. Document all analysis and testing in your certification evidence package.</p>
-                                </div>
-                            </div>
-                        </div>
          
-                </div>
-                <div class="code-block">
-            <pre><code class="language-ada">-- Protected shared data implementation
    -- Priority range for non-critical tasks
    subtype Non_Critical_Priority is 
       System.Priority range 
@@ -307,6 +230,87 @@ private
    
 end Multi_Core_Config;</code></pre>
             </div>
+            
+            <div class="tip-box">
+                <p><strong>Memory Model Note:</strong> Protected objects in Ada provide automatic memory barriers that ensure proper visibility of shared data across cores. This eliminates the need for manual memory barrier instructions in most safety-critical applications, reducing verification burden.</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Multi-Core Certification Challenges and Solutions</h2>
+        <div class="section-block">
+            <p>Certifying multi-core safety-critical systems presents unique challenges that require specialized approaches. The CAST-32A position paper outlines the key considerations for avionics, but similar principles apply across safety domains.</p>
+            
+            <h3>CAST-32A Key Considerations</h3>
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th>Consideration</th>
+                        <th>Challenge</th>
+                        <th>Ada Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Interference Channels</td>
+                        <td>Hidden timing variations from shared resources</td>
+                        <td>Spatial partitioning, cache/memory isolation, Ravenscar determinism</td>
+                    </tr>
+                    <tr>
+                        <td>WCET Analysis</td>
+                        <td>Unpredictable timing in multi-core environments</td>
+                        <td>Task affinity, interference channel analysis, Ravenscar profile</td>
+                    </tr>
+                    <tr>
+                        <td>Tool Qualification</td>
+                        <td>Compiler transformations affecting timing</td>
+                        <td>GNAT compiler qualification kit, Ravenscar restrictions</td>
+                    </tr>
+                    <tr>
+                        <td>Partitioning Verification</td>
+                        <td>Proving isolation between criticality levels</td>
+                        <td>SPARK formal verification, spatial partitioning</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Certification Requirements</h3>
+            <ul>
+                <li>Interference channel identification and analysis</li>
+                <li>Worst-case interference quantification</li>
+                <li>Mitigation strategy verification</li>
+                <li>WCET analysis with interference accounted for</li>
+                <li>Memory consistency verification</li>
+                <li>Tool qualification for multi-core behavior</li>
+            </ul>
+            
+            <h3>Evidence Generation Techniques</h3>
+            <ul>
+                <li>Hardware performance counter measurements</li>
+                <li>Stress testing with maximum interference</li>
+                <li>Formal verification of partitioning</li>
+                <li>Timing analysis with interference bounds</li>
+                <li>Memory model verification with SPARK</li>
+                <li>Compiler behavior characterization</li>
+            </ul>
+            
+            <div class="warning-box">
+                <p><strong>Certification Warning:</strong> DO-178C certification for multi-core systems requires explicit evidence of interference channel analysis and mitigation. Simply stating that the system "works" is insufficient. All interference channels must be identified, analyzed, and shown to have bounded impact on safety-critical tasks.</p>
+            </div>
+            <div class="note-box">
+                <p><strong>Best Practice:</strong> For DO-178C Level A systems, implement spatial partitioning with dedicated cores for safety-critical tasks, verified cache and memory isolation, and formal verification of interference channel mitigation. Document all analysis and testing in your certification evidence package.</p>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Safety-Critical Task Implementation</h2>
+        <div class="section-block">
             <div class="code-block">
                 <pre><code class="language-ada">-- Safety-critical task implementation
 with Ada.Real_Time; use Ada.Real_Time;
@@ -346,7 +350,6 @@ private
       end loop;
    end Flight_Control_Task;
    
-                </div>
    task body Sensor_Processing_Task is
       Next_Deadline : Time := Clock;
       Period : constant Time_Span := Milliseconds (5);
@@ -378,19 +381,25 @@ end Safety_Critical_Tasks;</code></pre>
         <h2>Interference Channel Analysis and Mitigation</h2>
         <div class="section-block">
             <p>Interference channels are the primary challenge in certifying multi-core safety-critical systems. Unlike single-core systems where timing behavior is relatively predictable, multi-core systems introduce hidden interference paths that must be analyzed and mitigated.</p>
+            
             <h3>Common Interference Channels in Multi-Core Systems</h3>
+            
             <h4>Memory Subsystem Interference</h4>
             <ul>
                 <li>Shared memory bus contention</li>
                 <li>DRAM bank conflicts</li>
                 <li>Memory controller arbitration</li>
-    <div class="code-block">
-<pre><code class="language-ada">-- CAST-32A compliance verification package
+                <li>Cache line conflicts and false sharing</li>
+            </ul>
+            
+            <h4>Processing Unit Interference</h4>
+            <ul>
                 <li>Shared execution units</li>
                 <li>Pipeline stalls from branch prediction</li>
                 <li>Power management effects</li>
                 <li>Thermal throttling impacts</li>
             </ul>
+            
             <h4>Interrupt Subsystem Interference</h4>
             <ul>
                 <li>Interrupt controller contention</li>
@@ -398,11 +407,11 @@ end Safety_Critical_Tasks;</code></pre>
                 <li>Nested interrupt timing variations</li>
                 <li>Interrupt delivery latency variations</li>
             </ul>
+            
             <h3>Interference Channel Analysis Protocol</h3>
             <p>Formal analysis of interference channels is required for certification:</p>
-            <h4>Interference Channel Analysis Protocol</h4>
-            <p><strong>Objective:</strong> Identify, analyze, and mitigate all potential interference channels between safety-critical and non-safety-critical components in a multi-core system.</p>
-            <h5>Analysis Steps:</h5>
+            
+            <h4>Analysis Steps:</h4>
             <ol>
                 <li><strong>Identify all shared resources:</strong> Memory, caches, buses, etc.</li>
                 <li><strong>Characterize resource usage:</strong> For each task and partition</li>
@@ -410,33 +419,31 @@ end Safety_Critical_Tasks;</code></pre>
                 <li><strong>Quantify interference effects:</strong> Measure timing variations</li>
                 <li><strong>Verify mitigation effectiveness:</strong> Confirm interference is bounded</li>
             </ol>
-            <h5>Acceptance Criteria:</h5>
-    </div>
-    <div class="code-block">
-<pre><code class="language-ada">-- CAST-32A compliance verification implementation
+            
+            <h4>Acceptance Criteria:</h4>
             <ul>
                 <li>All interference channels must be identified and analyzed</li>
                 <li>Worst-case interference must be quantifiable</li>
                 <li>Interference impact on safety-critical tasks must be bounded</li>
                 <li>Mitigation effectiveness must be verified through testing</li>
             </ul>
-            <h5>Sample Analysis Report:</h5>
+            
+            <h4>Sample Analysis Report:</h4>
             <div class="note-box">
-                <p>RESOURCE: L2 Cache</p>
-                <p>SHARED BY: Core 1 (Safety), Core 2 (Non-Safety)</p>
-                <p>WORST-CASE INTERFERENCE: 15% increase in memory access time</p>
-                <p>MITIGATION: Cache partitioning with 75% allocation to Safety Core</p>
-                <p>VERIFIED IMPACT: Maximum 2% timing variation (within acceptable bounds)</p>
-                <p>TEST RESULTS:</p>
+                <p><strong>RESOURCE:</strong> L2 Cache</p>
+                <p><strong>SHARED BY:</strong> Core 1 (Safety), Core 2 (Non-Safety)</p>
+                <p><strong>WORST-CASE INTERFERENCE:</strong> 15% increase in memory access time</p>
+                <p><strong>MITIGATION:</strong> Cache partitioning with 75% allocation to Safety Core</p>
+                <p><strong>VERIFIED IMPACT:</strong> Maximum 2% timing variation (within acceptable bounds)</p>
+                <p><strong>TEST RESULTS:</strong></p>
                 <ul>
                     <li>Normal operation: 0.8% variation</li>
                     <li>Maximum non-safety load: 1.7% variation</li>
                     <li>Cache thrashing scenario: 2.0% variation (PASS)</li>
                 </ul>
             </div>
-            <h3>Implementing Cache Partitioning</h3>
-            <p>Cache partitioning is a critical interference mitigation technique:</p>
-            <h3>Cache Partitioning Interface</h3>
+        </div>
+    </div>
             <div class="code-block">
                 <pre><code class="language-ada">-- Cache partitioning interface
 package Cache_Partitioning with SPARK_Mode is
