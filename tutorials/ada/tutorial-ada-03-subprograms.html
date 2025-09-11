@@ -32,7 +32,7 @@
                 </ul>
                 <div class="code-block">
                     <pre><code class="language-ada">procedure Set_Temperature (
-   Sensor_ID : in     Sensor-Identifier;
+   Sensor_ID : in     Sensor_Identifier;
    Value     : in     Celsius;
    Success   :    out Boolean) is
    -- Implementation
@@ -57,7 +57,7 @@ end Set_Temperature;</code></pre>
                 </ul>
                 <div class="code-block">
                     <pre><code class="language-ada">function Get_Temperature (
-   Sensor_ID : Sensor-Identifier) return Celsius is
+   Sensor_ID : Sensor_Identifier) return Celsius is
    -- Implementation
 begin
    -- Return value without modifying state
@@ -83,6 +83,18 @@ end Get_Temperature;</code></pre>
             <p>
                 Violating this principle was a contributing factor in the Therac-25 radiation therapy machine failures. Ada's semantic distinction prevents this class of errors by design.
             </p>
+        </div>
+        
+        <div class="note-box">
+            <h4>Note on Exception Handling</h4>
+            <p>
+                The <code>when others</code> handler in the <code>Set_Temperature</code> procedure is a simplification for this tutorial. In production code, you should:
+            </p>
+            <ul>
+                <li>Handle specific exceptions rather than using <code>when others</code></li>
+                <li>Log error details before returning a failure status</li>
+                <li>Consider using exception propagation for system-level errors</li>
+            </ul>
         </div>
         
         <div class="definition-box">
@@ -193,8 +205,11 @@ end Temperature_Sensors;</code></pre>
    end Is_Initialized;
    
    procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius) is
+      -- This is a placeholder for a real hardware read
+      Current_Reading : constant Celsius := 25.0; -- Simulate hardware reading
    begin
-      Last_Values(ID) := Value;
+      Value := Current_Reading; -- Assign to the OUT parameter
+      Last_Values(ID) := Current_Reading; -- Update the internal state
    end Read_Sensor;
    
    function Get_Last_Value (ID : Sensor_ID) return Celsius is
@@ -238,7 +253,7 @@ end Temperature_Sensors;</code></pre>
    -- Private type (only operations visible)
    type Sensor_Handle is private;
    
-   -- Limited private type (only assignment and testing for equality)
+   -- Limited private type (assignment and equality are prohibited)
    type Sensor_Controller is limited private;
    
    -- Public operations on private types
@@ -330,6 +345,8 @@ package body Temperature_Sensors.Hardware is
    procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius) is
       Now : Time := Clock;
    begin
+      -- Read from the sensor hardware and assign to out parameter
+      Value := 25.0; -- Simulated sensor reading
       Last_Timestamps(ID) := Now;
    end Read_Sensor;
    
@@ -386,6 +403,8 @@ package body Temperature_Sensors is
    
    procedure Initialize is
    begin
+      -- Call the procedure from the private child
+      Temperature_Sensors.Initialization.Perform_Hardware_Init;
       Initialized := True;
    end Initialize;
 end Temperature_Sensors;
@@ -429,12 +448,12 @@ end Temperature_Sensors.Initialization;</code></pre>
                 </p>
                 <div class="code-block">
                     <pre><code class="language-ada">generic
-   type Item_Type is private;
-   with function "=" (Left, Right : Item_Type) return Boolean is <>;
-package Math_Utils is
-   function Square (X : Float) return Float;
-   function Cube (X : Float) return Float;
-end Math_Utils;</code></pre>
+   type Numeric_Type is private;
+   with function "*" (Left, Right : Numeric_Type) return Numeric_Type;
+package Generic_Math is
+   function Square (X : Numeric_Type) return Numeric_Type;
+   function Cube (X : Numeric_Type) return Numeric_Type;
+end Generic_Math;</code></pre>
                 </div>
                 <p>
                     Generic packages allow type-safe reuse without inheritance or dynamic dispatch overhead.
