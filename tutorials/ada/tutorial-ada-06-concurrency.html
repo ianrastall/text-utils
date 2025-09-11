@@ -82,7 +82,7 @@
             <pre><code class="language-ada">task Sensor_Reader is
    entry Start;
    entry Stop;
-   function Get_Last_Value return Float;
+   entry Get_Last_Value (Value : out Float);
 end Sensor_Reader;
 
 task body Sensor_Reader is
@@ -101,8 +101,8 @@ begin
                Running := False;
             end Stop;
       or
-         accept Get_Last_Value return Float do
-            Get_Last_Value := Last_Value;
+         accept Get_Last_Value (Value : out Float) do
+            Value := Last_Value;
          end Get_Last_Value;
       or
          delay 0.1; -- 100ms sampling interval
@@ -110,8 +110,6 @@ begin
             Last_Value := Read_Hardware_Sensor;
          end if;
       end select;
-      
-      exit when Terminated;
    end loop;
 end Sensor_Reader;</code></pre>
         </div>
@@ -149,23 +147,34 @@ end Sensor_Reader;</code></pre>
             <div class="feature-card">
                 <h4>2. Asynchronous Transfer</h4>
                 <div class="code-block">
-                    <pre><code class="language-ada">Sensor_Reader.Start;
--- Continue immediately without waiting</code></pre>
+                    <pre><code class="language-ada">task type Asynchronous_Task is
+   pragma Asynchronous;
+   entry Start;
+end Asynchronous_Task;
+
+-- ...
+
+-- Call continues immediately without waiting
+Some_Task.Start;</code></pre>
                 </div>
                 <p>
-                    Use <code class="code-inline">pragma Asynchronous</code> for true fire-and-forget.
+                    A standard entry call is synchronous. To make it asynchronous (fire-and-forget), you can apply <code class="code-inline">pragma Asynchronous</code> to the task type.
                 </p>
             </div>
             
             <div class="feature-card">
                 <h4>3. Timed Entry Call</h4>
                 <div class="code-block">
-                    <pre><code class="language-ada">select
-   Sensor_Reader.Get_Value(V);
-or
-   delay 0.5; -- 500ms timeout
-   raise Timeout_Error;
-end select;</code></pre>
+                    <pre><code class="language-ada">declare
+   V : Float;
+begin
+   select
+      Sensor_Reader.Get_Last_Value(V);
+   or
+      delay 0.5; -- 500ms timeout
+      -- Handle timeout
+   end select;
+end;</code></pre>
                 </div>
                 <p>
                     Prevents indefinite blocking with timeout handling.
@@ -175,12 +184,16 @@ end select;</code></pre>
             <div class="feature-card">
                 <h4>4. Conditional Call</h4>
                 <div class="code-block">
-                    <pre><code class="language-ada">select
-   Sensor_Reader.Get_Value(V);
-else
-   -- Proceed without value
-   Handle_Missing_Data;
-end select;</code></pre>
+                    <pre><code class="language-ada">declare
+   V : Float;
+begin
+   select
+      Sensor_Reader.Get_Last_Value(V);
+   else
+      -- Proceed without value
+      null; -- Or call a procedure like Handle_Missing_Data;
+   end select;
+end;</code></pre>
                 </div>
                 <p>
                     Executes alternative if entry isn't immediately available.
@@ -211,9 +224,9 @@ end select;</code></pre>
                 </ul>
                 <div class="code-block">
                     <pre><code class="language-c">// C code with mutex
-pthread_mutex_lock(&amp;mutex);
+pthread_mutex_lock(&mutex);
 data = read_sensor();
-pthread_mutex_unlock(&amp;mutex);</code></pre>
+pthread_mutex_unlock(&mutex);</code></pre>
                 </div>
             </div>
             <div class="grid-item">
@@ -290,7 +303,7 @@ end Sensor_Data;</code></pre>
                 </p>
                 <div class="code-block">
                     <pre><code class="language-ada">task type High_Priority_Task is
-   pragma Priority (System.Priority'Last);
+   pragma Priority (Priority'Last);
    -- Task definition
 end High_Priority_Task;</code></pre>
                 </div>
@@ -308,13 +321,17 @@ end High_Priority_Task;</code></pre>
                     Ensure tasks meet timing requirements:
                 </p>
                 <div class="code-block">
-                    <pre><code class="language-ada">task Mission_Critical_Task is
+                    <pre><code class="language-ada">-- Use Ada.Real_Time for timing
+with Ada.Real_Time; use Ada.Real_Time;
+
+task Mission_Critical_Task is
    pragma Task_Dispatching_Policy (EDF_Within_Priorities);
-   pragma Deadline (Seconds => 0.01); -- 10ms deadline
+   pragma Relative_Deadline (Milliseconds (20));
+   -- Deadline monitoring can be implemented with timing events
 end Mission_Critical_Task;</code></pre>
                 </div>
                 <p>
-                    The runtime monitors deadlines and raises exceptions if missed.
+                    The runtime can monitor timing constraints through timing events.
                 </p>
             </div>
             
@@ -388,38 +405,55 @@ W : Worker_Access := new Worker;</code></pre>
             <div class="column">
                 <h4>Task Interface Contracts</h4>
                 <div class="code-block">
-                    <pre><code class="language-ada">task Sensor_Reader is
-   entry Start with
-      Pre => not Is_Running;
-      
-   entry Stop with
-      Pre  => Is_Running,
-      Post => not Is_Running;
-      
+                    <pre><code class="language-ada">-- Note: Entry contracts are not standard Ada syntax
+-- This shows the conceptual approach
+
+task Sensor_Reader is
+   entry Start;
+   entry Stop;
    function Is_Running return Boolean;
-end Sensor_Reader;</code></pre>
+end Sensor_Reader;
+
+-- Use separate subprograms for contract enforcement
+procedure Start_Reader is
+begin
+   if not Sensor_Reader.Is_Running then
+      Sensor_Reader.Start;
+   end if;
+end Start_Reader;</code></pre>
                 </div>
                 <p>
-                    These contracts ensure valid state transitions for the task interface.
+                    These wrapper functions ensure valid state transitions for the task interface.
                 </p>
             </div>
             
             <div class="column">
                 <h4>Protected Object Contracts</h4>
                 <div class="code-block">
-                    <pre><code class="language-ada">protected Temperature_Monitor with
-   Initial_Condition => not Alarm_Active is
-   entry Check_Temperature (Temp : Celsius) with
-      Pre  => System_Ready,
-      Post => (if Temp > Threshold then Alarm_Active);
-      
+                    <pre><code class="language-ada">protected Temperature_Monitor is
+   entry Check_Temperature (Temp : Celsius);
    function Alarm_Status return Boolean;
 private
    Alarm_Active : Boolean := False;
+   Threshold    : Celsius := 37.5;
+end Temperature_Monitor;
+
+protected body Temperature_Monitor is
+   entry Check_Temperature (Temp : Celsius) when not Alarm_Active is
+   begin
+      if Temp > Threshold then
+         Alarm_Active := True;
+      end if;
+   end Check_Temperature;
+   
+   function Alarm_Status return Boolean is
+   begin
+      return Alarm_Active;
+   end Alarm_Status;
 end Temperature_Monitor;</code></pre>
                 </div>
                 <p>
-                    Contracts on protected objects ensure data integrity across concurrent accesses.
+                    Entry barriers ensure data integrity across concurrent accesses.
                 </p>
             </div>
         </div>
@@ -430,24 +464,19 @@ end Temperature_Monitor;</code></pre>
                 Use SPARK to prove critical concurrent properties:
             </p>
             <div class="code-block">
-                <pre><code class="language-ada">protected Flight_Control with
-   Initializes => (Pitch, Roll, Yaw),
-   Initializes => Control_Locked is
-   entry Set_Pitch (Angle : Pitch_Angle) with
-      Pre  => not Control_Locked,
-      Post => Pitch = Angle;
-      
-   entry Lock_Controls (Code : Authorization_Code) with
-      Pre  => not Control_Locked,
-      Post => Control_Locked;
-      
+                <pre><code class="language-ada">-- SPARK example with contracts
+protected Flight_Control with
+   Initializes => (Pitch, Roll, Yaw, Control_Locked) is
+   entry Set_Pitch (Angle : Pitch_Angle);
+   entry Lock_Controls (Code : Authorization_Code);
+   function Is_Locked return Boolean;
 private
    Pitch         : Pitch_Angle := 0.0;
    Control_Locked : Boolean := False;
 end Flight_Control;</code></pre>
             </div>
             <p>
-                With these contracts, SPARK can prove that controls cannot be modified when locked.
+                With proper design, SPARK can prove that controls cannot be modified when locked.
             </p>
         </div>
         
@@ -495,24 +524,38 @@ accept Resource_B;</code></pre>
                 </p>
                 <div class="code-block">
                     <pre><code class="language-ada">protected Flight_Data is
-   entry Set_Attitude (Pitch, Roll, Yaw : Degrees) with
-      Pre => System_Available;
-      
-   function Get_Attitude return Attitude_Data with
-      Post => Get_Attitude.Valid;
-      
+   entry Set_Attitude (Pitch, Roll, Yaw : Degrees);
+   function Get_Attitude return Attitude_Data;
 private
    Current_Attitude : Attitude_Data := (Valid => False, others => 0.0);
+end Flight_Data;
+
+protected body Flight_Data is
+   entry Set_Attitude (Pitch, Roll, Yaw : Degrees) when not Current_Attitude.Valid is
+   begin
+      Current_Attitude.Pitch := Pitch;
+      Current_Attitude.Roll := Roll;
+      Current_Attitude.Yaw := Yaw;
+      Current_Attitude.Valid := True;
+   end Set_Attitude;
+   
+   function Get_Attitude return Attitude_Data is
+   begin
+      return Current_Attitude;
+   end Get_Attitude;
 end Flight_Data;
 
 task Attitude_Sensor is
    pragma Priority (High_Priority);
 end Attitude_Sensor;
 
-task Flight_Computer with
-   Priority => Highest_Priority,
-   Deadline   => 0.01; -- 10ms deadline
--- Processing logic</code></pre>
+task body Attitude_Sensor is
+begin
+   loop
+      -- Read sensors and update flight data
+      delay 0.01; -- 10ms sampling
+   end loop;
+end Attitude_Sensor;</code></pre>
                 </div>
                 <p>
                     This structure ensures safe data sharing between sensors and control systems.
@@ -526,26 +569,36 @@ task Flight_Computer with
                 </p>
                 <div class="code-block">
                     <pre><code class="language-ada">protected Patient_Vitals is
-   entry Record_Heart_Rate (BPM : Positive) with
-      Pre  => BPM <= 300,
-      Post => Heart_Rate = BPM;
-      
-   entry Record_Blood_Pressure (Systolic, Diastolic : Pressure) with
-      Pre  => Systolic > Diastolic and Systolic <= 300;
-      
-   function Is_Stable return Boolean with
-      Post => (if Is_Stable'Result then 
-               Heart_Rate in 60..100 and 
-               Systolic in 90..120);
-      
+   entry Record_Heart_Rate (BPM : Positive);
+   entry Record_Blood_Pressure (Systolic, Diastolic : Pressure);
+   function Is_Stable return Boolean;
 private
    Heart_Rate  : Positive := 75;
    Systolic    : Pressure := 120;
    Diastolic   : Pressure := 80;
+end Patient_Vitals;
+
+protected body Patient_Vitals is
+   entry Record_Heart_Rate (BPM : Positive) when BPM <= 300 is
+   begin
+      Heart_Rate := BPM;
+   end Record_Heart_Rate;
+   
+   entry Record_Blood_Pressure (S, D : Pressure) when S > D and S <= 300 is
+   begin
+      Systolic := S;
+      Diastolic := D;
+   end Record_Blood_Pressure;
+   
+   function Is_Stable return Boolean is
+   begin
+      return Heart_Rate in 60..100 and 
+             Systolic in 90..120;
+   end Is_Stable;
 end Patient_Vitals;</code></pre>
                 </div>
                 <p>
-                    Contracts ensure data validity while protected objects prevent race conditions.
+                    Entry barriers ensure data validity while protected objects prevent race conditions.
                 </p>
             </div>
         </div>
