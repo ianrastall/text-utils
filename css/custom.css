@@ -1,3 +1,25 @@
+/* ==================================
+     Custom: Feature Grid for Tutorials
+     ================================== */
+.feature-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+.feature-card {
+    flex: 1 1 45%;
+    min-width: 320px;
+    max-width: 48%;
+    box-sizing: border-box;
+    margin-bottom: 1.5rem;
+}
+@media (max-width: 900px) {
+    .feature-card {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+}
 /* Ensure placeholder text is readable in dark mode */
 input.form-control::placeholder,
 textarea.form-control::placeholder {
