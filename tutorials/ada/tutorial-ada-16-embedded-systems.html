@@ -126,9 +126,9 @@ procedure Reset_Handler is
 
    -- Initialize .data section from .text
    procedure Copy_Data is
-      Source : constant Address := ...; -- End of text section
-      Dest   : Address := ...; -- Start of data section
-      Length : Integer := ...; -- Size of data section
+      Source : constant Address := System'To_Address (16#0800_4000#); -- End of text section
+      Dest   : Address := System'To_Address (16#2000_0000#); -- Start of data section
+      Length : Integer := 16#1000#; -- Size of data section
    begin
       while Length > 0 loop
          Dest := Source;

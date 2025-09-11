@@ -183,7 +183,8 @@ end Temperature_Sensors;</code></pre>
    
    procedure Initialize is
    begin
-      -- ...
+      Initialized := True;
+      Last_Values := (others => 0.0);
    end Initialize;
    
    function Is_Initialized return Boolean is
@@ -247,7 +248,9 @@ end Temperature_Sensors;</code></pre>
 private
    -- Implementation details hidden from clients
    type Sensor_Handle is record
-      -- ...
+      ID : Positive;
+      Calibrated : Boolean;
+      Last_Reading : Float;
    end record;
    
    type Sensor_Controller is record
@@ -364,7 +367,8 @@ end Temperature_Sensors.Hardware;</code></pre>
 package Temperature_Sensors is
    -- Public interface
    procedure Initialize;
-   -- ...
+   function Is_Initialized return Boolean;
+   procedure Read_Sensor (ID : Sensor_ID; Value : out Celsius);
 private
    -- Private part visible to children
    Initialized : Boolean := False;
@@ -454,7 +458,8 @@ end Sensors;</code></pre>
                 <div class="code-block">
                     <pre><code class="language-ada">package Sensors.Temperature is
    function Read (ID : Sensor_ID) return Float;
-   -- ...
+   procedure Calibrate (ID : Sensor_ID);
+   function Is_Valid (Value : Float) return Boolean;
 end Sensors.Temperature;</code></pre>
                 </div>
                 <p>
@@ -471,7 +476,8 @@ end Sensors.Temperature;</code></pre>
                     <pre><code class="language-ada">package body Sensors is
    procedure Initialize is
    begin
-      -- ...
+      Hardware.Power_On_Sensors;
+      Hardware.Run_Self_Test;
    end Initialize;
    
    procedure Read_Sensor (ID : Sensor_ID) is
@@ -507,7 +513,8 @@ procedure Read_All is
    Value : Celsius;
 begin
    for ID in Sensor_ID loop
-      -- ...
+      Read_Sensor (ID, Value);
+      Process_Temperature (Value);
    end loop;
 end Read_All;</code></pre>
                     </div>

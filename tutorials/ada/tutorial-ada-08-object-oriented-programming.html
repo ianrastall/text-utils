@@ -222,7 +222,10 @@ end Process_Sensor;</code></pre>
                 <div class="code-block">
                     <pre><code class="language-ada">-- Dispatches only on S parameter
 function Process (S : Sensor'Class; 
-                 C : Command) return Response is...</code></pre>
+                 C : Command) return Response is
+begin
+   return S.Execute (C);
+end Process;</code></pre>
                 </div>
                 <p>
                     Only <code class="code-inline">S</code> determines which implementation is called.
@@ -238,7 +241,11 @@ function Process (S : Sensor'Class;
    -- Implementation
 begin
    -- Dispatches based on both S and C types
-   -- ...
+   if S in Temperature_Sensor'Class and C in Calibrate_Command'Class then
+      return Handle_Temperature_Calibration (S, C);
+   else
+      return S.Execute (C);
+   end if;
 end Process;</code></pre>
                 </div>
                 <p>
@@ -267,7 +274,8 @@ end Process_Alarm;
 
 -- For specific types
 type Sensor_Dispatcher is tagged record
-   -- ...
+   Priority : System.Priority;
+   Last_Dispatch : Ada.Real_Time.Time;
 end record;
 pragma Dispatching_Domain (EDF, Sensor_Dispatcher);</code></pre>
         </div>

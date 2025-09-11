@@ -235,7 +235,8 @@ private
    end record;
    
    type Sensor_Exception is new System_Exception with null record;
-   -- ...
+   type Communication_Exception is new System_Exception with null record;
+   type Hardware_Exception is new System_Exception with null record;
    
 end Exceptions;</code></pre>
                 </div>
@@ -267,8 +268,10 @@ with System_Exceptions.Sensor;
 use System_Exceptions.Sensor;
 
 procedure Read_Sensor is
+   Value : Float;
 begin
-   -- ...
+   Hardware.Read_Sensor_Value (Value);
+   Validate_Reading (Value);
 exception
    when Timeout_Error =>
       -- Handle timeout
@@ -871,7 +874,7 @@ begin
    if X <= 0.0 then
       raise Invalid_Input;
    end if;
-   -- ...
+   return Log(X);
 end Calculate;</code></pre>
                     </div>
                 </div>
@@ -908,7 +911,7 @@ end Process;</code></pre>
                     <div class="code-block">
                         <pre><code class="language-ada">procedure Process is
 begin
-   -- ...
+   Perform_Complex_Analysis;
 exception
    when E : others =>
       Log_Error("Processing failed: " &amp; Exception_Information(E));
