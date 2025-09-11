@@ -1,5 +1,18 @@
 <div class="tutorial-content">
-    <h1 class="tutorial-title">Ada's Strong Typing System: Preventing Errors at Compile Time</h1>
+    <h1 class="tutorial-t            <div class="warning-box">
+            <h3>The Mars Climate Orbiter Lesson</h3>
+            <p>
+                In 1999, NASA lost a $125 million spacecraft because one team used metric units while another used imperial units. The error went undetected because both systems used the same <code class="code-inline">double</code> type. Ada's strong typing would have required explicit unit conversion with distinct types, making this error impossible:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">type Meters is new Float;
+type Feet   is new Float;
+
+-- Now these are truly incompatible types
+M : Meters := 1000.0;
+F : Feet;
+F := M; -- ERROR: type mismatch, this will not compile</code></pre>
+            </div>trong Typing System: Preventing Errors at Compile Time</h1>
     
     <div class="tutorial-section">
         <p class="tutorial-intro">
@@ -153,10 +166,13 @@ Power : Integer := V * C; -- ERROR: no operator for mixed types</code></pre>
                     To enable operations between derived types, you must explicitly define the semantics:
                 </p>
                 <div class="code-block">
-                    <pre><code class="language-ada">function "*" (Left : Voltage; Right : Current) 
+                    <pre><code class="language-ada">type Power is new Integer; -- Define the Power type first
+
+function "*" (Left : Voltage; Right : Current) 
    return Power is
 begin
-   return Power (Left) * Power (Right);
+   -- Convert to the base type for multiplication, then convert result
+   return Power (Integer (Left) * Integer (Right));
 end "*";</code></pre>
                 </div>
             </div>
@@ -238,11 +254,12 @@ begin
    end case;
 end Transition;
 
--- Usage with compile-time state validation:
+-- The subtype constraint on Next_State provides a runtime check:
 Current_State : System_State := Off;
 Next_State    : Operational_State; -- Must be valid operational state
 
-Transition (Current_State, Next_State); -- Compiler verifies state validity</code></pre>
+-- If Transition tries to assign an invalid state, a Constraint_Error is raised upon return.
+Transition (Current_State, Next_State);</code></pre>
         </div>
         
         <div class="section-block">
@@ -328,8 +345,8 @@ procedure Set_Parameters (
                 Redesign your types to eliminate the need for conversions:
             </p>
             <div class="code-block">
-                <pre><code class="language-ada">type Voltage is range 0..1000;
-type Current is range 0..500;
+                <pre><code class="language-ada">type Voltage is new Integer range 0..1000;
+type Current is new Integer range 0..500;
 
 function Calculate_Power (V : Voltage; I : Current) return Integer is
    (Integer (V) * Integer (I)); -- Single conversion at interface</code></pre>
