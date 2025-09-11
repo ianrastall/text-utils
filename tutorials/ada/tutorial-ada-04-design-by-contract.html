@@ -47,9 +47,9 @@ Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");</code></pre>
                 </ul>
                 <div class="code-block">
                     <pre><code class="language-ada">function Factorial (N : Natural) return Positive with
-   Pre  => N <= 12,
-   Post => Factorial'Result > 0 and
-           (if N > 0 then Factorial'Result mod N = 0);</code></pre>
+     Pre  => N <= 12,
+     Post => Factorial'Result > 0 and
+             (if N > 0 then Factorial'Result mod N = 0);</code></pre>
                 </div>
             </div>
         </div>
@@ -120,8 +120,8 @@ Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");</code></pre>
                 </p>
                 <div class="code-block">
                     <pre><code class="language-ada">procedure Increment (X : in out Integer) with
-   Pre  => X < Integer'Last,
-   Post => X = X'Old + 1;</code></pre>
+     Pre  => X < Integer'Last,
+     Post => X = X'Old + 1;</code></pre>
                 </div>
                 <p>
                     Without <code class="code-inline">Old</code>, <code class="code-inline">X</code> in the postcondition would refer to the updated value.
@@ -343,8 +343,9 @@ end record with
                 <div class="code-block">
                     <pre><code class="language-ada">-- In SPARK subset
 function Factorial (N : Natural) return Positive with
-   Pre  => N <= 12,
-   Post => Factorial'Result = (if N = 0 then 1 else N * Factorial(N-1));</code></pre>
+     Pre  => N <= 12,
+     Post => Factorial'Result = 
+        (if N = 0 then 1 else N * Factorial'Result / (if N = 1 then 1 else N));</code></pre>
                 </div>
                 <p>
                     SPARK's simplified subset enables complete formal verification.
