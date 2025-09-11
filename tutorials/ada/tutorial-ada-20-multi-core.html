@@ -514,4 +514,374 @@ end Cache_Partitioning;</code></pre>
             </div>
         </div>
     </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Advanced Patterns: Spatial Partitioning and Task Affinity</h2>
+        <div class="section-block">
+            <p>Spatial partitioning is the gold standard for safety-critical multi-core certification, providing complete isolation between criticality domains while maintaining predictable timing behavior.</p>
+            
+            <h3>Implementing Spatial Partitioning</h3>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Spatial partitioning implementation
+package Spatial_Partitioning with SPARK_Mode is
+   
+   type Memory_Region is record
+      Base_Address : System.Address;
+      Size        : Storage_Count;
+      Partition   : Partition_Id;
+   end record;
+   
+   type Memory_Map is array (Natural range <>) of Memory_Region;
+   
+   -- Configure spatial partitioning
+   procedure Configure_Spatial_Partition (Map : Memory_Map) with
+      Pre => (for all Region of Map => Region.Size > 0);
+      
+   -- Verify no memory overlap between partitions
+   function Is_Spatially_Isolated return Boolean;
+      
+   -- Task affinity management
+   procedure Set_Task_Affinity (T : Task_Id; Core : Core_Id);
+   function Get_Task_Core (T : Task_Id) return Core_Id;
+   
+end Spatial_Partitioning;</code></pre>
+            </div>
+            
+            <h3>CAST-32A Compliance Verification</h3>
+            <div class="code-block">
+                <pre><code class="language-ada">-- CAST-32A compliance verification
+package CAST_32A_Compliance with SPARK_Mode is
+   
+   type Interference_Channel is record
+      Name        : String (1..50);
+      Source_Core : Core_Id;
+      Target_Core : Core_Id;
+      Max_Impact  : Duration;  -- Maximum timing impact
+      Mitigated   : Boolean;
+   end record;
+   
+   type Channel_Array is array (Natural range <>) of Interference_Channel;
+   
+   -- Interference channel analysis
+   procedure Analyze_Interference_Channels (Channels : out Channel_Array);
+   
+   -- Verify WCET bounds with interference
+   function Verify_WCET_With_Interference 
+     (Task_ID : Task_Id; 
+      Channels : Channel_Array) return Boolean;
+   
+   -- Generate certification evidence
+   procedure Generate_Evidence_Package (Report : out String);
+   
+end CAST_32A_Compliance;</code></pre>
+            </div>
+            
+            <div class="tip-box">
+                <p><strong>Certification Strategy:</strong> For DO-178C Level A certification, implement a combination of spatial partitioning (dedicated cores), temporal isolation (priority-based scheduling), and resource partitioning (cache, memory controllers). Document all interference channels and their mitigation strategies.</p>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Verification and Testing Strategies</h2>
+        <div class="section-block">
+            <p>Multi-core safety-critical systems require specialized verification approaches that account for parallel execution and interference effects.</p>
+            
+            <h3>SPARK Verification for Multi-Core Systems</h3>
+            <div class="code-block">
+                <pre><code class="language-ada">-- SPARK verification of multi-core properties
+package Interference_Monitor with SPARK_Mode is
+   
+   type Timing_Data is record
+      Worst_Case : Duration;
+      Average    : Duration;
+      Variance   : Duration;
+   end record;
+   
+   -- Monitor timing interference between cores
+   procedure Monitor_Interference 
+     (Core1, Core2 : Core_Id; 
+      Data : out Timing_Data) with
+      Post => Data.Worst_Case >= Data.Average and
+              Data.Variance <= Milliseconds(10);
+              
+   -- Verify isolation properties
+   function Verify_Core_Isolation 
+     (Safety_Core : Core_Id; 
+      Other_Cores : Core_Array) return Boolean with
+      Post => (if Verify_Core_Isolation'Result then 
+                 (for all C of Other_Cores => 
+                   No_Interference(Safety_Core, C)));
+   
+private
+   -- Ghost functions for verification
+   function No_Interference (C1, C2 : Core_Id) return Boolean with
+      Ghost => True;
+      
+end Interference_Monitor;</code></pre>
+            </div>
+            
+            <h3>Timing Analysis and Scheduling</h3>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Scheduling analysis for multi-core systems
+package Scheduling_Analysis with SPARK_Mode is
+   
+   type Task_Parameters is record
+      Period       : Time_Span;
+      Deadline     : Time_Span;
+      WCET         : Time_Span;
+      Core_Affinity : Core_Id;
+   end record;
+   
+   type Task_Set is array (Natural range <>) of Task_Parameters;
+   
+   -- Rate monotonic analysis for multi-core
+   function Is_Schedulable (Tasks : Task_Set) return Boolean with
+      Post => (if Is_Schedulable'Result then
+                 (for all T of Tasks => T.WCET <= T.Deadline));
+   
+   -- Calculate worst-case response time
+   function Worst_Case_Response_Time 
+     (Task : Task_Parameters; 
+      Higher_Priority_Tasks : Task_Set) return Time_Span;
+   
+end Scheduling_Analysis;</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <p><strong>Testing Requirements:</strong> Multi-core systems require stress testing under maximum interference conditions. Test scenarios must include worst-case combinations of cache conflicts, memory contention, and interrupt interference to validate timing bounds.</p>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Real-World Applications and Case Studies</h2>
+        <div class="section-block">
+            <h3>Case Study 1: Avionics Flight Management System</h3>
+            <div class="note-box">
+                <p><strong>Boeing 787 Integrated Modular Avionics (IMA)</strong></p>
+                <p>The Boeing 787 uses a multi-core IMA architecture that implements strict spatial and temporal partitioning. Each partition hosts different avionics functions (flight control, navigation, communication) with guaranteed isolation.</p>
+                <p><strong>Ada Implementation Highlights:</strong></p>
+                <ul>
+                    <li>Dedicated cores for flight-critical functions</li>
+                    <li>ARINC 653 partitioning with Ada Ravenscar profile</li>
+                    <li>Formal verification of interference channel mitigation</li>
+                    <li>DO-178C Level A certification achieved</li>
+                    <li>Hardware performance monitoring for timing validation</li>
+                </ul>
+            </div>
+            
+            <h3>Case Study 2: Medical Device Multi-Core Architecture</h3>
+            <div class="note-box">
+                <p><strong>Critical Care Monitoring System</strong></p>
+                <p>A patient monitoring system using multi-core processors for real-time signal processing, alarm management, and communication. The system requires IEC 62304 compliance with SIL 3 safety integrity.</p>
+                <p><strong>Multi-Core Safety Strategy:</strong></p>
+                <ul>
+                    <li>Core 1: Patient-critical monitoring (highest priority)</li>
+                    <li>Core 2: Alarm processing and safety interlocks</li>
+                    <li>Core 3: Data logging and communication</li>
+                    <li>Core 4: User interface and non-critical functions</li>
+                    <li>Cache partitioning prevents interference between cores</li>
+                    <li>Formal verification of alarm response timing</li>
+                </ul>
+            </div>
+            
+            <h3>Implementation Example: Flight Control Multi-Core System</h3>
+            <div class="code-block">
+                <pre><code class="language-ada">-- Complete multi-core flight control implementation
+package Flight_Control_Multi_Core with SPARK_Mode is
+   
+   -- Safety-critical flight control task (Core 1)
+   task Flight_Control_Task is
+      pragma Task_Name ("FLIGHT_CONTROL");
+      pragma Task_Priority (System.Priority'First + 50);
+      pragma CPU (1);  -- Dedicated to Core 1
+   end Flight_Control_Task;
+   
+   -- Sensor fusion task (Core 2)
+   task Sensor_Fusion_Task is
+      pragma Task_Name ("SENSOR_FUSION");
+      pragma Task_Priority (System.Priority'First + 45);
+      pragma CPU (2);  -- Dedicated to Core 2
+   end Sensor_Fusion_Task;
+   
+   -- Navigation computation (Core 3)
+   task Navigation_Task is
+      pragma Task_Name ("NAVIGATION");
+      pragma Task_Priority (System.Priority'First + 40);
+      pragma CPU (3);  -- Dedicated to Core 3
+   end Navigation_Task;
+   
+   -- Protected object for safe data sharing
+   protected Flight_Data is
+      pragma Priority (System.Priority'First + 55);
+      
+      procedure Update_Control_Inputs (Inputs : Control_Data);
+      function Get_Flight_State return Flight_State_Type;
+      
+   private
+      Current_State : Flight_State_Type;
+      Last_Update   : Time := Time_First;
+   end Flight_Data;
+   
+private
+   
+   -- Task implementations with formal contracts
+   task body Flight_Control_Task is
+      Next_Release : Time := Clock;
+      Period      : constant Time_Span := Milliseconds(20);
+      Control_Data : Control_Inputs;
+   begin
+      loop
+         -- Read flight state (protected access)
+         Control_Data := Get_Control_Inputs;
+         
+         -- Compute control outputs
+         Compute_Flight_Controls (Control_Data);
+         
+         -- Update next release time
+         Next_Release := Next_Release + Period;
+         delay until Next_Release;
+      end loop;
+   end Flight_Control_Task;
+   
+   -- Additional task implementations...
+   
+end Flight_Control_Multi_Core;</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Exercises and Practical Applications</h2>
+        <div class="section-block">
+            <h3>Exercise 1: Multi-Core Interference Analysis</h3>
+            <p>Design and implement an interference channel analysis tool for a quad-core safety-critical system:</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Requirements</h4>
+                    <ul>
+                        <li>Identify all shared resources (L2 cache, memory controller, interrupt controller)</li>
+                        <li>Implement monitoring for cache interference between cores</li>
+                        <li>Create formal specifications for maximum interference bounds</li>
+                        <li>Generate CAST-32A compliance evidence</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>Implementation Tasks</h4>
+                    <ul>
+                        <li>Create SPARK-verified interference monitoring package</li>
+                        <li>Implement cache partitioning configuration</li>
+                        <li>Design task affinity management system</li>
+                        <li>Verify timing bounds with formal proofs</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Exercise 2: Safety-Critical Multi-Core Scheduler</h3>
+            <p>Implement a Ravenscar-compliant multi-core scheduler with the following features:</p>
+            <ul>
+                <li>Priority-based scheduling with core affinity</li>
+                <li>Bounded priority inversion elimination</li>
+                <li>Formal verification of schedulability</li>
+                <li>Integration with SPARK proof system</li>
+                <li>Evidence generation for DO-178C compliance</li>
+            </ul>
+            
+            <h3>Exercise 3: Medical Device Multi-Core Architecture</h3>
+            <p>Design a multi-core architecture for a surgical robot control system:</p>
+            <div class="callout-primary">
+                <h4>System Requirements</h4>
+                <ul>
+                    <li>IEC 62304 SIL 3 compliance</li>
+                    <li>Sub-millisecond response for safety interlocks</li>
+                    <li>Dual-redundant safety-critical functions</li>
+                    <li>Real-time surgical tool position control</li>
+                    <li>Communication with external monitoring systems</li>
+                </ul>
+                
+                <h4>Multi-Core Design Constraints</h4>
+                <ul>
+                    <li>Safety-critical functions must have dedicated cores</li>
+                    <li>No interference between safety and non-safety functions</li>
+                    <li>Formal verification of all timing properties</li>
+                    <li>Certification evidence package generation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <div class="tutorial-section">
+        <h2>Looking Forward: Next Steps and Advanced Topics</h2>
+        <div class="section-block">
+            <p>Multi-core safety-critical programming represents the current frontier of high-integrity systems development. As you continue your journey beyond this tutorial, consider these advanced areas:</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Tutorial #21: Formal Verification with SPARK</h3>
+                    <p>Building on multi-core foundations, explore advanced SPARK techniques for proving multi-threaded program correctness:</p>
+                    <ul>
+                        <li>Ghost variables for parallel state verification</li>
+                        <li>Flow contracts for data dependencies across cores</li>
+                        <li>Proof of absence of data races</li>
+                        <li>Verification of timing properties in parallel systems</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Advanced Research Areas</h3>
+                    <ul>
+                        <li><strong>Many-Core Safety Systems:</strong> Extending techniques to 16+ core systems</li>
+                        <li><strong>GPU Integration:</strong> Safety-critical GPGPU programming</li>
+                        <li><strong>Quantum-Safe Cryptography:</strong> Multi-core security in post-quantum era</li>
+                        <li><strong>Edge AI Safety:</strong> Machine learning in safety-critical multi-core systems</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout-secondary">
+                <h4>Certification Pathway</h4>
+                <p>For practitioners seeking certification expertise:</p>
+                <ol>
+                    <li><strong>CAST-32A Deep Dive:</strong> Master interference channel analysis techniques</li>
+                    <li><strong>Tool Qualification:</strong> Understand compiler and analyzer qualification for multi-core</li>
+                    <li><strong>Standards Evolution:</strong> Stay current with DO-178C updates for multi-core</li>
+                    <li><strong>Hardware Trends:</strong> Prepare for emerging processor architectures</li>
+                </ol>
+            </div>
+            
+            <div class="note-box">
+                <h3>Final Thoughts: The Multi-Core Safety Imperative</h3>
+                <p>As computational demands continue to grow, multi-core processors are no longer optional in safety-critical systems—they're inevitable. The techniques you've learned in this tutorial provide the foundation for building systems that harness parallel computation while maintaining the predictable, verifiable behavior that safety certification requires.</p>
+                <p><strong>Remember:</strong> In safety-critical multi-core systems, performance is important, but predictability is paramount. Ada's language-level support for controlled parallelism, combined with formal verification and rigorous interference analysis, enables you to achieve both.</p>
+            </div>
+        </div>
+    </div>
+</div>
+      return True;
+   end Is_Cache_Isolated;
+   
+   -- Additional implementation details...
+   
+end Cache_Partitioning;</code></pre>
+            </div>
+            <div class="warning-box">
+                <p><strong>Critical Warning:</strong> DO-178C requires complete analysis of all interference channels for multi-core certification. Simply using a multi-core processor without interference channel analysis will result in certification failure. For Level A systems, spatial partitioning of cache and memory resources is typically required.</p>
+            </div>
+            <div class="note-box">
+                <p><strong>Verification Tip:</strong> Use hardware performance counters to measure actual interference effects during testing. Compare measured timing variations against worst-case estimates from your interference channel analysis.</p>
+            </div>
+        </div>
+    </div>
 </div>
