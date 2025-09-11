@@ -1,18 +1,5 @@
 <div class="tutorial-content">
-    <h1 class="tutorial-t            <div class="warning-box">
-            <h3>The Mars Climate Orbiter Lesson</h3>
-            <p>
-                In 1999, NASA lost a $125 million spacecraft because one team used metric units while another used imperial units. The error went undetected because both systems used the same <code class="code-inline">double</code> type. Ada's strong typing would have required explicit unit conversion with distinct types, making this error impossible:
-            </p>
-            <div class="code-block">
-                <pre><code class="language-ada">type Meters is new Float;
-type Feet   is new Float;
-
--- Now these are truly incompatible types
-M : Meters := 1000.0;
-F : Feet;
-F := M; -- ERROR: type mismatch, this will not compile</code></pre>
-            </div>trong Typing System: Preventing Errors at Compile Time</h1>
+    <h1 class="tutorial-title">Ada's Strong Typing System: Preventing Errors at Compile Time</h1>
     
     <div class="tutorial-section">
         <p class="tutorial-intro">
@@ -74,12 +61,13 @@ Power   : Float := Voltage * Current; -- ERROR: type mismatch</code></pre>
                 In 1999, NASA lost a $125 million spacecraft because one team used metric units while another used imperial units. The error went undetected because both systems used the same <code class="code-inline">double</code> type. Ada's strong typing would have required explicit unit conversion with distinct types, making this error impossible:
             </p>
             <div class="code-block">
-                <pre><code class="language-ada">subtype Meters is Float;
-subtype Feet   is Float;
+                <pre><code class="language-ada">type Meters is new Float;
+type Feet   is new Float;
 
--- These are completely incompatible types
+-- Now these are truly incompatible types
 M : Meters := 1000.0;
-F : Feet   := M; -- Compile-time error: type mismatch</code></pre>
+F : Feet;
+F := M; -- ERROR: type mismatch, this will not compile</code></pre>
             </div>
         </div>
     </div>
