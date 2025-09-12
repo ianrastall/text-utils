@@ -74,24 +74,25 @@
             <h4>Basic Volatile Specification</h4>
             <div class="code-block">
                 <pre><code class="language-ada">-- Volatile object specification
-Sensor_Value : Float with Volatile;</code></pre>
+Sensor_Value : Float;
+pragma Volatile (Sensor_Value);</code></pre>
             </div>
             
             <h4>Volatile Verification</h4>
             <div class="code-block">
-                <pre><code class="language-ada">-- SPARK verification of volatile usage
+                                <pre><code class="language-ada">-- SPARK verification of volatile usage (non-standard aspect: Volatile_Function)
 procedure Read_Sensor (Value : out Float) with
-  Global => (In_Out => Sensor_Value),
-  Volatile_Function => Read_Sensor;</code></pre>
+    Global => (In_Out => Sensor_Value);
+--  Volatile_Function is a SPARK-specific aspect, not standard Ada</code></pre>
             </div>
             
             <h4>Volatile Semantics Explained</h4>
             <ul>
                 <li><code class="code-inline">Volatile</code>: Prevents compiler optimizations for the object</li>
-                <li><code class="code-inline">Volatile_Function</code>: Specifies if function reads volatile state</li>
-                <li><code class="code-inline">Async_Writers</code>: Indicates asynchronous updates to the object</li>
-                <li><code class="code-inline">Effective_Reads</code>: Specifies if reads have side effects</li>
-                <li><code class="code-inline">Effective_Writes</code>: Specifies if writes have side effects</li>
+                <li><code class="code-inline">Volatile_Function</code>: (SPARK-specific, not standard Ada) Specifies if function reads volatile state</li>
+                <li><code class="code-inline">Async_Writers</code>: (SPARK-specific, not standard Ada) Indicates asynchronous updates to the object</li>
+                <li><code class="code-inline">Effective_Reads</code>: (SPARK-specific, not standard Ada) Specifies if reads have side effects</li>
+                <li><code class="code-inline">Effective_Writes</code>: (SPARK-specific, not standard Ada) Specifies if writes have side effects</li>
             </ul>
             <p>These aspects precisely define how the compiler should treat volatile objects, enabling verification of their usage.</p>
 
@@ -99,7 +100,8 @@ procedure Read_Sensor (Value : out Float) with
             <p>Ensuring atomic access to shared data in concurrent systems:</p>
             <div class="code-block">
                 <pre><code class="language-ada">-- Atomic variable specification
-Shared_Counter : Integer with Atomic;</code></pre>
+Shared_Counter : Integer;
+pragma Atomic (Shared_Counter);</code></pre>
             </div>
         </div>
         
@@ -157,10 +159,12 @@ end Increment_Counter;</code></pre>
             
             <p><strong>Solution: Verified Atomic Operations</strong></p>
             <div class="code-block">
-                <pre><code class="language-ada">procedure Increment_Counter with
-  Global => (In_Out => Counter),
-  Depends => (Counter => Counter);
+                                <pre><code class="language-ada">procedure Increment_Counter with
+    Global => (In_Out => Counter),
+    Depends => (Counter => Counter);
 
+-- Counter must be declared as atomic:
+Counter : Integer;
 pragma Atomic (Counter);</code></pre>
             </div>
         </div>
@@ -193,20 +197,11 @@ end record;</code></pre>
             
             <h4>Aspect Categories</h4>
             <div class="code-block">
-                <pre><code class="language-ada">-- Verification aspects
-with Pre, Post, Type_Invariant, Contract_Cases;
-
--- Representation aspects
-with Size, Bit_Order, Small, Alignment;
-
--- Optimization aspects
-with Inline, Suppress, Volatile;
-
--- Certification aspects
-with SPARK_Mode, Review, Assertion_Policy;
-
--- Documentation aspects
-with Documentation, Refined_By;</code></pre>
+                <pre><code class="language-ada">-- Verification aspects include: Pre, Post, Type_Invariant, Contract_Cases
+-- Representation aspects include: Size, Bit_Order, Small, Alignment
+-- Optimization aspects include: Inline, Suppress, Volatile
+-- Certification aspects include: SPARK_Mode, Review (non-standard), Assertion_Policy
+-- Documentation aspects include: Documentation, Refined_By (non-standard)</code></pre>
             </div>
             
             <div class="note-box">
@@ -287,10 +282,10 @@ function Fast_Math (X, Y : Float) return Float with
             
             <h4>Optimization Verification</h4>
             <div class="code-block">
-                <pre><code class="language-ada">-- Verified optimization control
+                     <pre><code class="language-ada">-- Verified optimization control (WCET is not a standard Ada aspect)
 procedure Critical_Loop with
-   Optimize => Time,
-   WCET => 50.0; -- Worst-case execution time constraint</code></pre>
+    Optimize => Time;
+--   WCET => 50.0; -- Non-standard aspect, may be supported by some toolchains</code></pre>
             </div>
             
             <h4>Optimization Control Guidelines</h4>
@@ -330,17 +325,16 @@ procedure Critical_Loop with
             <h3>Certification-Specific Aspects</h3>
             <p>Aspects designed specifically for safety certification:</p>
             <div class="code-block">
-                <pre><code class="language-ada">-- SPARK mode specification
+                     <pre><code class="language-ada">-- SPARK mode specification
 package Critical_Functions with
-   SPARK_Mode => On,
-   Review => Required,
-   Certification_Level => "DO-178C Level A";
+    SPARK_Mode => On;
+--   Review => Required, Certification_Level => "DO-178C Level A"; -- Non-standard aspects
 
 -- Assertion policy for certification
 pragma Assertion_Policy (
-   Pre => Check,
-   Post => Check,
-   Type_Invariant => Check);</code></pre>
+    Pre => Check,
+    Post => Check,
+    Type_Invariant => Check);</code></pre>
             </div>
         </div>
     </div>
@@ -402,24 +396,16 @@ pragma Assert (Sensor_Flags'Size = 16);</code></pre>
             
             <h4>3. Overlay Pattern</h4>
             <div class="code-block">
-                <pre><code class="language-ada">-- Raw memory view
-type Raw_Data is array (1..4) of Byte;
+                     <pre><code class="language-ada">-- Raw memory view (must be same size as the record)
+type Raw_Data is array (1..8) of Byte; -- Changed size from 4 to 8
 pragma Pack (Raw_Data);
 
--- Structured view
+-- Structured view (64 bits)
 type Sensor_Packet is record
-   Header  : Packet_Header;
-   ID      : Sensor_ID;
-   Value   : Sensor_Value;
-   CRC     : Checksum;
-end record;
-
--- Overlay specification
-for Sensor_Packet use record
-   Header  at 0 range 0..7;
-   ID      at 1 range 0..7;
-   Value   at 2 range 0..15;
-   CRC     at 4 range 0..15;
+    Header  : Packet_Header;
+    ID      : Sensor_ID;
+    Value   : Sensor_Value;
+    CRC     : Checksum;
 end record;
 for Sensor_Packet'Size use 64;
 
@@ -429,14 +415,14 @@ pragma Assert (Raw_Data'Alignment = Sensor_Packet'Alignment);
 
 -- Safe overlay usage
 procedure Process_Packet (Data : Raw_Data) is
-   Packet : Sensor_Packet;
-   for Packet'Address use Data'Address;
-   pragma Import (Ada, Packet);
-   pragma Volatile (Packet);
+    Packet : Sensor_Packet;
+    for Packet'Address use Data'Address;
+    pragma Import (Ada, Packet);
+    pragma Volatile (Packet);
 begin
-   if Validate_CRC(Packet) then
-      Process_Sensor_Value(Packet.Value);
-   end if;
+    if Validate_CRC(Packet) then
+        Process_Sensor_Value(Packet.Value);
+    end if;
 end Process_Packet;</code></pre>
             </div>
         </div>
