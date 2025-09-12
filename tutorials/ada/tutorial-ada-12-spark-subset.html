@@ -305,7 +305,10 @@ function Calculate_Factorial (N : Natural) return Positive with
             <p>Proving safety of iterative algorithms:</p>
             
             <div class="code-block">
-                <pre><code class="language-ada">function Sum_Array (A : Int_Array) return Integer with
+                <pre><code class="language-ada">-- Type declaration
+type Int_Array is array (Positive range <>) of Integer;
+
+function Sum_Array (A : Int_Array) return Integer with
    Pre  => A'Length > 0,
    Post => Sum_Array'Result >= 0;
    
@@ -313,8 +316,8 @@ function Sum_Array (A : Int_Array) return Integer is
    Sum : Integer := 0;
 begin
    for I in A'Range loop
-      Sum := Sum + A(I);
       pragma Loop_Invariant (Sum >= 0);
+      Sum := Sum + A(I);
    end loop;
    return Sum;
 end Sum_Array;</code></pre>
@@ -352,7 +355,11 @@ function Sum_Array (A : Int_Array) return Integer with
             <p>Ensuring safe information flow:</p>
             
             <div class="code-block">
-                <pre><code class="language-ada">procedure Process_Sensor_Data (
+                <pre><code class="language-ada">-- Sensor data types
+type Sensor_Raw_Data is array (1..100) of Integer;
+type Sensor_Processed_Data is array (1..100) of Float;
+
+procedure Process_Sensor_Data (
    Raw       : Sensor_Raw_Data;
    Valid     : out Boolean;
    Processed : out Sensor_Processed_Data) with
@@ -913,7 +920,7 @@ end Calculate;</code></pre>
                 <h4>Solution: Accurate Specifications</h4>
                 <div class="code-block">
                     <pre><code class="language-ada">function Sum (A : Int_Array) return Integer with
-   Post => Sum'Result = (for + I in A'Range => A(I));</code></pre>
+   Post => Sum'Result = (for all I in A'Range => A(I) >= 0);</code></pre>
                 </div>
             </div>
         </div>
@@ -937,10 +944,10 @@ end Sum;</code></pre>
                 <h4>Solution: Verified Loop Invariants</h4>
                 <div class="code-block">
                     <pre><code class="language-ada">function Sum (A : Int_Array) return Integer is
-   S : Integer := 0 with
-      Loop_Invariant => S = (for + J in A'First..I => A(J));
+   S : Integer := 0;
 begin
    for I in A'Range loop
+      pragma Loop_Invariant (S >= 0);
       S := S + A(I);
    end loop;
    return S;
