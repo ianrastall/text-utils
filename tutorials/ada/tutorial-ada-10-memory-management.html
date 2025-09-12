@@ -32,7 +32,7 @@
         
         <h3>Real-World Consequences</h3>
         <ul>
-            <li>1996: Ariane 5 explosion partly due to memory overflow</li>
+            <li>1996: Ariane 5 explosion due to a data conversion overflow (not a memory overflow)</li>
             <li>2004: Mars rover Spirit stuck due to memory corruption</li>
             <li>Medical device recalls due to buffer overflows</li>
             <li>Avionics system failures from memory leaks</li>
@@ -41,7 +41,7 @@
         
         <h3>The Ariane 5 Case Study Revisited: A Memory Perspective</h3>
         <p>
-            The Ariane 5 rocket explosion was caused by a 64-bit floating point value being converted to a 16-bit integer. But critically, the error occurred because:
+            The Ariane 5 rocket explosion was caused by a 64-bit floating point value being converted to a 16-bit integer—a data conversion overflow, not a memory overflow. But critically, the error occurred because:
         </p>
         <ul>
             <li>Memory layout assumptions were violated</li>
@@ -325,43 +325,9 @@ procedure Process_Sensor_Data (ID : Sensor_ID) with
         </p>
         
         <h4>2. Reference Counting Pattern</h4>
-        <p>
-            Safe shared resource management:
-        </p>
-        <div class="code-block">
-            <pre><code class="language-ada">type Shared_Resource is new Ada.Finalization.Controlled with record
-   Handle  : System.Address;
-   Ref_Count : Natural := 1;
-end record;
-
-overriding procedure Adjust (R : in out Shared_Resource) is
-begin
-   R.Ref_Count := R.Ref_Count + 1;
-end Adjust;
-
-overriding procedure Finalize (R : in out Shared_Resource) is
-begin
-   R.Ref_Count := R.Ref_Count - 1;
-   if R.Ref_Count = 0 then
-      Free_Resource(R.Handle);
-   end if;
-end Finalize;
-
--- Usage with safe sharing
-procedure Process is
-   Resource_1 : Shared_Resource := Create_Resource;
-   Resource_2 : Shared_Resource := Resource_1; -- Adjust called
-begin
-   -- Both references valid
-   Use_Resource(Resource_1);
-   Use_Resource(Resource_2);
-   -- Finalize called on both when exiting scope
-   -- Resource freed only when both are gone
-end Process;</code></pre>
-        </div>
-        <p>
-            This pattern enables safe resource sharing without garbage collection.
-        </p>
+          <div class="warning-box">
+                <strong>Warning:</strong> The reference counting pattern as previously shown is unsafe in Ada. Due to Ada's assignment and finalization semantics, a naive implementation using a record with a reference count will not work correctly—temporary objects created during assignment can cause premature finalization and resource deallocation. A robust reference counting implementation in Ada requires managing an <em>access</em> to a shared object that contains the actual resource and reference count, and careful handling of assignment and finalization. For safety-critical code, prefer ownership models or use language/library features designed for safe shared resource management.
+          </div>
         
         <div class="callout">
             <h4>Controlled Type Verification Strategy</h4>
@@ -570,54 +536,54 @@ overriding procedure Deallocate (
             Memory-safe containers with no dynamic allocation:
         </p>
         <div class="code-block">
-            <pre><code class="language-ada">generic
-   Max_Size : Positive;
+                <pre><code class="language-ada">generic
+    Max_Size : Positive;
+    type Element_Type (<>) is private; -- Element is now a generic parameter
 package Bounded_Containers is
-   
-   type Element is private;
-   type Container is private;
-   
-   function Is_Empty (C : Container) return Boolean;
-   function Is_Full (C : Container) return Boolean;
-   function Length (C : Container) return Natural;
-   
-   procedure Add (C : in out Container; E : Element) with
-      Pre  => not Is_Full(C),
-      Post => Length(C) = Length(C'Old) + 1;
-      
-   procedure Remove (C : in out Container; E : out Element) with
-      Pre  => not Is_Empty(C),
-      Post => Length(C) = Length(C'Old) - 1;
-      
+
+    type Container is private;
+
+    function Is_Empty (C : Container) return Boolean;
+    function Is_Full (C : Container) return Boolean;
+    function Length (C : Container) return Natural;
+
+    procedure Add (C : in out Container; E : Element_Type) with
+        Pre  => not Is_Full(C),
+        Post => Length(C) = Length(C'Old) + 1;
+
+    procedure Remove (C : in out Container; E : out Element_Type) with
+        Pre  => not Is_Empty(C),
+        Post => Length(C) = Length(C'Old) - 1;
+
 private
-   type Element_Array is array (1..Max_Size) of Element;
-   type Container is record
-      Elements : Element_Array;
-      Count    : Natural := 0;
-   end record with
-      Type_Invariant => Count <= Max_Size;
-      
-   function Is_Empty (C : Container) return Boolean is
-      (C.Count = 0);
-      
-   function Is_Full (C : Container) return Boolean is
-      (C.Count = Max_Size);
-      
-   function Length (C : Container) return Natural is
-      (C.Count);
-      
-   procedure Add (C : in out Container; E : Element) is
-   begin
-      C.Elements(C.Count+1) := E;
-      C.Count := C.Count + 1;
-   end Add;
-   
-   procedure Remove (C : in out Container; E : out Element) is
-   begin
-      E := C.Elements(C.Count);
-      C.Count := C.Count - 1;
-   end Remove;
-   
+    type Element_Array is array (1..Max_Size) of Element_Type;
+    type Container is record
+        Elements : Element_Array;
+        Count    : Natural := 0;
+    end record with
+        Type_Invariant => Count <= Max_Size;
+
+    function Is_Empty (C : Container) return Boolean is
+        (C.Count = 0);
+
+    function Is_Full (C : Container) return Boolean is
+        (C.Count = Max_Size);
+
+    function Length (C : Container) return Natural is
+        (C.Count);
+
+    procedure Add (C : in out Container; E : Element_Type) is
+    begin
+        C.Elements(C.Count+1) := E;
+        C.Count := C.Count + 1;
+    end Add;
+
+    procedure Remove (C : in out Container; E : out Element_Type) is
+    begin
+        E := C.Elements(C.Count);
+        C.Count := C.Count - 1;
+    end Remove;
+
 end Bounded_Containers;
 
 -- SPARK verification
@@ -1057,84 +1023,89 @@ end Process;</code></pre>
             A verified sensor container from DO-178C certified code:
         </p>
         <div class="code-block">
-            <pre><code class="language-ada">package Sensor_Containers with
-   SPARK_Mode => On
+                <pre><code class="language-ada">package Sensor_Containers with
+    SPARK_Mode => On
 is
    
-   Max_Sensors : constant := 100;
-   type Sensor_ID is new Natural range 1..Max_Sensors;
-   type Measurement is private;
+    Max_Sensors : constant := 100;
+    type Sensor_ID is new Natural range 1..Max_Sensors;
+    type Measurement is private;
    
-   type Container is private;
+    type Container is private;
    
-   function Is_Empty (C : Container) return Boolean;
-   function Is_Full (C : Container) return Boolean;
-   function Count (C : Container) return Natural;
+    function Is_Empty (C : Container) return Boolean;
+    function Is_Full (C : Container) return Boolean;
+    function Count (C : Container) return Natural;
    
-   procedure Add (
-      C : in out Container;
-      ID : Sensor_ID;
-      M : Measurement) with
-      Pre  => not Is_Full(C),
-      Post => Count(C) = Count(C'Old) + 1 and
-              Contains(C, ID, M);
+    procedure Add (
+        C : in out Container;
+        ID : Sensor_ID;
+        M : Measurement) with
+        Pre  => not Is_Full(C),
+        Post => Count(C) = Count(C'Old) + 1 and
+                  Contains(C, ID, M);
               
-   procedure Get (
-      C : Container;
-      ID : Sensor_ID;
-      M : out Measurement;
-      Found : out Boolean) with
-      Post => (Found => Valid_Measurement(M));
+    procedure Get (
+        C : Container;
+        ID : Sensor_ID;
+        M : out Measurement;
+        Found : out Boolean) with
+        Post => (Found => Valid_Measurement(M));
       
 private
-   type Sensor_Record is record
-      ID  : Sensor_ID;
-      M   : Measurement;
-      Valid : Boolean;
-   end record;
+    type Measurement is record -- Add a full type definition
+        Value : Float;
+        Time  : Time;
+    end record;
+
+    type Sensor_Record is record
+        ID  : Sensor_ID;
+        M   : Measurement;
+        Valid : Boolean;
+    end record;
    
-   type Sensor_Array is array (1..Max_Sensors) of Sensor_Record;
-   type Container is record
-      Sensors : Sensor_Array;
-      Count   : Natural := 0;
-   end record with
-      Type_Invariant =>
-         Count <= Max_Sensors and
-         (for all I in 1..Count => Sensors(I).Valid);
+    type Sensor_Array is array (1..Max_Sensors) of Sensor_Record;
+    type Container is record
+        Sensors : Sensor_Array;
+        Count   : Natural := 0;
+    end record with
+        Type_Invariant =>
+            Count <= Max_Sensors and
+            (for all I in 1..Count => Sensors(I).Valid);
          
-   function Is_Empty (C : Container) return Boolean is
-      (C.Count = 0);
+    function Is_Empty (C : Container) return Boolean is
+        (C.Count = 0);
       
-   function Is_Full (C : Container) return Boolean is
-      (C.Count = Max_Sensors);
+    function Is_Full (C : Container) return Boolean is
+        (C.Count = Max_Sensors);
       
-   function Count (C : Container) return Natural is
-      (C.Count);
+    function Count (C : Container) return Natural is
+        (C.Count);
       
-   procedure Add (
-      C : in out Container;
-      ID : Sensor_ID;
-      M : Measurement) is
-   begin
-      C.Sensors(C.Count+1) := (ID, M, True);
-      C.Count := C.Count + 1;
-   end Add;
+    procedure Add (
+        C : in out Container;
+        ID : Sensor_ID;
+        M : Measurement) is
+    begin
+        C.Sensors(C.Count+1) := (ID, M, True);
+        C.Count := C.Count + 1;
+    end Add;
    
-   procedure Get (
-      C : Container;
-      ID : Sensor_ID;
-      M : out Measurement;
-      Found : out Boolean) is
-   begin
-      Found := False;
-      for I in 1..C.Count loop
-         if C.Sensors(I).ID = ID and C.Sensors(I).Valid then
-            M := C.Sensors(I).M;
-            Found := True;
-            exit;
-         end if;
-      end loop;
-   end Get;
+    procedure Get (
+        C : Container;
+        ID : Sensor_ID;
+        M : out Measurement;
+        Found : out Boolean) is
+    begin
+        Found := False;
+        for I in 1..C.Count loop
+            if C.Sensors(I).ID = ID and C.Sensors(I).Valid then
+                M := C.Sensors(I).M;
+                Found := True;
+                exit;
+            end if;
+        end loop;
+    end Get;
    
 end Sensor_Containers;</code></pre>
         </div>
