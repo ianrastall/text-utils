@@ -151,6 +151,8 @@ end Process;</code></pre>
         <div class="code-block">
             <pre><code class="language-ada">generic
    type Element_Type is private;
+   type Index_Type is (<>);
+   type Array_Of_Elements is array (Index_Type range <>) of Element_Type;
    with function "&lt;" (Left, Right : Element_Type) return Boolean;
 function Generic_Sort (Input : in Array_Of_Elements) return Array_Of_Elements;
 
@@ -174,6 +176,8 @@ end Generic_Sort;
 -- Instantiation for integers
 function Integer_Sort is new Generic_Sort (
    Element_Type =&gt; Integer,
+   Index_Type =&gt; Positive,
+   Array_Of_Elements =&gt; Int_Array,
    "&lt;"          =&gt; Standard."&lt;");
 
 -- Usage
@@ -233,27 +237,10 @@ end Resources;</code></pre>
             </div>
         </div>
         <!-- End two-column block, now continue with single-column content -->
-                                <li>Industrial controllers where unconstrained generics led to memory corruption</li>
-                            </ul>
-                            <p>
-                                Ada's constrained generics with formal contracts would have prevented these issues by making generic behavior explicit, verifiable, and constrained.
-                            </p>
-                        </div>
-                        <div class="definition-box">
-                            <h4>Ada's Generics Philosophy</h4>
-                            <p>
-                                Rather than adopting generics as a convenience feature, Ada integrates them with verification in mind:
-                            </p>
-                            <ul>
-                                <li><span class="text-highlight">Explicit contracts</span>: Formal specification of generic requirements</li>
-                                <li><span class="text-highlight">Constrained parameters</span>: Precise control over acceptable types</li>
-                                <li><span class="text-highlight">Verification at specification time</span>: Prove correctness once for all instantiations</li>
-                                <li><span class="text-highlight">No hidden code generation</span>: Predictable instantiation behavior</li>
-                                <li><span class="text-highlight">Certification-friendly structure</span>: Clear separation of generic and instance</li>
-                            </ul>
-                            <p>
-                                This approach transforms generics from a verification challenge into a verification multiplier for safety-critical systems.
-                            </p>
+        <div class="tutorial-section">
+            <p>
+                Ada's constrained generics with formal contracts prevent these issues by making generic behavior explicit, verifiable, and constrained.
+            </p>
                         </div>
                     </div>
 
@@ -339,6 +326,8 @@ end Resources;</code></pre>
                         <div class="code-block">
                             <pre><code class="language-ada">generic
                      type Element_Type is private;
+                     type Index_Type is (<>);
+                     type Array_Of_Elements is array (Index_Type range <>) of Element_Type;
                      with function "&lt;" (Left, Right : Element_Type) return Boolean;
                 function Generic_Sort (Input : in Array_Of_Elements) return Array_Of_Elements;
 
@@ -362,6 +351,8 @@ end Resources;</code></pre>
                 -- Instantiation for integers
                 function Integer_Sort is new Generic_Sort (
                      Element_Type =&gt; Integer,
+                     Index_Type =&gt; Positive,
+                     Array_Of_Elements =&gt; Int_Array,
                      "&lt;"          =&gt; Standard."&lt;");
 
                 -- Usage
@@ -510,7 +501,19 @@ end Polymorphic_Containers;</code></pre>
                         -- Implementation
                     begin
                         -- Verified processing algorithm
-                        -- ...
+                        for I in Input'Range loop
+                           Result(I) := Input(I);
+                           -- Apply processing based on Valid and Measure functions
+                           if Valid(Result(I)) then
+                              -- Only process valid elements
+                              declare
+                                 M : constant Float := Measure(Result(I));
+                              begin
+                                 -- Process according to measurement value
+                                 null;  -- Actual implementation would go here
+                              end;
+                           end if;
+                        end loop;
                         return Result;
                     end Process;
                 end Verified_Processing;</code></pre>
@@ -581,6 +584,9 @@ end Polymorphic_Containers;</code></pre>
                     SPARK_Mode => On
                 is
                     type Container is private;
+                    
+                    function Contains (C : Container; E : Element) return Boolean;
+                    
                     function Length (C : Container) return Natural with
                         Post => Length'Result <= Max_Size;
                     procedure Add (C : in out Container; E : Element) with
@@ -697,8 +703,12 @@ end Polymorphic_Containers;</code></pre>
                 is
                     type Container is private;
                     function Is_Empty (C : Container) return Boolean;
+                    function Is_Empty (C : Container) return Boolean;
                     function Is_Full (C : Container) return Boolean;
                     function Count (C : Container) return Natural;
+                    
+                    function Contains (C : Container; ID : Sensor_ID; M : Measurement) return Boolean;
+                    
                     procedure Add (
                         C : in out Container;
                         ID : Sensor_ID;
@@ -986,8 +996,9 @@ package Sensor_Containers is new Validated_Containers (
    type Element is private;
    with function "&lt;" (L, R : Element) return Boolean with
       Pre  => L'Valid and R'Valid,
-      Post => ("&lt;"'Result xor "=" (L, R) or "&gt;" (L, R));
-   -- Proper ordering contract</code></pre>
+      Post => (for all X, Y, Z : Element =>
+               (if X = Y then "&lt;"(X, Z) = "&lt;"(Y, Z)));
+   -- Proper ordering contract that doesn't reference undefined functions</code></pre>
                     </div>
                 </div>
             </div>
@@ -1057,12 +1068,15 @@ package Proximity_Detection is
    function Find_Neighbors (
       Target : Element;
       Tolerance : Float;
-      Set : Element_Array) return Element_Array;
+      Set : Element_Array) return Element_Array with
       
    -- Contracts ensure safe usage
+   Pre => Tolerance > 0.0,
    Contract_Cases =>
       (Tolerance > 0.0 =>
          (for all E of Find_Neighbors'Result =>
+            Distance(Target, E) <= Tolerance),
+       others => Find_Neighbors'Result'Length = 0);
             Close_Enough(E, Target, Tolerance)));
       
 end Proximity_Detection;</code></pre>
@@ -1107,6 +1121,7 @@ package Sensor_Validation is new Validated_Elements (
    Refined_State => (State => Sensor_State),
    Contract_Cases =>
       (for all S : Sensor_Record =>
+         (Is_Valid_Sensor_Record(S) = (S.Status = Valid and S.Reading in Valid_Range)));
          Is_Valid_Sensor_Record(S) = 
             (S.Status /= Failed and S.Value in VALID_RANGE));</code></pre>
         </div>
@@ -1125,17 +1140,25 @@ package Generic_Containers with
 is
    generic
       type Element is private;
+      Max_Size : Positive;
    package Instance is
       type Container is private;
-      procedure Add (C : in out Container; E : Element);
+      
+      function Length (C : Container) return Natural;
+      function Contains (C : Container; E : Element) return Boolean;
+      
+      procedure Add (C : in out Container; E : Element) with
       -- Contracts ensure type safety
+      Pre => Length(C) < Max_Size,
+      Post => Length(C) = Length(C'Old) + 1 and Contains(C, E),
       Contract_Cases =>
          (Length(C) < Max_Size =>
-            (Length(Add'C) = Length(C) + 1 and
-             Contains(Add'C, E)));
+            (Length(C) = Length(C'Old) + 1 and
+             Contains(C, E)));
    private
+      type Element_Array is array (1..Max_Size) of Element;
       type Container is record
-         Elements : Element_Array(1..Max_Size);
+         Elements : Element_Array;
          Count    : Natural := 0;
       end record;
    end Instance;
