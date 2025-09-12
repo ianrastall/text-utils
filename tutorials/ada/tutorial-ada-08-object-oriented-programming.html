@@ -110,22 +110,22 @@ end record;</code></pre>
             </div>
             <div class="column">
                 <h4>Dispatching Operation Declaration</h4>
-                <div class="code-block">
-                    <pre><code class="language-ada">-- Dispatching operation (virtual method)
+                     <div class="code-block">
+                          <pre><code class="language-ada">-- Dispatching operation (virtual method)
 function Get_Value (S : Sensor) return Float is
-   (S.Value);
+    (S.Value);
 
 -- Overriding for derived type
 function Get_Value (T : Temperature_Sensor) return Float is
-   (case T.Units is
-      when Celsius    => T.Value,
-      when Fahrenheit => (T.Value * 9.0/5.0) + 32.0);
+    (case T.Units is
+        when Celsius    => T.Value,
+        when Fahrenheit => (T.Value * 9.0/5.0) + 32.0);
 
 -- Usage with dynamic dispatch
 procedure Process (S : Sensor'Class) is
 begin
-   -- Dispatches to appropriate Get_Value
-   Put_Line ("Value: " &amp; Get_Value(S)'Image);
+    -- Dispatches to appropriate Get_Value
+    Put_Line ("Value: " & Float'Image(Get_Value(S)));
 end Process;</code></pre>
                 </div>
             </div>
@@ -167,22 +167,26 @@ end Process;</code></pre>
             
             <div class="feature-card">
                 <h4>Runtime Tag Checks</h4>
-                <div class="code-block">
-                    <pre><code class="language-ada">procedure Process_Sensor (S : Sensor'Class) is
+                     <div class="code-block">
+                          <pre><code class="language-ada">procedure Process_Sensor (S : Sensor'Class) is
 begin
-   if S in Temperature_Sensor then
-      -- Safe conversion with tag check
-      T : Temperature_Sensor := Temperature_Sensor(S);
-      -- Work with temperature sensor
-      null;
-   elsif S in Pressure_Sensor then
-      -- Safe conversion with tag check
-      P : Pressure_Sensor := Pressure_Sensor(S);
-      -- Work with pressure sensor
-      null;
-   else
-      raise Unknown_Sensor_Type;
-   end if;
+    if S in Temperature_Sensor then
+        declare
+            T : Temperature_Sensor := Temperature_Sensor(S);
+        begin
+            -- Work with temperature sensor
+            null;
+        end;
+    elsif S in Pressure_Sensor then
+        declare
+            P : Pressure_Sensor := Pressure_Sensor(S);
+        begin
+            -- Work with pressure sensor
+            null;
+        end;
+    else
+        raise Unknown_Sensor_Type;
+    end if;
 end Process_Sensor;</code></pre>
                 </div>
                 <p>
@@ -233,19 +237,17 @@ end Process;</code></pre>
             </div>
             <div class="column">
                 <h4>Ada Multi-Parameter Dispatching</h4>
-                <div class="code-block">
-                    <pre><code class="language-ada">function Process (
-   S : Sensor'Class; 
-   C : Command'Class) return Response is
-   pragma Dispatching_Policy (Prefer_Highest);
-   -- Implementation
+                     <div class="code-block">
+                          <pre><code class="language-ada">function Process (
+    S : Sensor'Class; 
+    C : Command'Class) return Response is
+    -- Note: Ada does not support true multi-parameter dispatch; this is a manual dispatch example
 begin
-   -- Dispatches based on both S and C types
-   if S in Temperature_Sensor'Class and C in Calibrate_Command'Class then
-      return Handle_Temperature_Calibration (S, C);
-   else
-      return S.Execute (C);
-   end if;
+    if S in Temperature_Sensor'Class and C in Calibrate_Command'Class then
+        return Handle_Temperature_Calibration (Temperature_Sensor(S), Calibrate_Command(C));
+    else
+        return S.Execute (C);
+    end if;
 end Process;</code></pre>
                 </div>
                 <p>
@@ -259,25 +261,21 @@ end Process;</code></pre>
             Ada allows specification of dispatching behavior:
         </p>
         
-        <div class="code-block">
-            <pre><code class="language-ada">-- At program unit level
-pragma Dispatching_Policy (EDF); -- Earliest Deadline First
+          <div class="code-block">
+                <pre><code class="language-ada">-- At program unit level
+pragma Dispatching_Policy (EDF_Within_Priorities); -- Earliest Deadline First
 
 -- For specific operations
 function Process_Alarm (
-   A : Alarm'Class;
-   H : Handler'Class) return Response is
-   pragma Dispatching_Policy (FIFO_Within_Priorities);
+    A : Alarm'Class;
+    H : Handler'Class) return Response is
+    pragma Dispatching_Policy (FIFO_Within_Priorities);
 begin
-   -- Implementation
+    -- Implementation
+    null;
 end Process_Alarm;
 
--- For specific types
-type Sensor_Dispatcher is tagged record
-   Priority : System.Priority;
-   Last_Dispatch : Ada.Real_Time.Time;
-end record;
-pragma Dispatching_Domain (EDF, Sensor_Dispatcher);</code></pre>
+-- Note: There is no standard pragma for dispatching domain per type in Ada.</code></pre>
         </div>
         
         <div class="callout-secondary">
@@ -323,33 +321,29 @@ pragma Dispatching_Domain (EDF, Sensor_Dispatcher);</code></pre>
             Combining Design by Contract with dispatching operations:
         </p>
         
-        <div class="code-block">
-            <pre><code class="language-ada">-- Base type operation with contracts
+          <div class="code-block">
+                <pre><code class="language-ada">-- Base type operation with contracts
 function Validate (S : Sensor; Value : Float) return Boolean with
-   Pre  => Value'Valid,
-   Post => Validate'Result = (Value in S.Min_Value..S.Max_Value);
+    Pre  => Value'Valid,
+    Post => Validate'Result = (Value in S.Min_Value..S.Max_Value);
 
--- Overriding with refined contracts
+-- Overriding with refined contracts (note: Ada contract refinement is done in package body)
 function Validate (
-   T : Temperature_Sensor; 
-   Value : Float) return Boolean with
-   Pre  => Value'Valid and T.Units = Celsius,
-   Post => Validate'Result = 
-           (Value in T.Min_Val..T.Max_Val and
-            Value in VALID_TEMPERATURE_RANGE),
-   -- Refinement of base contract
-   Refined_Post => Validate'Result = 
-                  (Validate'Result and T.Units = Celsius);
+    T : Temperature_Sensor; 
+    Value : Float) return Boolean with
+    Pre  => Value'Valid and T.Units = Celsius,
+    Post => Validate'Result = (Value in T.Min_Val..T.Max_Val);
+-- Note: VALID_TEMPERATURE_RANGE should be defined or removed if not available
 
 -- Dispatching call with contract verification
 procedure Process_Value (
-   S : Sensor'Class;
-   Value : Float) is
+    S : Sensor'Class;
+    Value : Float) is
 begin
-   if Validate(S, Value) then
-      -- Safe to use value
-      null;
-   end if;
+    if Validate(S, Value) then
+        -- Safe to use value
+        null;
+    end if;
 end Process_Value;</code></pre>
         </div>
         
@@ -473,13 +467,14 @@ end Calibrate;</code></pre>
                 <p>
                     Prevent further derivation of a type:
                 </p>
-                <div class="code-block">
-                    <pre><code class="language-ada">type Final_Sensor is new Sensor with private;
-pragma Final_Type(Final_Sensor);
+                     <div class="code-block">
+                          <pre><code class="language-ada">type Final_Sensor is new Sensor with private;
+-- Ada does not have a pragma to seal types; document intent in comments
+-- Further derivation is prevented by not exporting the type
 
 package body Final_Sensor is
-   -- Implementation
-   -- Cannot be further derived
+    -- Implementation
+    -- Cannot be further derived if not exported
 end Final_Sensor;</code></pre>
                 </div>
                 <p>
@@ -570,23 +565,27 @@ end record;</code></pre>
                 <p>
                     Safe conversion between related types:
                 </p>
-                <div class="code-block">
-                    <pre><code class="language-ada">procedure Process (S : Sensor'Class) is
+                     <div class="code-block">
+                          <pre><code class="language-ada">procedure Process (S : Sensor'Class) is
 begin
-   -- Safe conversion with tag check
-   if S in Temperature_Sensor then
-      T : Temperature_Sensor := Temperature_Sensor(S);
-      -- Work with T
-      null;
-   else
-      raise Invalid_Sensor_Type;
-   end if;
+    -- Safe conversion with tag check
+    if S in Temperature_Sensor then
+        declare
+            T : Temperature_Sensor := Temperature_Sensor(S);
+        begin
+            -- Work with T
+            null;
+        end;
+    else
+        raise Invalid_Sensor_Type;
+    end if;
 end Process;
 
 -- Contract ensures safe downcasting
 procedure Process (S : Sensor'Class) with
-   Pre  => S in Temperature_Sensor,
-   Post => True;</code></pre>
+    Pre  => S in Temperature_Sensor,
+    Post => True;
+</code></pre>
                 </div>
             </div>
             <div class="column">
@@ -594,24 +593,25 @@ procedure Process (S : Sensor'Class) with
                 <p>
                     Safe creation of polymorphic objects:
                 </p>
-                <div class="code-block">
-                    <pre><code class="language-ada">function Create_Sensor (
-   Kind : Sensor_Kind;
-   ID   : Sensor_ID) return Sensor'Class with
-   Post => 
-      (if Create_Sensor'Result in Temperature_Sensor then
-         Kind = Temperature_Sensor_Kind) and
-      (if Create_Sensor'Result in Pressure_Sensor then
-         Kind = Pressure_Sensor_Kind) is
+                     <div class="code-block">
+                          <pre><code class="language-ada">function Create_Sensor (
+    Kind : Sensor_Kind;
+    ID   : Sensor_ID) return Sensor'Class with
+    Post => 
+        (if Create_Sensor'Result in Temperature_Sensor then
+            Kind = Temperature_Sensor_Kind
+         else (if Create_Sensor'Result in Pressure_Sensor then
+            Kind = Pressure_Sensor_Kind
+         else True)) is
 begin
-   case Kind is
-      when Temperature_Sensor_Kind =>
-         return Temperature_Sensor'(ID => ID, others => <>);
-      when Pressure_Sensor_Kind =>
-         return Pressure_Sensor'(ID => ID, others => <>);
-      when others =>
-         raise Invalid_Sensor_Kind;
-   end case;
+    case Kind is
+        when Temperature_Sensor_Kind =>
+            return Temperature_Sensor'(ID => ID, others => <>);
+        when Pressure_Sensor_Kind =>
+            return Pressure_Sensor'(ID => ID, others => <>);
+        when others =>
+            raise Invalid_Sensor_Kind;
+    end case;
 end Create_Sensor;</code></pre>
                 </div>
             </div>
@@ -622,30 +622,24 @@ end Create_Sensor;</code></pre>
             Ada enables formal verification of polymorphic behavior:
         </p>
         
-        <div class="code-block">
-            <pre><code class="language-ada">-- Base type with verification conditions
+          <div class="code-block">
+                <pre><code class="language-ada">-- Base type with verification conditions
 type Sensor is abstract tagged record
-   ID : Sensor_ID;
+    ID : Sensor_ID;
 end record with
-   Type_Invariant => ID /= 0;
+    Type_Invariant => ID /= 0;
 
 -- Dispatching operation with verification
 function Validate (S : Sensor; Value : Float) return Boolean with
-   Pre  => Value'Valid,
-   Post => Validate'Result = (Value in MIN_VALUE..MAX_VALUE),
-   Refined_Post => Validate'Result = 
-                  (Validate'Result and S.ID /= 0);
+    Pre  => Value'Valid,
+    Post => Validate'Result = (Value in MIN_VALUE..MAX_VALUE);
 
--- Verification that derived type satisfies contracts
+-- Verification that derived type satisfies contracts (refinement in package body)
 function Validate (
-   T : Temperature_Sensor; 
-   Value : Float) return Boolean with
-   Pre  => Value'Valid and T.Units = Celsius,
-   Post => Validate'Result = 
-           (Value in T.Min_Val..T.Max_Val),
-   -- Proof that refined postcondition holds
-   Refined_Post => 
-      (Validate'Result and T.ID /= 0 and T.Units = Celsius);
+    T : Temperature_Sensor; 
+    Value : Float) return Boolean with
+    Pre  => Value'Valid and T.Units = Celsius,
+    Post => Validate'Result = (Value in T.Min_Val..T.Max_Val);
 
 -- SPARK can prove:
 -- 1. All derived types satisfy base contracts
@@ -695,7 +689,7 @@ T : Temperature_Sensor := Temperature_Sensor(S);</code></pre>
                 <div class="column">
                     <h4>Pitfall: Unverified Contract Refinement</h4>
                     <div class="code-block">
-                        <pre><code class="language-ada">-- Derived precondition stronger than base
+                        <pre><code class="language-ada">-- Derived precondition stronger than base (incorrect)
 Pre => Value > 0.0;  -- Base: Pre => Value'Valid</code></pre>
                     </div>
                 </div>
@@ -723,62 +717,66 @@ Pre => Value'Valid;  -- Base precondition
                     Implement state machines with polymorphism:
                 </p>
                 <div class="code-block">
-                    <pre><code class="language-ada">-- State interface
+                          <pre><code class="language-ada">-- State interface
 type System_State is abstract tagged null record;
 procedure Handle_Event (
-   S : in out System_State; 
-   E : Event_Type) is abstract;
+    S : in out System_State; 
+    E : Event_Type) is abstract;
 
 -- Concrete states
 type Idle_State is new System_State with null record;
 procedure Handle_Event (
-   S : in out Idle_State; 
-   E : Event_Type) is
+    S : in out Idle_State; 
+    E : Event_Type) is
 begin
-   case E is
-      when Start => 
-         Set_State(Running_State);
-      when others =>
-         null;
-   end case;
+    case E is
+        when Start => 
+            -- Set_State(Running_State); -- Pseudocode: implement state transition logic
+            null;
+        when others =>
+            null;
+    end case;
 end Handle_Event;
 
 type Running_State is new System_State with null record;
 procedure Handle_Event (
-   S : in out Running_State; 
-   E : Event_Type) is
+    S : in out Running_State; 
+    E : Event_Type) is
 begin
-   case E is
-      when Stop => 
-         Set_State(Idle_State);
-      when Emergency =>
-         Set_State(Emergency_State);
-      when others =>
-         null;
-   end case;
+    case E is
+        when Stop => 
+            -- Set_State(Idle_State); -- Pseudocode: implement state transition logic
+            null;
+        when Emergency =>
+            -- Set_State(Emergency_State); -- Pseudocode: implement state transition logic
+            null;
+        when others =>
+            null;
+    end case;
 end Handle_Event;
 
 -- Context using the pattern
 type System_Context is tagged record
-   Current_State : System_State'Class := Idle_State;
+    Current_State : System_State'Class := Idle_State;
 end record;
 
 procedure Handle_System_Event (
-   C : in out System_Context;
-   E : Event_Type) is
+    C : in out System_Context;
+    E : Event_Type) is
 begin
-   Handle_Event(C.Current_State, E);
+    Handle_Event(C.Current_State, E);
 end Handle_System_Event;
 
--- Contract ensures valid state transitions
-procedure Handle_System_Event (
-   C : in out System_Context;
-   E : Event_Type) with
-   Contract_Cases =>
-      (E = Start and C.Current_State in Idle_State =>
-         C.Current_State in Running_State,
-       E = Stop and C.Current_State in Running_State =>
-         C.Current_State in Idle_State);</code></pre>
+-- Contract ensures valid state transitions (pseudocode)
+-- procedure Handle_System_Event (
+--    C : in out System_Context;
+--    E : Event_Type) with
+--    Contract_Cases =>
+--       (E = Start and C.Current_State in Idle_State =>
+--          C.Current_State in Running_State,
+--        E = Stop and C.Current_State in Running_State =>
+--          C.Current_State in Idle_State);
+</code></pre>
                 </div>
                 <p>
                     This pattern ensures only valid state transitions can occur.
@@ -791,54 +789,55 @@ procedure Handle_System_Event (
                     Select algorithms polymorphically:
                 </p>
                 <div class="code-block">
-                    <pre><code class="language-ada">-- Algorithm interface
+                          <pre><code class="language-ada">-- Algorithm interface
 type Control_Strategy is abstract tagged null record;
 function Calculate_Output (
-   S : Control_Strategy;
-   Input : Control_Input) return Control_Output is abstract;
+    S : Control_Strategy;
+    Input : Control_Input) return Control_Output is abstract;
 
 -- Concrete strategies
 type PID_Strategy is new Control_Strategy with record
-   Kp, Ki, Kd : Float;
+    Kp, Ki, Kd : Float;
 end record;
 function Calculate_Output (
-   S : PID_Strategy;
-   Input : Control_Input) return Control_Output is
+    S : PID_Strategy;
+    Input : Control_Input) return Control_Output is
 begin
-   -- PID calculation
-   null;
+    -- PID calculation (pseudocode)
+    return 0.0;
 end Calculate_Output;
 
 type Fuzzy_Strategy is new Control_Strategy with record
-   Rules : Fuzzy_Rule_Set;
+    Rules : Fuzzy_Rule_Set;
 end record;
 function Calculate_Output (
-   S : Fuzzy_Strategy;
-   Input : Control_Input) return Control_Output is
+    S : Fuzzy_Strategy;
+    Input : Control_Input) return Control_Output is
 begin
-   -- Fuzzy logic calculation
-   null;
+    -- Fuzzy logic calculation (pseudocode)
+    return 0.0;
 end Calculate_Output;
 
 -- Context using the pattern
 type Controller is tagged record
-   Strategy : Control_Strategy'Class;
+    Strategy : Control_Strategy'Class;
 end record;
 
 function Calculate (
-   C : Controller;
-   Input : Control_Input) return Control_Output is
+    C : Controller;
+    Input : Control_Input) return Control_Output is
 begin
-   return Calculate_Output(C.Strategy, Input);
+    return Calculate_Output(C.Strategy, Input);
 end Calculate;
 
--- Contract ensures safety properties
-function Calculate (
-   C : Controller;
-   Input : Control_Input) return Control_Output with
-   Pre  => Valid_Input(Input),
-   Post => Valid_Output(Calculate'Result) and
-           Calculate'Result in SAFE_RANGE;</code></pre>
+-- Contract ensures safety properties (pseudocode)
+-- function Calculate (
+--    C : Controller;
+--    Input : Control_Input) return Control_Output with
+--    Pre  => Valid_Input(Input),
+--    Post => Valid_Output(Calculate'Result) and
+--            Calculate'Result in SAFE_RANGE;
+</code></pre>
                 </div>
                 <p>
                     This pattern enables safe runtime algorithm selection.
@@ -851,78 +850,81 @@ function Calculate (
                     Process heterogeneous data safely:
                 </p>
                 <div class="code-block">
-                    <pre><code class="language-ada">-- Element interface
+                          <pre><code class="language-ada">-- Element interface
 type Sensor_Element is abstract tagged null record;
 procedure Accept (
-   E : Sensor_Element;
-   V : in out Sensor_Visitor) is abstract;
+    E : Sensor_Element;
+    V : in out Sensor_Visitor) is abstract;
 
 -- Concrete elements
 type Temperature_Sensor is new Sensor_Element with record
-   Value : Float;
+    Value : Float;
 end record;
 procedure Accept (
-   E : Temperature_Sensor;
-   V : in out Sensor_Visitor) is
+    E : Temperature_Sensor;
+    V : in out Sensor_Visitor) is
 begin
-   V.Visit_Temperature(E);
+    V.Visit_Temperature(E);
 end Accept;
 
 type Pressure_Sensor is new Sensor_Element with record
-   Value : Float;
+    Value : Float;
 end record;
 procedure Accept (
-   E : Pressure_Sensor;
-   V : in out Sensor_Visitor) is
+    E : Pressure_Sensor;
+    V : in out Sensor_Visitor) is
 begin
-   V.Visit_Pressure(E);
+    V.Visit_Pressure(E);
 end Accept;
 
 -- Visitor interface
 type Sensor_Visitor is abstract tagged null record;
 procedure Visit_Temperature (
-   V : in out Sensor_Visitor;
-   S : Temperature_Sensor) is abstract;
+    V : in out Sensor_Visitor;
+    S : Temperature_Sensor) is abstract;
 procedure Visit_Pressure (
-   V : in out Sensor_Visitor;
-   S : Pressure_Sensor) is abstract;
+    V : in out Sensor_Visitor;
+    S : Pressure_Sensor) is abstract;
 
 -- Concrete visitor
 type Safety_Check_Visitor is new Sensor_Visitor with null record;
 procedure Visit_Temperature (
-   V : in out Safety_Check_Visitor;
-   S : Temperature_Sensor) is
+    V : in out Safety_Check_Visitor;
+    S : Temperature_Sensor) is
 begin
-   if S.Value > MAX_TEMP then
-      Trigger_Alarm;
-   end if;
+    if S.Value > MAX_TEMP then
+        -- Trigger_Alarm; -- Pseudocode: implement alarm logic
+        null;
+    end if;
 end Visit_Temperature;
 
 procedure Visit_Pressure (
-   V : in out Safety_Check_Visitor;
-   S : Pressure_Sensor) is
+    V : in out Safety_Check_Visitor;
+    S : Pressure_Sensor) is
 begin
-   if S.Value > MAX_PRESSURE then
-      Trigger_Alarm;
-   end if;
+    if S.Value > MAX_PRESSURE then
+        -- Trigger_Alarm; -- Pseudocode: implement alarm logic
+        null;
+    end if;
 end Visit_Pressure;
 
 -- Usage with safety guarantees
 procedure Check_Safety (
-   Elements : Sensor_Element_Array) is
-   Visitor : Safety_Check_Visitor;
+    Elements : Sensor_Element_Array) is
+    Visitor : Safety_Check_Visitor;
 begin
-   for E of Elements loop
-      Accept(E, Visitor);
-   end loop;
+    for E of Elements loop
+        Accept(E, Visitor);
+    end loop;
 end Check_Safety;
 
--- Contract ensures all elements are checked
-procedure Check_Safety (
-   Elements : Sensor_Element_Array) with
-   Post => 
-      (for all E of Elements => 
-         Is_Checked(E) = True);</code></pre>
+-- Contract ensures all elements are checked (pseudocode)
+-- procedure Check_Safety (
+--    Elements : Sensor_Element_Array) with
+--    Post => 
+--       (for all E of Elements => 
+--          Is_Checked(E) = True);
+</code></pre>
                 </div>
                 <p>
                     This pattern ensures exhaustive processing of heterogeneous data.

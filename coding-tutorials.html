@@ -287,6 +287,117 @@
             topicSelect.disabled = false;
         }
 
+        // Convert HTML content to Markdown
+        function convertHtmlToMarkdown(html) {
+            // Create a temporary DOM element to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            let markdown = '';
+            
+            function processNode(node, depth = 0) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    return node.textContent.trim();
+                }
+                
+                if (node.nodeType !== Node.ELEMENT_NODE) {
+                    return '';
+                }
+                
+                const tagName = node.tagName.toLowerCase();
+                const children = Array.from(node.childNodes);
+                let content = children.map(child => processNode(child, depth)).join('');
+                
+                switch (tagName) {
+                    case 'h1':
+                        return `# ${content}\n\n`;
+                    case 'h2':
+                        return `## ${content}\n\n`;
+                    case 'h3':
+                        return `### ${content}\n\n`;
+                    case 'h4':
+                        return `#### ${content}\n\n`;
+                    case 'h5':
+                        return `##### ${content}\n\n`;
+                    case 'h6':
+                        return `###### ${content}\n\n`;
+                    case 'p':
+                        return `${content}\n\n`;
+                    case 'br':
+                        return '\n';
+                    case 'strong':
+                    case 'b':
+                        return `**${content}**`;
+                    case 'em':
+                    case 'i':
+                        return `*${content}*`;
+                    case 'code':
+                        return `\`${content}\``;
+                    case 'pre':
+                        // Handle code blocks
+                        const codeContent = node.textContent || '';
+                        return `\n\`\`\`\n${codeContent}\n\`\`\`\n\n`;
+                    case 'blockquote':
+                        return `> ${content}\n\n`;
+                    case 'ul':
+                        return `${content}\n`;
+                    case 'ol':
+                        return `${content}\n`;
+                    case 'li':
+                        const prefix = node.closest('ol') ? '1. ' : '- ';
+                        return `${prefix}${content}\n`;
+                    case 'a':
+                        const href = node.getAttribute('href') || '';
+                        return href ? `[${content}](${href})` : content;
+                    case 'img':
+                        const src = node.getAttribute('src') || '';
+                        const alt = node.getAttribute('alt') || '';
+                        return src ? `![${alt}](${src})` : '';
+                    case 'table':
+                        return processTable(node);
+                    case 'hr':
+                        return '\n---\n\n';
+                    case 'div':
+                    case 'span':
+                    case 'section':
+                    case 'article':
+                        // For generic containers, just return the content
+                        return content;
+                    default:
+                        // For unknown tags, just return the content
+                        return content;
+                }
+            }
+            
+            function processTable(tableNode) {
+                const rows = Array.from(tableNode.querySelectorAll('tr'));
+                if (rows.length === 0) return '';
+                
+                let tableMarkdown = '\n';
+                
+                rows.forEach((row, index) => {
+                    const cells = Array.from(row.querySelectorAll('td, th'));
+                    const cellContents = cells.map(cell => processNode(cell).trim().replace(/\n/g, ' '));
+                    tableMarkdown += `| ${cellContents.join(' | ')} |\n`;
+                    
+                    // Add header separator after first row if it contains th elements
+                    if (index === 0 && row.querySelector('th')) {
+                        const separator = cells.map(() => '---').join(' | ');
+                        tableMarkdown += `| ${separator} |\n`;
+                    }
+                });
+                
+                return tableMarkdown + '\n';
+            }
+            
+            markdown = processNode(tempDiv);
+            
+            // Clean up excessive newlines
+            markdown = markdown.replace(/\n{3,}/g, '\n\n');
+            
+            return markdown.trim();
+        }
+
         // Event Listeners
         languageSelect.addEventListener('change', (e) => {
             const language = e.target.value;
@@ -309,8 +420,11 @@
 
         copyBtn.addEventListener('click', () => {
             if (!currentRawContent) return;
-            navigator.clipboard.writeText(currentRawContent).then(() => {
-                showToast('Tutorial content copied to clipboard!', 'success');
+            
+            // Convert HTML to Markdown before copying
+            const markdownContent = convertHtmlToMarkdown(currentRawContent);
+            navigator.clipboard.writeText(markdownContent).then(() => {
+                showToast('Tutorial content copied to clipboard as Markdown!', 'success');
             }).catch(err => {
                 showToast('Failed to copy content', 'danger');
             });
