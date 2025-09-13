@@ -1,0 +1,366 @@
+<div class="tutorial-content">
+    <h1 class="tutorial-title">C and Assembly Language Interoperability: Building Verifiable Mixed-Language Interfaces for Safety-Critical Systems</h1>
+    
+    <div class="tutorial-section">
+        <p class="tutorial-intro">
+            This tutorial explores c and assembly language interoperability in safety-critical systems, focusing on verification, certification compliance, and best practices for developing reliable software components.
+        </p>
+        
+        <div class="section-block">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Understand the principles of c and assembly language interoperability in safety-critical environments</li>
+                <li>Learn verification techniques and certification requirements</li>
+                <li>Apply best practices for reliable implementation</li>
+                <li>Recognize common pitfalls and their solutions</li>
+            </ul>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="tutorial-section">
+
+        <h3>Introduction: The Critical Nature of Mixed-Language Development in Safety-Critical Systems</h3>
+
+        <p>In safety-critical systems—from aircraft flight controllers to medical device firmware—mixed-language development directly impacts verification, maintainability, and certification. Traditional approaches to interoperability often prioritize performance over verifiability, creating hidden certification gaps that can compromise otherwise robust safety mechanisms. This tutorial explores how proper interoperability transforms from implementation details into critical safety considerations—ensuring that mixed-language interfaces actively support rather than undermine the verification process.</p>
+
+<strong>Assembly Philosophy:</strong> Interoperability should be <em>verifiable, traceable, and safety-preserving</em>, not an afterthought. The structure of mixed-language interfaces must actively support verification, maintenance, and certification requirements—without sacrificing the precision and control that make assembly necessary in the first place.
+
+        <p>Unlike general-purpose development that prioritizes conciseness over process compliance, safety-critical mixed-language development requires a fundamentally different approach. This tutorial examines how consistent interoperability patterns, structured documentation, and verification-oriented coding practices transform language boundaries into a verifiable component of the safety case—ensuring that mixed-language interfaces become a verification asset rather than a certification risk.</p>
+
+        <h3>Why Traditional Interoperability Approaches Fail in Safety-Critical Contexts</h3>
+
+        <p>Conventional approaches to mixed-language development—particularly those inherited from commercial or performance-focused development—were primarily designed for functionality rather than certification compliance. Their fundamental assumptions create significant challenges when applied to safety-critical systems.</p>
+
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th><strong>Problem (Traditional Approach)</strong></th>
+                        <th><strong>Consequence in Safety-Critical Systems</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Informal interface specifications</td>
+                        <td>Hidden interface incompatibilities</td>
+                    </tr>
+                    <tr>
+                        <td>Minimal documentation of interface effects</td>
+                        <td>Inability to verify safety properties or trace to requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Overly clever interface techniques</td>
+                        <td>Hidden side effects that evade verification</td>
+                    </tr>
+                    <tr>
+                        <td>Inconsistent verification annotations</td>
+                        <td>Gaps in verification evidence for certification</td>
+                    </tr>
+                    <tr>
+                        <td>Binary thinking about language boundaries</td>
+                        <td>Either complete disregard for patterns or excessive rigidity</td>
+                    </tr>
+                    <tr>
+                        <td>Incomplete traceability</td>
+                        <td>Gaps in evidence linking interfaces to safety requirements</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        <h4>Case Study: Medical Device Failure Due to Unverified Mixed-Language Interface</h4>
+
+        <p>A medical imaging system experienced intermittent failures where certain safety functions would unexpectedly disable critical control mechanisms. The root cause was traced to a C/assembly interface that used aggressive optimization without proper verification of register preservation behavior. The code had been verified functionally but the verification missed the safety impact because the interface behavior wasn't properly documented or verified as part of the safety case.</p>
+
+<strong>Safety-Critical Perspective:</strong> A consistent interoperability pattern with proper documentation of register preservation would have made the risk visible during verification. The interface structure should have supported verification rather than hiding critical safety properties.
+
+<strong>Interoperability Philosophy for Safety-Critical Development:</strong> Mixed-language interfaces should be <em>verifiable, minimal, and safety-preserving</em>—designed to actively support verification, maintenance, and certification requirements, with complete documentation that transforms interface choices into verification evidence.
+
+        <h3>Fundamentals of Calling Convention Compatibility for Safety-Critical Systems</h3>
+
+        <p>Understanding calling convention compatibility is essential for developing and verifying safety-critical mixed-language code with predictable behavior and verifiable interface properties.</p>
+
+        <h4>Calling Convention Safety Implications</h4>
+
+            <table class="tutorial-table">
+                <thead>
+                    <tr>
+                        <th><strong>Characteristic</strong></th>
+                        <th><strong>Traditional Approach</strong></th>
+                        <th><strong>Safety-Critical Approach</strong></th>
+                        <th><strong>Safety-Critical Consideration</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Calling Convention</td>
+                        <td>Minimal compliance for functionality</td>
+                        <td>Complete verification of compliance</td>
+                        <td>Verify all register preservation requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Parameter Passing</td>
+                        <td>Optimized for performance</td>
+                        <td>Predictable parameter passing</td>
+                        <td>Verify parameter passing behavior</td>
+                    </tr>
+                    <tr>
+                        <td>Return Values</td>
+                        <td>Minimal verification</td>
+                        <td>Complete verification of return paths</td>
+                        <td>Verify all return value behaviors</td>
+                    </tr>
+                    <tr>
+                        <td>Verification Complexity</td>
+                        <td>Functional verification only</td>
+                        <td>Interface behavior verification</td>
+                        <td>Requires specialized verification techniques</td>
+                    </tr>
+                    <tr>
+                        <td>Processor Variants</td>
+                        <td>Assumes consistent behavior</td>
+                        <td>Explicit variant handling</td>
+                        <td>Verify behavior across all processor variants</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        <h4>Calling Convention Safety Patterns</h4>
+
+        <p>Safe calling convention patterns for safety-critical code:</p>
+
+            <h5>Safe Patterns</h5>
+
+            <ul>
+                <li><strong>Complete convention verification:</strong> Document and verify all convention aspects</li>
+                <li><strong>Consistent convention usage:</strong> Use consistent conventions across interfaces</li>
+                <li><strong>Complete documentation:</strong> Document convention behavior per interface</li>
+                <li><strong>Verification tags:</strong> #check tags for critical convention operations</li>
+                <li><strong>Processor variant verification:</strong> Verify behavior across variants</li>
+            </ul>
+
+            <h5>Risky Patterns to Avoid</h5>
+
+            <ul>
+                <li><strong>Incomplete convention compliance:</strong> Creates hidden interface risks</li>
+                <li><strong>Inconsistent convention usage:</strong> Verification gaps</li>
+                <li><strong>Undocumented convention assumptions:</strong> Risk of verification gaps</li>
+                <li><strong>Missing behavior verification:</strong> Risk of interface errors</li>
+                <li><strong>Unverified processor variants:</strong> Risk of inconsistent behavior</li>
+            </ul>
+
+        <h4>Calling Convention Verification Example</h4>
+
+        <p>Verified calling convention with safety considerations:</p>
+
+            <div class="code-block">
+                <pre><code class="language-asm">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        <p>;# Summary: Verified calling convention implementation</p>
+        <p>;# Requirement: REQ-CC-001</p>
+        <p>;# Verification: VC-CC-001</p>
+        <p>;# Test: TEST-CC-001</p>
+        <p>;#</p>
+        <p>;# Calling Convention Considerations:</p>
+        <p>;#</p>
+        <p>;# 1. Safety Rules:</p>
+        <p>;#    - Complete calling convention verification</p>
+        <p>;#    - Consistent convention usage</p>
+        <p>;#    - Processor variant handling verified</p>
+        <p>;#</p>
+        <p>;# 2. Safety Verification:</p>
+        <p>;#    - Calling convention verified</p>
+        <p>;#    - Interface behavior verified</p>
+        <p>;#    - No unverified interface operations</p>
+        <p>;#</p>
+        <p>;# Tool: GNU Assembler 2.38 (qualified)</p>
+        <p>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</p>
+
+        <p>.section .text</p>
+        <p>.global calculate_altitude</p>
+
+        <p>; Constants for safety constraints</p>
+        <p>MAX_ALTITUDE = 50000</p>
+
+        <p>; Function: calculate_altitude</p>
+        <p>; Purpose: Demonstrate verified calling convention implementation</p>
+        <p>; Parameters (per System V AMD64 ABI):</p>
+        <p>;   rdi = current altitude (int)</p>
+        <p>;   rsi = altitude adjustment (int)</p>
+        <p>; Returns (per System V AMD64 ABI):</p>
+        <p>;   rax = calculated altitude (int)</p>
+        <p>;   rdx = error code (0 = success, non-zero = error)</p>
+        <p>;</p>
+        <p>; Safety-Critical Calling Convention Rules:</p>
+        <p>;   - Callee-saved registers preserved (rbx, rbp, r12-r15)</p>
+        <p>;   - Caller-saved registers may be modified (rax, rcx, rdx, rsi, rdi, r8-r11)</p>
+        <p>;   - Stack must be 16-byte aligned on function entry</p>
+        <p>;   - Error code returned in rdx per safety-critical extension</p>
+        <p>calculate_altitude:</p>
+        <p>;# check: REQ-CC-002</p>
+        <p>;# check: VC-CC-002</p>
+        <p>; Verify stack alignment (16-byte alignment required by ABI)</p>
+        <p>and $15, %rsp</p>
+        <p>test %rsp, %rsp</p>
+        <p>jnz stack<em>alignment</em>error</p>
+    
+        <p>;# check: REQ-CC-003</p>
+        <p>;# check: VC-CC-003</p>
+        <p>; Verify parameter validity</p>
+        <p>cmp $MAX_ALTITUDE, %rdi</p>
+        <p>; Safety Rationale: Validate input parameter</p>
+        <p>; Failure Mode: Return error code</p>
+        <p>; Register Preservation: rdi preserved for error handling</p>
+        <p>; Interface Behavior: Input validation</p>
+        <p>jg parameter_error</p>
+    
+        <p>; Save callee-saved registers (as required by ABI)</p>
+        <p>;# check: REQ-CC-004</p>
+        <p>;# check: VC-CC-004</p>
+        <p>; Verify register preservation</p>
+        <p>push %rbx</p>
+        <p>push %r12</p>
+        <p>push %r13</p>
+        <p>push %r14</p>
+        <p>push %r15</p>
+        <p>; Safety Rationale: Preserve callee-saved registers</p>
+        <p>; Failure Mode: N/A (safe operation)</p>
+        <p>; Register Preservation: Complete preservation</p>
+        <p>; Interface Behavior: ABI compliance</p>
+    
+        <p>; Calculate new altitude</p>
+        <p>;# check: REQ-CC-005</p>
+        <p>;# check: VC-CC-005</p>
+        <p>; Verify calculation safety</p>
+        <p>add %rsi, %rdi      ; Add adjustment to current altitude</p>
+        <p>; Safety Rationale: Safe altitude calculation</p>
+        <p>; Failure Mode: Check for overflow</p>
+        <p>; Register Preservation: rdi used for calculation</p>
+        <p>; Interface Behavior: Computation</p>
+    
+        <p>; Check for overflow/underflow</p>
+        <p>;# check: REQ-CC-006</p>
+        <p>;# check: VC-CC-006</p>
+        <p>; Verify calculation result</p>
+        <p>cmp $MAX_ALTITUDE, %rdi</p>
+        <p>; Safety Rationale: Validate output parameter</p>
+        <p>; Failure Mode: Return error code</p>
+        <p>; Register Preservation: rdi preserved for error handling</p>
+        <p>; Interface Behavior: Output validation</p>
+        <p>jg calculation_error</p>
+    
+        <p>; Set success return code</p>
+        <p>mov $0, %rdx        ; Error code 0 = success</p>
+    
+        <p>;# check: REQ-CC-007</p>
+        <p>;# check: VC-CC-007</p>
+        <p>; Verify return value</p>
+        <p>mov %rdi, %rax      ; Return calculated altitude in rax</p>
+        <p>; Safety Rationale: Correct return value</p>
+        <p>; Failure Mode: N/A (safe operation)</p>
+        <p>; Register Preservation: rax used for return</p>
+        <p>; Interface Behavior: Return value setup</p>
+    
+        <p>; Restore callee-saved registers</p>
+        <p>;# check: REQ-CC-008</p>
+        <p>;# check: VC-CC-008</p>
+        <p>; Verify register restoration</p>
+        <p>pop %r15</p>
+        <p>pop %r14</p>
+        <p>pop %r13</p>
+        <p>pop %r12</p>
+        <p>pop %rbx</p>
+        <p>; Safety Rationale: Restore callee-saved registers</p>
+        <p>; Failure Mode: N/A (safe operation)</p>
+        <p>; Register Preservation: Complete restoration</p>
+        <p>; Interface Behavior: ABI compliance</p>
+    
+        <p>ret</p>
+    
+        <p>parameter_error:</p>
+        <p>; Set parameter error code</p>
+        <p>mov $1, %rdx        ; Error code 1 = parameter error</p>
+    
+        <p>;# check: REQ-CC-009</p>
+        <p>;# check: VC-CC-009</p>
+        <p>; Verify error return value</p>
+        <p>mov $0, %rax        ; Return safe value on error</p>
+        <p>; Safety Rationale: Safe return value on error</p>
+        <p>; Failure Mode: N/A (safe operation)</p>
+        <p>; Register Preservation: rax used for return</p>
+        <p>; Interface Behavior: Error handling</p>
+    
+        <p>; Restore callee-saved registers</p>
+        <p>pop %r15</p>
+        <p>pop %r14</p>
+        <p>pop %r13</p>
+        <p>pop %r12</p>
+        <p>pop %rbx</p>
+        <p>ret</p>
+    
+        <p>calculation_error:</p>
+        <p>; Set calculation error code</p>
+        <p>mov $2, %rdx        ; Error code 2 = calculation error</p>
+    
+        <p>;# check: REQ-CC-010</p>
+        <p>;# check: VC-CC-010</p>
+        <p>; Verify error return value</p>
+        <p>mov $MAX_ALTITUDE, %rax  ; Return safe maximum value</p>
+        <p>; Safety Rationale: Safe return value on error</p>
+        <p>; Failure Mode: N/A (safe operation)</p>
+        <p>; Register Preservation: rax used for return</p>
+        <p>; Interface Behavior: Error handling</p>
+    
+        <p>; Restore callee-saved registers</p>
+        <p>pop %r15</p>
+        <p>pop %r14</p>
+        <p>pop %r13</p>
+        <p>pop %r12</p>
+        <p>pop %rbx</p>
+        <p>ret</p>
+    
+        <p>stack<em>alignment</em>error:</p>
+        <p>; Set stack alignment error code</p>
+        <p>mov $3, %rdx        ; Error code 3 = stack alignment error</p>
+    
+        <p>;# check: REQ-CC-011</p>
+        <p>;# check: VC-CC-011</p>
+        <p>; Verify error return value</p>
+        <p>mov $0, %rax        ; Return safe value on error</p>
+        <p>; Safety Rationale: Safe return value on error</p>
+        <p>; Failure Mode: N/A (safe operation)</p>
+        <p>; Register Preservation: rax used for return</p>
+        <p>; Interface Behavior: Error handling</p>
+    
+        <p>; No registers to restore (never pushed)</p>
+        <p>ret</p>
+</code></pre>
+            </div>
+
+<strong>Calling Convention Note:</strong> For safety-critical mixed-language development, focus on calling convention patterns that directly support verification and maintenance: complete convention verification, consistent usage, and verification annotations. Don't get distracted by syntactic variations that don't affect verification evidence.
+
+<strong>Best Practice:</strong> Document calling convention patterns specific to your safety-critical code, including register preservation requirements, parameter passing behavior, and verification annotation standards. This documentation becomes critical evidence for certification.
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="tutorial-section">
+        <h2>Summary and Best Practices</h2>
+        
+        <div class="section-block">
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Prioritize verification and traceability in all implementations</li>
+                <li>Follow established safety-critical development patterns</li>
+                <li>Maintain comprehensive documentation for certification</li>
+                <li>Implement robust error handling and validation</li>
+            </ul>
+        </div>
+        
+        <div class="note-box">
+            <h3>Next Steps</h3>
+            <p>
+                Continue with the next tutorial in the series to build upon these concepts and explore advanced topics in safety-critical software development.
+            </p>
+        </div>
+    </div>
+</div>
