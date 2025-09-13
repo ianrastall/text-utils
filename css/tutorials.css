@@ -14,6 +14,11 @@
     --tutorial-info-box-padding: 1.5rem;
     --tutorial-info-box-margin: 2rem 0;
     --tutorial-border-radius: 8px;
+    --tutorial-blockquote-bg: rgba(70, 130, 180, 0.15);
+    --tutorial-table-border-color: rgba(255, 255, 255, 0.08);
+    --tutorial-table-header-bg: rgba(70, 130, 180, 0.4);
+    --tutorial-table-row-hover: rgba(70, 130, 180, 0.15);
+    --tutorial-table-zebra-bg: rgba(255, 255, 255, 0.05);
 }
 
 /* Base Tutorial Container */
@@ -161,7 +166,40 @@
     margin-bottom: 1rem;
 }
 
+/* Blockquote styling for Markdown '>' syntax */
+.tutorial-content blockquote,
+#mainOutput.tutorial-content blockquote {
+    background-color: var(--tutorial-blockquote-bg, rgba(var(--accent-color-rgb, 70, 130, 180), 0.15));
+    border-left: 5px solid var(--accent-color, #5bc0de);
+    border-radius: 0 var(--tutorial-border-radius) var(--tutorial-border-radius) 0;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: var(--tutorial-text-color);
+}
+
+.tutorial-content blockquote > *:first-child {
+    margin-top: 0;
+}
+
+.tutorial-content blockquote > *:last-child {
+    margin-bottom: 0;
+}
+
 /* Tables - Single definition */
+.tutorial-content table,
+#mainOutput.tutorial-content table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--tutorial-border-radius);
+    overflow: hidden;
+    margin: 2rem 0;
+    background-color: #1a1d23;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-size: 1.1rem;
+}
+
 .tutorial-table {
     width: 100%;
     border-collapse: separate;
@@ -174,10 +212,14 @@
     font-size: 1.1rem;
 }
 
+.tutorial-content table thead,
+#mainOutput.tutorial-content table thead,
 .tutorial-table thead {
-    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.4);
+    background-color: var(--tutorial-table-header-bg, rgba(var(--accent-color-rgb, 70, 130, 180), 0.4));
 }
 
+.tutorial-content table th,
+#mainOutput.tutorial-content table th,
 .tutorial-table th {
     padding: 1rem 1.5rem;
     text-align: left;
@@ -187,18 +229,24 @@
     font-size: 1.15rem;
 }
 
+.tutorial-content table td,
+#mainOutput.tutorial-content table td,
 .tutorial-table td {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--tutorial-table-border-color, rgba(255, 255, 255, 0.08));
     color: #e8e8e8;
 }
 
+.tutorial-content table tbody tr:nth-child(odd),
+#mainOutput.tutorial-content table tbody tr:nth-child(odd),
 .tutorial-table tbody tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--tutorial-table-zebra-bg, rgba(255, 255, 255, 0.05));
 }
 
+.tutorial-content table tbody tr:hover,
+#mainOutput.tutorial-content table tbody tr:hover,
 .tutorial-table tbody tr:hover {
-    background-color: rgba(var(--accent-color-rgb, 70, 130, 180), 0.15);
+    background-color: var(--tutorial-table-row-hover, rgba(var(--accent-color-rgb, 70, 130, 180), 0.15));
 }
 
 /* Grid Layouts - Unified approach */
