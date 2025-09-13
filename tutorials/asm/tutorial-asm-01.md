@@ -25,9 +25,9 @@ Conventional assembly usage patterns—particularly those inherited from commerc
 
 A commercial aircraft experienced intermittent control surface failures during specific flight conditions. The root cause was traced to an assembly language optimization in the flight control system that assumed certain timing properties that weren't guaranteed across all processor variants. The assembly code had been added for performance reasons without proper verification of timing constraints, and the subtle timing variations only manifested under specific thermal conditions.
 
-**Safety-Critical Perspective:** A properly justified and verified assembly implementation would have either avoided the optimization (as it wasn't safety-critical) or included formal timing verification that would have caught the processor variant issue during development rather than in service.
+> **Safety-Critical Perspective:** A properly justified and verified assembly implementation would have either avoided the optimization (as it wasn't safety-critical) or included formal timing verification that would have caught the processor variant issue during development rather than in service.
 
-**Assembly Philosophy for Safety-Critical Development:** Assembly should be _minimal, justified, and verifiable_—used only where it provides a clear safety or functional necessity that cannot be achieved with higher-level languages, with complete verification evidence and traceability to safety requirements.
+> **Assembly Philosophy for Safety-Critical Development:** Assembly should be _minimal, justified, and verifiable_—used only where it provides a clear safety or functional necessity that cannot be achieved with higher-level languages, with complete verification evidence and traceability to safety requirements.
 
 ## Fundamentals of Assembly Language in Safety-Critical Systems
 
@@ -81,9 +81,9 @@ Understanding assembly's place in the modern development ecosystem:
 - Safety-critical systems may contain <0.1% assembly code
 - Verification is more important than performance
 
-**Critical Warning:** DO-178C requires justification for all assembly language usage in Level A-D systems. For Level A systems, assembly code must be formally verified with complete evidence generation. Unjustified assembly will result in certification failure.
+> **Critical Warning:** DO-178C requires justification for all assembly language usage in Level A-D systems. For Level A systems, assembly code must be formally verified with complete evidence generation. Unjustified assembly will result in certification failure.
 
-**Best Practice:** For safety-critical systems, always document the justification for assembly usage, including why higher-level languages couldn't meet the requirement, and include complete verification evidence. Treat assembly as a last resort, not a first option.
+> **Best Practice:** For safety-critical systems, always document the justification for assembly usage, including why higher-level languages couldn't meet the requirement, and include complete verification evidence. Treat assembly as a last resort, not a first option.
 
 ## Assembly Language Toolchains for Safety-Critical Development
 
@@ -160,7 +160,7 @@ DO-178C and IEC 62304 require tool qualification for all development tools, incl
         jmp stack_error
 ```
 
-**Toolchain Note:** For DO-178C Level A systems, the assembler must be qualified as a Category A tool. This requires extensive testing to demonstrate that it correctly translates assembly code to machine code without introducing errors. Documentation must include the specific version used and evidence of qualification.
+> **Toolchain Note:** For DO-178C Level A systems, the assembler must be qualified as a Category A tool. This requires extensive testing to demonstrate that it correctly translates assembly code to machine code without introducing errors. Documentation must include the specific version used and evidence of qualification.
 
 ## Assembly vs. Higher-Level Languages: Making the Right Choice
 
@@ -216,7 +216,7 @@ Beyond initial development, consider these long-term costs:
 | **Certification Evidence** | Extensive | Moderate (with proper tools) | Critical for DO-178C Level A/B systems |
 | **Portability** | None (architecture-specific) | High | Consider future hardware changes |
 
-**Decision Tip:** Before writing any assembly code, answer these questions: (1) What specific safety or functional requirement cannot be met with higher-level languages? (2) Can this requirement be verified with available tools? (3) Does the benefit justify the increased verification and certification burden? If you cannot clearly answer all three, use a higher-level language.
+> **Decision Tip:** Before writing any assembly code, answer these questions: (1) What specific safety or functional requirement cannot be met with higher-level languages? (2) Can this requirement be verified with available tools? (3) Does the benefit justify the increased verification and certification burden? If you cannot clearly answer all three, use a higher-level language.
 
 ## Advanced Considerations for Safety-Critical Assembly Development
 
@@ -294,7 +294,7 @@ A formal approach to documenting and verifying the necessity of assembly code in
 - Consideration of verification and certification impacts
 - Transparent decision-making for certification authorities
 
-**Certification Evidence:** Complete justification documentation included as part of the certification evidence package, demonstrating compliance with DO-178C objectives for tool usage and code verification.
+> **Certification Evidence:** Complete justification documentation included as part of the certification evidence package, demonstrating compliance with DO-178C objectives for tool usage and code verification.
 
 ### Pattern 2: Verified Assembly Interface Layer
 
@@ -394,7 +394,7 @@ Creating a formally verified interface between assembly and higher-level languag
 - Verification of interface safety properties
 - Isolation of assembly complexity from safety-critical logic
 
-**Certification Evidence:** Complete interface specification, verification evidence for the assembly implementation, and traceability from requirements to implementation and verification.
+> **Certification Evidence:** Complete interface specification, verification evidence for the assembly implementation, and traceability from requirements to implementation and verification.
 
 ### Pattern 3: Assembly Verification Framework
 
@@ -537,7 +537,7 @@ Implementing a systematic approach to verifying assembly language code.
 - Verification of safety checks within assembly code
 - Transparency for certification authorities
 
-**Certification Evidence:** Complete timing analysis report, static analysis results, measured timing data, and verification of safety properties within the assembly code.
+> **Certification Evidence:** Complete timing analysis report, static analysis results, measured timing data, and verification of safety properties within the assembly code.
 
 **Pattern Selection Guide:**
 
@@ -546,7 +546,7 @@ Implementing a systematic approach to verifying assembly language code.
 - **For timing-critical code:** Use the Assembly Verification Framework for any assembly code with timing requirements. This provides the evidence needed to demonstrate WCET compliance.
 - **For medical devices:** Add additional validation for IEC 62304 requirements, particularly around interface documentation and verification.
 
-**Remember:** In safety-critical assembly development, the justification and verification are as important as the code itself. Focus documentation efforts on demonstrating why assembly is necessary and how it meets safety requirements.
+> **Remember:** In safety-critical assembly development, the justification and verification are as important as the code itself. Focus documentation efforts on demonstrating why assembly is necessary and how it meets safety requirements.
 
 ## Verification of Assembly Language Code
 
@@ -598,7 +598,7 @@ Systematic verification of assembly code is essential for certification:
 
 #### Assembly Verification Protocol
 
-**Objective:** Verify that assembly code meets all safety and functional requirements while generating the necessary certification evidence.
+> **Objective:** Verify that assembly code meets all safety and functional requirements while generating the necessary certification evidence.
 
 ##### Verification Steps:
 
@@ -691,7 +691,7 @@ Timing analysis is critical for safety-critical assembly:
 
 For DO-178C Level A systems, all these aspects must be part of your verification evidence.
 
-**Comprehensive Verification Strategy:** For safety-critical assembly code, generate certification evidence through:
+> **Comprehensive Verification Strategy:** For safety-critical assembly code, generate certification evidence through:
 
 - **Justification documentation:** Clear explanation of why assembly is necessary
 - **Static analysis:** Control flow and data flow analysis results
@@ -717,9 +717,9 @@ The Boeing 787 avionics system uses assembly language for the initial boot code 
 - Verification of memory safety properties
 - Rigorous tool qualification for the assembler
 
-**Certification:** DO-178C DAL A certification. The assembly code was certified by demonstrating that it was necessary for proper hardware initialization, with complete verification evidence showing deterministic behavior and safety properties. The justification documentation was critical to the certification case.
+> **Certification:** DO-178C DAL A certification. The assembly code was certified by demonstrating that it was necessary for proper hardware initialization, with complete verification evidence showing deterministic behavior and safety properties. The justification documentation was critical to the certification case.
 
-**Key Insight:** The assembly code is limited to the absolute minimum necessary for hardware initialization, with extensive documentation justifying each instruction and complete verification evidence demonstrating safety properties.
+> **Key Insight:** The assembly code is limited to the absolute minimum necessary for hardware initialization, with extensive documentation justifying each instruction and complete verification evidence demonstrating safety properties.
 
 ### Medical Imaging System – Timing-Critical Image Processing
 
@@ -733,9 +733,9 @@ A medical device manufacturer implemented assembly language for a timing-critica
 - Verification of numerical stability
 - Human factors validation of error handling
 
-**Certification:** IEC 62304 Class C certification. The assembly code was certified by demonstrating that higher-level languages couldn't meet the strict timing requirements, with complete verification evidence showing deterministic timing behavior and safety properties. The timing analysis was critical to the certification case.
+> **Certification:** IEC 62304 Class C certification. The assembly code was certified by demonstrating that higher-level languages couldn't meet the strict timing requirements, with complete verification evidence showing deterministic timing behavior and safety properties. The timing analysis was critical to the certification case.
 
-**Key Insight:** The system uses assembly only for the specific portion of the image processing that required guaranteed timing, with the rest of the system implemented in higher-level languages for maintainability and verifiability.
+> **Key Insight:** The system uses assembly only for the specific portion of the image processing that required guaranteed timing, with the rest of the system implemented in higher-level languages for maintainability and verifiability.
 
 ### Detailed Code Example: Safety-Critical Atomic Operation Implementation
 
@@ -950,4 +950,4 @@ Add control flow and data flow analysis to your verification process. Focus on p
 
 Create a sample certification evidence package for your assembly implementation. Include justification documentation, static analysis results, and timing verification evidence.
 
-**Connection to Next Tutorial:** The computer architecture concepts you'll learn in Tutorial #2 are essential for understanding how assembly code executes on real hardware. This knowledge is critical for verifying timing properties, understanding memory behavior, and making informed decisions about when assembly is truly necessary. The hardware insights from the next tutorial will directly inform your assembly development decisions and verification strategies.
+> **Connection to Next Tutorial:** The computer architecture concepts you'll learn in Tutorial #2 are essential for understanding how assembly code executes on real hardware. This knowledge is critical for verifying timing properties, understanding memory behavior, and making informed decisions about when assembly is truly necessary. The hardware insights from the next tutorial will directly inform your assembly development decisions and verification strategies.
