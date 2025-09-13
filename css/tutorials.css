@@ -112,6 +112,16 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Inline code (not inside code blocks) - use accent color for better contrast on dark theme */
+.tutorial-content :not(pre) > code,
+#mainOutput.tutorial-content :not(pre) > code {
+    color: var(--accent-color, #DEB887);
+    background-color: rgba(var(--accent-color-rgb, 222, 184, 135), 0.12);
+    border: 1px solid rgba(var(--accent-color-rgb, 222, 184, 135), 0.35);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+}
+
 /* Info Boxes - Using data attributes for variants */
 [data-info-box] {
     padding: var(--tutorial-info-box-padding);
