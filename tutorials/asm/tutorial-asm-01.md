@@ -950,4 +950,4 @@ Add control flow and data flow analysis to your verification process. Focus on p
 
 Create a sample certification evidence package for your assembly implementation. Include justification documentation, static analysis results, and timing verification evidence.
 
-**Connection to Next Tutorial:** The computer architecture concepts you'll learn in Tutorial #2 are essential for understan
+**Connection to Next Tutorial:** The computer architecture concepts you'll learn in Tutorial #2 are essential for understanding how assembly code executes on real hardware. This knowledge is critical for verifying timing properties, understanding memory behavior, and making informed decisions about when assembly is truly necessary. The hardware insights from the next tutorial will directly inform your assembly development decisions and verification strategies.
