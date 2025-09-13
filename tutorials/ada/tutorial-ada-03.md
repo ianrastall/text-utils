@@ -219,12 +219,12 @@ Ada provides multiple levels of information hiding through private types:
 
 ### Private Type Selection Guide
 
-| Type Form                  | Visibility            | Best For                                            |
-| -------------------------- | --------------------- | --------------------------------------------------- |
-| Standard record            | Complete visibility   | Data structures where clients need full access      |
-| Private type               | Operations only       | Abstract data types with hidden implementation      |
-| Limited private            | Assignment only       | Resources that shouldn't be copied (files, devices) |
-| Private with discriminants | Controlled visibility | Types with runtime-sized components                 |
+| Type Form | Visibility | Best For |
+| :--- | :--- | :--- |
+| Standard record | Complete visibility | Data structures where clients need full access |
+| Private type | Operations only | Abstract data types with hidden implementation |
+| Limited private | Assignment only | Resources that shouldn't be copied (files, devices) |
+| Private with discriminants | Controlled visibility | Types with runtime-sized components |                |
 
 ## Package Hierarchies and Child Packages
 
