@@ -118,7 +118,7 @@ DO-178C and IEC 62304 require tool qualification for all development tools, incl
 
 ### Sample Tool Qualification Evidence for Assembler
 
-```nasm
+```asm
     ; Example assembly code for tool qualification
     ; This example demonstrates proper documentation for safety-critical assembly
 
@@ -224,7 +224,7 @@ Beyond initial development, consider these long-term costs:
 
 A formal approach to documenting and verifying the necessity of assembly code in safety-critical systems.
 
-```nasm
+```asm
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;# Summary: Hardware initialization routine
     ;# Requirement: REQ-HW-INIT-001
@@ -300,7 +300,7 @@ A formal approach to documenting and verifying the necessity of assembly code in
 
 Creating a formally verified interface between assembly and higher-level languages.
 
-```nasm
+```asm
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;# Summary: Atomic operation interface
     ;# Requirement: REQ-ATOMIC-001
@@ -400,7 +400,7 @@ Creating a formally verified interface between assembly and higher-level languag
 
 Implementing a systematic approach to verifying assembly language code.
 
-```nasm
+```asm
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;# Summary: Timing-critical control loop
     ;# Requirement: REQ-CONTROL-LOOP-001
@@ -739,7 +739,7 @@ A medical device manufacturer implemented assembly language for a timing-critica
 
 ### Detailed Code Example: Safety-Critical Atomic Operation Implementation
 
-```nasm
+```asm
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;# Summary: Atomic operation implementation
     ;# Requirement: REQ-ATOMIC-001
