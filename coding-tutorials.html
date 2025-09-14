@@ -27,15 +27,40 @@
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
 
     <!-- Highlight.js for syntax highlighting -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/dark.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/ada.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/x86asm.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/c.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/es/languages/ada.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/es/languages/c.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/es/languages/x86asm.min.js"></script>
-	<script>hljs.highlightAll();</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/cpp.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/csharp.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/java.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/javascript.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/ruby.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/sql.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/bash.min.js"></script>
+	<script>
+	  document.addEventListener('DOMContentLoaded', function() {
+	    // Apply highlighting to existing code blocks
+	    hljs.highlightAll();
+	    
+	    // Re-apply highlighting whenever content changes
+	    const observer = new MutationObserver(function(mutations) {
+	      mutations.forEach(function(mutation) {
+	        if (mutation.type === 'childList') {
+	          hljs.highlightAll();
+	        }
+	      });
+	    });
+	    
+	    // Watch for changes in the main content area
+	    const mainOutput = document.getElementById('mainOutput');
+	    if (mainOutput) {
+	      observer.observe(mainOutput, { childList: true, subtree: true });
+	    }
+	  });
+	</script>
     <!-- Theme CSS Variables -->
     <style>
         :root { --accent-color: burlywood; }
@@ -185,7 +210,21 @@ async function loadTutorialContent(language, fileName) {
         const md = window.markdownit({
             html: true,
             linkify: true,
-            typographer: true
+            typographer: true,
+            highlight: function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return '<pre class="hljs"><code class="language-' + lang + '">' +
+                               hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                               '</code></pre>';
+                    } catch (__) {}
+                }
+                
+                // Use generic highlighting if language not detected
+                return '<pre class="hljs"><code class="language-plaintext">' +
+                       hljs.highlightAuto(str).value +
+                       '</code></pre>';
+            }
         });
 
         return {
@@ -224,6 +263,24 @@ async function displayTutorialSection(language, fileName) {
     currentRawContent = content.raw;
     currentIsMarkdown = content.isMarkdown;
     copyBtn.disabled = false;
+    
+    // Prepare code blocks for better syntax highlighting
+    const codeBlocks = mainOutput.querySelectorAll('pre code');
+    codeBlocks.forEach(block => {
+        // Try to determine the language from the class
+        const classes = block.className.split(' ');
+        const langClass = classes.find(cl => cl.startsWith('language-'));
+        
+        if (langClass) {
+            const lang = langClass.replace('language-', '');
+            block.classList.add(`language-${lang}`);
+            block.classList.add('hljs');
+        } else {
+            // If no language specified, add a default
+            block.classList.add('language-plaintext');
+            block.classList.add('hljs');
+        }
+    });
     
     // Re-apply syntax highlighting to the new content
     hljs.highlightAll();

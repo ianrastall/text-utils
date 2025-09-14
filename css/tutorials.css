@@ -103,11 +103,62 @@
     font-size: 1.05rem;
     line-height: 1.6;
     color: #f8f8f2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced code block styling */
+.tutorial-content pre code,
+.code-block pre code {
+    font-family: 'Fira Code', Consolas, 'Courier New', monospace;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* Highlight.js enhanced styling */
+.hljs {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+/* Improve code block line height for readability */
+.hljs-comment, 
+.hljs-quote {
+    font-style: italic;
+    opacity: 0.85;
+}
+
+.hljs-keyword, 
+.hljs-selector-tag, 
+.hljs-subst {
+    font-weight: 600;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+    color: #d19a66 !important;
+}
+
+.hljs-string, 
+.hljs-doctag {
+    color: #98c379 !important;
+}
+
+.hljs-title, 
+.hljs-section, 
+.hljs-selector-id {
+    font-weight: 600;
 }
 
 .tutorial-content code,
 .code-inline {
-    font-family: 'Fira Code', 'Courier New', monospace;
+    font-family: 'Fira Code', Consolas, 'Courier New', monospace;
     font-size: 1.05rem;
 }
 
@@ -127,6 +178,8 @@
     border: 1px solid rgba(var(--accent-color-rgb, 222, 184, 135), 0.35);
     padding: 0.15rem 0.35rem;
     border-radius: 4px;
+    white-space: nowrap;
+    font-family: 'Fira Code', Consolas, 'Courier New', monospace;
 }
 
 /* Info Boxes - Using data attributes for variants */
