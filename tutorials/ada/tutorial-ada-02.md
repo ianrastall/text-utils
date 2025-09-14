@@ -69,7 +69,7 @@ In most languages, these errors would only surface during testing or in producti
 Let's examine how Ada's type system compares to other popular languages:
 
 | **Feature** | **C/C++** | **Java** | **Python** | **Ada** |
-|:---|:---|:---|:---|:---|
+| :--- | :--- | :--- | :--- | :--- |
 | **Type checking** | Static, weak | Static, strong | Dynamic | Static, strong |
 | **Implicit conversions** | Common | Limited | Common | None |
 | **User-defined types** | Structs, classes | Classes | Classes | Types, subtypes |

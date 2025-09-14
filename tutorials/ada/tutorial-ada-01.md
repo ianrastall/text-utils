@@ -61,7 +61,7 @@ Ada's core philosophy is "correctness by construction"—building reliability in
 Consider how most programming languages handle common errors:
 
 | **Aspect** | **Typical Language Approach** | **Ada's Approach** |
-|:---|:---|:---|
+| :--- | :--- | :--- |
 | **Error detection** | Errors discovered during testing or runtime | Errors caught at compile time whenever possible |
 | **Type safety** | Implicit conversions between types common | Strict type equivalence with no implicit conversions |
 | **Contract management** | Documentation-based contracts (often outdated) | Formal contracts embedded directly in code |
@@ -740,7 +740,7 @@ In an era of rapid development cycles and "move fast and break things" culture, 
 ### Development Phase Comparison
 
 | **Development Phase** | **Typical Language** | **Ada Approach** |
-|:---|:---|:---|
+| :--- | :--- | :--- |
 | **Design**        | Informal documentation    | Formal contracts in code      |
 | **Coding**        | Runtime errors common     | Compile-time error prevention |
 | **Testing**       | 80% effort on bug hunting | Focus on edge cases only      |
