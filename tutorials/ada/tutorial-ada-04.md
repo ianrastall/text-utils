@@ -1,8 +1,8 @@
-# 4\. Design by Contract in Ada: Formal Verification for Safety-Critical Systems
+# 4. Design by Contract in Ada: Specifying Program Behavior
 
-Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in critical systems.
+Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in complex systems.
 
-#### From Testing to Proving
+#### From Testing to Specification
 
 Traditional development: "Let's write code and see if it works."  
 Ada with contracts: "Let's specify exactly how it must work, then verify compliance."
@@ -20,8 +20,8 @@ While unit tests verify specific input/output pairs, contracts define universal 
 - Runtime verification only
 
 ```ada
-  -- Typical test case
-  Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");
+-- Typical test case
+Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");
 ```
 
 #### Design by Contract
@@ -33,10 +33,10 @@ While unit tests verify specific input/output pairs, contracts define universal 
 - Verification at multiple levels (compile, run, formal)
 
 ```ada
-  function Factorial (N : Natural) return Positive with
-  Pre => N <= 12,
-  Post => Factorial'Result > 0 and
-  (if N > 0 then Factorial'Result mod N = 0);
+function Factorial (N : Natural) return Positive with
+   Pre  => N <= 12,
+   Post => Factorial'Result > 0 and
+           (if N > 0 then Factorial'Result mod N = 0);
 ```
 
 #### Contract Components Explained
@@ -64,10 +64,10 @@ Guarantees provided by the subprogram after execution. They define what the subp
 Contracts are specified using aspect syntax directly in the subprogram declaration:
 
 ```ada
-    function Square_Root (X : Float) return Float with
-       Pre  => X >= 0.0,
-       Post => Square_Root'Result * Square_Root'Result = X and
-               Square_Root'Result >= 0.0;
+function Square_Root (X : Float) return Float with
+   Pre  => X >= 0.0,
+   Post => Square_Root'Result * Square_Root'Result = X and
+           Square_Root'Result >= 0.0;
 ```
 
 ### Key Syntax Notes
@@ -84,9 +84,9 @@ Contracts are specified using aspect syntax directly in the subprogram declarati
 Reference original parameter values using `Old`:
 
 ```ada
-    procedure Increment (X : in out Integer) with
-       Pre  => X < Integer'Last,
-       Post => X = X'Old + 1;
+procedure Increment (X : in out Integer) with
+   Pre  => X < Integer'Last,
+   Post => X = X'Old + 1;
 ```
 
 Without `Old`, `X` in the postcondition would refer to the updated value.
@@ -96,73 +96,57 @@ Without `Old`, `X` in the postcondition would refer to the updated value.
 For dispatching operations, use `Pre'Class`:
 
 ```ada
-    procedure Process (S : Sensor'Class) with
-       Pre'Class => S.Is_Active;
+procedure Process (S : Sensor'Class) with
+   Pre'Class => S.Is_Active;
 ```
 
 Ensures the precondition applies to all derived types in the hierarchy.
 
 ## Real-World Contract Applications
 
-### Aviation System: Flight Control
+### Calculator Application
 
-Contracts for a critical flight control function:
-
-```ada
-    procedure Adjust_Elevator (
-       Current_Angle : in     Elevator_Angle;
-       Target_Angle  : in     Elevator_Angle;
-       Rate_Limit    : in     Angle_Rate;
-       New_Angle     :    out Elevator_Angle) with
-       Pre  => abs (Target_Angle - Current_Angle) <= MAX_MANEUVER,
-       Pre  => Rate_Limit <= MAX_RATE,
-       Post => abs (New_Angle - Current_Angle) <= Rate_Limit and
-               New_Angle in Current_Angle-10 .. Current_Angle+10 and
-               (if Target_Angle > Current_Angle then New_Angle > Current_Angle) and
-               (if Target_Angle < Current_Angle then New_Angle < Current_Angle);
-```
-
-These contracts ensure physically impossible maneuvers cannot be commanded.
-
-### Medical Device: Drug Infusion
-
-Contracts for a life-critical infusion calculation:
+Contracts for a division operation prevent division by zero errors:
 
 ```ada
-    function Calculate_Infusion_Rate (
-       Patient_Weight : Weight_Kg;
-       Drug_Concentration : Concentration;
-       Dosage : Dosage_Mg_Per_Kg) return Flow_Rate_ML_Per_Hour with
-       Pre  => Patient_Weight > 0.0 and
-               Drug_Concentration > 0.0 and
-               Dosage >= MIN_DOSE and Dosage <= MAX_DOSE,
-       Post => Calculate_Infusion_Rate'Result >= MIN_FLOW_RATE and
-               Calculate_Infusion_Rate'Result <= MAX_FLOW_RATE and
-               abs (Calculate_Infusion_Rate'Result * Drug_Concentration -
-                    Patient_Weight * Dosage) < TOLERANCE;
+function Divide (A, B : Float) return Float with
+   Pre  => B /= 0.0,
+   Post => Divide'Result * B = A;
 ```
 
-Prevents dangerous dosage errors through mathematical verification.
+This simple contract ensures the divisor is never zero and that the result satisfies the mathematical relationship between inputs and output.
 
-### The Therac-25 Radiation Therapy Machine
+### Temperature Conversion System
 
-In the 1980s, a software error in the Therac-25 radiation therapy machine caused massive overdoses, resulting in patient deaths. The error occurred because:
-
-- No preconditions checked input sequence validity
-- No postconditions verified safe radiation levels
-- State transitions weren't formally specified
-
-With Ada's contracts, these safety properties could have been specified and verified:
+Contracts for a temperature conversion system ensure valid ranges and accurate calculations:
 
 ```ada
-    procedure Deliver_Radiation (
-       Mode : Radiation_Mode;
-       Dose : Radiation_Dose) with
-       Pre  => (if Mode = ELECTRON then Dose <= MAX_ELECTRON_DOSE) and
-               (if Mode = X_RAY then Dose <= MAX_XRAY_DOSE) and
-               System_State = READY,
-       Post => Radiation_Active = (Dose > 0.0);
+function Celsius_to_Fahrenheit (C : Float) return Float with
+   Pre  => C >= -273.15,
+   Post => Celsius_to_Fahrenheit'Result >= -459.67;
+
+function Fahrenheit_to_Celsius (F : Float) return Float with
+   Pre  => F >= -459.67,
+   Post => Fahrenheit_to_Celsius'Result >= -273.15;
 ```
+
+These contracts prevent physically impossible temperature conversions and ensure mathematical correctness.
+
+### Inventory Management System
+
+Contracts for a stock management system ensure valid operations:
+
+```ada
+procedure Add_Inventory (Item : String; Quantity : Natural) with
+   Pre  => Quantity > 0,
+   Post => Get_Quantity(Item) = Get_Quantity(Item)'Old + Quantity;
+
+procedure Remove_Inventory (Item : String; Quantity : Natural) with
+   Pre  => Quantity <= Get_Quantity(Item),
+   Post => Get_Quantity(Item) = Get_Quantity(Item)'Old - Quantity;
+```
+
+These contracts prevent negative stock levels and ensure inventory quantities remain consistent.
 
 ## Type Invariants: Protecting Data Integrity
 
@@ -171,17 +155,16 @@ While pre/post conditions govern subprogram behavior, type invariants ensure dat
 ### Defining and Using Invariants
 
 ```ada
-    type Temperature_Sensor is record
-       ID      : Sensor_ID;
-       Reading : Celsius;
-       Status  : Sensor_Status;
-    end record with
-       Type_Invariant =>
-          (if Status = Operational then Reading in VALID_TEMPERATURE_RANGE) and
-          (Status /= Failed or Alert_History'Length > 0);
+type Bank_Account is record
+   Balance : Float;
+   Owner   : String (1..50);
+end record with
+   Type_Invariant =>
+      Bank_Account.Balance >= 0.0 and
+      Bank_Account.Owner'Length > 0;
 
-    function Is_Consistent (S : Temperature_Sensor) return Boolean is
-       (S.Status /= Operational or S.Reading in VALID_TEMPERATURE_RANGE);
+function Is_Valid (A : Bank_Account) return Boolean is
+   (A.Balance >= 0.0 and A.Owner'Length > 0);
 ```
 
 #### When Invariants Are Checked
@@ -189,7 +172,7 @@ While pre/post conditions govern subprogram behavior, type invariants ensure dat
 - At the end of object initialization
 - After any operation that could modify the object
 - At subprogram boundaries when objects are passed
-- Explicitly with `Assert (S in Temperature_Sensor)`
+- Explicitly with `Assert (A in Bank_Account)`
 
 #### Best Practices
 
@@ -198,28 +181,25 @@ While pre/post conditions govern subprogram behavior, type invariants ensure dat
 - Use them to enforce domain constraints
 - Combine with subprogram contracts for complete verification
 
-### Practical Application: Database Record Integrity
+### Practical Application: Calendar Event System
 
-Ensure database records maintain consistency:
+Ensure calendar events maintain consistency:
 
 ```ada
-    type Patient_Record is record
-       ID           : Patient_ID;
-       Name         : String (1..100);
-       Weight       : Weight_Kg;
-       Height       : Height_Cm;
-       BMI          : BMI_Value;
-       Last_Updated : Time;
-    end record with
-       Type_Invariant =>
-          Weight > 0.0 and
-          Height > 0.0 and
-          BMI = Weight / (Height/100.0)**2 and
-          BMI in 10.0..100.0 and
-          Last_Updated <= Clock;
+type Calendar_Event is record
+   Start_Time : Time;
+   End_Time   : Time;
+   Title      : String (1..100);
+end record with
+   Type_Invariant =>
+      Start_Time <= End_Time and
+      Title'Length > 0;
+
+function Is_Valid (E : Calendar_Event) return Boolean is
+   (E.Start_Time <= E.End_Time and E.Title'Length > 0);
 ```
 
-This invariant ensures BMI is always correctly calculated and within valid ranges.
+This invariant ensures events always have valid time ranges and non-empty titles.
 
 ## Verification Levels: From Runtime Checks to Formal Proof
 
@@ -228,21 +208,21 @@ This invariant ensures BMI is always correctly calculated and within valid range
 Basic enforcement during execution:
 
 ```bash
-    gnatmake -gnata your_program.adb
+gnatmake -gnata your_program.adb
 ```
 
 This compiles with runtime checks for all contracts. Violations raise `Assert_Failure`.
 
 - Catches errors during testing
 - Adds minimal runtime overhead
-- Essential for safety-critical deployments
+- Essential for general development
 
 ### Level 2: Static Verification
 
 Prove contracts hold without execution:
 
 ```bash
-    gnatprove --level=1 --report=all your_program.adb
+gnatprove --level=1 --report=all your_program.adb
 ```
 
 Uses formal methods to prove contracts are always satisfied.
@@ -256,65 +236,65 @@ Uses formal methods to prove contracts are always satisfied.
 Mathematical proof of correctness:
 
 ```ada
-    -- In SPARK subset
-    function Factorial (N : Natural) return Positive with
-       Pre  => N <= 12,
-       Post => Factorial'Result = (if N = 0 then 1 else N * Factorial(N-1));
+-- In SPARK subset
+function Factorial (N : Natural) return Positive with
+   Pre  => N <= 12,
+   Post => Factorial'Result = (if N = 0 then 1 else N * Factorial(N-1));
 ```
 
 SPARK's simplified subset enables complete formal verification.
 
 - Proves functional correctness
 - Verifies absence of all runtime errors
-- Required for highest safety certifications
+- Required for highest assurance applications
 
 #### Verification Level Comparison
 
 | Verification Level | Confidence | Effort | Best For |
 | :--- | :--- | :--- | :--- |
-| Runtime Checking | Medium | Low | General safety-critical systems |
-| Static Verification | High | Moderate | Certified safety systems (DO-178C Level B) |
-| Formal Proof (SPARK) | Very High | High | Highest safety systems (DO-178C Level A) |
+| **Runtime Checking** | Medium | Low | Development and testing |
+| **Static Verification** | High | Moderate | Complex logic verification |
+| **Formal Proof (SPARK)** | Very High | High | Mathematical proof of correctness |
 
 ## Advanced Contract Patterns
 
 ### Pattern 1: State Machine Contracts
 
-Specify valid state transitions for critical systems:
+Specify valid state transitions for complex systems:
 
 ```ada
-    type System_State is (Off, Initializing, Ready, Running, Degraded, Failed);
+type System_State is (Off, Initializing, Ready, Running, Degraded, Failed);
 
-    function Valid_Transition (Current, Next : System_State) return Boolean is
-       (case Current is
-          when Off        => Next = Initializing,
-          when Initializing => Next in Ready | Failed,
-          when Ready      => Next in Running | Degraded | Failed,
-          when Running    => Next in Degraded | Failed,
-          when Degraded   => Next in Running | Failed,
-          when Failed     => Next = Failed);
+function Valid_Transition (Current, Next : System_State) return Boolean is
+   (case Current is
+      when Off        => Next = Initializing,
+      when Initializing => Next in Ready | Failed,
+      when Ready      => Next in Running | Degraded | Failed,
+      when Running    => Next in Degraded | Failed,
+      when Degraded   => Next in Running | Failed,
+      when Failed     => Next = Failed);
 
-    procedure Transition (Current : in out System_State; Next : System_State) with
-       Pre  => Valid_Transition(Current, Next),
-       Post => Current = Next and
-               (if Current = Failed then Next = Failed);
+procedure Transition (Current : in out System_State; Next : System_State) with
+   Pre  => Valid_Transition(Current, Next),
+   Post => Current = Next and
+           (if Current = Failed then Next = Failed);
 ```
 
 ### Why State Machine Contracts Matter
 
-In the 2004 Mars Exploration Rover mission, a state machine error caused Spirit rover to repeatedly reboot. Formal state contracts would have prevented this by ensuring only valid transitions could occur.
+In a home automation system, state machine contracts ensure only valid transitions occur. For example, a thermostat can't transition directly from "Off" to "Running" without going through "Initializing" first. This prevents logical errors that could cause unexpected behavior in your smart home system.
 
 ### Pattern 2: Data Flow Contracts
 
 Verify complex data transformations:
 
 ```ada
-    function Process_Sensor_Data (Raw : Sensor_Array) return Processed_Data with
-       Pre  => Raw'Length > 0 and Raw'Length <= MAX_SENSOR_COUNT,
-       Pre  => (for all I in Raw'Range => Raw(I).Quality > MIN_QUALITY),
-       Post => Processed_Data'Result'Length = Raw'Length and
-               (for all I in Processed_Data'Result'Range =>
-                  Processed_Data'Result(I).Value in VALID_RANGE);
+function Process_Sensor_Data (Raw : Sensor_Array) return Processed_Data with
+   Pre  => Raw'Length > 0 and Raw'Length <= MAX_SENSOR_COUNT,
+   Pre  => (for all I in Raw'Range => Raw(I).Quality > MIN_QUALITY),
+   Post => Processed_Data'Result'Length = Raw'Length and
+           (for all I in Processed_Data'Result'Range =>
+              Processed_Data'Result(I).Value in VALID_RANGE);
 ```
 
 ### Avoiding Common Contract Mistakes
@@ -322,53 +302,106 @@ Verify complex data transformations:
 #### Mistake: Overly Complex Contracts
 
 ```ada
-    -- Hard to verify and understand
-    Pre => (A and (B or C)) xor (D and not E);
+-- Hard to verify and understand
+Pre => (A and (B or C)) xor (D and not E);
 ```
 
 #### Solution: Break into Helper Functions
 
 ```ada
-    function Valid_Configuration (C : Config) return Boolean is
-       (C.A and (C.B or C.C));
+function Valid_Configuration (C : Config) return Boolean is
+   (C.A and (C.B or C.C));
 
-    function Safe_Operation (C : Config) return Boolean is
-       (C.D and not C.E);
+function Safe_Operation (C : Config) return Boolean is
+   (C.D and not C.E);
 
-    Pre => Valid_Configuration(C) xor Safe_Operation(C);
+Pre => Valid_Configuration(C) xor Safe_Operation(C);
 ```
 
 ## Exercises: Building Contract-First Systems
 
-### Exercise 1: Elevator Control System
+### Exercise 1: Calculator Application
 
-Design a contract-first elevator control system:
+Design a contract-first calculator system:
 
-- Define preconditions for all movement operations
-- Specify postconditions that ensure physical safety
-- Create invariants for elevator state consistency
-- Verify that impossible states are contractually prohibited
+- Define preconditions for all arithmetic operations
+- Specify postconditions that ensure mathematical correctness
+- Create type invariants for numeric types
+- Verify that impossible operations are contractually prohibited
 
-**Challenge:** Prove that the elevator cannot move with doors open.
+**Challenge:** Prove that division by zero is impossible through contracts.
 
-### Exercise 2: Financial Transaction System
+#### Solution Guidance
 
-Implement contracts for a banking transaction:
+Start by defining a safe division function:
 
-- Preconditions ensuring valid accounts and amounts
-- Postconditions preserving accounting invariants
-- Type invariants for account consistency
-- Contracts that prevent race conditions
+```ada
+function Divide (A, B : Float) return Float with
+   Pre  => B /= 0.0,
+   Post => Divide'Result * B = A;
+```
 
-**Challenge:** Prove that total system funds remain constant.
+Create type invariants for your numeric types:
 
-### Verification Strategy
+```ada
+type Valid_Float is new Float with
+   Type_Invariant => Valid_Float in Float'First .. Float'Last;
+```
 
-1.  Start with runtime checking (`-gnata`)
-2.  Add contracts incrementally, starting with critical operations
-3.  Use `gnatprove --level=1` to identify provable contracts
-4.  Refine contracts based on verification results
-5.  For critical components, move to SPARK for full verification
+For subtraction, ensure no overflow:
+
+```ada
+function Subtract (A, B : Float) return Float with
+   Pre  => A >= B,
+   Post => Subtract'Result = A - B;
+```
+
+### Exercise 2: Inventory Management System
+
+Implement contracts for a retail inventory system:
+
+- Preconditions ensuring valid item names and quantities
+- Postconditions preserving inventory consistency
+- Type invariants for product records
+- Contracts that prevent negative stock levels
+
+**Challenge:** Prove that total inventory value remains consistent after transactions.
+
+#### Solution Guidance
+
+Define a product record with invariants:
+
+```ada
+type Product is record
+   Name     : String (1..50);
+   Price    : Float;
+   Quantity : Natural;
+end record with
+   Type_Invariant =>
+      Product.Price >= 0.0 and
+      Product.Quantity >= 0 and
+      Product.Name'Length > 0;
+```
+
+Create transaction contracts:
+
+```ada
+procedure Add_Item (Item : Product) with
+   Pre  => Get_Quantity(Item.Name) = 0,
+   Post => Get_Quantity(Item.Name) = Item.Quantity;
+
+procedure Remove_Item (Item_Name : String; Quantity : Natural) with
+   Pre  => Quantity <= Get_Quantity(Item_Name),
+   Post => Get_Quantity(Item_Name) = Get_Quantity(Item_Name)'Old - Quantity;
+```
+
+## Verification Strategy
+
+1. Start with runtime checking (`-gnata`)
+2. Add contracts incrementally, starting with critical operations
+3. Use `gnatprove --level=1` to identify provable contracts
+4. Refine contracts based on verification results
+5. For complex components, move to SPARK for full verification
 
 ## Next Steps: Concurrency and Contracts
 
@@ -384,15 +417,15 @@ With Design by Contract mastered, you're ready to combine these techniques with 
 
 ### Practice Challenge
 
-Enhance your elevator system with concurrency:
+Enhance your calculator application with concurrency:
 
-- Create tasks for elevator movement and door control
+- Create tasks for different operations
 - Specify contracts for task interactions
 - Use protected objects with invariants for shared state
 - Verify that conflicting operations cannot occur
 
 #### The Path to Verified Systems
 
-Design by Contract transforms Ada from a safe language into a _verifiable_ language. When combined with strong typing and formal methods, it provides a pathway from traditional development to mathematically verified software. This is why Ada remains the language of choice for systems where failure is not just expensive, but catastrophic.
+Design by Contract transforms Ada from a safe language into a _verifiable_ language. When combined with strong typing and formal methods, it provides a pathway from traditional development to mathematically verified software. This is why Ada remains the language of choice for systems where correctness matters.
 
-As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain.
+As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain. Whether you're building a simple calculator or a complex inventory system, contracts give you the tools to ensure your software behaves exactly as intended.
