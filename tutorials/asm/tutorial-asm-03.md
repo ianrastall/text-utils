@@ -4,7 +4,7 @@
 
 In safety-critical systems—from aircraft flight controllers to medical device firmware—understanding the digital foundations of machine language is essential for developing and verifying assembly code that meets the highest safety standards. Traditional approaches to assembly programming often treat machine code as a black box, creating hidden failure modes that can compromise otherwise robust safety mechanisms. This tutorial explores how digital logic principles directly impact safety-critical assembly development, verification, and certification—transforming the relationship between hardware and software from a mystery into a verifiable component of the safety case.
 
-**Assembly Philosophy:** Machine code should be _understood, verified, and traceable_, not treated as a compiler-generated artifact. The programmer must understand how high-level constructs translate to machine operations, with complete documentation of the translation process for certification evidence—without getting lost in irrelevant implementation details.
+> **Assembly Philosophy:** Machine code should be _understood, verified, and traceable_, not treated as a compiler-generated artifact. The programmer must understand how high-level constructs translate to machine operations, with complete documentation of the translation process for certification evidence—without getting lost in irrelevant implementation details.
 
 Unlike general-purpose assembly development that prioritizes functionality over process compliance, safety-critical assembly requires a fundamentally different approach to understanding machine language. This tutorial examines how digital logic principles impact safety properties, how to verify the translation from assembly to machine code, and how to document this process for certification evidence—ensuring that the hardware-software interface becomes a verification asset rather than a certification risk.
 
@@ -27,9 +27,9 @@ Conventional approaches to understanding machine language—particularly those i
 
 A medical device experienced security breaches where sensitive patient data was compromised. The root cause was traced to a timing side-channel vulnerability in a cryptographic implementation written in assembly. The assembly code had been verified for functional correctness but not for timing behavior at the machine instruction level. Certain instruction sequences created measurable timing variations that could be exploited to recover encryption keys.
 
-**Safety-Critical Perspective:** A proper understanding of instruction encoding and timing behavior at the machine code level would have identified the side-channel vulnerability during development. The verification process should have included analysis of timing behavior at the machine instruction level, not just the assembly level.
+> **Safety-Critical Perspective:** A proper understanding of instruction encoding and timing behavior at the machine code level would have identified the side-channel vulnerability during development. The verification process should have included analysis of timing behavior at the machine instruction level, not just the assembly level.
 
-**Digital Logic Philosophy for Safety-Critical Development:** Machine language understanding should be _purpose-driven, verifiable, and minimal_—focused on aspects that directly impact safety properties, timing behavior, and verification evidence, with complete documentation for certification requirements.
+> **Digital Logic Philosophy for Safety-Critical Development:** Machine language understanding should be _purpose-driven, verifiable, and minimal_—focused on aspects that directly impact safety properties, timing behavior, and verification evidence, with complete documentation for certification requirements.
 
 ## Fundamentals of Number Representation for Safety-Critical Assembly
 
@@ -201,9 +201,9 @@ Proper number representation with safety considerations:
         ret
 ```
 
-**Number Representation Note:** For safety-critical assembly, focus on numeric representations that directly impact safety properties: fixed-point vs. floating-point timing behavior, overflow handling strategies, and representation ranges. Don't get distracted by irrelevant numeric details that don't affect verification evidence.
+> **Number Representation Note:** For safety-critical assembly, focus on numeric representations that directly impact safety properties: fixed-point vs. floating-point timing behavior, overflow handling strategies, and representation ranges. Don't get distracted by irrelevant numeric details that don't affect verification evidence.
 
-**Best Practice:** Document numeric representation choices specific to your safety-critical code, including range analysis, overflow handling, and timing implications. This documentation becomes critical evidence for certification.
+> **Best Practice:** Document numeric representation choices specific to your safety-critical code, including range analysis, overflow handling, and timing implications. This documentation becomes critical evidence for certification.
 
 ## Boolean Algebra and Logic Gates for Safety-Critical Code
 
@@ -353,9 +353,9 @@ Proper bit manipulation with safety considerations:
         ret
 ```
 
-**Bit Manipulation Warning:** DO-178C requires verification of all bit manipulation operations for timing-critical code. For Level A systems, timing behavior of bit operations must be fully accounted for in WCET analysis, including verification across all processor variants. Ignoring timing variations in bit operations will result in certification failure.
+> **Bit Manipulation Warning:** DO-178C requires verification of all bit manipulation operations for timing-critical code. For Level A systems, timing behavior of bit operations must be fully accounted for in WCET analysis, including verification across all processor variants. Ignoring timing variations in bit operations will result in certification failure.
 
-**Verification Tip:** Use hardware performance counters to measure timing behavior of bit manipulation operations. Document timing characteristics in your WCET analysis, including measurements across different processor variants and input patterns.
+> **Verification Tip:** Use hardware performance counters to measure timing behavior of bit manipulation operations. Document timing characteristics in your WCET analysis, including measurements across different processor variants and input patterns.
 
 ## Instruction Encoding and Machine Code Structure
 
@@ -424,7 +424,7 @@ Systematic verification of machine code is essential for certification:
 
 #### Machine Code Verification Protocol
 
-**Objective:** Verify that assembly code translates to machine code that meets all safety and functional requirements while generating the necessary certification evidence.
+> **Objective:** Verify that assembly code translates to machine code that meets all safety and functional requirements while generating the necessary certification evidence.
 
 ##### Verification Steps:
 
@@ -484,7 +484,7 @@ VERIFICATION TRACE: Verified
 - Verification evidence package complete
 ```
 
-**Instruction Encoding Note:** For safety-critical timing code, prefer instructions with consistent encoding and timing behavior. Avoid instructions with variable-length encoding or timing variations. Document the expected machine code properties and verify them across all supported assembler versions and processor variants.
+> **Instruction Encoding Note:** For safety-critical timing code, prefer instructions with consistent encoding and timing behavior. Avoid instructions with variable-length encoding or timing variations. Document the expected machine code properties and verify them across all supported assembler versions and processor variants.
 
 ## Assembly to Machine Code Translation Process
 
@@ -574,7 +574,7 @@ Documentation required for certification:
 - Complete disassembly must be part of evidence
 - Timing analysis must account for machine code
 
-**Translation Verification Tip:** For safety-critical systems, always include complete disassembly listings as part of your certification evidence. Verify that the machine code matches your assembly source across all supported assembler versions and processor variants. Document any encoding variations and their safety implications.
+> **Translation Verification Tip:** For safety-critical systems, always include complete disassembly listings as part of your certification evidence. Verify that the machine code matches your assembly source across all supported assembler versions and processor variants. Document any encoding variations and their safety implications.
 
 ## Advanced Machine Code Verification Patterns
 
@@ -747,7 +747,7 @@ A formal approach to verifying machine code properties for safety-critical assem
 - Detailed instruction encoding analysis for timing predictability
 - Side-channel vulnerability analysis for certification
 
-**Certification Evidence:** Complete machine code verification documentation included as part of the certification evidence package, demonstrating compliance with DO-178C objectives for machine code verification and side-channel analysis.
+> **Certification Evidence:** Complete machine code verification documentation included as part of the certification evidence package, demonstrating compliance with DO-178C objectives for machine code verification and side-channel analysis.
 
 ### Pattern 2: Binary Analysis and Verification
 
@@ -904,7 +904,7 @@ Implementing a formally verified approach to binary analysis for safety-critical
 - Data flow analysis for memory safety
 - Timing verification across all code paths
 
-**Certification Evidence:** Complete binary analysis report, including control flow graph, data flow analysis, and verification that all code paths meet safety requirements.
+> **Certification Evidence:** Complete binary analysis report, including control flow graph, data flow analysis, and verification that all code paths meet safety requirements.
 
 ### Pattern 3: Assembly-to-Machine Traceability
 
@@ -1074,7 +1074,7 @@ Implementing a formally verified traceability framework between assembly source 
 - Timing behavior verified at the instruction level
 - Side-channel vulnerabilities identified and documented
 
-**Certification Evidence:** Complete traceability matrix, machine code properties documentation, and verification that all safety properties are maintained at the machine code level.
+> **Certification Evidence:** Complete traceability matrix, machine code properties documentation, and verification that all safety properties are maintained at the machine code level.
 
 **Pattern Selection Guide:**
 
@@ -1083,7 +1083,7 @@ Implementing a formally verified traceability framework between assembly source 
 - **For certification evidence:** Use Assembly-to-Machine Traceability for all safety-critical assembly code. This provides the evidence needed to demonstrate complete traceability from requirements to machine code.
 - **For medical devices:** Add additional validation for IEC 62304 requirements, particularly around side-channel analysis and timing verification.
 
-**Remember:** In safety-critical assembly development, understanding the machine code properties is as important as the assembly source itself. Focus documentation efforts on demonstrating how machine code properties impact safety and verification evidence.
+> **Remember:** In safety-critical assembly development, understanding the machine code properties is as important as the assembly source itself. Focus documentation efforts on demonstrating how machine code properties impact safety and verification evidence.
 
 ## Verification of Machine Code for Safety-Critical Systems
 
@@ -1115,7 +1115,7 @@ Systematic verification of machine code is essential for certification:
 
 #### Machine Code Verification Protocol
 
-**Objective:** Verify that machine code meets all safety and functional requirements while generating the necessary certification evidence.
+> **Objective:** Verify that machine code meets all safety and functional requirements while generating the necessary certification evidence.
 
 ##### Verification Steps:
 
@@ -1206,7 +1206,7 @@ Techniques for identifying and mitigating side-channel vulnerabilities:
 - Adding timing noise to mask variations
 - Verifying constant execution time
 
-**Verification Pitfall:** Focusing only on functional correctness while neglecting machine code properties. Always verify:
+> **Verification Pitfall:** Focusing only on functional correctness while neglecting machine code properties. Always verify:
 
 - That machine code matches assembly source across versions
 - That instruction encoding doesn't create timing variations
@@ -1215,7 +1215,7 @@ Techniques for identifying and mitigating side-channel vulnerabilities:
 
 For DO-178C Level A systems, all these aspects must be part of your verification evidence.
 
-**Comprehensive Verification Strategy:** For safety-critical machine code, generate certification evidence through:
+> **Comprehensive Verification Strategy:** For safety-critical machine code, generate certification evidence through:
 
 - **Disassembly verification:** Complete disassembly matching assembly source
 - **Instruction analysis:** Detailed analysis of instruction properties
@@ -1241,9 +1241,9 @@ The Boeing 787 avionics system includes detailed machine code verification for a
 - Hardware performance counter measurements
 - Rigorous documentation of machine code properties
 
-**Certification:** DO-178C DAL A certification. The machine code verification was certified by demonstrating complete understanding of machine code properties, with evidence showing constant-time implementation and absence of side-channel vulnerabilities. The detailed instruction-level documentation was critical to the certification case for cryptographic code.
+> **Certification:** DO-178C DAL A certification. The machine code verification was certified by demonstrating complete understanding of machine code properties, with evidence showing constant-time implementation and absence of side-channel vulnerabilities. The detailed instruction-level documentation was critical to the certification case for cryptographic code.
 
-**Key Insight:** The machine code documentation is treated as a critical component of the safety case, with as much attention given to machine code properties as to assembly implementation.
+> **Key Insight:** The machine code documentation is treated as a critical component of the safety case, with as much attention given to machine code properties as to assembly implementation.
 
 ### Medical Imaging System – Binary Analysis for Safety
 
@@ -1257,9 +1257,9 @@ A medical device manufacturer implemented comprehensive binary analysis for all 
 - Timing measurements across all code paths
 - Verification across processor variants
 
-**Certification:** IEC 62304 Class C certification. The system was certified by demonstrating complete verification of binary properties, with evidence showing deterministic control flow and safe data flow. The binary analysis report was critical to the certification case.
+> **Certification:** IEC 62304 Class C certification. The system was certified by demonstrating complete verification of binary properties, with evidence showing deterministic control flow and safe data flow. The binary analysis report was critical to the certification case.
 
-**Key Insight:** The system uses binary analysis as a safety strategy, verifying properties at the machine code level that cannot be fully verified at the assembly source level.
+> **Key Insight:** The system uses binary analysis as a safety strategy, verifying properties at the machine code level that cannot be fully verified at the assembly source level.
 
 ### Detailed Code Example: Machine Code Verified Cryptographic Operation
 
