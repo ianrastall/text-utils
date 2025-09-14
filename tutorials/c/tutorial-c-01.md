@@ -658,7 +658,7 @@ extern void _calculate_altitude_asm(altitude_control_t* control);
 
 This pattern uses assembly as the primary implementation language with C helper functions for complex operations.
 
-```asm
+```x86asm
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;# Summary: Assembly with C helper functions
 ;# Requirement: REQ-MIXED-003
