@@ -65,7 +65,6 @@ Understanding the C language standard landscape is essential for developing and 
 
 ### Safety-Critical Language Standard Selection Framework
 
-```markdown
 # LANGUAGE STANDARD SELECTION FRAMEWORK: SAFETY-CRITICAL SYSTEMS
 
 ## System Identification
@@ -133,7 +132,6 @@ Understanding the C language standard landscape is essential for developing and 
 | DO-178C | Section 6.2 (Software Coding Standards) | MISRA C:2012 with Amendment 2 | COMPLIANCE-REPORT-001 | Compliant |
 | IEC 62304 | Section 5.1.7 (Software Safety) | Verified language subset | SAFETY-REPORT-001 | Compliant |
 | ISO 26262 | Part 6, Section 6.4.5 (Coding Guidelines) | MISRA C subset | AUTOMOTIVE-REPORT-001 | Compliant |
-```
 
 > **Verification Note**: For DO-178C Level A, language standard compliance must be formally verified and documented in the safety case.
 
@@ -458,7 +456,6 @@ The choice of language standard has profound implications for certification effo
 
 ### Safety-Critical Language Standard Selection Decision Matrix
 
-```markdown
 # LANGUAGE STANDARD SELECTION DECISION MATRIX
 
 ## Decision Criteria
@@ -509,7 +506,6 @@ Based on the weighted decision matrix, **MISRA C:2012 Amendment 2** provides the
 | **Memory Corruption** | Hazardous system failure | Static memory analysis, bounds checking |
 | **Timing Variability** | Hazardous system failure | WCET analysis, static timing analysis |
 | **Verification Gaps** | Certification rejection | Complete verification coverage |
-```
 
 > **Critical Insight**: The language standard selection directly impacts certification effort—choosing the right standard can reduce certification effort by 30-50% while improving safety.
 
