@@ -19,6 +19,8 @@
     --tutorial-table-header-bg: rgba(70, 130, 180, 0.4);
     --tutorial-table-row-hover: rgba(70, 130, 180, 0.15);
     --tutorial-table-zebra-bg: rgba(255, 255, 255, 0.05);
+    --tutorial-table-vertical-border: rgba(255, 255, 255, 0.15);
+    --tutorial-blockquote-margin: 3rem 0;
 }
 
 /* Base Tutorial Container */
@@ -173,7 +175,7 @@
     border-left: 5px solid var(--accent-color, #5bc0de);
     border-radius: 0 var(--tutorial-border-radius) var(--tutorial-border-radius) 0;
     padding: 1.5rem;
-    margin: 2rem 0;
+    margin: var(--tutorial-blockquote-margin, 3rem 0);
     font-style: italic;
     color: var(--tutorial-text-color);
 }
@@ -198,6 +200,7 @@
     background-color: #1a1d23;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     font-size: 1.1rem;
+    border: 1px solid var(--tutorial-table-border-color, rgba(255, 255, 255, 0.08));
 }
 
 .tutorial-table {
@@ -210,6 +213,7 @@
     background-color: #1a1d23;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     font-size: 1.1rem;
+    border: 1px solid var(--tutorial-table-border-color, rgba(255, 255, 255, 0.08));
 }
 
 .tutorial-content table thead,
@@ -226,7 +230,14 @@
     font-weight: 600;
     color: #ffffff;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid var(--tutorial-table-vertical-border, rgba(255, 255, 255, 0.15));
     font-size: 1.15rem;
+}
+
+.tutorial-content table th:last-child,
+#mainOutput.tutorial-content table th:last-child,
+.tutorial-table th:last-child {
+    border-right: none;
 }
 
 .tutorial-content table td,
@@ -234,7 +245,14 @@
 .tutorial-table td {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--tutorial-table-border-color, rgba(255, 255, 255, 0.08));
+    border-right: 1px solid var(--tutorial-table-vertical-border, rgba(255, 255, 255, 0.15));
     color: #e8e8e8;
+}
+
+.tutorial-content table td:last-child,
+#mainOutput.tutorial-content table td:last-child,
+.tutorial-table td:last-child {
+    border-right: none;
 }
 
 .tutorial-content table tbody tr:nth-child(odd),
