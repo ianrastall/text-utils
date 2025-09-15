@@ -69,6 +69,9 @@
                             <h4 class="mb-3">Find Named Color by Code</h4>
                             <form id="colorSearchForm" onsubmit="return false;">
                                 <div class="input-group">
+                                    <button type="button" id="getCurrentColorBtn" class="btn btn-dark d-flex align-items-center">
+                                        <span class="material-icons me-2">format_color_fill</span>Get Current
+                                    </button>
                                     <input type="text" id="colorInput" class="form-control" placeholder="Enter hex (e.g., #FF0000) or RGB (e.g., 255, 0, 0)">
                                     <button type="submit" class="btn btn-task d-flex align-items-center">
                                          <span class="material-icons me-2">search</span>Set & Find
@@ -76,6 +79,31 @@
                                 </div>
                             </form>
                             <div id="colorSearchResult" class="mt-3" style="min-height: 48px;" aria-live="polite"></div>
+                            
+                            <hr class="border-secondary my-4">
+                            <h4 class="mb-3">Export Color as PNG</h4>
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3">
+                                    <label for="pngWidth" class="form-label">Width (px)</label>
+                                    <input type="number" id="pngWidth" class="form-control" value="200" min="10" max="2000">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="pngHeight" class="form-label">Height (px)</label>
+                                    <input type="number" id="pngHeight" class="form-control" value="200" min="10" max="2000">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="pngFilename" class="form-label">Filename</label>
+                                    <input type="text" id="pngFilename" class="form-control" value="color" placeholder="Enter filename (without extension)">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" id="savePngBtn" class="btn btn-task d-flex align-items-center">
+                                        <span class="material-icons me-2">save</span>Save as PNG
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-3" id="pngPreview" style="display: flex; justify-content: center; align-items: center;">
+                                <!-- PNG preview will be displayed here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -113,6 +141,12 @@
             const colorInput = document.getElementById('colorInput');
             const colorSearchResult = document.getElementById('colorSearchResult');
             const copyBtn = document.getElementById('copyBtn');
+            const getCurrentColorBtn = document.getElementById('getCurrentColorBtn');
+            const pngWidth = document.getElementById('pngWidth');
+            const pngHeight = document.getElementById('pngHeight');
+            const pngFilename = document.getElementById('pngFilename');
+            const savePngBtn = document.getElementById('savePngBtn');
+            const pngPreview = document.getElementById('pngPreview');
             // --- Helper Functions ---
             const hexToRgb = (hex) => {
                 hex = hex.replace('#', '');
@@ -278,6 +312,98 @@
                     showToast(`Copy failed: ${err.message}`, 'danger');
                 }
             });
+            getCurrentColorBtn.addEventListener('click', () => {
+                colorInput.value = currentColor;
+                showToast('Current color loaded into search field.', 'info');
+            });
+            
+            // PNG export functionality
+            const updatePngPreview = () => {
+                const width = parseInt(pngWidth.value) || 200;
+                const height = parseInt(pngHeight.value) || 200;
+                // Clear the previous preview
+                pngPreview.innerHTML = '';
+                
+                // Create a small preview canvas
+                const previewSize = Math.min(300, width, height);
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const scaleFactor = Math.min(previewSize / width, previewSize / height);
+                
+                canvas.width = width * scaleFactor;
+                canvas.height = height * scaleFactor;
+                canvas.style.border = '1px solid #555';
+                canvas.style.marginTop = '10px';
+                
+                // Fill with current color
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add info text if large enough
+                if (canvas.width > 80 && canvas.height > 40) {
+                    const rgb = hexToRgb(currentColor);
+                    ctx.fillStyle = getContrastColor(rgb.r, rgb.g, rgb.b);
+                    ctx.font = `${Math.max(10, Math.min(16, canvas.width / 15))}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(currentColor, canvas.width / 2, canvas.height / 2);
+                }
+                
+                pngPreview.appendChild(canvas);
+            };
+            
+            // Get contrasting color for text visibility
+            const getContrastColor = (r, g, b) => {
+                // Calculate luminance - a simplified version
+                const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+                return luminance > 128 ? '#000000' : '#FFFFFF';
+            };
+            
+            // Generate and download the PNG
+            const generatePng = () => {
+                const width = parseInt(pngWidth.value) || 200;
+                const height = parseInt(pngHeight.value) || 200;
+                const filename = (pngFilename.value || 'color').replace(/[^\w-]/g, '_');
+                
+                // Create the full-size canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Fill with current color
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(0, 0, width, height);
+                
+                // Add color info
+                const rgb = hexToRgb(currentColor);
+                ctx.fillStyle = getContrastColor(rgb.r, rgb.g, rgb.b);
+                const fontSize = Math.max(12, Math.min(24, width / 15));
+                ctx.font = `${fontSize}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(currentColor, width / 2, height / 2);
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.download = `${filename}-${currentColor.substring(1)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                showToast(`PNG saved as ${link.download}`, 'success');
+            };
+            
+            // Event listeners for PNG export
+            savePngBtn.addEventListener('click', generatePng);
+            pngWidth.addEventListener('input', updatePngPreview);
+            pngHeight.addEventListener('input', updatePngPreview);
+            
+            // Update preview when the color changes
+            const originalUpdateColor = updateColor;
+            updateColor = function(newHexColor, source = 'unknown') {
+                originalUpdateColor(newHexColor, source);
+                updatePngPreview();
+            };
             function showToast(message, variant = 'info') {
                 const container = document.createElement('div');
                 container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
@@ -295,6 +421,7 @@
             populateCategories();
             populateLanguages();
             updateColor(currentColor, 'init');
+            updatePngPreview(); // Initialize the PNG preview
         })();
     </script>
 </body>
