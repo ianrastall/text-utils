@@ -398,10 +398,14 @@
             pngWidth.addEventListener('input', updatePngPreview);
             pngHeight.addEventListener('input', updatePngPreview);
             
-            // Update preview when the color changes
+            // Store the original updateColor function
             const originalUpdateColor = updateColor;
+            
+            // Redefine the updateColor function to include PNG preview
             updateColor = function(newHexColor, source = 'unknown') {
+                // Call the original function first
                 originalUpdateColor(newHexColor, source);
+                // Then update the PNG preview
                 updatePngPreview();
             };
             function showToast(message, variant = 'info') {
@@ -418,10 +422,12 @@
                 toast.addEventListener('hidden.bs.toast', () => container.remove());
             }
             // --- Initialization ---
-            populateCategories();
-            populateLanguages();
-            updateColor(currentColor, 'init');
-            updatePngPreview(); // Initialize the PNG preview
+            ComponentLoader.loadAll().then(() => {
+                populateCategories();
+                populateLanguages();
+                updateColor(currentColor, 'init');
+                updatePngPreview(); // Initialize the PNG preview
+            });
         })();
     </script>
 </body>
