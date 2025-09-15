@@ -934,5 +934,3 @@ Now that you've learned the basics of Ada's memory management, you're ready to t
 > "Ada's controlled types transform memory management from a source of bugs into a reliable engineering tool. With controlled types, you don't have to worry about manual cleanup—you can focus on what your program does rather than how it manages resources."
 
 Memory management is a fundamental part of programming, but with Ada, it's simple and safe. Whether you're building a simple calculator or a complex home automation system, Ada's controlled types ensure that your resources are always properly managed. This means your code is simpler, safer, and less prone to errors.
-
-As you continue your Ada journey, remember that memory management isn't just for experts—it's a fundamental part of writing reliable code. With Ada's controlled types, you can write code that's both powerful and easy to understand, even as a beginner. So go forth and build—your memory-managed applications are waiting to be created!
