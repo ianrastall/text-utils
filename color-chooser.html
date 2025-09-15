@@ -242,23 +242,46 @@
                 }
                 generateColorCode();
                 if (source !== 'searchInput') colorSearchResult.innerHTML = '';
+                
+                // Update PNG preview when color changes
+                if (typeof updatePngPreview === 'function') {
+                    updatePngPreview();
+                }
             };
             // --- UI Population ---
             const populateCategories = () => {
-                const sortedCategories = Object.keys(colors).sort();
-                colorCategorySelect.innerHTML = '<option value="">--Select Category--</option>' + sortedCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                try {
+                    console.log('Populating color categories...');
+                    const sortedCategories = Object.keys(colors).sort();
+                    colorCategorySelect.innerHTML = '<option value="">--Select Category--</option>' + sortedCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                    console.log('Categories populated successfully');
+                } catch (err) {
+                    console.error('Error populating categories:', err);
+                }
             };
             const populateColorNames = () => {
-                const category = colorCategorySelect.value;
-                colorNameSelect.innerHTML = '<option value="">--Select Color--</option>';
-                if (category && colors[category]) {
-                    const sortedNames = Object.entries(colors[category]).sort((a, b) => a[0].localeCompare(b[0]));
-                    colorNameSelect.innerHTML += sortedNames.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
+                try {
+                    const category = colorCategorySelect.value;
+                    console.log('Populating color names for category:', category);
+                    colorNameSelect.innerHTML = '<option value="">--Select Color--</option>';
+                    if (category && colors[category]) {
+                        const sortedNames = Object.entries(colors[category]).sort((a, b) => a[0].localeCompare(b[0]));
+                        colorNameSelect.innerHTML += sortedNames.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
+                        console.log(`Added ${sortedNames.length} colors to dropdown`);
+                    }
+                } catch (err) {
+                    console.error('Error populating color names:', err);
                 }
             };
             const populateLanguages = () => {
-                languageSelect.innerHTML = Object.entries(languages).sort((a, b) => a[1].localeCompare(b[1])).map(([code, name]) => `<option value="${code}">${name}</option>`).join('');
-                languageSelect.value = 'css';
+                try {
+                    console.log('Populating languages...');
+                    languageSelect.innerHTML = Object.entries(languages).sort((a, b) => a[1].localeCompare(b[1])).map(([code, name]) => `<option value="${code}">${name}</option>`).join('');
+                    languageSelect.value = 'css';
+                    console.log('Languages populated successfully');
+                } catch (err) {
+                    console.error('Error populating languages:', err);
+                }
             };
             // --- Event Listeners ---
             colorCategorySelect.addEventListener("change", () => populateColorNames());
@@ -397,17 +420,6 @@
             savePngBtn.addEventListener('click', generatePng);
             pngWidth.addEventListener('input', updatePngPreview);
             pngHeight.addEventListener('input', updatePngPreview);
-            
-            // Store the original updateColor function
-            const originalUpdateColor = updateColor;
-            
-            // Redefine the updateColor function to include PNG preview
-            updateColor = function(newHexColor, source = 'unknown') {
-                // Call the original function first
-                originalUpdateColor(newHexColor, source);
-                // Then update the PNG preview
-                updatePngPreview();
-            };
             function showToast(message, variant = 'info') {
                 const container = document.createElement('div');
                 container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
@@ -421,12 +433,19 @@
                 toastInstance.show();
                 toast.addEventListener('hidden.bs.toast', () => container.remove());
             }
+            
             // --- Initialization ---
-            ComponentLoader.loadAll().then(() => {
-                populateCategories();
-                populateLanguages();
-                updateColor(currentColor, 'init');
-                updatePngPreview(); // Initialize the PNG preview
+            // First load components, then initialize the tool
+            document.addEventListener('DOMContentLoaded', function() {
+                ComponentLoader.loadAll().then(() => {
+                    console.log('Components loaded, initializing tool...');
+                    populateCategories();
+                    populateLanguages();
+                    updateColor(currentColor, 'init');
+                    updatePngPreview();
+                }).catch(err => {
+                    console.error('Error initializing tool:', err);
+                });
             });
         })();
     </script>
