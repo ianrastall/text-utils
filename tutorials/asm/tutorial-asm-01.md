@@ -109,7 +109,7 @@ A typical Assembly instruction consists of several components, though not all ar
 
 **Example Instructions (x86-64 NASM Syntax):**
 
-```nasm
+```x86asm
 MOV RAX, 10        ; Load the 64-bit register RAX with the immediate value 10
 ADD RAX, RBX       ; Add the value in register RBX to RAX, store result in RAX
 MOV [RDI], RAX     ; Store the value in RAX into the memory location pointed to by RDI
@@ -130,7 +130,7 @@ Assembly source files contain not only executable instructions but also **direct
 
 **Example Data Definitions:**
 
-```nasm
+```x86asm
 SECTION .data
     message:    DB 'Hello, Assembly!', 0xA, 0  ; String + newline + null terminator
     count:      DD 100                      ; 32-bit integer initialized to 100
@@ -167,7 +167,7 @@ Understanding this toolchain is crucial. Errors can occur at any stage: syntax e
 
 While a full "Hello World" involves system calls (covered later), here's a minimal, self-contained example demonstrating the core structure and toolchain. **Do not worry if every detail isn't clear yet; focus on the flow.**
 
-```nasm
+```x86asm
 ; hello.asm - Minimal Linux x86-64 "Hello World" using system calls
 SECTION .data
     msg:    DB 'Hello, Assembly!', 0xA  ; String + newline
@@ -295,7 +295,7 @@ These instructions transfer data between registers, between registers and memory
 *   **`MOV` (Move):** The most fundamental data transfer instruction. Copies data from source to destination. **Crucially, it does *not* affect any flags.**
     *   Syntax: `MOV destination, source`
     *   Examples:
-        ```nasm
+        ```x86asm
         MOV RAX, RBX      ; Copy value of RBX into RAX
         MOV [RDI], RAX    ; Store value of RAX into memory at address in RDI
         MOV RSI, buffer   ; Load RSI with the *address* of 'buffer' (label)
@@ -307,7 +307,7 @@ These instructions transfer data between registers, between registers and memory
 *   **`LEA` (Load Effective Address):** Computes the address specified by a memory operand and loads it into a register. **Does not access memory.** Extremely useful for address arithmetic and as a fast way to perform certain calculations.
     *   Syntax: `LEA destination, [address_expression]`
     *   Examples:
-        ```nasm
+        ```x86asm
         LEA RAX, [RDI + 8]      ; RAX = RDI + 8 (simple addition)
         LEA RBX, [RAX + RDX*4]  ; RBX = RAX + (RDX * 4) (common for array indexing)
         LEA RCX, [msg + 10]     ; RCX = address of 11th byte of 'msg' string
@@ -316,7 +316,7 @@ These instructions transfer data between registers, between registers and memory
 
 *   **`PUSH` / `POP` (Stack Operations):** Manipulate the call stack. `PUSH` decrements RSP and stores a value at the new top. `POP` loads a value from the top of the stack into a register/memory and increments RSP. Essential for saving/restoring register state, passing arguments, and managing function calls.
     *   Examples:
-        ```nasm
+        ```x86asm
         PUSH RAX       ; Save RAX on stack (RSP -= 8; [RSP] = RAX)
         POP RBX        ; Restore RBX from stack (RBX = [RSP]; RSP += 8)
         PUSH 0xFFFFFFFF ; Push immediate value (requires size hint in some contexts)
@@ -329,7 +329,7 @@ These instructions perform calculations and bitwise operations, updating the RFL
 *   **`ADD` / `SUB` (Add/Subtract):** Perform integer addition/subtraction. Update CF (carry/borrow for unsigned), ZF, SF, OF (overflow for signed), PF, AF.
     *   Syntax: `ADD destination, source` / `SUB destination, source`
     *   Examples:
-        ```nasm
+        ```x86asm
         ADD RAX, 5      ; RAX = RAX + 5
         SUB ECX, EBX    ; ECX = ECX - EBX
         ADD [counter], 1 ; Increment memory location 'counter' by 1
@@ -337,7 +337,7 @@ These instructions perform calculations and bitwise operations, updating the RFL
 
 *   **`INC` / `DEC` (Increment/Decrement):** Add 1 or Subtract 1 from a register or memory location. Update ZF, SF, OF, PF, AF. **Do not affect CF** (unlike `ADD/SUB` with 1), which is often useful.
     *   Examples:
-        ```nasm
+        ```x86asm
         INC RDI         ; RDI++
         DEC [counter]   ; counter--
         ```
@@ -348,7 +348,7 @@ These instructions perform calculations and bitwise operations, updating the RFL
 *   **`CMP` (Compare):** Subtracts source from destination (`destination - source`) **but discards the result**, only updating the flags (ZF, SF, CF, OF, etc.). This is the primary way to set up conditions for jumps.
     *   Syntax: `CMP destination, source`
     *   Example:
-        ```nasm
+        ```x86asm
         CMP RAX, RBX    ; Sets flags based on RAX - RBX
         JG  greater     ; Jump if RAX > RBX (signed)
         ```
@@ -359,7 +359,7 @@ These instructions perform calculations and bitwise operations, updating the RFL
     *   `XOR`: Bitwise XOR. Extremely common for toggling bits, clearing a register to zero (`XOR EAX, EAX` is faster than `MOV EAX, 0`), and comparisons (`CMP` can sometimes be replaced by `TEST` or `XOR` for zero checks).
     *   `NOT`: Bitwise NOT (complement). Does not affect flags.
     *   Examples:
-        ```nasm
+        ```x86asm
         AND AL, 0x0F    ; Clear high 4 bits of AL (mask to lower nibble)
         OR  BL, 0xC0     ; Set high 2 bits of BL
         XOR ECX, ECX    ; Fast way to set ECX to 0
@@ -368,7 +368,7 @@ These instructions perform calculations and bitwise operations, updating the RFL
 
 *   **Shift and Rotate Instructions (`SHL`, `SHR`, `SAL`, `SAR`, `RCL`, `RCR`, etc.):** Shift bits left/right within a register/memory location. `SHL`/`SAL` (Shift Logical/Arithmetic Left) is equivalent to multiplying by 2^n. `SHR` (Shift Logical Right) is unsigned division by 2^n. `SAR` (Shift Arithmetic Right) is signed division by 2^n (preserves sign bit). `RCL`/`RCR` (Rotate through Carry) include the Carry Flag in the rotation. Update CF, ZF, SF, PF, OF (for single-bit shifts).
     *   Examples:
-        ```nasm
+        ```x86asm
         SHL RAX, 3      ; RAX = RAX * 8 (fast multiplication)
         SHR EBX, 1      ; EBX = EBX / 2 (unsigned, fast division)
         SAR ECX, 4      ; ECX = ECX / 16 (signed, preserves sign)
@@ -395,7 +395,7 @@ These instructions alter the normal sequential flow of execution (where PC incre
         *   `JB` / `JNAE`: Below (unsigned) (CF=1)
         *   `JBE` / `JNA`: Below or Equal (unsigned) (CF=1 or ZF=1)
     *   Examples:
-        ```nasm
+        ```x86asm
         CMP RAX, RBX
         JG  rax_greater   ; Jump if RAX > RBX (signed)
         TEST AL, 1
@@ -409,7 +409,7 @@ These instructions alter the normal sequential flow of execution (where PC incre
 
 *   **Loops (`LOOP`, `LOOPE`, `LOOPNE`):** A specialized conditional jump for loops. `LOOP target` decrements RCX/ECX/CX and jumps to `target` if the count is not zero. `LOOPE`/`LOOPZ` also checks ZF=1; `LOOPNE`/`LOOPNZ` checks ZF=0. Less common now (explicit `DEC`/`JNZ` is often preferred for performance), but historically important.
     *   Example:
-        ```nasm
+        ```x86asm
         MOV ECX, 10     ; Set loop counter
     loop_start:
         ; ... loop body ...
@@ -484,12 +484,12 @@ The **call stack** is a fundamental data structure managed by the CPU and operat
 *   **Pointer:** The **Stack Pointer (RSP)** register always points to the **top** of the stack (the most recently pushed item).
 *   **Operations:**
     *   **Push:** Decrements RSP (by the size of the item, usually 8 bytes in 64-bit mode) and stores the value at the new RSP location. `PUSH RAX` is effectively:
-        ```nasm
+        ```x86asm
         SUB RSP, 8
         MOV [RSP], RAX
         ```
     *   **Pop:** Loads the value from the current RSP location into a register/memory and increments RSP. `POP RBX` is effectively:
-        ```nasm
+        ```x86asm
         MOV RBX, [RSP]
         ADD RSP, 8
         ```
@@ -554,7 +554,7 @@ Let's solidify concepts by building a more substantial example: a function that 
 
 **factorial.asm:**
 
-```nasm
+```x86asm
 SECTION .text
     GLOBAL factorial    ; Make function visible to linker/C
 
@@ -645,7 +645,7 @@ gcc factorial.o factorial_test.o -o fact    # Link
 *   **Stack Usage:** Each recursive call adds a stack frame: 8 bytes for saved RBP and 8 bytes for saved RDI (the original `n`). For `n=5`, there are 5 recursive calls (plus the initial call), resulting in 5 stack frames (40 bytes total for saved state, plus return addresses).
 *   **Register Usage:** Carefully manages volatile registers (RDI) by saving to stack. Uses RAX for the accumulating result. Relies on MUL using RAX implicitly.
 *   **Recursion Limitation:** This implementation will crash for `n > 20` due to 64-bit overflow (20! = 2,432,902,008,176,640,000 fits; 21! overflows). More critically, deep recursion (e.g., `n=10000`) will cause a **stack overflow** due to the large number of stack frames. An iterative implementation avoids this:
-    ```nasm
+    ```x86asm
     factorial_iter:
         MOV     RAX, 1      ; result = 1
         CMP     RDI, 1
