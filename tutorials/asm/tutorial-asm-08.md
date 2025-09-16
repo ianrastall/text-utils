@@ -1,4 +1,4 @@
-# Chapter 8: x64 Instruction Set Fundamentals
+# 8. x64 Instruction Set Fundamentals
 
 ## 8.1 The Critical Importance of Understanding the x64 Instruction Set
 
