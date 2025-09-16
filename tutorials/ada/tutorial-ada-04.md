@@ -1,4 +1,4 @@
-# 4. Design by Contract in Ada: Specifying Program Behavior
+# 4. Design by Contract in Ada
 
 Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in complex systems.
 

@@ -1,4 +1,4 @@
-# 15\. Testing Frameworks in Ada: Building Reliable Software for Everyday Applications
+# 15\. Testing Frameworks in Ada
 
 > "Testing isn't just for safety-critical systems—it's essential for any application where reliability matters. With Ada's AUnit framework, you can build robust, maintainable code for home automation, personal finance tools, and more—without specialized knowledge."
 

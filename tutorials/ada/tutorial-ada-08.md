@@ -1,4 +1,4 @@
-# 8. Object-Oriented Programming in Ada: Safe and Simple Polymorphism
+# 8. Object-Oriented Programming in Ada
 
 > **OOP Safety Paradox**
 > 

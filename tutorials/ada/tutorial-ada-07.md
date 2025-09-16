@@ -1,4 +1,4 @@
-# 7. Real-Time Systems Programming in Ada: Timing Guarantees for Everyday Applications
+# 7. Real-Time Systems Programming in Ada
 
 In today's interconnected world, many applications require precise timing behavior. Whether you're building a home automation system that needs to respond to sensor data within milliseconds, a web server that must handle requests consistently under load, or a video game that needs smooth frame rates, timing correctness is just as important as functional correctness. Ada provides unique language-level support for real-time programming, allowing developers to specify, verify, and guarantee timing behavior with mathematical precision. This tutorial explores how to leverage Ada's real-time features to build systems that not only do the right thing, but do it at the right time, every time. You'll learn to transform timing requirements from vague aspirations into verifiable system properties.
 

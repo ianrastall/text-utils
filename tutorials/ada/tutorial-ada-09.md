@@ -1,4 +1,4 @@
-# 9\. Generics and Template Programming in Ada: Building Reusable, Type-Safe Components
+# 9\. Generics and Template Programming in Ada
 
 > **Why Generics Matter**
 > 

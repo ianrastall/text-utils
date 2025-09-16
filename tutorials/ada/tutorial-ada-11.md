@@ -1,4 +1,4 @@
-# 11\. Aspect Specifications and Pragmas in Ada: Enhancing Your Code with Compiler Directives
+# 11\. Aspect Specifications and Pragmas in Ada
 
 > **What Aspects and Pragmas Are**
 > 

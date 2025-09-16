@@ -1,4 +1,4 @@
-# 13\. Certification and Integration in Ada: Building Reliable, Interoperable Systems
+# 13\. Certification and Integration in Ada
 
 > "Certification and integration aren't just for aerospace engineers—they're essential skills for any developer who wants to build reliable, interoperable software that works seamlessly with other systems."
 
