@@ -56,7 +56,7 @@ x64 processors use virtual memory to provide each process with its own isolated 
 Traditional position-dependent code assumes fixed memory addresses:
 
 * **Absolute Addressing:**
-  ```nasm
+  ```x86asm
   MOV RAX, global_var  ; Absolute address embedded in instruction
   CALL func            ; Absolute address in CALL instruction
   ```
@@ -265,7 +265,7 @@ RIP-relative addressing calculates addresses relative to the instruction pointer
 RIP-relative addressing has specific syntax in Assembly:
 
 * **Direct Usage:**
-  ```nasm
+  ```x86asm
   MOV RAX, [RIP + global_var]  ; Access global variable
   LEA RSI, [RIP + buffer]      ; Calculate buffer address
   ```
@@ -276,7 +276,7 @@ RIP-relative addressing has specific syntax in Assembly:
   - Works with labels and symbols
 
 * **Encoding Example:**
-  ```nasm
+  ```x86asm
   global_var:
       DD 42
   
@@ -288,7 +288,7 @@ RIP-relative addressing has specific syntax in Assembly:
   - Actual encoding: `8B 05 01 00 00 00`
 
 * **Common Patterns:**
-  ```nasm
+  ```x86asm
   ; Load address of string
   LEA RSI, [RIP + hello_msg]
   
@@ -311,7 +311,7 @@ RIP-relative addressing offers excellent performance for position-independent co
 * **No GOT/PLT Indirection:** Direct access to data
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; RIP-relative (position-independent)
 MOV RAX, [RIP + global_var]  ; 4-5 cycles
 
@@ -340,7 +340,7 @@ RIP-relative addressing has some limitations:
 * **External Symbols:**
   - Cannot directly access external symbols
   - Requires GOT for external data
-  ```nasm
+  ```x86asm
   ; External symbol requires GOT
   MOV RAX, [RIP + extern_var@GOTPCREL]
   MOV RAX, [RAX]
@@ -349,7 +349,7 @@ RIP-relative addressing has some limitations:
 * **64-bit Constants:**
   - Cannot embed 64-bit constants directly
   - Must use RIP-relative access to constant pool
-  ```nasm
+  ```x86asm
   ; Load 64-bit constant
   LEA RAX, [RIP + const64]
   MOV RAX, [RAX]
@@ -412,26 +412,26 @@ The GOT is a data structure that contains absolute addresses resolved at load ti
 Accessing data through the GOT follows specific patterns:
 
 * **Direct GOT Access:**
-  ```nasm
+  ```x86asm
   ; Access global variable via GOT
   MOV RAX, [RIP + global_var@GOT]
   MOV EAX, [RAX]
   ```
 
 * **GOTPCREL Access (Most Common):**
-  ```nasm
+  ```x86asm
   ; Position-independent GOT access
   MOV RAX, [RIP + global_var@GOTPCREL]
   ADD RAX, [RIP + global_var@GOTPCREL + 8]
   MOV EAX, [RAX]
   ```
   - Actually simplified by assembler to:
-  ```nasm
+  ```x86asm
   MOV EAX, [RIP + global_var@GOTPCREL]
   ```
 
 * **Assembler Directives:**
-  ```nasm
+  ```x86asm
   ; NASM syntax
   MOV RAX, [RIP + global_var wrt ..got]
   
@@ -440,7 +440,7 @@ Accessing data through the GOT follows specific patterns:
   ```
 
 * **Complete Example:**
-  ```nasm
+  ```x86asm
   extern printf
   section .rodata
   format: DB "Value: %d", 10, 0
@@ -488,7 +488,7 @@ The GOT is populated through a multi-stage process:
   6. Subsequent calls use direct address
 
 * **Resolver Process:**
-  ```nasm
+  ```x86asm
   ; Initial PLT entry for printf
   printf@PLT:
       ; First time:
@@ -636,14 +636,14 @@ printf@PLT:
 The PLT follows specific implementation patterns:
 
 * **PLT[0] (Common Resolver):**
-  ```nasm
+  ```x86asm
   ; PLT[0] - Common resolver setup
   push QWORD PTR [GOT + 8]   ; Module ID
   jmp QWORD PTR [GOT + 16]   ; _dl_runtime_resolve
   ```
 
 * **PLT[n] (Function Entry):**
-  ```nasm
+  ```x86asm
   ; PLT[1] - First external function
   jmp QWORD PTR [GOT + 24]   ; Initially points back to resolver
   push 0                     ; Symbol index
@@ -656,7 +656,7 @@ The PLT follows specific implementation patterns:
   ```
 
 * **Assembler Syntax:**
-  ```nasm
+  ```x86asm
   ; NASM
   CALL printf wrt ..plt
   
@@ -665,7 +665,7 @@ The PLT follows specific implementation patterns:
   ```
 
 * **Complete Function Call Example:**
-  ```nasm
+  ```x86asm
   extern printf
   section .rodata
   format_str: DB "Hello, PLT!", 10, 0
@@ -719,7 +719,7 @@ Writing effective position-independent code requires understanding best practice
 Key techniques for implementing PIC in Assembly:
 
 * **Data Access:**
-  ```nasm
+  ```x86asm
   ; Good: RIP-relative addressing (local data)
   MOV EAX, [RIP + local_var]
   
@@ -732,7 +732,7 @@ Key techniques for implementing PIC in Assembly:
   ```
 
 * **Function Calls:**
-  ```nasm
+  ```x86asm
   ; Good: PLT for external functions
   CALL printf@PLT
   
@@ -744,7 +744,7 @@ Key techniques for implementing PIC in Assembly:
   ```
 
 * **String Literals:**
-  ```nasm
+  ```x86asm
   section .rodata
   hello_msg: DB "Hello, World!", 0
   
@@ -754,7 +754,7 @@ Key techniques for implementing PIC in Assembly:
   ```
 
 * **Constant Pools:**
-  ```nasm
+  ```x86asm
   ; 64-bit constant in constant pool
   LEA RAX, [RIP + const64]
   MOV RAX, [RAX]
@@ -769,7 +769,7 @@ Key techniques for implementing PIC in Assembly:
 Frequent mistakes when implementing PIC:
 
 * **Absolute Addressing:**
-  ```nasm
+  ```x86asm
   ; BAD: Absolute address (breaks PIC)
   MOV RAX, extern_var
   
@@ -779,7 +779,7 @@ Frequent mistakes when implementing PIC:
   ```
 
 * **Missing PLT for External Functions:**
-  ```nasm
+  ```x86asm
   ; BAD: Direct call (breaks PIC)
   CALL printf
   
@@ -788,7 +788,7 @@ Frequent mistakes when implementing PIC:
   ```
 
 * **Incorrect GOT Access:**
-  ```nasm
+  ```x86asm
   ; BAD: Missing second dereference
   MOV RAX, [RIP + extern_var@GOTPCREL]
   ; RAX contains GOT entry address, not actual variable
@@ -799,7 +799,7 @@ Frequent mistakes when implementing PIC:
   ```
 
 * **Position-Dependent System Calls:**
-  ```nasm
+  ```x86asm
   ; BAD: Position-dependent string
   MOV RDI, hello_msg
   SYSCALL
@@ -818,7 +818,7 @@ Different platforms have specific PIC requirements:
   - Use `@PLT` for function calls
   - 128-byte red zone below RSP
   - Example:
-    ```nasm
+    ```x86asm
     ; Linux PIC example
     MOV RAX, [RIP + counter@GOTPCREL]
     MOV EAX, [RAX]
@@ -833,7 +833,7 @@ Different platforms have specific PIC requirements:
   - No standard GOT/PLT
   - Requires base relocations
   - Example:
-    ```nasm
+    ```x86asm
     ; Windows PIC example
     EXTERN printf:PROC
     ; Function calls are position-independent by default
@@ -845,7 +845,7 @@ Different platforms have specific PIC requirements:
   - Uses lazy symbol pointers
   - `_symbol$LazyPointer` convention
   - Example:
-    ```nasm
+    ```x86asm
     ; macOS PIC example
     call _printf$LAZY
     ```
@@ -857,7 +857,7 @@ Understanding these platform differences is essential for cross-platform PIC dev
 Essential guidelines for implementing robust PIC:
 
 1. **Prefer RIP-Relative Addressing:**
-   ```nasm
+   ```x86asm
    ; Good
    LEA RAX, [RIP + buffer]
    
@@ -866,20 +866,20 @@ Essential guidelines for implementing robust PIC:
    ```
 
 2. **Use GOT for External Data:**
-   ```nasm
+   ```x86asm
    ; Access external variable
    MOV RAX, [RIP + extern_var@GOTPCREL]
    MOV RAX, [RAX]
    ```
 
 3. **Use PLT for External Functions:**
-   ```nasm
+   ```x86asm
    ; Call external function
    CALL extern_func@PLT
    ```
 
 4. **Avoid Absolute Addresses:**
-   ```nasm
+   ```x86asm
    ; Bad
    JMP 0x400500
    
@@ -946,7 +946,7 @@ PIEs extend PIC techniques to the entire executable:
 
 * **Global Data Access:**
   - Even program's own global variables use GOT
-  ```nasm
+  ```x86asm
   ; In PIE, even local globals use GOT
   MOV EAX, [RIP + counter@GOTPCREL]
   MOV EAX, [RAX]
@@ -1211,7 +1211,7 @@ Strategies to minimize PIC/PIE performance impact:
 * **Register Allocation:**
   - Keep frequently accessed values in registers
   - Avoid repeated GOT accesses
-  ```nasm
+  ```x86asm
   ; Bad: Multiple GOT accesses
   MOV RAX, [RIP + var@GOTPCREL]
   MOV EAX, [RAX]
@@ -1243,7 +1243,7 @@ Strategies to minimize PIC/PIE performance impact:
 * **Constant Folding:**
   - Move calculations to compile time
   - Use constant pools for 64-bit constants
-  ```nasm
+  ```x86asm
   ; Efficient constant access
   LEA RAX, [RIP + const64]
   MOV RAX, [RAX]
@@ -1485,7 +1485,7 @@ Creating position-independent shellcode for security research:
   - Self-contained functionality
 
 * **Basic Shellcode Structure:**
-  ```nasm
+  ```x86asm
   ; Position-independent execve("/bin/sh", NULL, NULL)
   section .text
   global _start
