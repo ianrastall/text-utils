@@ -123,12 +123,12 @@ Here, the precondition (`Pre`) ensures the input is physically possible (no temp
 Contracts aren't just documentation—they're active checks. When you compile with contract checking enabled (using `-gnata`), Ada inserts runtime checks for conditions that can't be verified at compile time. For example:
 
 ```ada
-procedure Process_Temperature (Temp : Float) with
+function Process_Temperature (Temp : Float) return Float with
    Pre  => Temp >= -273.15 and Temp <= 1000,
    Post => Process_Temperature'Result > 0;
 
 -- If called with Temp = -300, this will trigger a runtime error
-Process_Temperature(-300);
+Result := Process_Temperature(-300);
 ```
 
 This might seem restrictive, but it's actually liberating. Instead of wondering "what if someone passes a bad value?" you can be certain the compiler will enforce your constraints. This reduces the need for defensive programming and makes your code more predictable.
@@ -181,7 +181,7 @@ Ada does not allow implicit conversions between types. For example:
 
 ```ada
 V : Integer := 10;
-F : Float := V;  -- Allowed (explicit conversion is required for different types)
+F : Float := Float(V);  -- Explicit conversion is required for different types
 C : Temperature := V;  -- Allowed (Temperature is subtype of Integer)
 P : Pressure := V;  -- Allowed only if V is within Pressure range
 
@@ -298,26 +298,23 @@ task type Consumer is
 end Consumer;
 
 protected Buffer is
-   procedure Add(Item : Integer);
-   procedure Get(Item : out Integer);
+   entry Add(Item : Integer);
+   entry Get(Item : out Integer);
 private
    Data : array(1..10) of Integer;
    Count : Natural := 0;
 end Buffer;
 
 protected body Buffer is
-   procedure Add(Item : Integer) is
+   entry Add(Item : Integer) when Count < Data'Length is
    begin
-      if Count < Data'Length then
-         Data(Count + 1) := Item;
-         Count := Count + 1;
-      end if;
+      Data(Count + 1) := Item;
+      Count := Count + 1;
    end Add;
 
-   procedure Get(Item : out Integer) is
+   entry Get(Item : out Integer) when Count > 0 is
    begin
-      if Count > 0 then
-         Item := Data(1);
+      Item := Data(1);
          for I in 1..Count - 1 loop
             Data(I) := Data(I + 1);
          end loop;
@@ -376,7 +373,7 @@ This example shows how Ada handles division by zero. The `Constraint_Error` exce
 You can define your own exceptions for domain-specific errors:
 
 ```ada
-type Temperature_Error is new Exception;
+Temperature_Error : exception;
 subtype Valid_Temperature is Integer range -50..100;
 
 procedure Check_Temperature(Temp : Integer) is
@@ -548,7 +545,7 @@ begin
    -- Target_Temp := Celsius_to_Fahrenheit(-300.0);
    
    -- This would fail at compile time due to type mismatch:
-   -- Target_Temp := 22.5;  -- 22.5 is Celsius, not Fahrenheit
+   -- Target_Temp := Current_Temp;  -- Cannot assign Celsius to Fahrenheit
 end Home_Thermostat;
 ```
 
