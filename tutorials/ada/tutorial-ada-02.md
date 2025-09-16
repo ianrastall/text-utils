@@ -1,14 +1,14 @@
-# 2. Ada's Strong Typing System
+# 1 . Ada's Strong Typing System
 
 While most programming languages treat types as mere documentation, Ada transforms them into powerful compile-time verification tools. This chapter explores how Ada's rigorous type system eliminates entire categories of errors before code ever runs, with practical examples demonstrating how constrained types, subtypes, and strong equivalence prevent bugs that plague other languages. You'll learn to leverage Ada's type system as your first line of defense in building reliable software.
 
 **Key Principle:** In Ada, types aren't just labels—they're contracts that the compiler enforces. Every time you declare a variable, function parameter, or return value, you're specifying not just what data it holds, but what it *means* in your program's domain. This semantic precision prevents entire classes of errors that would otherwise surface only during testing or in production.
 
-## Why Strong Typing Matters: Beyond Syntax Checking
+## 1.1 Why Strong Typing Matters: Beyond Syntax Checking
 
 Most programming languages use types primarily for memory allocation decisions. C, C++, and Java use types to determine how much memory to allocate for a variable and how to interpret its bits. Ada uses types as semantic validators that catch logical errors during compilation. Consider this critical distinction:
 
-#### C/C++ Type System
+#### 1.1.0.1 C/C++ Type System
 - Primarily for memory layout
 - Implicit conversions common
 - Numeric types often interchangeable
@@ -24,7 +24,7 @@ double power = voltage * current; // Implicit conversion
 
 This C code compiles without any warnings or errors. The integer `voltage` is automatically converted to a floating-point value when multiplied by `current`, and the result is stored in `power`. While this might seem convenient, it hides a fundamental issue: the program has no way to distinguish between voltage values and current values. Both are just numbers, and the compiler doesn't care if you accidentally assign a current value to a voltage variable.
 
-#### Ada Type System
+#### 1.1.0.2 Ada Type System
 - Enforces semantic correctness
 - No implicit conversions
 - Numeric types strictly separated
@@ -39,7 +39,7 @@ Power : Float := Voltage * Current; -- ERROR: type mismatch
 
 This Ada code will fail to compile. The compiler detects that you're trying to multiply an `Integer` (`Voltage`) with a `Float` (`Current`) and assign the result to a `Float` (`Power`). Ada requires explicit conversion between these types: `Float(Voltage) * Current`. This might seem inconvenient at first, but it forces you to acknowledge that voltage and current are conceptually different quantities that require explicit handling.
 
-### The Mars Climate Orbiter Lesson
+### 1.1.1 The Mars Climate Orbiter Lesson
 
 In 1999, NASA lost a $125 million spacecraft because one team used metric units while another used imperial units. The error went undetected because both systems used the same `double` type. Ada's strong typing would have required explicit unit conversion with distinct types, making this error impossible:
 
@@ -54,7 +54,7 @@ P : Pound_Force_Seconds := N; -- Compile-time error: type mismatch
 
 In this Ada example, `Newton_Seconds` and `Pound_Force_Seconds` are distinct types—even though they're both based on `Float`. Assigning one to the other requires an explicit conversion function, which would force developers to acknowledge the unit conversion. This simple type distinction would have prevented the Mars Climate Orbiter disaster by making the unit mismatch impossible to overlook.
 
-### The Real Cost of Type Errors
+### 1.1.2 The Real Cost of Type Errors
 
 Type errors are not just theoretical problems—they have real-world consequences. Consider these examples:
 
@@ -64,7 +64,7 @@ Type errors are not just theoretical problems—they have real-world consequence
 
 In most languages, these errors would only surface during testing or in production. In Ada, they're caught during compilation—before anyone ever runs the code. This might seem like a small difference, but it fundamentally changes how you approach software development. Instead of writing code and hoping it works, you write code that *cannot* be incorrect according to your type definitions.
 
-### How Ada's Type System Differs from Other Languages
+### 1.1.3 How Ada's Type System Differs from Other Languages
 
 Let's examine how Ada's type system compares to other popular languages:
 
@@ -79,11 +79,11 @@ Let's examine how Ada's type system compares to other popular languages:
 
 The key difference is in **name-based equivalence**. In C and Java, two types are considered compatible if they have the same structure (structural equivalence). In Ada, two types are compatible only if they share the same name declaration (name-based equivalence). This might seem restrictive, but it prevents accidental substitution of conceptually different values that happen to have the same representation.
 
-## Core Typing Mechanisms in Depth
+## 1.2 Core Typing Mechanisms in Depth
 
 Ada's type system has three fundamental components: basic types, derived types, and subtypes. Each serves a specific purpose in building reliable software.
 
-### 1. Type Equivalence vs. Name Equivalence
+### 1.2.1 Type Equivalence vs. Name Equivalence
 
 Most languages use *structural equivalence*—types are compatible if their structures match. Ada uses *name equivalence*—two types are compatible only if they share the same name declaration.
 
@@ -98,7 +98,7 @@ D : Device_ID := S; -- ERROR: type mismatch despite same structure
 
 In this example, `Sensor_ID` and `Device_ID` are both derived from `Integer` and have identical internal representations. However, because they have different names, they're considered completely different types. Attempting to assign one to the other results in a compile-time error.
 
-#### Why Name Equivalence Matters
+#### 1.2.1.1 Why Name Equivalence Matters
 
 This prevents accidental substitution of conceptually different values that happen to have the same representation. A sensor ID and device ID might both be integers, but they represent fundamentally different concepts in your system. In a building management system, you might have:
 
@@ -112,7 +112,7 @@ Sensor : Sensor_ID := Current_Room; -- ERROR: type mismatch
 
 This error would catch a mistake where someone accidentally assigned a room number to a sensor ID. Without strong typing, this could lead to the wrong sensor being controlled for the wrong room—a potentially serious error in a smart building system.
 
-### 2. Subtypes with Constraints
+### 1.2.2 Subtypes with Constraints
 
 Subtypes add constraints to existing types, creating compile-time validation. They're one of Ada's most powerful features for preventing errors.
 
@@ -128,7 +128,7 @@ L : Latitude  := 100.0; -- Compile-time error
 
 These subtypes define specific ranges of valid values. Any attempt to assign a value outside these ranges results in a compile-time error. This is different from C or Java, where you'd have to manually check these ranges at runtime.
 
-#### Constraint Best Practices
+#### 1.2.2.1 Constraint Best Practices
 
 When using subtypes, follow these best practices:
 
@@ -159,7 +159,7 @@ end Set_Temperature;
 
 In the first version, you have to manually check the temperature range at runtime. This is error-prone—developers might forget to check, or the check might be incorrect. In the second version, the compiler guarantees that `T` is always within the valid range, so you don't need any runtime checks. This makes your code simpler, safer, and more reliable.
 
-### 3. Derived Types for Semantic Safety
+### 1.2.3 Derived Types for Semantic Safety
 
 When you need to create a new type that has similar properties but distinct meaning, use derived types:
 
@@ -186,7 +186,7 @@ end "*";
 
 This is different from C++, where you could implicitly convert between types or use operator overloading without explicit definitions. In Ada, you must explicitly define how different types interact, which forces you to think about the semantics of your operations.
 
-#### Practical Application: Financial Calculations
+#### 1.2.3.1 Practical Application: Financial Calculations
 
 Let's see how derived types prevent errors in a financial application:
 
@@ -204,11 +204,11 @@ function Convert_Dollars_To_Euros(D : Dollars) return Euros is
 
 In this example, the compiler prevents you from multiplying dollars by euros without explicit conversion. This might seem like extra work, but it prevents a common financial error: accidentally treating dollars as euros or vice versa. In a banking system, this could mean transferring the wrong amount of money.
 
-## Advanced Type Features for Reliability
+## 1.3 Advanced Type Features for Reliability
 
 Ada's type system includes several advanced features that make it uniquely powerful for building reliable software.
 
-### 1. Tagged Types for Safe Polymorphism
+### 1.3.1 Tagged Types for Safe Polymorphism
 
 Ada's approach to object-oriented programming with built-in runtime checks is fundamentally different from C++. In Ada, polymorphism is achieved through tagged types, which automatically insert runtime checks when converting between types.
 
@@ -235,7 +235,7 @@ end Process;
 
 Unlike C++, where you can accidentally slice objects or have unsafe casts, Ada automatically checks the type at runtime. If you try to treat a `Sensor` as a `Temperature_Sensor` when it's not, Ada will raise a `Constraint_Error` at runtime.
 
-#### Practical Application: Medical Device Safety
+#### 1.3.1.1 Practical Application: Medical Device Safety
 
 In an infusion pump system, you might have different types of sensors:
 
@@ -259,7 +259,7 @@ Set_Flow_Rate(Milligrams(100.0)); -- ERROR: type mismatch
 
 The compiler would catch the error immediately. This might seem like a small detail, but in a medical device, it could mean the difference between a safe operation and a fatal overdose.
 
-### 2. Enumeration Types with Custom Behavior
+### 1.3.2 Enumeration Types with Custom Behavior
 
 Ada's enumeration types are more powerful than in most languages. You can define custom attributes and operations for enums:
 
@@ -290,7 +290,7 @@ Current_Light := Red; -- Correct
 
 This prevents common errors like using magic numbers for enum values.
 
-### 3. Type Invariants for Data Integrity
+### 1.3.3 Type Invariants for Data Integrity
 
 Ada 2012 introduced type invariants—properties that must always be true for a type. These are checked automatically whenever a value of the type is modified:
 
@@ -309,11 +309,11 @@ In this example, the type invariant ensures that the account balance never goes 
 
 Type invariants are particularly useful for complex data structures where maintaining invariants manually would be error-prone. They ensure that your data always remains in a valid state, no matter how it's modified.
 
-## Practical Type System Patterns
+## 1.4 Practical Type System Patterns
 
 Now that we've explored Ada's type system fundamentals, let's look at practical patterns for building reliable software.
 
-### Pattern 1: Range Constraints for State Safety
+### 1.4.1 Pattern 1: Range Constraints for State Safety
 
 Prevent invalid state transitions through constrained types:
 
@@ -342,7 +342,7 @@ Transition (Current_State, Next_State); -- Compiler verifies state validity
 
 In this example, `Operational_State` is a subtype of `System_State` that only includes `Starting` and `Running`. When you call `Transition`, the compiler ensures that `Next_State` is always a valid operational state. This prevents errors where you might accidentally set the system to `Off` during a transition that should only produce operational states.
 
-#### Real-World Application: Home Automation
+#### 1.4.1.1 Real-World Application: Home Automation
 
 Consider a home thermostat system:
 
@@ -363,7 +363,7 @@ Set_Mode(Off); -- ERROR: type mismatch
 
 By using a subtype for active modes, you prevent the system from accidentally being set to "Off" when it's supposed to be in an active mode. This ensures that your home automation system always behaves as expected, without manual checks for invalid states.
 
-### Pattern 2: Physical Units with Derived Types
+### 1.4.2 Pattern 2: Physical Units with Derived Types
 
 Create a type-safe physical units system:
 
@@ -390,7 +390,7 @@ Time := Distance; -- ERROR: type mismatch
 
 This prevents errors like the Mars Climate Orbiter incident by making unit conversions explicit.
 
-#### Extending with SPARK
+#### 1.4.2.1 Extending with SPARK
 
 In the SPARK subset of Ada, you can add formal proofs about your units:
 
@@ -402,7 +402,7 @@ function To_MPS (M : Meters; S : Seconds) return Meters_Per_Second
 
 This contract specifies that the input time must be positive and that the result equals the division of distance by time. SPARK can then formally verify these properties, ensuring your calculations are mathematically correct.
 
-### Pattern 3: Type-Safe Data Structures
+### 1.4.3 Pattern 3: Type-Safe Data Structures
 
 Ada's type system allows you to create data structures that enforce correctness at compile time:
 
@@ -420,15 +420,15 @@ In this example, `Non_Empty_String` is a record type with a dynamic predicate th
 
 This pattern is useful for any data structure where certain invariants must always hold true. For example, you could create a `Positive_Integer` type that only allows values greater than zero, or a `Valid_Email` type that enforces email format rules.
 
-## Common Pitfalls and Solutions
+## 1.5 Common Pitfalls and Solutions
 
 Even with Ada's powerful type system, developers new to Ada often fall into common traps. Let's explore these pitfalls and how to avoid them.
 
-### Pitfall 1: Overusing Integer and Float
+### 1.5.1 Pitfall 1: Overusing Integer and Float
 
 New Ada developers often fall back to basic numeric types instead of creating domain-specific types. This defeats the purpose of Ada's type system.
 
-#### Avoid This:
+#### 1.5.1.1 Avoid This:
 
 ```ada
 procedure Set_Parameters (
@@ -439,7 +439,7 @@ procedure Set_Parameters (
 
 This code uses basic types for everything. It's impossible to tell from the parameter names what each parameter represents. A developer could accidentally swap `Param1` and `Param2`, and the compiler wouldn't catch it.
 
-#### Prefer This:
+#### 1.5.1.2 Prefer This:
 
 ```ada
 subtype Pressure   is Integer range 0..1000;
@@ -461,7 +461,7 @@ Set_Parameters(100, 25, 1.5);  -- ERROR: Humidity out of range
 
 This is much safer than using basic types. It's also more self-documenting—anyone reading the code knows exactly what each parameter represents.
 
-### Pitfall 2: Type Conversions as Workarounds
+### 1.5.2 Pitfall 2: Type Conversions as Workarounds
 
 When you find yourself writing many type conversions, it's usually a sign that your type model doesn't match your domain. Instead of:
 
@@ -481,7 +481,7 @@ function Calculate_Power (V : Voltage; I : Current) return Integer is
 
 In this example, you only need to convert at the interface between your domain types and the calculation function. The rest of your code works with the domain-specific types, which prevents errors throughout your program.
 
-#### Real-World Example: Financial Calculations
+#### 1.5.2.1 Real-World Example: Financial Calculations
 
 Consider a banking application that handles currency conversions:
 
@@ -501,11 +501,11 @@ procedure Process_Transaction(Amount : USD);
 
 In the bad approach, you have to manually check the currency string and convert it to the right value. In the good approach, the compiler enforces that you only pass USD amounts to `Process_Transaction`, and you have a dedicated conversion function for EUR.
 
-### Pitfall 3: Ignoring Subtypes for Enumerations
+### 1.5.3 Pitfall 3: Ignoring Subtypes for Enumerations
 
 Many developers treat enumerations as simple labels without using subtypes to restrict valid values.
 
-#### Avoid This:
+#### 1.5.3.1 Avoid This:
 
 ```ada
 type Traffic_Light is (Red, Yellow, Green);
@@ -513,7 +513,7 @@ type Traffic_Light is (Red, Yellow, Green);
 
 This allows any `Traffic_Light` value, but in some contexts, you might want to restrict to only certain values.
 
-#### Prefer This:
+#### 1.5.3.2 Prefer This:
 
 ```ada
 type Traffic_Light is (Red, Yellow, Green);
@@ -525,11 +525,11 @@ procedure Set_Display(L : Active_Light);
 
 This prevents errors where you might accidentally set the traffic light to red when it should only be yellow or green.
 
-## Exercises: Building a Type-Safe System
+## 1.6 Exercises: Building a Type-Safe System
 
 Now that you've learned Ada's type system fundamentals, let's put them into practice with two exercises. These exercises will help you apply what you've learned to real-world scenarios.
 
-### Exercise 1: Aircraft Control System
+### 1.6.1 Exercise 1: Aircraft Control System
 
 Design a type-safe system for aircraft control surfaces:
 
@@ -538,7 +538,7 @@ Design a type-safe system for aircraft control surfaces:
 - Prevent accidental mixing of control surfaces
 - Implement a safe mixing function for coordinated turns
 
-#### Solution Guidance
+#### 1.6.1.1 Solution Guidance
 
 Start by defining distinct types for each control surface:
 
@@ -578,7 +578,7 @@ Coordinated_Turn(Rudder(10), Aileron(20)); -- ERROR: type mismatch
 
 The key insight is that each control surface has its own type with specific range constraints. This prevents errors where you might accidentally use the wrong value for the wrong control surface.
 
-### Exercise 2: Chemical Processing Plant
+### 1.6.2 Exercise 2: Chemical Processing Plant
 
 Create a type system for a chemical processing system:
 
@@ -587,7 +587,7 @@ Create a type system for a chemical processing system:
 - Prevent incompatible chemical combinations
 - Implement a reaction validation function using subtypes
 
-#### Solution Guidance
+#### 1.6.2.1 Solution Guidance
 
 Start by defining types for different chemicals:
 
@@ -624,11 +624,11 @@ React(Acid(20.0), Base(30.0), Solvent_Temperature(25), Base_Temperature(40)); --
 
 The compiler will catch this immediately. This prevents dangerous situations where you might accidentally mix chemicals at unsafe temperatures.
 
-## Next Steps: From Types to Contracts
+## 1.7 Next Steps: From Types to Contracts
 
 Now that you've mastered Ada's strong typing system, you're ready to combine these techniques with Ada 2012's formal contract features. In the next chapter, we'll explore how to:
 
-### Upcoming: Design by Contract
+### 1.7.1 Upcoming: Design by Contract
 
 - Write precise preconditions and postconditions
 - Use type invariants to protect data integrity
@@ -636,7 +636,7 @@ Now that you've mastered Ada's strong typing system, you're ready to combine the
 - Transition from runtime checks to formal verification
 - Apply contracts to real-world scenarios
 
-### Practice Challenge
+### 1.7.2 Practice Challenge
 
 Take your aircraft control system from the exercise and enhance it with contracts:
 
@@ -645,7 +645,7 @@ Take your aircraft control system from the exercise and enhance it with contract
 - Create invariants for system state consistency
 - Document the safety properties your contracts enforce
 
-#### Example Enhancement
+#### 1.7.2.1 Example Enhancement
 
 ```ada
 procedure Set_Control_Surface(
@@ -659,7 +659,7 @@ with
 
 This contract ensures that the total movement of all control surfaces doesn't exceed 50 degrees, which might be a safety requirement for the aircraft.
 
-### Key Insight
+### 1.7.3 Key Insight
 
 Strong typing is Ada's foundation, but contracts are its superpower. When you combine constrained types with formal specifications, you create software that's not just less error-prone, but *provably correct* within its specified domain. This is why Ada remains the language of choice when failure is not an option.
 

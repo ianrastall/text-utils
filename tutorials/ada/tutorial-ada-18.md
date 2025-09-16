@@ -1,4 +1,4 @@
-# 18\. Distributed Systems in Ada
+# 1 \. Distributed Systems in Ada
 
 > "Distributed systems aren't just for aerospace engineers—they're the backbone of everyday applications like smart homes, online games, and cloud services. Ada's reliability features make it an excellent choice for building distributed systems that are both robust and maintainable."
 
@@ -6,7 +6,7 @@ When you think of distributed systems, you might imagine complex aerospace contr
 
 This chapter explores how to build distributed systems in Ada using practical, everyday examples. You'll learn to create client-server applications, handle network communication, and build systems that work together seamlessly—whether you're developing a home automation system, a multiplayer game, or a simple data collection tool. You'll discover how Ada's strong typing, tasking capabilities, and exception handling make distributed programming more reliable and less error-prone than in many other languages.
 
-## Why Distributed Systems Matter for Everyday Applications
+## 1.1 Why Distributed Systems Matter for Everyday Applications
 
 Distributed systems are fundamental to modern technology, but they're often invisible to end users. Consider these common scenarios:
 
@@ -29,7 +29,7 @@ Ada excels in this environment because it provides:
 
 Unlike many languages where distributed programming requires complex libraries and frameworks, Ada provides these capabilities directly in the language—making it accessible to beginners while still powerful enough for complex systems.
 
-### Distributed Systems vs. Traditional Applications
+### 1.1.1 Distributed Systems vs. Traditional Applications
 
 | **Aspect** | **Traditional Application** | **Distributed System** |
 | :--- | :--- | :--- |
@@ -39,11 +39,11 @@ Unlike many languages where distributed programming requires complex libraries a
 | **Scalability** | Limited by single machine resources | Can scale across multiple machines |
 | **Complexity** | Simpler to develop and debug | More complex due to network interactions |
 
-## Basic Concepts of Distributed Systems
+## 1.2 Basic Concepts of Distributed Systems
 
 Before diving into code, let's understand the fundamental concepts of distributed systems.
 
-### Client-Server Model
+### 1.2.1 Client-Server Model
 
 The most common distributed system architecture is the client-server model:
 - **Server**: A central program that provides services
@@ -54,7 +54,7 @@ This model is used in everyday applications like:
 - Email clients connecting to mail servers
 - Smart home devices connecting to a central hub
 
-### Message Passing
+### 1.2.2 Message Passing
 
 In distributed systems, components communicate by sending messages over networks. These messages can be:
 - Simple commands ("Turn on lights")
@@ -63,7 +63,7 @@ In distributed systems, components communicate by sending messages over networks
 
 Message passing is fundamental to distributed systems because it allows components to communicate without knowing each other's internal details.
 
-### Network Communication Basics
+### 1.2.3 Network Communication Basics
 
 Distributed systems rely on network protocols to communicate:
 - **TCP/IP**: Reliable, connection-oriented communication
@@ -72,7 +72,7 @@ Distributed systems rely on network protocols to communicate:
 
 Ada provides libraries for all these protocols, but for beginners, TCP/IP is the best starting point because it's reliable and widely used.
 
-### Key Challenges in Distributed Systems
+### 1.2.4 Key Challenges in Distributed Systems
 
 Distributed systems face several challenges that single-machine applications don't:
 - **Network failures**: Connections can drop unexpectedly
@@ -86,15 +86,15 @@ Ada helps address these challenges through:
 - Strong typing to prevent data corruption
 - Reliable communication protocols
 
-## Ada's Networking Capabilities
+## 1.3 Ada's Networking Capabilities
 
 Ada provides several libraries for network communication, but the most accessible for beginners is GNAT.Sockets. This package provides a straightforward interface for TCP/IP communication.
 
-### Setting Up Your Environment
+### 1.3.1 Setting Up Your Environment
 
 Before you can start building distributed systems, you need to set up your development environment:
 
-#### Windows
+#### 1.3.1.1 Windows
 1. Download GNAT Community Edition from [AdaCore's website](https://www.adacore.com/download)
 2. During installation, select "GNAT.Sockets" component
 3. Verify installation by opening Command Prompt and running:
@@ -103,7 +103,7 @@ Before you can start building distributed systems, you need to set up your devel
    ```
    You should see GNAT.Sockets version information in the output.
 
-#### macOS
+#### 1.3.1.2 macOS
 1. Install Homebrew if you haven't already:
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -117,7 +117,7 @@ Before you can start building distributed systems, you need to set up your devel
    gnatls --version
    ```
 
-#### Linux (Ubuntu/Debian)
+#### 1.3.1.3 Linux (Ubuntu/Debian)
 1. Install GNAT:
    ```bash
    sudo apt update
@@ -128,7 +128,7 @@ Before you can start building distributed systems, you need to set up your devel
    gnatls --version
    ```
 
-### Creating Your First Network Project
+### 1.3.2 Creating Your First Network Project
 
 Let's create a simple project structure:
 
@@ -162,7 +162,7 @@ This project file:
 - Defines the main program file
 - Configures compiler and linker options for networking
 
-### Testing Your Setup
+### 1.3.3 Testing Your Setup
 
 Create a simple "Hello World" network program to verify your installation:
 
@@ -198,13 +198,13 @@ gnatmake -P distributed_example.gpr
 
 This simple program attempts to connect to a server on port 8080. Since we haven't created a server yet, it will fail—but this confirms your environment is set up correctly for networking.
 
-## Building Your First Distributed System
+## 1.4 Building Your First Distributed System
 
 Now that your environment is ready, let's create a distributed calculator application. This system will have:
 - A server that performs calculations
 - A client that sends calculation requests to the server
 
-### Step 1: Create the Server
+### 1.4.1 Step 1: Create the Server
 
 First, we'll create the server that listens for connections and processes requests:
 
@@ -363,7 +363,7 @@ This server:
 - Sends results back to clients
 - Handles errors gracefully
 
-### Step 2: Create the Client
+### 1.4.2 Step 2: Create the Client
 
 Now let's create the client that sends commands to the server:
 
@@ -396,7 +396,7 @@ This client:
 - Sends a calculation command
 - Receives and displays the result
 
-### Step 3: Build and Test
+### 1.4.3 Step 3: Build and Test
 
 First, build the server:
 
@@ -430,7 +430,7 @@ Server response: Result:  8.00000E+00
 
 This confirms your distributed system is working correctly!
 
-### Understanding the Code
+### 1.4.4 Understanding the Code
 
 Let's break down the key elements:
 
@@ -446,11 +446,11 @@ Let's break down the key elements:
 
 This simple example demonstrates how distributed systems work in practice—components communicate over networks to solve problems together.
 
-## Handling Failures in Distributed Systems
+## 1.5 Handling Failures in Distributed Systems
 
 Distributed systems must handle network failures gracefully. Let's enhance our calculator system to handle common failure scenarios.
 
-### Timeouts
+### 1.5.1 Timeouts
 
 Network operations can hang indefinitely if the server doesn't respond. Let's add timeouts to our client:
 
@@ -503,7 +503,7 @@ This client:
 - Times out after 5 seconds if no response arrives
 - Checks for available data before attempting to receive
 
-### Connection Errors
+### 1.5.2 Connection Errors
 
 Let's handle connection errors in the client:
 
@@ -545,13 +545,13 @@ This client:
 - Provides clear error messages for users
 - Handles unexpected errors gracefully
 
-## Building a Distributed Home Automation System
+## 1.6 Building a Distributed Home Automation System
 
 Let's create a more practical example: a distributed home automation system. This system will:
 - Have a central server that controls lights and temperature
 - Have client devices (like a phone app) that send commands to the server
 
-### Step 1: Create the Home Automation Server
+### 1.6.1 Step 1: Create the Home Automation Server
 
 ```ada
 -- src/home_automation_server.adb
@@ -638,7 +638,7 @@ This server:
 - Validates inputs to prevent invalid values
 - Sends appropriate responses to clients
 
-### Step 2: Create the Home Automation Client
+### 1.6.2 Step 2: Create the Home Automation Client
 
 ```ada
 -- src/home_automation_client.adb
@@ -687,7 +687,7 @@ This client:
 - Displays server responses
 - Exits when the user types "QUIT"
 
-### Step 3: Build and Test
+### 1.6.3 Step 3: Build and Test
 
 First, build and run the server:
 
@@ -724,11 +724,11 @@ Enter command: QUIT
 
 This simple system demonstrates how distributed systems work in practice—multiple components working together to control a real-world system.
 
-## Handling Multiple Clients Concurrently
+## 1.7 Handling Multiple Clients Concurrently
 
 Our current server can only handle one client at a time. Let's enhance it to handle multiple clients concurrently using Ada's tasking features.
 
-### Step 1: Create a Task for Each Client
+### 1.7.1 Step 1: Create a Task for Each Client
 
 ```ada
 -- src/home_automation_server_concurrent.adb
@@ -829,7 +829,7 @@ This server:
 - Handles multiple clients simultaneously
 - Maintains shared state (light state and temperature) across clients
 
-### Step 2: Test with Multiple Clients
+### 1.7.2 Step 2: Test with Multiple Clients
 
 Now you can run multiple client instances and interact with the server simultaneously:
 
@@ -863,11 +863,11 @@ Server response: Lights: On, Temperature:  2.50000E+01°C
 
 This demonstrates how distributed systems can handle multiple users simultaneously—a critical capability for real-world applications.
 
-## Best Practices for Distributed Systems in Ada
+## 1.8 Best Practices for Distributed Systems in Ada
 
 Following best practices will make your distributed systems more reliable, maintainable, and scalable.
 
-### Separating Concerns
+### 1.8.1 Separating Concerns
 
 Keep your networking code separate from your business logic. This makes your code easier to understand and maintain.
 
@@ -894,7 +894,7 @@ This separation:
 - Makes business logic easier to test
 - Reduces complexity in both areas
 
-### Error Handling
+### 1.8.2 Error Handling
 
 Always handle network errors gracefully. Never assume connections will always succeed.
 
@@ -934,7 +934,7 @@ Key error handling practices:
 - Implement retry logic for transient errors
 - Log errors for debugging and monitoring
 
-### Security Considerations
+### 1.8.3 Security Considerations
 
 Even simple distributed systems need security considerations:
 
@@ -969,7 +969,7 @@ Basic security practices:
 - Avoid sending sensitive information in plain text
 - Implement authentication for privileged operations
 
-### Scalability Considerations
+### 1.8.4 Scalability Considerations
 
 As your system grows, consider scalability:
 
@@ -1020,11 +1020,11 @@ Scalability practices:
 - Use database storage for persistent data
 - Implement caching for frequently accessed data
 
-## Real-World Distributed Systems Examples
+## 1.9 Real-World Distributed Systems Examples
 
 Let's explore practical examples of distributed systems built with Ada.
 
-### Smart Home Controller
+### 1.9.1 Smart Home Controller
 
 A smart home controller manages lights, temperature, and security across multiple rooms:
 
@@ -1144,7 +1144,7 @@ This system:
 - Provides detailed status reports
 - Handles invalid inputs gracefully
 
-### Multiplayer Game Server
+### 1.9.2 Multiplayer Game Server
 
 A simple multiplayer game server that tracks player positions:
 
@@ -1268,11 +1268,11 @@ This system:
 - Handles join and movement commands
 - Provides status reports
 
-## Exercises for Readers
+## 1.10 Exercises for Readers
 
 Now it's time to put your knowledge into practice with some hands-on exercises.
 
-### Exercise 1: Distributed Calculator with Tasking
+### 1.10.1 Exercise 1: Distributed Calculator with Tasking
 
 Create a distributed calculator system that:
 - Uses Ada tasking to handle multiple clients concurrently
@@ -1282,7 +1282,7 @@ Create a distributed calculator system that:
 
 > **Challenge**: Add support for more complex operations like square root and exponentiation.
 
-#### Solution Guidance
+#### 1.10.1.1 Solution Guidance
 
 Start by creating a task type for handling client connections:
 
@@ -1322,7 +1322,7 @@ end loop;
 
 Implement error handling for division by zero and invalid inputs. Add a timeout mechanism using Ada's `delay` statement.
 
-### Exercise 2: Distributed Home Automation System
+### 1.10.2 Exercise 2: Distributed Home Automation System
 
 Create a distributed home automation system that:
 - Controls multiple rooms with lights and temperature
@@ -1332,7 +1332,7 @@ Create a distributed home automation system that:
 
 > **Challenge**: Add support for scheduling (e.g., "Turn on lights at 6 PM").
 
-#### Solution Guidance
+#### 1.10.2.1 Solution Guidance
 
 Start by creating data structures for your home state:
 
@@ -1367,7 +1367,7 @@ end if;
 
 Implement a status command that returns the current state of all rooms.
 
-### Exercise 3: Multiplayer Game Server
+### 1.10.3 Exercise 3: Multiplayer Game Server
 
 Create a multiplayer game server that:
 - Tracks player positions in a 2D world
@@ -1377,7 +1377,7 @@ Create a multiplayer game server that:
 
 > **Challenge**: Add collision detection to prevent players from moving through walls.
 
-#### Solution Guidance
+#### 1.10.3.1 Solution Guidance
 
 Start by defining player data structures:
 
@@ -1434,25 +1434,25 @@ end if;
 
 Implement collision detection by checking new positions against predefined walls.
 
-## Next Steps for Distributed Systems in Ada
+## 1.11 Next Steps for Distributed Systems in Ada
 
 Now that you've learned the basics of distributed systems in Ada, here's how to continue your journey.
 
-### Explore Advanced Networking Features
+### 1.11.1 Explore Advanced Networking Features
 
 - **UDP for real-time applications**: Faster communication for games and streaming
 - **HTTP for web services**: Create RESTful APIs for web integration
 - **WebSockets for bidirectional communication**: Real-time updates for chat applications
 - **Encryption for secure communication**: Protect sensitive data with SSL/TLS
 
-### Integrate with Other Ada Features
+### 1.11.2 Integrate with Other Ada Features
 
 - **Tasking for concurrent operations**: Handle multiple clients efficiently
 - **Exception handling for robustness**: Gracefully handle network failures
 - **Strong typing for reliability**: Prevent data corruption and invalid inputs
 - **Distributed Systems Annex**: Advanced features for large-scale systems
 
-### Join the Ada Community
+### 1.11.3 Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore Forums**: For technical support and discussions
@@ -1460,7 +1460,7 @@ The Ada community is active and supportive. Join:
 - **Ada mailing lists**: For discussions and questions
 - **Ada conferences**: Events like Ada Europe
 
-### Build Real-World Applications
+### 1.11.4 Build Real-World Applications
 
 Start with small projects and gradually build more complex applications:
 - A chat application for friends
@@ -1468,7 +1468,7 @@ Start with small projects and gradually build more complex applications:
 - A simple online store
 - A distributed sensor network
 
-## Conclusion: The Power of Distributed Systems in Ada
+## 1.12 Conclusion: The Power of Distributed Systems in Ada
 
 > "Distributed systems aren't just for aerospace engineers—they're the backbone of everyday applications like smart homes, online games, and cloud services. Ada's reliability features make it an excellent choice for building distributed systems that are both robust and maintainable."
 

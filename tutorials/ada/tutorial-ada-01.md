@@ -1,4 +1,4 @@
-# 1\. Introduction To Ada Programming
+# 1 Introduction To Ada Programming
 
 Ada is a high-integrity programming language designed for applications where reliability, maintainability, and efficiency are paramount. Born from military requirements and refined over four decades, Ada provides unparalleled compile-time verification and runtime protection. This introduction explores Ada's unique philosophy, core strengths, and why it remains a valuable choice for robust software development across diverse domains. Whether you're building embedded systems for consumer electronics, real-time data processing applications, or large-scale enterprise software, Ada's disciplined approach helps prevent common programming errors before they reach production.
 
@@ -6,11 +6,11 @@ Ada's design philosophy centers on correctness by construction rather than corre
 
 This chapter will walk you through Ada's history, core principles, and practical setup. You'll see how Ada's features work in real code examples and understand why these features matter for everyday programming challenges. By the end, you'll have a solid foundation for exploring Ada's capabilities in your own projects.
 
-## The Genesis of Ada: More Than Just a Language
+## 1.1 The Genesis of Ada: More Than Just a Language
 
 Developed under contract from the U.S. Department of Defense in the late 1970s, Ada was named after Augusta Ada King, Countess of Lovelace—widely recognized as the world's first computer programmer. The language emerged from a rigorous selection process called the "Steelman requirements," which evaluated over 150 candidate languages. This process wasn't about finding a language for a specific niche; it was about creating a general-purpose language that could handle complex, large-scale software projects with exceptional reliability.
 
-### Key Historical Milestones
+### 1.1.1 Key Historical Milestones
 
 - **1980:** First standardized version (Ada 83)  
   This initial standard focused on core reliability features: strong typing, modularity, and explicit error handling. It established Ada as a language designed for maintainability in large systems.
@@ -26,7 +26,7 @@ Developed under contract from the U.S. Department of Defense in the late 1970s, 
 
 Ada's evolution has always been driven by real-world needs. While initially developed for military applications, its design principles have proven valuable across many industries. The language has been continuously refined based on feedback from developers working on everything from automotive systems to financial software. This ongoing improvement ensures Ada remains relevant while staying true to its core philosophy of reliability through design.
 
-### Why Ada Was Created
+### 1.1.2 Why Ada Was Created
 
 Before Ada, many large software projects struggled with common issues: unpredictable behavior due to type errors, difficult maintenance because of poor modularity, and concurrency problems that were hard to debug. Languages like C were popular but lacked built-in safeguards—errors often only surfaced during runtime, sometimes in production environments. This was especially problematic for large systems where a single bug could cause widespread issues.
 
@@ -39,7 +39,7 @@ The Steelman requirements addressed these challenges head-on. Key goals included
 
 These weren't just theoretical goals—they were practical necessities for projects where software failures could cause significant financial or operational damage. While Ada wasn't created solely for "safety-critical" systems (a term we'll avoid in this book), its features naturally benefit any project where reliability matters. The discipline it enforces helps prevent common programming mistakes that plague projects of all sizes.
 
-### The Steelman Requirements: A Blueprint for Reliability
+### 1.1.3 The Steelman Requirements: A Blueprint for Reliability
 
 The Steelman requirements were developed through a collaborative process involving software engineers, military personnel, and language designers. They specified 23 key requirements that a new programming language needed to meet. Some notable examples:
 
@@ -52,11 +52,11 @@ These requirements shaped Ada's core design. For instance, the strong typing req
 
 The result was a language that prioritized correctness from the ground up. While other languages might add safety features as afterthoughts, Ada was designed with these principles baked into its syntax and semantics. This makes Ada uniquely positioned to help developers build reliable software, regardless of the application domain.
 
-## Ada's Design Philosophy: Correctness by Construction
+## 1.2 Ada's Design Philosophy: Correctness by Construction
 
 Ada's core philosophy is "correctness by construction"—building reliability into the language itself rather than relying on developers to remember best practices or thorough testing to catch errors. This approach shifts the focus from "fixing bugs after they happen" to "preventing bugs from existing in the first place." Let's explore what this means in practice.
 
-### Typical Language Approach vs. Ada's Approach
+### 1.2.1 Typical Language Approach vs. Ada's Approach
 
 Consider how most programming languages handle common errors:
 
@@ -70,7 +70,7 @@ Consider how most programming languages handle common errors:
 
 This difference isn't just theoretical—it has real-world implications for how you write and maintain code. Let's look at a concrete example to see how Ada's approach works in practice.
 
-#### Example: Handling Temperature Data
+#### 1.2.1.1 Example: Handling Temperature Data
 
 Imagine you're writing a program that processes temperature readings. In many languages, you might write something like this in C:
 
@@ -98,11 +98,11 @@ Temp := Pres;  -- Error: type mismatch
 
 Ada catches this error immediately during compilation. The `Temperature` and `Pressure` subtypes are distinct types—even though both are based on `Integer`—so assigning one to the other is a type error. This isn't just about preventing obvious mistakes; it's about creating a system where the compiler enforces your design decisions.
 
-### Design-by-Contract Explained
+### 1.2.2 Design-by-Contract Explained
 
 Ada 2012 introduced formal contract-based programming, which allows you to specify exactly what a function expects and guarantees. Contracts are written directly in the code, making them impossible to ignore or become outdated.
 
-#### Core Contract Elements
+#### 1.2.2.1 Core Contract Elements
 
 - **Preconditions:** Requirements that callers must satisfy before calling a function
 - **Postconditions:** Guarantees the function makes after execution
@@ -118,7 +118,7 @@ function Celsius_to_Fahrenheit (C : Float) return Float with
 
 Here, the precondition (`Pre`) ensures the input is physically possible (no temperatures below absolute zero). The postcondition (`Post`) guarantees the output is also physically possible. If you call this function with an invalid value, Ada will either catch it at compile time (if the value is known) or at runtime (if the value comes from user input).
 
-#### How Contracts Work in Practice
+#### 1.2.2.2 How Contracts Work in Practice
 
 Contracts aren't just documentation—they're active checks. When you compile with contract checking enabled (using `-gnata`), Ada inserts runtime checks for conditions that can't be verified at compile time. For example:
 
@@ -133,7 +133,7 @@ Result := Process_Temperature(-300);
 
 This might seem restrictive, but it's actually liberating. Instead of wondering "what if someone passes a bad value?" you can be certain the compiler will enforce your constraints. This reduces the need for defensive programming and makes your code more predictable.
 
-#### Contract Benefits Beyond Error Checking
+#### 1.2.2.3 Contract Benefits Beyond Error Checking
 
 Contracts also serve as living documentation. When you look at a function's signature, you immediately see its requirements and guarantees. This is especially valuable in team environments where developers might not be familiar with every part of the codebase. For example:
 
@@ -146,15 +146,15 @@ function Calculate_Discount (Original_Price : Float;
 
 This tells you everything you need to know about the function: it expects a positive price, and the result will never exceed the original price. You don't need to dig through comments or external documentation to understand the function's behavior.
 
-## Core Language Pillars
+## 1.3 Core Language Pillars
 
 Ada's power comes from four interconnected pillars: strong static typing, built-in concurrency, exception handling, and modular design. Each pillar reinforces the others, creating a cohesive system where reliability is built into the language's DNA.
 
-### 1. Strong Static Typing
+### 1.3.1 Strong Static Typing
 
 Ada's type system is one of its most distinctive features. Unlike languages like C or Python where implicit conversions between types are common, Ada enforces strict type checking. This prevents many common programming errors at compile time rather than at runtime.
 
-#### Subtypes and Constraints
+#### 1.3.1.1 Subtypes and Constraints
 
 A key aspect of Ada's typing is the ability to define subtypes with constraints. For example:
 
@@ -175,7 +175,7 @@ temperature = pressure;  // Compiles without warning
 
 In C, both variables are just `int`, so assigning one to the other is allowed—even though it makes no sense for pressure values to be assigned to temperature variables. This kind of mistake can lead to subtle bugs that are hard to track down.
 
-#### No Implicit Conversions
+#### 1.3.1.2 No Implicit Conversions
 
 Ada does not allow implicit conversions between types. For example:
 
@@ -193,7 +193,7 @@ Even though both `Temperature` and `Pressure` are based on `Integer`, they're di
 
 This strictness might seem restrictive at first, but it prevents countless subtle bugs. Consider a financial application where you have `dollars` and `euros` as subtypes. With Ada's strong typing, you can't accidentally assign euros to dollars without explicitly converting them—preventing currency conversion errors that could cost millions.
 
-#### Array Bounds Checking
+#### 1.3.1.3 Array Bounds Checking
 
 Ada automatically checks array bounds at runtime (unless explicitly disabled). This prevents buffer overflow errors that plague languages like C:
 
@@ -207,7 +207,7 @@ A(11) := 5;  -- Out of bounds access
 
 In C, the equivalent code would compile without warning but could overwrite memory, leading to undefined behavior that's hard to debug. Ada's approach makes these errors visible and manageable.
 
-#### Tagged Types for Safe Polymorphism
+#### 1.3.1.4 Tagged Types for Safe Polymorphism
 
 Ada supports object-oriented programming through tagged types, which allow for safe polymorphism. For example:
 
@@ -230,11 +230,11 @@ end Speak;
 
 Here, `Dog` and `Cat` are derived from `Animal`, and each has its own `Speak` implementation. When you call `Speak` on an `Animal` variable, Ada automatically dispatches to the correct implementation based on the actual type. This is safer than C++'s virtual functions because Ada's type system prevents common pitfalls like slicing errors.
 
-### 2. Concurrency Model
+### 1.3.2 Concurrency Model
 
 Ada has built-in support for concurrent programming through tasks and protected objects. This is part of the language, not a library, ensuring that concurrency is handled safely by design.
 
-#### Tasks: Independent Units of Execution
+#### 1.3.2.1 Tasks: Independent Units of Execution
 
 Tasks are independent units of execution that run concurrently. They're defined using `task type` and `task body`:
 
@@ -255,7 +255,7 @@ end Sensor_Reader;
 
 This defines a task that reads a sensor every 100 milliseconds. The `entry Start` allows the main program to start the task when ready. Tasks are lightweight—Ada handles the scheduling and context switching automatically.
 
-#### Protected Objects: Safe Shared Data
+#### 1.3.2.2 Protected Objects: Safe Shared Data
 
 Protected objects provide safe access to shared data. They ensure mutual exclusion and prevent race conditions:
 
@@ -282,7 +282,7 @@ end Counter;
 
 This defines a counter that multiple tasks can safely increment. Only one task can access the counter at a time, preventing inconsistent states. Protected objects are more than simple mutexes—they're type-safe, self-documenting, and integrated into Ada's type system.
 
-#### Why Concurrency Matters
+#### 1.3.2.3 Why Concurrency Matters
 
 Modern applications often need to handle multiple tasks simultaneously: reading sensors while processing data, serving web requests while updating databases, or handling user input while running background calculations. Ada's built-in concurrency model makes this straightforward and safe.
 
@@ -344,15 +344,15 @@ end Consumer;
 
 This code safely processes items between producers and consumers without manual synchronization. The buffer handles all the locking and queuing automatically. In C or Python, implementing this would require careful use of mutexes and condition variables—easy to get wrong, especially in complex systems.
 
-#### Concurrency Without Complexity
+#### 1.3.2.4 Concurrency Without Complexity
 
 Ada's concurrency model is designed to be intuitive. Tasks are defined using simple syntax, and protected objects handle synchronization automatically. This means you can focus on what your program needs to do rather than how to manage threads safely. The result is concurrent code that's easier to write, read, and maintain.
 
-### 3. Exception Handling
+### 1.3.3 Exception Handling
 
 Ada's exception handling is explicit and structured, making error conditions visible and manageable. Unlike languages where exceptions are optional or implicit, Ada requires you to define how errors will be handled.
 
-#### Basic Exception Handling
+#### 1.3.3.1 Basic Exception Handling
 
 ```ada
 begin
@@ -368,7 +368,7 @@ end;
 
 This example shows how Ada handles division by zero. The `Constraint_Error` exception is raised when an operation violates a constraint (like dividing by zero). You can handle specific exceptions or use `others` as a catch-all.
 
-#### Custom Exceptions
+#### 1.3.3.2 Custom Exceptions
 
 You can define your own exceptions for domain-specific errors:
 
@@ -393,7 +393,7 @@ end;
 
 This creates a custom exception for temperature validation errors. The procedure explicitly checks the temperature range and raises the exception when invalid, making the error handling clear and intentional.
 
-#### Exception Propagation
+#### 1.3.3.3 Exception Propagation
 
 Exceptions propagate up the call stack until handled. This means you can centralize error handling at appropriate levels:
 
@@ -418,11 +418,11 @@ end;
 
 Here, `Process_Data` catches the exception, logs a message, and re-raises it. The main program then handles it with a final handler. This allows you to handle errors at the most appropriate level—local errors can be handled locally, while critical errors can be handled at the top level.
 
-### 4. Modular Design
+### 1.3.4 Modular Design
 
 Ada's modular design is built around packages—self-contained units of code with clear interfaces. This makes large projects manageable and promotes code reuse.
 
-#### Package Structure
+#### 1.3.4.1 Package Structure
 
 A typical Ada package has two parts:
 - **Specification:** Declares what the package provides (public interface)
@@ -453,7 +453,7 @@ end Temperature_Converter;
 
 The specification declares what functions are available, while the body contains the implementation details. Clients of the package only need to see the specification—they don't need to know how the functions are implemented.
 
-#### Package Instantiation
+#### 1.3.4.2 Package Instantiation
 
 Ada supports generic packages, which allow you to create reusable templates:
 
@@ -480,7 +480,7 @@ package Float_Sort is new Sort(Float, "<");
 
 This creates two specialized sorting packages—one for integers and one for floats. The generic mechanism allows you to write code once and reuse it for multiple types, reducing duplication and improving reliability.
 
-#### Separation of Interface and Implementation
+#### 1.3.4.3 Separation of Interface and Implementation
 
 Ada enforces a clear separation between what a module provides and how it works. This has several benefits:
 - **Easier maintenance:** You can change implementation details without affecting clients
@@ -489,7 +489,7 @@ Ada enforces a clear separation between what a module provides and how it works.
 
 This modular approach makes large projects manageable. Instead of dealing with a monolithic codebase, you can build systems from independently verifiable components. Each package can be tested in isolation, and changes to one package won't accidentally break others.
 
-## Your First Ada Program: Beyond "Hello World"
+## 1.4 Your First Ada Program: Beyond "Hello World"
 
 Let's examine a complete Ada program that demonstrates the language's structure and safety features. This example isn't about safety-critical systems—it's a simple temperature converter for a home thermostat, showing how Ada's features prevent common programming errors.
 
@@ -556,9 +556,9 @@ Current temperature:  2.25000E+01 °C
 Equivalent in Fahrenheit:  7.25000E+01 °F
 ```
 
-### Key Structural Elements Explained
+### 1.4.1 Key Structural Elements Explained
 
-#### With/Use Clauses
+#### 1.4.1.1 With/Use Clauses
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -566,7 +566,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 This imports the standard input/output package. The `with` clause declares a dependency, while `use` allows you to call procedures without prefixing them with `Ada.Text_IO`. This is explicit—unlike languages that automatically import everything—so you always know where functions come from.
 
-#### Package Structure
+#### 1.4.1.2 Package Structure
 
 ```ada
 package Temperature_Converter is
@@ -576,7 +576,7 @@ end Temperature_Converter;
 
 Packages separate interface from implementation. The specification (`.ads`) declares what's available, while the body (`.adb`) contains the implementation. This keeps your code organized and makes it clear what other parts of the program can use.
 
-#### Subtype Constraints
+#### 1.4.1.3 Subtype Constraints
 
 ```ada
 subtype Valid_Celsius is Float range -50.0..50.0;
@@ -585,7 +585,7 @@ subtype Valid_Fahrenheit is Float range -58.0..122.0;
 
 These define specialized types that only allow values within specific ranges. Any attempt to assign an out-of-range value results in a compile-time error. For example, `Current_Temp := -300.0;` would fail immediately during compilation.
 
-#### Contract-Based Programming
+#### 1.4.1.4 Contract-Based Programming
 
 ```ada
 function Celsius_to_Fahrenheit(C : Float) return Float with
@@ -599,7 +599,7 @@ This function specifies:
 
 If you call this function with an invalid value (like -300°C), Ada will either catch it at compile time (if the value is known) or at runtime (if the value comes from user input).
 
-#### Type Safety
+#### 1.4.1.5 Type Safety
 
 ```ada
 Target_Temp := 22.5;  -- Error: type mismatch
@@ -607,15 +607,15 @@ Target_Temp := 22.5;  -- Error: type mismatch
 
 `Target_Temp` is a `Valid_Fahrenheit`, but `22.5` is just a float. Ada requires explicit conversion between types, preventing accidental misuse. This is different from languages like Python where `22.5` could be assigned to any numeric variable without issue.
 
-#### Explicit Semicolons
+#### 1.4.1.6 Explicit Semicolons
 
 Ada requires semicolons to terminate statements. This eliminates ambiguity about where statements end, preventing common syntax errors found in languages like Python where indentation matters.
 
-#### Terminator Comments
+#### 1.4.1.7 Terminator Comments
 
 While not required in this simple example, Ada often uses comments to mark the end of blocks (like `end Home_Thermostat;`). This makes code more readable, especially in large programs where it's easy to lose track of nested blocks.
 
-### Why This Matters for Everyday Programming
+### 1.4.2 Why This Matters for Everyday Programming
 
 This simple temperature converter demonstrates Ada's core strengths:
 - **Preventing type errors:** You can't accidentally assign Celsius values to Fahrenheit variables
@@ -625,13 +625,13 @@ This simple temperature converter demonstrates Ada's core strengths:
 
 These features aren't just for "safety-critical" systems—they're valuable for any project where reliability matters. Imagine building a home automation system where temperature readings control heating. If the software incorrectly converts temperatures, it could cause the heater to run constantly or not at all. Ada's type system and contracts would prevent these kinds of mistakes before they reach production.
 
-## Setting Up Your Ada Environment
+## 1.5 Setting Up Your Ada Environment
 
 The GNAT compiler (part of GCC) is the reference implementation for Ada. It's free, open-source, and available for all major platforms. Let's walk through installation and basic usage.
 
-### Installation Options
+### 1.5.1 Installation Options
 
-#### Windows
+#### 1.5.1.1 Windows
 
 1. Download the latest GNAT Community edition from [AdaCore's website](https://www.adacore.com/download)
 2. Run the installer (select default options)
@@ -642,7 +642,7 @@ The GNAT compiler (part of GCC) is the reference implementation for Ada. It's fr
    gnat --version
    ```
 
-#### Linux
+#### 1.5.1.2 Linux
 
 For Ubuntu/Debian:
 
@@ -663,7 +663,7 @@ Verify installation:
 gnat --version
 ```
 
-#### macOS
+#### 1.5.1.3 macOS
 
 Using Homebrew:
 
@@ -677,7 +677,7 @@ Verify installation:
 gnat --version
 ```
 
-### GNAT Programming Studio (GPS)
+### 1.5.2 GNAT Programming Studio (GPS)
 
 GNAT comes with GPS (GNAT Programming Studio), a full-featured IDE for Ada development. To launch it:
 
@@ -691,27 +691,27 @@ GPS provides:
 - Project management
 - Contract verification tools
 
-### Basic Compilation Commands
+### 1.5.3 Basic Compilation Commands
 
 To compile and run our temperature converter example:
 
 ```bash
-# Compile with contract verification enabled
+# 2 Compile with contract verification enabled
 gnatmake -gnata Home_Thermostat.adb
 
-# Run the program
+# 3 Run the program
 ./home_thermostat
 ```
 The `-gnata` flag enables contract checking. Without it, contracts would be ignored at runtime. For development, always use this flag to catch errors early.
 
-### Development Environment Tips
+### 3.0.1 Development Environment Tips
 
 - **Enable all warnings:** Add `-gnatwa` to compilation flags to catch potential issues
 - **Use GPS for debugging:** Set breakpoints, inspect variables, and step through code
 - **Organize projects:** Use `.gpr` project files for larger applications
 - **Try formal verification:** Install SPARK (a subset of Ada for mathematical verification) to prove correctness
 
-### Example: Building a Project
+### 3.0.2 Example: Building a Project
 
 For larger applications, organize code into projects. Create a file named `thermostat.gpr`:
 
@@ -730,11 +730,11 @@ gnatmake -P thermostat.gpr
 
 This structure keeps your code organized and makes it easy to manage dependencies.
 
-## Why Ada Endures: The Reliability Imperative
+## 3.1 Why Ada Endures: The Reliability Imperative
 
 In an era of rapid development cycles and "move fast and break things" culture, Ada's value proposition becomes increasingly relevant. While it might seem slower to write Ada code at first, the long-term benefits in code quality and maintainability often outweigh the initial investment.
 
-### Development Phase Comparison
+### 3.1.1 Development Phase Comparison
 
 | **Development Phase** | **Typical Language** | **Ada Approach** |
 | :--- | :--- | :--- |
@@ -745,7 +745,7 @@ In an era of rapid development cycles and "move fast and break things" culture, 
 
 Let's explore what this means in practice.
 
-#### Design Phase
+#### 3.1.1.1 Design Phase
 
 In most languages, design decisions are documented in external documents or comments. These often become outdated as code evolves. Ada's contracts embed design requirements directly in code. For example:
 
@@ -757,12 +757,12 @@ function Calculate_Discount(Price : Float; Is_Premium : Boolean) return Float wi
 
 This is always up-to-date because it's part of the code itself. If you change the function's behavior, the contract must change too. This eliminates the common problem of "documentation that doesn't match the code."
 
-#### Coding Phase
+#### 3.1.1.2 Coding Phase
 
 In languages like C or Python, many errors only surface at runtime. For example:
 
 ```python
-# Python example
+# 4 Python example
 def calculate_discount(price, is_premium):
     discount = 0.1 if is_premium else 0.05
     return price * (1 - discount)
@@ -780,7 +780,7 @@ function Calculate_Discount(Price : Valid_Price; Is_Premium : Boolean) return Fl
 
 Now, any attempt to pass a negative price would be caught at compile time. This prevents entire classes of errors before they ever reach testing.
 
-#### Testing Phase
+#### 4.0.0.1 Testing Phase
 
 In typical development, 80% of testing time is spent hunting for bugs. With Ada, many bugs are caught during compilation, so testing focuses on edge cases and real-world scenarios rather than basic errors.
 
@@ -794,7 +794,7 @@ function Process_Input(Input : String) return Integer with
 
 With Ada's strong typing and contracts, you don't need to test for empty strings or negative results—those cases are prevented by the language itself. Your testing effort can focus on more meaningful scenarios.
 
-#### Maintenance Phase
+#### 4.0.0.2 Maintenance Phase
 
 When maintaining code, refactoring is often risky—changing one part might break another. Ada's compiler acts as a safety net. For example, if you change a function's signature:
 
@@ -808,14 +808,14 @@ function Calculate_Total(Price : Float; Quantity : Natural) return Float;
 
 The compiler will immediately flag all call sites where `Quantity` might be negative. This makes refactoring safe and predictable.
 
-### The Cost of Reliability
+### 4.0.1 The Cost of Reliability
 
 Ada development typically requires 15-20% more upfront effort than languages like C. However, studies by software engineering organizations show this investment yields 40-60% reduction in lifetime costs for projects where reliability matters. For applications that must operate correctly for years, the discipline Ada enforces translates to fewer bugs, easier maintenance, and longer software lifespans.
 
 Consider a simple example: a banking application that processes transactions. In a typical language, you might have:
 
 ```python
-# Python version
+# 5 Python version
 def transfer(from_account, to_account, amount):
     from_account.balance -= amount
     to_account.balance += amount
@@ -844,13 +844,13 @@ Now:
 
 This might seem like more work initially, but it prevents costly bugs down the line. In banking, a single bug could lead to millions in losses. Ada's approach makes these errors impossible.
 
-## Next Steps in Your Ada Journey
+## 5.1 Next Steps in Your Ada Journey
 
 This introduction has laid the foundation for understanding Ada's philosophy and core structure. Let's explore what's ahead in your Ada learning journey.
 
-### Upcoming Topics
+### 5.1.1 Upcoming Topics
 
-#### Strong Typing in Depth
+#### 5.1.1.1 Strong Typing in Depth
 
 We'll dive deeper into Ada's type system:
 - Subtypes vs. derived types
@@ -860,7 +860,7 @@ We'll dive deeper into Ada's type system:
 
 You'll learn how to define types that precisely match your domain requirements, preventing entire classes of errors before they occur.
 
-#### Tasking and Protected Objects
+#### 5.1.1.2 Tasking and Protected Objects
 
 We'll explore Ada's concurrency model in detail:
 - Task priorities and scheduling
@@ -870,7 +870,7 @@ We'll explore Ada's concurrency model in detail:
 
 You'll build concurrent applications that are safe by design, without the complexity of manual thread management.
 
-#### Formal Verification with SPARK
+#### 5.1.1.3 Formal Verification with SPARK
 
 SPARK is a subset of Ada designed for mathematical verification. We'll cover:
 - How to prove program correctness
@@ -880,7 +880,7 @@ SPARK is a subset of Ada designed for mathematical verification. We'll cover:
 
 This will show you how to take Ada's reliability features to the next level.
 
-#### Real-Time Systems Programming
+#### 5.1.1.4 Real-Time Systems Programming
 
 Ada excels in real-time environments. We'll cover:
 - Deadline monitoring
@@ -890,7 +890,7 @@ Ada excels in real-time environments. We'll cover:
 
 You'll learn how to build systems that respond predictably to time-sensitive events.
 
-#### Interfacing with C and Other Languages
+#### 5.1.1.5 Interfacing with C and Other Languages
 
 Ada integrates seamlessly with existing codebases. We'll cover:
 - Calling C functions from Ada
@@ -900,7 +900,7 @@ Ada integrates seamlessly with existing codebases. We'll cover:
 
 This will let you leverage Ada's strengths in projects that already use other languages.
 
-### Recommended Practice
+### 5.1.2 Recommended Practice
 
 To reinforce what you've learned, try these exercises:
 
@@ -919,7 +919,7 @@ To reinforce what you've learned, try these exercises:
 5. **Build a modular project**  
    Organize your code into packages with clear interfaces. Use a project file to manage dependencies and compilation.
 
-### Key Takeaway
+### 5.1.3 Key Takeaway
 
 Ada isn't just a language—it's a methodology for building systems where correctness is measurable and reliable. Its strict type system, built-in concurrency, and formal contracts create a foundation for robust software that can be maintained and verified over time. While the learning curve may seem steep at first, the long-term benefits in code quality and reliability make Ada a powerful tool for any developer serious about building dependable software.
 

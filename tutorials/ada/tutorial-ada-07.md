@@ -1,8 +1,8 @@
-# 7. Real-Time Systems Programming in Ada
+# 1 . Real-Time Systems Programming in Ada
 
 In today's interconnected world, many applications require precise timing behavior. Whether you're building a home automation system that needs to respond to sensor data within milliseconds, a web server that must handle requests consistently under load, or a video game that needs smooth frame rates, timing correctness is just as important as functional correctness. Ada provides unique language-level support for real-time programming, allowing developers to specify, verify, and guarantee timing behavior with mathematical precision. This tutorial explores how to leverage Ada's real-time features to build systems that not only do the right thing, but do it at the right time, every time. You'll learn to transform timing requirements from vague aspirations into verifiable system properties.
 
-#### The Real-Time Challenge
+#### 1.0.0.1 The Real-Time Challenge
 
 **Hard real-time:** Missing a deadline is a system failure  
 **Firm real-time:** Late results are useless  
@@ -10,33 +10,33 @@ In today's interconnected world, many applications require precise timing behavi
 
 Ada provides the tools to meet hard real-time requirements through language features designed specifically for timing-critical applications. These features aren't just for aerospace or medical devices—they're equally valuable for everyday applications where timing matters. A home automation system that misses its temperature adjustment deadline might cause discomfort, but it won't crash. A video game that misses its frame deadline might stutter, but it won't crash. Ada helps you build systems that behave predictably under all conditions, whether you're creating a simple calculator or a complex industrial control system.
 
-## Why Most Languages Fail at Real-Time Programming
+## 1.1 Why Most Languages Fail at Real-Time Programming
 
 General-purpose languages lack the mechanisms to provide timing guarantees, forcing developers to rely on external libraries and platform-specific extensions. This creates fragile systems where timing behavior is unpredictable and difficult to verify.
 
-### Common Timing Failures
+### 1.1.1 Common Timing Failures
 
 - **Unpredictable garbage collection pauses**: Languages like Java or C# can pause execution unexpectedly for garbage collection, causing missed deadlines
 - **Non-deterministic memory allocation**: Dynamic memory allocation can have variable execution times, making worst-case timing impossible to guarantee
 - **Hidden priority inversions**: When high-priority tasks are blocked by lower-priority ones, causing delays
 - **Unbounded execution times**: Code that might take an unpredictable amount of time to execute
 
-### Real-World Consequences
+### 1.1.2 Real-World Consequences
 
 - **Video game stuttering**: A game that misses frame deadlines causes noticeable stuttering, ruining the player experience
 - **Web server slowdowns**: A web server that can't handle peak traffic consistently results in slow response times and frustrated users
 - **Home automation issues**: A smart thermostat that doesn't respond quickly enough to temperature changes causes uncomfortable environments
 - **Industrial control problems**: A factory robot that misses timing constraints might cause production delays or quality issues
 
-### The Importance of Timing in Everyday Applications
+### 1.1.3 The Importance of Timing in Everyday Applications
 
 Consider a home automation system that controls your lights based on motion sensors. If the system takes too long to respond, you might walk into a dark room. If it responds too quickly, you might get false triggers. Ada's real-time features help you precisely control these timing behaviors to create a reliable system.
 
-## Core Real-Time Features in Ada
+## 1.2 Core Real-Time Features in Ada
 
 Ada's real-time capabilities are built into the language itself, providing predictable behavior across all platforms. Unlike other languages where you need to rely on platform-specific extensions, Ada's real-time features are part of the standard.
 
-### 1\. Precise Time Representation
+### 1.2.1 \. Precise Time Representation
 
 Ada provides a robust time model with nanosecond precision:
 
@@ -65,7 +65,7 @@ begin
 end Time_Demo;
 ```
 
-### Key Time Types
+### 1.2.2 Key Time Types
 
 | **Type** | **Description** | **Best For** |
 | :--- | :--- | :--- |
@@ -76,7 +76,7 @@ end Time_Demo;
 
 Unlike other languages, Ada's time model is part of the language standard, ensuring consistent behavior across platforms. You don't need to worry about different implementations on different operating systems or hardware.
 
-### 2\. Deadline Monitoring
+### 1.2.3 \. Deadline Monitoring
 
 Specify and verify timing constraints directly in code:
 
@@ -112,14 +112,14 @@ exception
 end Climate_Control;
 ```
 
-### Deadline Best Practices
+### 1.2.4 Deadline Best Practices
 
 - **Specify deadlines at task declaration for static analysis**: This helps tools verify timing behavior before runtime
 - **Use runtime checks for critical operations within tasks**: Catch missed deadlines even if static analysis can't prove them
 - **Combine with contracts for complete verification**: Ensure both functional and timing correctness
 - **Verify worst-case execution time (WCET) through analysis**: Know exactly how long operations will take
 
-### 3\. Dispatching Policies
+### 1.2.5 \. Dispatching Policies
 
 Control how the runtime schedules tasks:
 
@@ -136,7 +136,7 @@ task type Sensor_Reader is
 end Sensor_Reader;
 ```
 
-#### Policy Selection Guide
+#### 1.2.5.1 Policy Selection Guide
 
 | **Policy** | **Best For** | **When to Use** |
 | :--- | :--- | :--- |
@@ -168,15 +168,15 @@ end System_Logger;
 
 In this example, the EDF policy ensures that tasks with the closest deadlines get executed first. The emergency shutdown task will always run before temperature control, which will run before logging.
 
-## Real-Time Scheduling Analysis
+## 1.3 Real-Time Scheduling Analysis
 
 One of Ada's most powerful capabilities is enabling schedulability analysis at compile time, rather than through error-prone runtime testing. This means you can prove your system will meet its timing requirements before you even run it.
 
-### Rate Monotonic Analysis (RMA)
+### 1.3.1 Rate Monotonic Analysis (RMA)
 
 A mathematical approach to verify that all deadlines will be met:
 
-#### The Math Behind RMA
+#### 1.3.1.1 The Math Behind RMA
 
 For n periodic tasks, the sufficient condition for schedulability is:
 
@@ -193,7 +193,7 @@ C_i = worst-case execution time
 T_i = task period
 ```
 
-#### Ada Implementation
+#### 1.3.1.2 Ada Implementation
 
 ```ada
 task type Sensor_Task is
@@ -206,7 +206,7 @@ end Sensor_Task;
 
 These annotations allow tools like GNATprove to perform formal schedulability analysis.
 
-### WCET Analysis Tools
+### 1.3.2 WCET Analysis Tools
 
 Ada integrates with industry-standard WCET analysis tools:
 
@@ -219,7 +219,7 @@ Ada integrates with industry-standard WCET analysis tools:
 
 These tools work with Ada's predictable execution model to calculate precise worst-case execution times.
 
-### Schedulability Verification
+### 1.3.3 Schedulability Verification
 
 Using SPARK for formal timing verification:
 
@@ -240,7 +240,7 @@ end Control_Loop with
 -- 3. No priority inversion occurs
 ```
 
-#### Practical Schedulability Example: Home Automation System
+#### 1.3.3.1 Practical Schedulability Example: Home Automation System
 
 Consider a home automation system with these tasks:
 
@@ -257,13 +257,13 @@ Total Utilization: 15.6%
 
 With 15.6% utilization, this system easily meets the RMA bound (69.3% for 4 tasks), guaranteeing all deadlines will be met. Ada's annotations make this analysis automatic.
 
-## Temporal Contracts: Specifying Timing Behavior
+## 1.4 Temporal Contracts: Specifying Timing Behavior
 
 Building on Design by Contract, Ada allows specification of temporal properties directly in code—creating what we call "temporal contracts." These contracts define not just what a function does, but when it must do it.
 
-### Basic Temporal Contracts
+### 1.4.1 Basic Temporal Contracts
 
-#### Deadline Specifications
+#### 1.4.1.1 Deadline Specifications
 
 ```ada
 procedure Adjust_Thermostat (
@@ -277,7 +277,7 @@ procedure Adjust_Thermostat (
 
 Specifies that the thermostat adjustment must complete within 50ms of the request.
 
-#### WCET Specifications
+#### 1.4.1.2 WCET Specifications
 
 ```ada
 function Calculate_Temperature (
@@ -290,9 +290,9 @@ function Calculate_Temperature (
 
 Specifies a worst-case execution time of 2.5ms for verification.
 
-### Advanced Temporal Patterns
+### 1.4.2 Advanced Temporal Patterns
 
-#### 1\. Phase-Based Timing Constraints
+#### 1.4.2.1 \. Phase-Based Timing Constraints
 
 Different timing requirements for different system phases:
 
@@ -309,7 +309,7 @@ procedure Process_Home_Phase (
          when Night     => Clock <= T0 + Minutes(10));
 ```
 
-#### 2\. Jitter Constraints
+#### 1.4.2.2 \. Jitter Constraints
 
 Limit variation in execution timing:
 
@@ -324,7 +324,7 @@ procedure Sample_Sensor (
 
 Ensures samples occur within 50μs of their nominal 100ms interval.
 
-#### 3\. Deadline Chaining
+#### 1.4.2.3 \. Deadline Chaining
 
 Specify timing relationships between operations:
 
@@ -342,11 +342,11 @@ procedure Process_Smart_Home_Command (
          Response.Timestamp <= Cmd.Timestamp + Milliseconds(50));
 ```
 
-### Temporal Contract Verification
+### 1.4.3 Temporal Contract Verification
 
 Temporal contracts can be verified at multiple levels:
 
-#### Runtime Verification
+#### 1.4.3.1 Runtime Verification
 
 ```bash
 gnatmake -gnata -D your_program.adb
@@ -354,7 +354,7 @@ gnatmake -gnata -D your_program.adb
 
 Checks timing contracts during execution
 
-#### Static Verification
+#### 1.4.3.2 Static Verification
 
 ```bash
 gnatprove --level=2 --report=all your_program.adb
@@ -364,9 +364,9 @@ Proves timing properties without execution
 
 For the highest reliability, both approaches are typically required.
 
-## Real-World Real-Time Applications
+## 1.5 Real-World Real-Time Applications
 
-### Smart Home Climate Control System
+### 1.5.1 Smart Home Climate Control System
 
 A practical home automation example:
 
@@ -407,7 +407,7 @@ end Climate_Control;
 
 This structure guarantees a precisely timed 20Hz control loop for your home heating and cooling system.
 
-### Home Health Monitor System
+### 1.5.2 Home Health Monitor System
 
 A practical health monitoring example:
 
@@ -440,9 +440,9 @@ end Heart_Rate_Monitor;
 
 This implementation ensures heart rate monitoring within 100ms of required intervals, providing timely alerts for potential issues.
 
-## Advanced Real-Time Patterns
+## 1.6 Advanced Real-Time Patterns
 
-### Pattern 1: Time-Triggered Architecture
+### 1.6.1 Pattern 1: Time-Triggered Architecture
 
 Implement a predictable time-triggered system:
 
@@ -483,7 +483,7 @@ begin
 end Time_Triggered_System;
 ```
 
-### Why Time-Triggered Architectures Matter
+### 1.6.2 Why Time-Triggered Architectures Matter
 
 Time-triggered systems provide deterministic behavior that's easier to verify than event-triggered systems. They're valuable for many applications because:
 
@@ -494,7 +494,7 @@ Time-triggered systems provide deterministic behavior that's easier to verify th
 | **Easier fault containment** | A home automation system where a failure in one component doesn't affect others |
 | **Reduced testing burden** | A web server that handles peak traffic consistently without extensive testing |
 
-### Pattern 2: Adaptive Deadline Management
+### 1.6.3 Pattern 2: Adaptive Deadline Management
 
 Handle varying workloads while maintaining critical deadlines:
 
@@ -525,17 +525,17 @@ begin
 end Smart_Thermostat;
 ```
 
-### WCET-Aware Programming
+### 1.6.4 WCET-Aware Programming
 
 Structure code for predictable worst-case execution:
 
-#### Avoid:
+#### 1.6.4.1 Avoid:
 - Unbounded loops
 - Dynamic memory allocation
 - Recursion
 - Exceptions in critical paths
 
-#### Prefer:
+#### 1.6.4.2 Prefer:
 - Bounded loops with loop invariants
 - Static memory allocation
 - Iteration over recursion
@@ -571,9 +571,9 @@ end Process_Data;
 
 This bounded loop with a fixed iteration count is easier to analyze for worst-case execution time.
 
-## Exercises: Building Verified Real-Time Systems
+## 1.7 Exercises: Building Verified Real-Time Systems
 
-### Exercise 1: Smart Home Lighting System
+### 1.7.1 Exercise 1: Smart Home Lighting System
 
 Design a real-time lighting controller:
 
@@ -585,7 +585,7 @@ Design a real-time lighting controller:
 
 > **Challenge:** Prove the system can always respond to light commands within 10ms of receiving them.
 
-#### Solution Guidance
+#### 1.7.1.1 Solution Guidance
 
 Start by defining your task with timing constraints:
 
@@ -637,7 +637,7 @@ Use SPARK to verify timing properties:
 -- 3. No priority inversion occurs
 ```
 
-### Exercise 2: Video Game Physics Engine
+### 1.7.2 Exercise 2: Video Game Physics Engine
 
 Build a physics engine with:
 
@@ -649,7 +649,7 @@ Build a physics engine with:
 
 > **Challenge:** Prove that all objects move in precise synchronization within 1ms tolerance.
 
-#### Solution Guidance
+#### 1.7.2.1 Solution Guidance
 
 Start by defining your physics tasks:
 
@@ -687,7 +687,7 @@ procedure Process_Frame with
          Clock <= Request_Time + Milliseconds(16));
 ```
 
-## Verification Strategy for Real-Time Systems
+## 1.8 Verification Strategy for Real-Time Systems
 
 1. **Design phase**: Specify all timing requirements as temporal contracts
 2. **Implementation**: Structure code for predictable execution
@@ -707,11 +707,11 @@ Let's see how this works for our smart home lighting system:
 5. **Runtime verification**: We tested with `-gnata -D` to catch timing violations
 6. **Hardware validation**: We tested on actual hardware to ensure real-world timing
 
-## Next Steps: Integration and Certification
+## 1.9 Next Steps: Integration and Certification
 
 Now that you've mastered Ada's real-time capabilities, you're ready to apply these techniques to full system integration and certification. In the next tutorial, we'll explore how to:
 
-### Upcoming: Integration and Certification
+### 1.9.1 Upcoming: Integration and Certification
 
 - Integrate Ada components with other languages
 - Meet certification requirements for various industries
@@ -719,7 +719,7 @@ Now that you've mastered Ada's real-time capabilities, you're ready to apply the
 - Transition from development to certified deployment
 - Build traceability from requirements to code
 
-### Practice Challenge
+### 1.9.2 Practice Challenge
 
 Enhance your smart home lighting system with integration features:
 
@@ -729,7 +729,7 @@ Enhance your smart home lighting system with integration features:
 - Create a verification matrix
 - Prepare for tool qualification
 
-#### The Path to Reliable Systems
+#### 1.9.2.1 The Path to Reliable Systems
 
 Real-time programming in Ada represents the culmination of the language's design philosophy: transforming critical system properties from runtime concerns into verifiable design-time guarantees. When combined with strong typing, Design by Contract, and safe concurrency, Ada provides a complete framework for building systems where timing errors are as impossible as type errors.
 

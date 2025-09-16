@@ -1,10 +1,10 @@
-# 13\. Certification and Integration in Ada
+# 1 \. Certification and Integration in Ada
 
 > "Certification and integration aren't just for aerospace engineers—they're essential skills for any developer who wants to build reliable, interoperable software that works seamlessly with other systems."
 
 In modern software development, few applications exist in isolation. Whether you're building a home automation system, a personal finance tool, or a data processing pipeline, your code will likely need to integrate with other components, libraries, or languages. Similarly, ensuring your code meets quality standards through certification processes is crucial for reliability, even in everyday applications. This chapter explores how Ada's unique features make certification and integration more manageable and reliable—without requiring specialized domain knowledge.
 
-## Understanding Software Certification
+## 1.1 Understanding Software Certification
 
 Software certification is the process of verifying that code meets specific quality standards and behaves as intended. While often associated with safety-critical systems, certification principles apply to all software development. For everyday applications, certification ensures:
 
@@ -15,7 +15,7 @@ Software certification is the process of verifying that code meets specific qual
 
 Unlike traditional testing, which examines specific inputs and outputs, certification involves systematic verification of code quality across multiple dimensions. Ada's language features make this verification process more straightforward and reliable.
 
-### Why Certification Matters for Everyday Applications
+### 1.1.1 Why Certification Matters for Everyday Applications
 
 Consider a simple home automation system that controls lighting based on motion sensors. Without proper certification:
 
@@ -31,7 +31,7 @@ With certification practices:
 
 These practices aren't just for aerospace engineers—they're essential for any developer who wants to build reliable software that users can trust.
 
-### Common Certification Processes
+### 1.1.2 Common Certification Processes
 
 | **Certification Practice** | **How Ada Supports It** | **Benefit** |
 | :--- | :--- | :--- |
@@ -40,11 +40,11 @@ These practices aren't just for aerospace engineers—they're essential for any 
 | **Automated Testing** | Contracts provide test cases automatically | Reduces manual test creation effort |
 | **Formal Verification** | SPARK subset allows mathematical proof of correctness | Guarantees absence of certain errors |
 
-## Ada's Certification-Friendly Features
+## 1.2 Ada's Certification-Friendly Features
 
 Ada provides several features specifically designed to support certification processes. These aren't just for safety-critical systems—they're equally valuable for everyday applications.
 
-### Strong Typing and Type Safety
+### 1.2.1 Strong Typing and Type Safety
 
 Ada's strong typing system prevents entire categories of errors before code ever runs. For example:
 
@@ -60,7 +60,7 @@ end Set_Temperature;
 
 This code prevents accidental assignment of Fahrenheit values to Celsius parameters. The compiler catches type mismatches immediately, making code review and certification more straightforward.
 
-### Design by Contract
+### 1.2.2 Design by Contract
 
 Ada's contract-based programming allows you to specify exactly what your code expects and guarantees:
 
@@ -72,7 +72,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 These contracts serve as living documentation that's always up-to-date with the code. They also provide automatic test cases for certification processes.
 
-### SPARK Subset for Formal Verification
+### 1.2.3 SPARK Subset for Formal Verification
 
 SPARK is a formally verifiable subset of Ada that allows mathematical proof of correctness. While often associated with safety-critical systems, SPARK is equally valuable for everyday applications:
 
@@ -86,25 +86,25 @@ end Calculator;
 
 When you run `gnatprove` on this code, it verifies that the addition operation works correctly for all possible inputs. This provides a level of certainty that traditional testing cannot match.
 
-### Static Analysis Tools
+### 1.2.4 Static Analysis Tools
 
 Ada includes several static analysis tools that automatically check code quality:
 
 ```bash
-# Run GNATcheck to enforce coding standards
+# 2 Run GNATcheck to enforce coding standards
 gnatcheck -r -s -p project.gpr
 
-# Run GNATprove for formal verification
+# 3 Run GNATprove for formal verification
 gnatprove -P project.gpr --level=1 --report=all
 ```
 
 These tools help enforce coding standards, catch potential errors, and verify correctness—without requiring manual inspection of every line of code.
 
-## Certification Standards for Everyday Development
+## 3.1 Certification Standards for Everyday Development
 
 While there are no universal certification standards for all software, several widely applicable practices can improve code quality and reliability.
 
-### Coding Standards
+### 3.1.1 Coding Standards
 
 Adopting coding standards ensures consistency and readability. For example, the Ada community has developed standards like:
 
@@ -114,7 +114,7 @@ Adopting coding standards ensures consistency and readability. For example, the 
 
 These standards cover aspects like naming conventions, code structure, and error handling.
 
-### Code Review Practices
+### 3.1.2 Code Review Practices
 
 Effective code reviews are a cornerstone of certification. Ada's clear syntax and strong typing make code reviews more productive:
 
@@ -130,7 +130,7 @@ This code is easier to review because:
 - Types prevent common errors
 - The implementation is straightforward
 
-### Testing Strategies
+### 3.1.3 Testing Strategies
 
 Ada's features make testing more efficient:
 
@@ -146,11 +146,11 @@ end Test_Calculate_Area;
 
 The contract in the `Calculate_Area` function provides automatic test cases that verify the function's behavior for all valid inputs.
 
-## Integration with Other Languages
+## 3.2 Integration with Other Languages
 
 In modern software development, few applications use a single language. Integration with other languages is essential for leveraging existing libraries, improving performance, or building complex systems.
 
-### Why Integration Matters
+### 3.2.1 Why Integration Matters
 
 Consider a home automation system where:
 - Ada handles sensor data processing
@@ -159,7 +159,7 @@ Consider a home automation system where:
 
 This combination leverages each language's strengths while overcoming its weaknesses. Ada's strong typing and reliability make it ideal for critical processing tasks, while Python provides an easy-to-use interface.
 
-### Common Integration Scenarios
+### 3.2.2 Common Integration Scenarios
 
 | **Scenario** | **Use Case** | **Tools** |
 | :--- | :--- | :--- |
@@ -168,7 +168,7 @@ This combination leverages each language's strengths while overcoming its weakne
 | **Ada + Java** | Enterprise applications | JNA, JNI |
 | **Ada + Web** | Web services with Ada backend | RESTful APIs, CGI |
 
-### Ada-C Integration: A Practical Example
+### 3.2.3 Ada-C Integration: A Practical Example
 
 Let's create a simple example of integrating Ada with C. First, we'll create an Ada library for basic math operations:
 
@@ -253,7 +253,7 @@ Cube of 3.0: 27.00
 
 This example demonstrates how Ada's strong typing and reliability can be leveraged in a C application. The Ada functions provide verified math operations that the C code can safely use.
 
-### Ada-Python Integration: Another Practical Example
+### 3.2.4 Ada-Python Integration: Another Practical Example
 
 Let's create an example of integrating Ada with Python using `ctypes`:
 
@@ -271,10 +271,10 @@ Now, create a Python script that calls the Ada functions:
 ```python
 import ctypes
 
-# Load the Ada library
+# 4 Load the Ada library
 lib = ctypes.CDLL('./libmath_utils.so')
 
-# Define function signatures
+# 5 Define function signatures
 lib.Square.argtypes = [ctypes.c_float]
 lib.Square.restype = ctypes.c_float
 
@@ -284,7 +284,7 @@ lib.Cube.restype = ctypes.c_float
 lib.Add.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.POINTER(ctypes.c_float)]
 lib.Add.restype = None
 
-# Call Ada functions
+# 6 Call Ada functions
 print(f"Square of 5.0: {lib.Square(5.0):.2f}")
 print(f"Cube of 3.0: {lib.Cube(3.0):.2f}")
 
@@ -295,11 +295,11 @@ print(f"2.5 + 3.7 = {result.value:.2f}")
 
 This Python script calls the Ada math functions directly, leveraging Ada's reliability for critical calculations while using Python's ease of use for the overall application.
 
-## Common Integration Challenges and Solutions
+## 6.1 Common Integration Challenges and Solutions
 
 When integrating Ada with other languages, several challenges can arise. Let's explore these challenges and how to address them.
 
-### Data Type Mismatches
+### 6.1.1 Data Type Mismatches
 
 Different languages have different data types. For example, C's `int` might be 32 bits, while Ada's `Integer` might be 64 bits.
 
@@ -319,7 +319,7 @@ float square(float x);
 
 This ensures consistent data representation across language boundaries.
 
-### Memory Management
+### 6.1.2 Memory Management
 
 Different languages have different memory management approaches. Ada uses controlled types for automatic cleanup, while C requires manual memory management.
 
@@ -345,7 +345,7 @@ void free_buffer(Buffer buffer);
 
 This approach ensures proper memory management while maintaining clear ownership rules.
 
-### Error Handling
+### 6.1.3 Error Handling
 
 Different languages have different error handling mechanisms. Ada uses exceptions, while C typically uses return codes.
 
@@ -377,11 +377,11 @@ end Process_Data;
 
 This converts Ada exceptions to C-style success/failure codes.
 
-## Best Practices for Certification and Integration
+## 6.2 Best Practices for Certification and Integration
 
 To ensure reliable and maintainable integrated systems, follow these best practices:
 
-### 1\. Keep Interfaces Simple and Well-Documented
+### 6.2.1 \. Keep Interfaces Simple and Well-Documented
 
 Simple interfaces are easier to certify and integrate. For example:
 
@@ -401,7 +401,7 @@ package Complex_Utils is
 end Complex_Utils;
 ```
 
-### 2\. Use Ada's Features to Simplify Integration
+### 6.2.2 \. Use Ada's Features to Simplify Integration
 
 Ada's strong typing and contracts make it easier to integrate with other languages:
 
@@ -414,7 +414,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 These contracts provide clear expectations for integration points.
 
-### 3\. Test Integrated Systems Thoroughly
+### 6.2.3 \. Test Integrated Systems Thoroughly
 
 When integrating different languages, test the entire system:
 
@@ -431,29 +431,29 @@ end Test_Integration;
 
 This ensures that the integrated system behaves correctly as a whole.
 
-### 4\. Use Static Analysis Tools for Certification
+### 6.2.4 \. Use Static Analysis Tools for Certification
 
 Run static analysis tools on integrated systems:
 
 ```bash
-# Check for issues in integrated code
+# 7 Check for issues in integrated code
 gnatcheck -r -s -p project.gpr
 ```
 
 These tools help catch integration-specific issues before they become problems.
 
-## Practical Exercise: Building an Integrated System
+## 7.1 Practical Exercise: Building an Integrated System
 
 Let's build a complete example of an integrated system that demonstrates certification and integration concepts.
 
-### Exercise 1: Home Automation System with Ada and Python
+### 7.1.1 Exercise 1: Home Automation System with Ada and Python
 
 Create a home automation system where:
 - Ada handles sensor data processing
 - Python provides the user interface
 - Certification practices ensure reliability
 
-#### Step 1: Create Ada Sensor Processing Library
+#### 7.1.1.1 Step 1: Create Ada Sensor Processing Library
 
 ```ada
 -- sensor_processing.ads
@@ -490,7 +490,7 @@ package body Sensor_Processing with SPARK_Mode is
 end Sensor_Processing;
 ```
 
-#### Step 2: Compile Ada Library as Shared Object
+#### 7.1.1.2 Step 2: Compile Ada Library as Shared Object
 
 ```bash
 gnatmake -c -fPIC sensor_processing.adb
@@ -498,16 +498,16 @@ gnatbind sensor_processing
 gnatlink sensor_processing -shared -o libsensor_processing.so
 ```
 
-#### Step 3: Create Python Interface
+#### 7.1.1.3 Step 3: Create Python Interface
 
 ```python
-# sensor_interface.py
+# 8 sensor_interface.py
 import ctypes
 
-# Load Ada library
+# 9 Load Ada library
 lib = ctypes.CDLL('./libsensor_processing.so')
 
-# Define Ada function signatures
+# 10 Define Ada function signatures
 lib.Read_Temperature.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_float)]
 lib.Read_Temperature.restype = None
 
@@ -525,10 +525,10 @@ def process_temperature(value):
     return result.value
 ```
 
-#### Step 4: Create Python User Interface
+#### 10.0.0.1 Step 4: Create Python User Interface
 
 ```python
-# main.py
+# 11 main.py
 from sensor_interface import read_temperature, process_temperature
 
 def main():
@@ -549,7 +549,7 @@ if __name__ == "__main__":
     main()
 ```
 
-#### Step 5: Certification Verification
+#### 11.0.0.1 Step 5: Certification Verification
 
 Run SPARK verification on the Ada code:
 ```bash
@@ -561,7 +561,7 @@ This will verify that:
 - Temperature values stay within expected range
 - Process_Temperature correctly identifies safe temperatures
 
-#### Step 6: Integration Testing
+#### 11.0.0.2 Step 6: Integration Testing
 
 Test the integrated system:
 ```bash
@@ -570,9 +570,9 @@ python main.py
 
 This exercise demonstrates how Ada's reliability features can be leveraged in an integrated system with Python. The Ada code handles critical sensor processing with verified correctness, while Python provides an easy-to-use interface.
 
-## Common Pitfalls and How to Avoid Them
+## 11.1 Common Pitfalls and How to Avoid Them
 
-### Pitfall 1: Ignoring Data Type Mismatches
+### 11.1.1 Pitfall 1: Ignoring Data Type Mismatches
 
 When integrating different languages, data type mismatches can cause subtle bugs.
 
@@ -587,7 +587,7 @@ package Math_Utils is
 end Math_Utils;
 ```
 
-### Pitfall 2: Inconsistent Error Handling
+### 11.1.2 Pitfall 2: Inconsistent Error Handling
 
 Different languages have different error handling mechanisms, leading to inconsistent behavior.
 
@@ -602,7 +602,7 @@ package Error_Utils is
 end Error_Utils;
 ```
 
-### Pitfall 3: Poor Memory Management
+### 11.1.3 Pitfall 3: Poor Memory Management
 
 Different languages have different memory management approaches, leading to leaks or crashes.
 
@@ -621,7 +621,7 @@ private
 end Memory_Utils;
 ```
 
-### Pitfall 4: Insufficient Testing
+### 11.1.4 Pitfall 4: Insufficient Testing
 
 Integrated systems often have unique failure modes that aren't caught by testing individual components.
 
@@ -640,17 +640,17 @@ begin
 end Test_Integration;
 ```
 
-## Certification and Integration in Real-World Applications
+## 11.2 Certification and Integration in Real-World Applications
 
 Let's look at how certification and integration principles apply to a real-world application: a personal finance tool.
 
-### Personal Finance Tool Architecture
+### 11.2.1 Personal Finance Tool Architecture
 
 - **Ada**: Handles financial calculations (interest rates, compound interest)
 - **Python**: Provides user interface and data visualization
 - **SQLite**: Stores financial data
 
-#### Ada Financial Calculations
+#### 11.2.1.1 Ada Financial Calculations
 
 ```ada
 -- finance_calculations.ads
@@ -685,17 +685,17 @@ package body Finance_Calculations with SPARK_Mode is
 end Finance_Calculations;
 ```
 
-#### Python User Interface
+#### 11.2.1.2 Python User Interface
 
 ```python
-# finance_app.py
+# 12 finance_app.py
 import ctypes
 import sqlite3
 
-# Load Ada library
+# 13 Load Ada library
 lib = ctypes.CDLL('./libfinance_calculations.so')
 
-# Define Ada function signatures
+# 14 Define Ada function signatures
 lib.Calculate_Interest.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.c_int]
 lib.Calculate_Interest.restype = ctypes.c_float
 
@@ -716,7 +716,7 @@ def save_to_db(principal, rate, years, interest):
     conn.commit()
     conn.close()
 
-# User interface
+# 15 User interface
 principal = float(input("Enter principal amount: "))
 rate = float(input("Enter interest rate: "))
 years = int(input("Enter number of years: "))
@@ -732,39 +732,39 @@ save_to_db(principal, rate, years, compound_interest)
 
 This application demonstrates how certification and integration principles apply to a real-world personal finance tool. The Ada code handles critical financial calculations with verified correctness, while Python provides an easy-to-use interface and SQLite handles data storage.
 
-## Next Steps for Certification and Integration
+## 15.1 Next Steps for Certification and Integration
 
 Now that you've learned the basics of certification and integration in Ada, here are some next steps to continue your journey:
 
-### 1\. Explore More Complex Integration Scenarios
+### 15.1.1 \. Explore More Complex Integration Scenarios
 
 Try integrating Ada with other languages for more complex applications:
 - **Ada + Java**: For enterprise applications
 - **Ada + Web**: For web services with Ada backend
 - **Ada + C++**: For performance-critical applications
 
-### 2\. Learn About Advanced Certification Tools
+### 15.1.2 \. Learn About Advanced Certification Tools
 
 Explore more advanced certification tools:
 - **GNATprove**: For formal verification
 - **SPARK Examiner**: For examining proof results
 - **AdaCore's CodePeer**: For static analysis
 
-### 3\. Practice with Real-World Projects
+### 15.1.3 \. Practice with Real-World Projects
 
 Apply certification and integration concepts to real-world projects:
 - Build a home automation system with Ada and Python
 - Create a data processing pipeline with Ada and C
 - Develop a personal finance tool with Ada and SQLite
 
-### 4\. Join the Ada Community
+### 15.1.4 \. Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore forums**: For technical support
 - **GitHub repositories**: For Ada projects and examples
 - **Ada mailing lists**: For discussions and questions
 
-## Conclusion: The Power of Reliable, Interoperable Systems
+## 15.2 Conclusion: The Power of Reliable, Interoperable Systems
 
 > "Certification and integration aren't just for aerospace engineers—they're essential skills for any developer who wants to build reliable, interoperable software that works seamlessly with other systems."
 

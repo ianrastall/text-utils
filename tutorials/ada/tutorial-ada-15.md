@@ -1,4 +1,4 @@
-# 15\. Testing Frameworks in Ada
+# 1 \. Testing Frameworks in Ada
 
 > "Testing isn't just for safety-critical systems—it's essential for any application where reliability matters. With Ada's AUnit framework, you can build robust, maintainable code for home automation, personal finance tools, and more—without specialized knowledge."
 
@@ -6,7 +6,7 @@ When you're first learning to program, it's easy to think testing is just for "b
 
 This chapter explores AUnit, Ada's standard unit testing framework. You'll learn how to write tests for everyday applications, organize them effectively, and integrate them into your development workflow—all without needing specialized knowledge of testing methodologies. Whether you're building a calculator, a data processing tool, or a home automation system, AUnit provides a simple, reliable way to verify your code works as intended.
 
-## Why Testing Matters for Everyday Applications
+## 1.1 Why Testing Matters for Everyday Applications
 
 Testing is often seen as a chore for large teams working on complex systems, but it's equally valuable for small projects and personal applications. Consider these common scenarios:
 
@@ -16,7 +16,7 @@ Testing is often seen as a chore for large teams working on complex systems, but
 
 Without testing, these problems might only surface when users encounter them—often after the software has been deployed. With testing, you can catch these issues during development, when fixing them is easy and cheap.
 
-### Manual Testing vs. Automated Testing
+### 1.1.1 Manual Testing vs. Automated Testing
 
 | **Aspect** | **Manual Testing** | **AUnit Framework** |
 | :--- | :--- | :--- |
@@ -59,7 +59,7 @@ end Test_Addition;
 
 When you run the tests, AUnit automatically checks all these cases and reports which ones pass or fail. This is more efficient, more thorough, and less error-prone than manual testing.
 
-### Real-World Benefits of Testing
+### 1.1.2 Real-World Benefits of Testing
 
 - **Faster development**: Catch bugs early when they're easier to fix
 - **More confidence**: Know your code works correctly before deploying
@@ -69,11 +69,11 @@ When you run the tests, AUnit automatically checks all these cases and reports w
 
 For everyday applications, these benefits translate directly to better user experiences. A home automation system that works reliably builds trust with users. A personal finance app that calculates correctly prevents financial mistakes. Testing isn't just for professionals—it's a practical tool for any developer who wants to build reliable software.
 
-## Introduction to AUnit
+## 1.2 Introduction to AUnit
 
 AUnit is Ada's standard unit testing framework. It's part of the GNAT distribution, so no extra installation is needed for most users. AUnit provides a simple, reliable way to write and run tests for Ada code.
 
-### Key Features of AUnit
+### 1.2.1 Key Features of AUnit
 
 - **Simple syntax**: Uses familiar Ada concepts
 - **Automated test runner**: Executes all tests and reports results
@@ -84,7 +84,7 @@ AUnit is Ada's standard unit testing framework. It's part of the GNAT distributi
 
 AUnit is designed to be accessible to beginners while providing powerful features for more advanced users. You don't need to learn a new language—just understand how to use AUnit's simple procedures and packages.
 
-### Why AUnit Over Other Testing Frameworks?
+### 1.2.2 Why AUnit Over Other Testing Frameworks?
 
 Many languages have multiple testing frameworks, but Ada's ecosystem is simpler. AUnit is the standard, supported by GNAT, and works with all Ada projects. While other testing tools exist, AUnit is the most straightforward option for beginners.
 
@@ -127,11 +127,11 @@ And you get:
 
 This is more efficient and reliable for any application, big or small.
 
-## Setting Up AUnit for Your Projects
+## 1.3 Setting Up AUnit for Your Projects
 
 AUnit is included with GNAT, so setting it up is straightforward. Let's walk through the steps.
 
-### Basic Setup
+### 1.3.1 Basic Setup
 
 1. **Create a project directory**:
    ```bash
@@ -197,7 +197,7 @@ Running test suite...
 Total: 1 test, 1 passed, 0 failed
 ```
 
-### Understanding the Setup
+### 1.3.2 Understanding the Setup
 
 - **`AUnit.Test_Cases`**: Provides the base test case class
 - **`AUnit.Assertions`**: Contains assertion procedures for testing
@@ -206,7 +206,7 @@ Total: 1 test, 1 passed, 0 failed
 
 You don't need to install anything extra—just include these packages in your code. AUnit is part of GNAT, so it's always available when you install Ada.
 
-### Project File Best Practices
+### 1.3.3 Project File Best Practices
 
 For larger projects, organize your project file to separate source and test code:
 
@@ -238,11 +238,11 @@ This structure:
 
 You can build tests separately from your main application by creating a separate main program for tests.
 
-## Writing Your First Tests
+## 1.4 Writing Your First Tests
 
 Let's create a complete example of testing a simple calculator application. This will show you the basics of writing tests with AUnit.
 
-### Step 1: Create the Calculator Package
+### 1.4.1 Step 1: Create the Calculator Package
 
 First, create the calculator package to test:
 
@@ -281,7 +281,7 @@ package body Calculator is
 end Calculator;
 ```
 
-### Step 2: Create Test Cases
+### 1.4.2 Step 2: Create Test Cases
 
 Now create the test cases:
 
@@ -326,7 +326,7 @@ package body Test_Calculator is
 end Test_Calculator;
 ```
 
-### Step 3: Create a Test Runner
+### 1.4.3 Step 3: Create a Test Runner
 
 Now create a test runner to execute all tests:
 
@@ -347,13 +347,13 @@ begin
 end Test_Runner;
 ```
 
-### Step 4: Build and Run Tests
+### 1.4.4 Step 4: Build and Run Tests
 
 ```bash
-# Build the project
+# 2 Build the project
 gnatmake -P my_project.gpr tests/test_runner.adb
 
-# Run the tests
+# 3 Run the tests
 ./test_runner
 ```
 
@@ -370,7 +370,7 @@ Total: 4 tests, 4 passed, 0 failed
 
 This simple example shows how AUnit makes testing straightforward. You write tests that check specific functionality, and AUnit automatically runs them and reports results.
 
-### Understanding the Test Code
+### 3.0.1 Understanding the Test Code
 
 Let's break down the test code:
 
@@ -389,15 +389,15 @@ end Test_Addition;
 
 Each test is a procedure that takes a test case parameter. Inside, you use assertions to check that your code behaves as expected.
 
-## Advanced Testing Features
+## 3.1 Advanced Testing Features
 
 Once you've mastered the basics, you can explore more advanced testing features that make your tests more powerful and maintainable.
 
-### Test Suites and Organization
+### 3.1.1 Test Suites and Organization
 
 As your project grows, you'll want to organize tests into logical groups. AUnit makes this easy with test suites.
 
-#### Example: Organizing Tests by Functionality
+#### 3.1.1.1 Example: Organizing Tests by Functionality
 
 ```ada
 -- tests/test_suites.adb
@@ -443,11 +443,11 @@ Running test suite...
 Total: 3 tests, 3 passed, 0 failed
 ```
 
-### Setup and Teardown Procedures
+### 3.1.2 Setup and Teardown Procedures
 
 Many tests need common setup and cleanup steps. AUnit provides `Setup` and `Teardown` procedures for this purpose.
 
-#### Example: Testing a Temperature Sensor
+#### 3.1.2.1 Example: Testing a Temperature Sensor
 
 ```ada
 -- tests/test_temperature_sensor.adb
@@ -478,7 +478,7 @@ package body Test_Temperature_Sensor is
 end Test_Temperature_Sensor;
 ```
 
-#### Registering Setup/Teardown in the Test Runner
+#### 3.1.2.2 Registering Setup/Teardown in the Test Runner
 
 ```ada
 -- tests/test_runner.adb
@@ -502,7 +502,7 @@ This ensures:
 - Tests don't interfere with each other
 - Resources are properly cleaned up
 
-### Test Fixtures for Common Test Data
+### 3.1.3 Test Fixtures for Common Test Data
 
 For tests that need common data, you can create test fixtures:
 
@@ -542,11 +542,11 @@ This pattern:
 - Reduces duplication
 - Ensures consistent test data across tests
 
-## Common Assertion Types
+## 3.2 Common Assertion Types
 
 AUnit provides several assertion types for different testing needs. Let's explore the most common ones.
 
-### Basic Assertions
+### 3.2.1 Basic Assertions
 
 | **Assertion** | **Usage** | **Example** |
 | :--- | :--- | :--- |
@@ -576,7 +576,7 @@ begin
 end Test_Assertions;
 ```
 
-### String Assertions
+### 3.2.2 String Assertions
 
 For string comparisons, AUnit provides special assertions:
 
@@ -591,7 +591,7 @@ begin
 end Test_String_Assertions;
 ```
 
-### Numeric Assertions
+### 3.2.3 Numeric Assertions
 
 For numeric comparisons, you can specify precision:
 
@@ -607,7 +607,7 @@ begin
 end Test_Numeric_Assertions;
 ```
 
-### Exception Assertions
+### 3.2.4 Exception Assertions
 
 For testing error handling, you can check if exceptions are raised:
 
@@ -624,11 +624,11 @@ end Test_Exception_Assertions;
 
 These assertions make it easy to test error conditions without complicating your test code.
 
-## Best Practices for Effective Testing
+## 3.3 Best Practices for Effective Testing
 
 Following best practices makes your tests more effective and maintainable. Here are key practices for writing good tests.
 
-### Write Clear Test Names
+### 3.3.1 Write Clear Test Names
 
 Test names should clearly describe what they're testing:
 
@@ -648,7 +648,7 @@ end Test1;
 
 Clear names make it easy to understand what each test does, especially when reports show failures.
 
-### Test One Thing Per Test
+### 3.3.2 Test One Thing Per Test
 
 Each test should focus on a single behavior:
 
@@ -674,7 +674,7 @@ end Test_Addition;
 
 This makes it easier to identify which specific behavior failed when a test fails.
 
-### Test Edge Cases
+### 3.3.3 Test Edge Cases
 
 Always test boundary conditions and edge cases:
 
@@ -693,7 +693,7 @@ end Test_Division_Edge_Cases;
 
 Edge cases often reveal bugs that aren't caught by typical test cases.
 
-### Keep Tests Independent
+### 3.3.4 Keep Tests Independent
 
 Each test should be able to run independently of others:
 
@@ -724,11 +724,11 @@ end Test_Subtraction;
 
 Independent tests can be run in any order, making test results more reliable.
 
-## Common Pitfalls and How to Avoid Them
+## 3.4 Common Pitfalls and How to Avoid Them
 
 Even with AUnit, beginners can encounter common pitfalls. Let's explore these challenges and how to solve them.
 
-### Pitfall 1: Testing Implementation Instead of Behavior
+### 3.4.1 Pitfall 1: Testing Implementation Instead of Behavior
 
 **Problem**: Testing how code works rather than what it does.
 
@@ -753,7 +753,7 @@ end Test_Addition;
 
 This makes your tests more resilient to implementation changes.
 
-### Pitfall 2: Writing Tests That Are Too Complex
+### 3.4.2 Pitfall 2: Writing Tests That Are Too Complex
 
 **Problem**: Tests that are harder to understand than the code they're testing.
 
@@ -785,7 +785,7 @@ end Test_Complicated_Calculation;
 
 This makes tests easier to understand and maintain.
 
-### Pitfall 3: Ignoring Error Handling
+### 3.4.3 Pitfall 3: Ignoring Error Handling
 
 **Problem**: Only testing successful cases, not error conditions.
 
@@ -811,7 +811,7 @@ end Test_Division;
 
 This ensures your code handles errors correctly.
 
-### Pitfall 4: Not Using Setup/Teardown for Common Initialization
+### 3.4.4 Pitfall 4: Not Using Setup/Teardown for Common Initialization
 
 **Problem**: Repeating initialization code in multiple tests.
 
@@ -859,11 +859,11 @@ end Test2;
 
 This reduces duplication and makes tests more maintainable.
 
-## Integrating AUnit with Project Files
+## 3.5 Integrating AUnit with Project Files
 
 AUnit integrates seamlessly with Ada project files, making it easy to manage tests as part of your project.
 
-### Basic Project File Configuration
+### 3.5.1 Basic Project File Configuration
 
 ```ada
 project My_Project is
@@ -882,7 +882,7 @@ This structure:
 - Uses a single object directory
 - Includes debugging information for tests
 
-### Building Tests Separately
+### 3.5.2 Building Tests Separately
 
 For larger projects, you might want to build tests separately from your main application:
 
@@ -910,16 +910,16 @@ end My_Project;
 You can build the main application or tests separately:
 
 ```bash
-# Build main application
+# 4 Build main application
 gnatmake -P my_project.gpr -XApplication
 
-# Build tests
+# 5 Build tests
 gnatmake -P my_project.gpr -XTests
 ```
 
 This makes it easy to build just what you need.
 
-### Conditional Compilation for Tests
+### 5.0.1 Conditional Compilation for Tests
 
 You can include test code only in debug builds:
 
@@ -956,15 +956,15 @@ end My_Project;
 
 This ensures test code isn't included in release builds, reducing the size of your final application.
 
-## Practical Exercises: Building Your First Test Suite
+## 5.1 Practical Exercises: Building Your First Test Suite
 
 Let's put what you've learned into practice with hands-on exercises.
 
-### Exercise 1: Simple Calculator Tests
+### 5.1.1 Exercise 1: Simple Calculator Tests
 
 Create a test suite for a simple calculator application.
 
-#### Step 1: Create the Calculator Package
+#### 5.1.1.1 Step 1: Create the Calculator Package
 
 ```ada
 -- src/calculator.ads
@@ -1001,7 +1001,7 @@ package body Calculator is
 end Calculator;
 ```
 
-#### Step 2: Create Test Cases
+#### 5.1.1.2 Step 2: Create Test Cases
 
 ```ada
 -- tests/test_calculator.adb
@@ -1044,7 +1044,7 @@ package body Test_Calculator is
 end Test_Calculator;
 ```
 
-#### Step 3: Create a Test Runner
+#### 5.1.1.3 Step 3: Create a Test Runner
 
 ```ada
 -- tests/test_runner.adb
@@ -1063,23 +1063,23 @@ begin
 end Test_Runner;
 ```
 
-#### Step 4: Build and Run Tests
+#### 5.1.1.4 Step 4: Build and Run Tests
 
 ```bash
-# Build the project
+# 6 Build the project
 gnatmake -P project.gpr tests/test_runner.adb
 
-# Run the tests
+# 7 Run the tests
 ./test_runner
 ```
 
 This exercise gives you hands-on experience with writing tests for a simple application. You'll see how AUnit makes testing straightforward and reliable.
 
-### Exercise 2: Temperature Sensor Tests
+### 7.0.1 Exercise 2: Temperature Sensor Tests
 
 Create tests for a temperature sensor application.
 
-#### Step 1: Create the Temperature Sensor Package
+#### 7.0.1.1 Step 1: Create the Temperature Sensor Package
 
 ```ada
 -- src/temperature_sensor.ads
@@ -1114,7 +1114,7 @@ package body Temperature_Sensor is
 end Temperature_Sensor;
 ```
 
-#### Step 2: Create Test Cases
+#### 7.0.1.2 Step 2: Create Test Cases
 
 ```ada
 -- tests/test_temperature_sensor.adb
@@ -1156,7 +1156,7 @@ package body Test_Temperature_Sensor is
 end Test_Temperature_Sensor;
 ```
 
-#### Step 3: Create a Test Runner
+#### 7.0.1.3 Step 3: Create a Test Runner
 
 ```ada
 -- tests/test_runner.adb
@@ -1177,23 +1177,23 @@ begin
 end Test_Runner;
 ```
 
-#### Step 4: Build and Run Tests
+#### 7.0.1.4 Step 4: Build and Run Tests
 
 ```bash
-# Build the project
+# 8 Build the project
 gnatmake -P project.gpr tests/test_runner.adb
 
-# Run the tests
+# 9 Run the tests
 ./test_runner
 ```
 
 This exercise shows how to test hardware-related code with setup/teardown procedures. You'll see how AUnit makes testing sensor code reliable and maintainable.
 
-## Real-World Testing Scenarios
+## 9.1 Real-World Testing Scenarios
 
 Let's explore how testing applies to common real-world applications.
 
-### Home Automation System
+### 9.1.1 Home Automation System
 
 A home automation system might include:
 - Temperature sensors
@@ -1225,7 +1225,7 @@ end Test_Light_Control;
 
 This modular approach makes it easy to test each component independently.
 
-### Personal Finance Tool
+### 9.1.2 Personal Finance Tool
 
 A personal finance tool might include:
 - Interest calculations
@@ -1259,11 +1259,11 @@ end Test_Budget_Tracking;
 
 This approach ensures each part of your application works correctly before combining them.
 
-## Next Steps for Mastering AUnit
+## 9.2 Next Steps for Mastering AUnit
 
 Now that you've learned the basics, here are some next steps to continue your journey:
 
-### 1\. Explore Advanced Testing Techniques
+### 9.2.1 \. Explore Advanced Testing Techniques
 
 Try these more advanced techniques:
 - **Mock objects**: Simulate hardware or external dependencies
@@ -1271,14 +1271,14 @@ Try these more advanced techniques:
 - **Test-driven development**: Write tests before writing code
 - **Continuous integration**: Automatically run tests on code changes
 
-### 2\. Practice with Real-World Projects
+### 9.2.2 \. Practice with Real-World Projects
 
 Apply AUnit to your own projects:
 - Build a home automation system with sensor testing
 - Create a personal finance tool with transaction testing
 - Develop a data processing pipeline with validation testing
 
-### 3\. Learn About Test Coverage
+### 9.2.3 \. Learn About Test Coverage
 
 Measure how much of your code is tested:
 ```bash
@@ -1288,14 +1288,14 @@ gnatcov report -P project.gpr
 
 This shows which parts of your code are covered by tests and which need more testing.
 
-### 4\. Join the Ada Community
+### 9.2.4 \. Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore forums**: For technical support
 - **GitHub repositories**: For Ada projects and examples
 - **Ada mailing lists**: For discussions and questions
 
-## Conclusion: The Power of Reliable Testing
+## 9.3 Conclusion: The Power of Reliable Testing
 
 > "Testing isn't just for safety-critical systems—it's essential for any application where reliability matters. With AUnit, you can build robust, maintainable code for home automation, personal finance tools, and more—without specialized knowledge."
 

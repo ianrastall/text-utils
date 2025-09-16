@@ -1,4 +1,4 @@
-# 11\. Aspect Specifications and Pragmas in Ada
+# 1 \. Aspect Specifications and Pragmas in Ada
 
 > **What Aspects and Pragmas Are**
 > 
@@ -39,11 +39,11 @@ Now the compiler will check that `Width` and `Height` are positive before callin
 
 This is the power of aspects and pragmas - they let you tell the compiler exactly what you want it to do with your code, making your programs more reliable and efficient.
 
-## Understanding Aspect Specifications
+## 1.1 Understanding Aspect Specifications
 
 Aspect specifications are a modern feature introduced in Ada 2012 that allow you to attach properties directly to declarations. They're more flexible and readable than older pragmas for many common tasks.
 
-### Basic Syntax of Aspect Specifications
+### 1.1.1 Basic Syntax of Aspect Specifications
 
 Aspect specifications use the `with` keyword followed by the aspect name and value:
 
@@ -68,7 +68,7 @@ function Square (X : Integer) return Integer with
    Post => Square'Result = X * X;
 ```
 
-### Where Aspects Can Be Used
+### 1.1.2 Where Aspects Can Be Used
 
 Aspects can be used on many different kinds of declarations:
 
@@ -81,7 +81,7 @@ Aspects can be used on many different kinds of declarations:
 
 Let's look at examples of aspects on different entities.
 
-### Aspects on Subprograms
+### 1.1.3 Aspects on Subprograms
 
 Subprograms are where aspects are most commonly used. Here's how to specify preconditions, postconditions, and other properties:
 
@@ -97,7 +97,7 @@ procedure Set_Temperature (Temp : Float) with
 
 These aspects tell the compiler to check that the input values meet certain conditions before the function is called, and that the output meets certain conditions after it returns.
 
-### Aspects on Types
+### 1.1.4 Aspects on Types
 
 You can use aspects to specify properties that must always be true for a type:
 
@@ -119,7 +119,7 @@ end record with
    Type_Invariant => Person.Age <= 120;
 ```
 
-### Aspects on Packages
+### 1.1.5 Aspects on Packages
 
 You can specify aspects on packages too:
 
@@ -134,11 +134,11 @@ end Math_Utils;
 
 This tells the compiler to use SPARK mode for this package, which enables formal verification.
 
-## Common Aspect Specifications
+## 1.2 Common Aspect Specifications
 
 Ada has many built-in aspects that you can use to enhance your code. Let's look at the most common ones.
 
-### Pre and Post Conditions
+### 1.2.1 Pre and Post Conditions
 
 Preconditions (`Pre`) and postconditions (`Post`) are used to specify what a subprogram expects and guarantees.
 
@@ -150,7 +150,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 This specifies that the price must be positive before calling the function, and the result must not exceed the original price.
 
-### Type Invariants
+### 1.2.2 Type Invariants
 
 Type invariants specify properties that must always be true for a type:
 
@@ -165,7 +165,7 @@ end record with
 
 This ensures that bank accounts always have non-negative balances and non-empty owner names.
 
-### SPARK Mode
+### 1.2.3 SPARK Mode
 
 SPARK mode enables formal verification for your code:
 
@@ -181,7 +181,7 @@ end Safety_Critical;
 
 This tells the compiler to check your code for correctness using formal methods.
 
-### Other Common Aspects
+### 1.2.4 Other Common Aspects
 
 | **Aspect** | **Purpose** | **Example** |
 | :--- | :--- | :--- |
@@ -191,11 +191,11 @@ This tells the compiler to check your code for correctness using formal methods.
 | **Import** | Imports an external function | `procedure External_Function with Import, Convention => C;` |
 | **Default_Initial_Condition** | Specifies initial state for objects | `type Counter with Default_Initial_Condition => 0;` |
 
-## Understanding Pragmas
+## 1.3 Understanding Pragmas
 
 Pragmas are compiler directives that have been part of Ada since the beginning. They're used for a wide variety of purposes, from optimizing code to controlling compiler behavior.
 
-### Basic Syntax of Pragmas
+### 1.3.1 Basic Syntax of Pragmas
 
 Pragmas use the `pragma` keyword followed by the pragma name and parameters:
 
@@ -215,7 +215,7 @@ You can also use pragmas with multiple parameters:
 pragma Suppress (Range_Check, Divide_Check);
 ```
 
-### Where Pragmas Can Be Used
+### 1.3.2 Where Pragmas Can Be Used
 
 Pragmas can be used in various places in your code:
 
@@ -234,11 +234,11 @@ begin
 end Calculate_Area;
 ```
 
-### Common Pragmas
+### 1.3.3 Common Pragmas
 
 Ada has many built-in pragmas. Let's look at the most common ones.
 
-#### Inline
+#### 1.3.3.1 Inline
 
 Tells the compiler to replace a function call with the function's code directly:
 
@@ -253,7 +253,7 @@ end Calculate_Area;
 
 This can improve performance for small, frequently called functions.
 
-#### Suppress
+#### 1.3.3.2 Suppress
 
 Disables specific compiler checks to improve performance:
 
@@ -268,7 +268,7 @@ end Safe_Get;
 
 This disables range checking for this function, but you should only do this when you're sure the index is always valid.
 
-#### Convention
+#### 1.3.3.3 Convention
 
 Specifies the calling convention for interfacing with other languages:
 
@@ -281,7 +281,7 @@ procedure C_Function (X : Integer) is
 
 This tells the compiler to use the C calling convention for this function.
 
-#### Import
+#### 1.3.3.4 Import
 
 Imports an external function from another language:
 
@@ -294,7 +294,7 @@ procedure External_Function (X : Integer) is
 
 This allows you to call C functions from your Ada code.
 
-#### Assert
+#### 1.3.3.5 Assert
 
 Checks a condition at runtime:
 
@@ -308,7 +308,7 @@ end Process;
 
 This checks that `X` is positive at runtime and raises an error if not.
 
-### Pragmas vs. Aspects
+### 1.3.4 Pragmas vs. Aspects
 
 | **Feature** | **Aspects** | **Pragmas** |
 | :--- | :--- | :--- |
@@ -322,11 +322,11 @@ As a general rule:
 - Use **aspects** for specifications (preconditions, postconditions, type invariants)
 - Use **pragmas** for compiler directives (inlining, suppressing checks, interfacing)
 
-## Practical Examples: Aspects and Pragmas in Everyday Programming
+## 1.4 Practical Examples: Aspects and Pragmas in Everyday Programming
 
 Let's look at some practical examples of how aspects and pragmas can improve your everyday programming.
 
-### Example 1: File Handling with Aspect Specifications
+### 1.4.1 Example 1: File Handling with Aspect Specifications
 
 Imagine you're writing a program that reads data from a file. You can use aspects to specify what the file must contain:
 
@@ -346,7 +346,7 @@ end Read_File;
 
 This ensures that the file exists before reading and that data is actually read.
 
-### Example 2: Optimizing a Small Function with Pragmas
+### 1.4.2 Example 2: Optimizing a Small Function with Pragmas
 
 For small, frequently called functions, you can use pragmas to improve performance:
 
@@ -361,7 +361,7 @@ end Calculate_Area;
 
 This tells the compiler to replace calls to `Calculate_Area` with the actual code, eliminating the function call overhead.
 
-### Example 3: Type Safety with Type Invariants
+### 1.4.3 Example 3: Type Safety with Type Invariants
 
 You can use type invariants to ensure your data structures always stay valid:
 
@@ -376,7 +376,7 @@ end record with
 
 Now, any time you create or modify a `Bank_Account`, Ada will check that the balance is non-negative and the owner name is not empty.
 
-### Example 4: Interfacing with C Libraries
+### 1.4.4 Example 4: Interfacing with C Libraries
 
 When working with C libraries, you can use pragmas to properly interface with them:
 
@@ -388,11 +388,11 @@ function C_Sqrt (X : Float) return Float;
 
 This tells the compiler that `C_Sqrt` is implemented in C and should be called using the C calling convention.
 
-## Common Pitfalls and How to Avoid Them
+## 1.5 Common Pitfalls and How to Avoid Them
 
 Even with aspects and pragmas, beginners can make mistakes. Let's look at common pitfalls and how to avoid them.
 
-### Pitfall 1: Using Pragmas for Specifications
+### 1.5.1 Pitfall 1: Using Pragmas for Specifications
 
 Many beginners try to use pragmas for things that should be aspects. For example:
 
@@ -415,7 +415,7 @@ begin
 end Calculate_Area;
 ```
 
-### Pitfall 2: Suppressing Checks Without Understanding
+### 1.5.2 Pitfall 2: Suppressing Checks Without Understanding
 
 It's tempting to suppress checks to improve performance, but this can lead to subtle bugs:
 
@@ -442,7 +442,7 @@ begin
 end Safe_Get;
 ```
 
-### Pitfall 3: Using Aspects on the Wrong Entity
+### 1.5.3 Pitfall 3: Using Aspects on the Wrong Entity
 
 Aspects must be used on the correct entity. For example:
 
@@ -461,7 +461,7 @@ type Safe_Integer_Array is array (Integer range <>) of Integer with
 Data : Safe_Integer_Array;
 ```
 
-### Pitfall 4: Misunderstanding When Aspects Are Checked
+### 1.5.4 Pitfall 4: Misunderstanding When Aspects Are Checked
 
 Not all aspects are checked at runtime by default. For example:
 
@@ -475,7 +475,7 @@ end Divide;
 
 This `Pre` aspect will only be checked if you compile with `-gnata` (or similar) compiler flag. Without it, the precondition is ignored.
 
-### Pitfall 5: Using Pragmas for Things That Should Be Aspects
+### 1.5.5 Pitfall 5: Using Pragmas for Things That Should Be Aspects
 
 Many pragmas have aspect equivalents that are more readable:
 
@@ -490,11 +490,11 @@ function Calculate_Area (Width, Height : Integer) return Integer with
 
 The aspect syntax is more readable and integrates better with the declaration.
 
-## Best Practices for Using Aspects and Pragmas
+## 1.6 Best Practices for Using Aspects and Pragmas
 
 To get the most out of aspects and pragmas, follow these best practices:
 
-### 1\. Use Aspects for Specifications
+### 1.6.1 \. Use Aspects for Specifications
 
 For preconditions, postconditions, type invariants, and other specifications, use aspects rather than pragmas:
 
@@ -505,7 +505,7 @@ function Square (X : Integer) return Integer with
    Post => Square'Result = X * X;
 ```
 
-### 2\. Use Pragmas for Compiler Directives
+### 1.6.2 \. Use Pragmas for Compiler Directives
 
 For compiler-specific directives like inlining, suppressing checks, or interfacing, use pragmas:
 
@@ -515,7 +515,7 @@ pragma Inline (Calculate_Area);
 pragma Suppress (Range_Check);
 ```
 
-### 3\. Be Specific with Suppression
+### 1.6.3 \. Be Specific with Suppression
 
 When suppressing checks, be specific about which checks you're suppressing:
 
@@ -532,7 +532,7 @@ Rather than suppressing all checks:
 pragma Suppress (All_Checks);
 ```
 
-### 4\. Document Your Aspects and Pragmas
+### 1.6.4 \. Document Your Aspects and Pragmas
 
 Add comments to explain why you're using a particular aspect or pragma:
 
@@ -545,7 +545,7 @@ function Calculate_Area (Width, Height : Integer) return Integer with
 pragma Inline (Calculate_Area);
 ```
 
-### 5\. Test Your Code with Aspects Enabled
+### 1.6.5 \. Test Your Code with Aspects Enabled
 
 When using aspects like preconditions, make sure to test with compiler flags that enable aspect checking:
 
@@ -555,11 +555,11 @@ gnatmake -gnata your_program.adb
 
 This ensures that your aspects are actually checked during testing.
 
-## Practical Exercise: Building a Safe Temperature Controller
+## 1.7 Practical Exercise: Building a Safe Temperature Controller
 
 Let's put what we've learned into practice with a complete example of a temperature controller that uses aspects and pragmas.
 
-### Step 1: Define the Temperature Type with Type Invariant
+### 1.7.1 Step 1: Define the Temperature Type with Type Invariant
 
 First, we'll define a temperature type that ensures values are within a reasonable range:
 
@@ -570,7 +570,7 @@ type Celsius is new Float with
 
 This ensures that any temperature value is between -50°C and 100°C.
 
-### Step 2: Create a Safe Temperature Setting Function
+### 1.7.2 Step 2: Create a Safe Temperature Setting Function
 
 Next, we'll create a function to set the temperature with preconditions:
 
@@ -580,7 +580,7 @@ procedure Set_Temperature (Temp : Celsius) with
    Post => Current_Temperature = Temp;
 ```
 
-### Step 3: Add a Function to Calculate Heat Output
+### 1.7.3 Step 3: Add a Function to Calculate Heat Output
 
 Now, let's create a function to calculate heat output with aspects:
 
@@ -590,7 +590,7 @@ function Calculate_Heat_Output (Temp : Celsius) return Float with
    Post => Calculate_Heat_Output'Result >= 0.0;
 ```
 
-### Step 4: Optimize a Small Function with Pragmas
+### 1.7.4 Step 4: Optimize a Small Function with Pragmas
 
 For small, frequently called functions, we can use pragmas for optimization:
 
@@ -603,7 +603,7 @@ begin
 end Calculate_Heat_Output;
 ```
 
-### Step 5: Create a Complete Temperature Controller
+### 1.7.5 Step 5: Create a Complete Temperature Controller
 
 Let's put it all together in a complete temperature controller:
 
@@ -654,7 +654,7 @@ package body Temperature_Controller is
 end Temperature_Controller;
 ```
 
-### Step 6: Test the Temperature Controller
+### 1.7.6 Step 6: Test the Temperature Controller
 
 Now let's test our temperature controller:
 
@@ -678,11 +678,11 @@ end Test_Temperature;
 
 When compiled with `-gnata`, the program will check that temperatures stay within the valid range. If you try to set a temperature outside the range, it will raise an error.
 
-## Aspects and Pragmas in Real-World Applications
+## 1.8 Aspects and Pragmas in Real-World Applications
 
 Let's look at how aspects and pragmas are used in real-world applications.
 
-### Example 1: Web Server with Aspect Specifications
+### 1.8.1 Example 1: Web Server with Aspect Specifications
 
 A web server might use aspects to ensure proper handling of requests:
 
@@ -694,7 +694,7 @@ procedure Process_Request (Request : String; Response : out String) with
 
 This ensures that requests aren't too large and that responses are always generated.
 
-### Example 2: Data Processing with Type Invariants
+### 1.8.2 Example 2: Data Processing with Type Invariants
 
 A data processing application might use type invariants to ensure data consistency:
 
@@ -709,7 +709,7 @@ end record with
 
 This ensures that data values are non-negative and quality scores are between 0 and 100.
 
-### Example 3: Performance Optimization with Pragmas
+### 1.8.3 Example 3: Performance Optimization with Pragmas
 
 For performance-critical code, pragmas can make a big difference:
 
@@ -724,11 +724,11 @@ end Calculate_Distance;
 
 This tells the compiler to inline the distance calculation, eliminating function call overhead.
 
-## Next Steps: Taking Your Skills Further
+## 1.9 Next Steps: Taking Your Skills Further
 
 Now that you've learned about aspects and pragmas, here are some next steps to continue your Ada journey:
 
-### 1\. Explore Advanced Aspects
+### 1.9.1 \. Explore Advanced Aspects
 
 Ada has many more aspects you can explore:
 - `SPARK_Mode` for formal verification
@@ -736,14 +736,14 @@ Ada has many more aspects you can explore:
 - `Nonblocking` for tasking
 - `Atomic` for concurrent programming
 
-### 2\. Learn About Compiler Flags
+### 1.9.2 \. Learn About Compiler Flags
 
 Learn how to use compiler flags to enable different levels of aspect checking:
 - `-gnata` enables contract checking
 - `-gnatp` enables all checks
 - `-gnatwa` enables all warnings
 
-### 3\. Try Formal Verification
+### 1.9.3 \. Try Formal Verification
 
 With SPARK, you can use aspects to formally verify your code:
 ```ada
@@ -756,7 +756,7 @@ is
 end Safety_Critical;
 ```
 
-### 4\. Build Larger Projects
+### 1.9.4 \. Build Larger Projects
 
 Apply what you've learned to build larger projects:
 - A home automation system with temperature control
@@ -773,17 +773,17 @@ For beginners, aspects and pragmas might seem like advanced topics, but they're 
 
 As you continue your Ada journey, remember that aspects and pragmas are just tools to help you build better programs. Use them wisely, and you'll find that your code becomes more reliable, more efficient, and easier to understand.
 
-## Exercises: Putting Your Knowledge to Work
+## 1.10 Exercises: Putting Your Knowledge to Work
 
 Now it's time to practice what you've learned with some exercises.
 
-### Exercise 1: Safe File Handling
+### 1.10.1 Exercise 1: Safe File Handling
 
 Create a file handling package that uses aspects to ensure proper file operations.
 
 > **Challenge**: Make sure files are properly closed even when exceptions occur.
 
-#### Solution Guidance
+#### 1.10.1.1 Solution Guidance
 
 Start by defining a controlled type for file handling:
 
@@ -817,13 +817,13 @@ procedure Open (Object : in out File_Handle; Name : String; Mode : Ada.Text_IO.F
 
 This ensures the file isn't already open before opening it again.
 
-### Exercise 2: Performance Optimization
+### 1.10.2 Exercise 2: Performance Optimization
 
 Create a package with a small function that calculates the area of a circle, and optimize it with pragmas.
 
 > **Challenge**: Make sure the function is inlined for performance.
 
-#### Solution Guidance
+#### 1.10.2.1 Solution Guidance
 
 First, define the function:
 
@@ -852,13 +852,13 @@ end Circle_Calculations;
 
 This tells the compiler to replace calls to `Calculate_Area` with the actual code, eliminating function call overhead.
 
-### Exercise 3: Data Validation with Type Invariants
+### 1.10.3 Exercise 3: Data Validation with Type Invariants
 
 Create a package for handling temperature data with type invariants.
 
 > **Challenge**: Ensure all temperature values stay within valid ranges.
 
-#### Solution Guidance
+#### 1.10.3.1 Solution Guidance
 
 Define a temperature type with a type invariant:
 
@@ -899,7 +899,7 @@ end Temperature_Data;
 
 This ensures that any temperature value is between -50°C and 100°C, and that the current temperature is always set correctly.
 
-## Conclusion: The Power of Compiler Directives
+## 1.11 Conclusion: The Power of Compiler Directives
 
 Aspects and pragmas might seem like small features, but they're incredibly powerful. They let you tell the compiler exactly what you want it to do with your code, making your programs more reliable and efficient.
 

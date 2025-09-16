@@ -1,4 +1,4 @@
-# 24\. Ada and C/C++ Interoperability
+# 1 \. Ada and C/C++ Interoperability
 
 Interoperability between programming languages is a critical skill for modern software developers, especially when leveraging existing libraries or integrating components written in different languages. While Ada's strong typing and safety features make it ideal for building robust systems, many valuable libraries and frameworks exist only in C or C++. This chapter explores how Ada can seamlessly interact with C and C++ code—enabling developers to harness the strengths of both worlds without sacrificing safety or maintainability. Unlike previous chapters focused on safety-critical systems, this tutorial targets general-purpose applications where interoperability solves practical problems: using a C graphics library for a desktop application, integrating Ada code into a C++ game engine, or connecting to a database via SQLite from Ada. Whether you're a beginner exploring language boundaries or an experienced developer building hybrid systems, these techniques will empower you to create more capable software with fewer limitations.
 
@@ -6,7 +6,7 @@ Interoperability between programming languages is a critical skill for modern so
 
 > "When integrating Ada with C++, the key is to use C as a bridge. C++'s name mangling makes direct interfacing difficult, but a C interface layer solves this elegantly while preserving type safety." — Senior Software Engineer
 
-## Why Interoperability Matters for General-Purpose Applications
+## 1.1 Why Interoperability Matters for General-Purpose Applications
 
 Interoperability isn't just for aerospace or defense projects—it's essential for everyday software development. Consider these real-world scenarios:
 
@@ -17,7 +17,7 @@ Interoperability isn't just for aerospace or defense projects—it's essential f
 
 Unlike languages with limited interoperability (e.g., Python's GIL blocking true parallelism in C extensions), Ada provides first-class support for C and C++ integration. Its `Interfaces.C` package offers standardized type mappings, while pragmas like `Import` and `Export` handle calling conventions automatically. This makes Ada uniquely suited for hybrid systems where safety and performance coexist.
 
-### Language Interoperability Comparison
+### 1.1.1 Language Interoperability Comparison
 
 | **Feature** | **Ada** | **Python** | **C++** | **Java** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -30,11 +30,11 @@ Unlike languages with limited interoperability (e.g., Python's GIL blocking true
 
 This table highlights Ada's advantages. For example, when calling a C function from Ada, the compiler verifies parameter types and calling conventions at compile time. In Python, using `ctypes` requires manual type declarations that can fail at runtime—a critical issue for safety-critical applications. Ada's approach ensures interoperability is safe by construction.
 
-## Core Concepts of Ada-C Interoperability
+## 1.2 Core Concepts of Ada-C Interoperability
 
 Ada's C interoperability is built on three pillars: standardized type mappings, explicit calling conventions, and controlled memory management. Let's explore these through practical examples.
 
-### The Interfaces.C Package
+### 1.2.1 The Interfaces.C Package
 
 Ada's `Interfaces.C` package provides standardized type definitions for C interoperability. These types map directly to C's primitive types, ensuring compatibility:
 
@@ -76,7 +76,7 @@ end String_Conversion;
 
 This ensures null-termination is handled correctly—critical for C functions expecting null-terminated strings.
 
-### Calling C Functions from Ada
+### 1.2.2 Calling C Functions from Ada
 
 The `pragma Import` directive declares C functions in Ada with correct calling conventions. Let's call the standard C `sqrt` function:
 
@@ -96,7 +96,7 @@ end Call_C_Sqrt;
 ```bash
 gnatmake call_c_sqrt.adb -largs -lm
 ./call_c_sqrt
-# Output: sqrt(4.0) =  2.00000000000000E+00
+# 2 Output: sqrt(4.0) =  2.00000000000000E+00
 ```
 
 The `-lm` flag links the math library. Without it, the linker fails to find `sqrt`.
@@ -106,7 +106,7 @@ The `-lm` flag links the math library. Without it, the linker fails to find `sqr
 - Function names must match C's symbol name exactly ("sqrt" not "sqrtf")
 - The `pragma Import` specifies the C name explicitly
 
-### Handling C Pointers and Memory
+### 2.0.1 Handling C Pointers and Memory
 
 C functions often use pointers for input/output parameters. Ada handles these through access types:
 
@@ -164,11 +164,11 @@ end C_Array_Example;
 
 This example assumes a C function `create_array` that allocates a C array, and `get_element` that retrieves values. In practice, you'd define these in a C source file and link them.
 
-## Ada to C++ Interoperability: The C Bridge Pattern
+## 2.1 Ada to C++ Interoperability: The C Bridge Pattern
 
 C++ introduces name mangling—compilers encode function signatures into symbols for overloading support. This makes direct Ada-C++ calls impossible without a C bridge. The solution: wrap C++ code in C-compatible interfaces.
 
-### Step 1: Create C-Compatible C++ Code
+### 2.1.1 Step 1: Create C-Compatible C++ Code
 
 ```cpp
 // calculator.h
@@ -206,7 +206,7 @@ Key details:
 - Opaque pointers (`Calculator*`) hide C++ implementation details
 - `static_cast` safely converts between C and C++ types
 
-### Step 2: Interface in Ada
+### 2.1.2 Step 2: Interface in Ada
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -260,7 +260,7 @@ end Main;
 - Opaque pointers ensure C++ implementation details stay hidden
 - Memory management must be explicit (no garbage collection)
 
-### Advanced C++ Interoperability: Classes and Inheritance
+### 2.1.3 Advanced C++ Interoperability: Classes and Inheritance
 
 For complex C++ classes, create C interface functions for each method:
 
@@ -323,11 +323,11 @@ end Shape;
 
 This pattern works for any C++ class—simply expose methods through C-compatible functions.
 
-## C/C++ to Ada Interoperability: Exporting Ada Functions
+## 2.2 C/C++ to Ada Interoperability: Exporting Ada Functions
 
 When C/C++ code needs to call Ada functions (e.g., callbacks), use `pragma Export` to expose Ada procedures as C symbols.
 
-### Basic Example: Simple Callback
+### 2.2.1 Basic Example: Simple Callback
 
 Ada code:
 ```ada
@@ -359,10 +359,10 @@ int main() {
 gnatmake callback_example.adb -c
 gcc main.c callback_example.o -o app
 ./app
-# Output: Hello from C!
+# 3 Output: Hello from C!
 ```
 
-### Handling Complex Callbacks
+### 3.0.1 Handling Complex Callbacks
 
 For callbacks with multiple parameters:
 
@@ -430,9 +430,9 @@ gnatmake main.adb callbacks.o callbacks.c.o -largs -lstdc++
 - Ensure callback types match exactly between Ada and C
 - Handle null pointers carefully in C code
 
-## Advanced Data Types: Records, Arrays, and Strings
+## 3.1 Advanced Data Types: Records, Arrays, and Strings
 
-### Mapping C Structures to Ada Records
+### 3.1.1 Mapping C Structures to Ada Records
 
 C structures require precise memory layout matching. Use `pragma Convention(C)` to ensure compatibility:
 
@@ -507,7 +507,7 @@ double get_y(void* p) {
 - `renames` allows direct access to memory as Ada record
 - Always allocate/free memory in the same language (C allocates, C frees)
 
-### Handling C Arrays in Ada
+### 3.1.2 Handling C Arrays in Ada
 
 C arrays are pointers to contiguous memory. Ada handles them through access types:
 
@@ -556,7 +556,7 @@ end Main;
 - Use `Natural range <>)` for flexible array sizing
 - For read-only access, consider `constant` access types
 
-### String Handling Best Practices
+### 3.1.3 String Handling Best Practices
 
 String interoperability is error-prone due to null-termination requirements. Always use `Ada.Strings.C_Utils`:
 
@@ -598,11 +598,11 @@ char* to_upper(char* str) {
 - Never pass Ada strings directly to C—always convert with `To_C`
 - For strings with embedded nulls, use `char_array` instead of `String`
 
-## Memory Management: Bridging the Gap
+## 3.2 Memory Management: Bridging the Gap
 
 Memory management differences between Ada and C/C++ are a common source of bugs. Ada uses automatic memory management with controlled access types, while C/C++ requires manual allocation/free. Let's explore best practices.
 
-### C-Allocated Memory in Ada
+### 3.2.1 C-Allocated Memory in Ada
 
 When C allocates memory, Ada must free it explicitly:
 
@@ -631,7 +631,7 @@ end Memory_Example;
 - Always free memory in the same language it was allocated
 - Use `System.Storage_Elements` for precise memory manipulation
 
-### Ada-Allocated Memory in C
+### 3.2.2 Ada-Allocated Memory in C
 
 When Ada allocates memory for C use:
 
@@ -670,7 +670,7 @@ void print_array(int* arr, size_t size) {
 - Use `new` for Ada-allocated memory that C will use
 - For large arrays, consider `pragma Pack` to control memory layout
 
-### Memory Leak Prevention
+### 3.2.3 Memory Leak Prevention
 
 Memory leaks occur when allocated memory isn't freed. Ada's `pragma Finalize` helps manage C resources:
 
@@ -699,11 +699,11 @@ end Main;
 
 This pattern ensures memory is freed when the object goes out of scope, even during exceptions.
 
-## Error Handling and Exception Safety
+## 3.3 Error Handling and Exception Safety
 
 Error handling differs significantly between Ada and C/C++. Ada uses exceptions, while C uses return codes. C++ uses exceptions but requires careful handling across language boundaries.
 
-### C Functions Returning Error Codes
+### 3.3.1 C Functions Returning Error Codes
 
 C functions typically return error codes. Ada must check these:
 
@@ -745,7 +745,7 @@ end Safe_Calls;
 - Convert errors to Ada exceptions for consistent handling
 - Use `Exception_Information` for detailed error messages
 
-### C++ Exceptions Across Language Boundaries
+### 3.3.2 C++ Exceptions Across Language Boundaries
 
 C++ exceptions cannot propagate to Ada. Always catch them in C++:
 
@@ -783,7 +783,7 @@ end Main;
 - Use error codes or status flags for error reporting
 - In C++, catch all exceptions and convert to return codes
 
-### Ada Exceptions in C Code
+### 3.3.3 Ada Exceptions in C Code
 
 Ada exceptions cannot propagate to C. Always handle them in Ada:
 
@@ -836,11 +836,11 @@ void trigger_callback(int x) {
 - Never let exceptions cross into C code
 - Use `pragma Export` with caution—callbacks must be exception-safe
 
-## Case Study: SQLite Database Integration
+## 3.4 Case Study: SQLite Database Integration
 
 SQLite is a popular C library for embedded databases. Let's integrate it into Ada using best practices for interoperability.
 
-### Step 1: Interface with SQLite's C API
+### 3.4.1 Step 1: Interface with SQLite's C API
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -868,7 +868,7 @@ package SQLite is
 end SQLite;
 ```
 
-### Step 2: Implement Database Operations
+### 3.4.2 Step 2: Implement Database Operations
 
 ```ada
 with SQLite; use SQLite;
@@ -888,7 +888,7 @@ package body SQLite is
 end SQLite;
 ```
 
-### Step 3: Full Example Usage
+### 3.4.3 Step 3: Full Example Usage
 
 ```ada
 with SQLite; use SQLite;
@@ -924,7 +924,7 @@ begin
 end Database_Example;
 ```
 
-### Step 4: Callback Implementation
+### 3.4.4 Step 4: Callback Implementation
 
 ```ada
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -967,11 +967,11 @@ Column 0: 2  Column 1: C
 - Convert C strings to Ada strings using `To_Ada`
 - Use `pragma Import` with exact symbol names
 
-## Case Study: C++ Game Engine with Ada Physics Engine
+## 3.5 Case Study: C++ Game Engine with Ada Physics Engine
 
 Imagine a C++ game engine that needs a physics simulation module. Ada's strong typing ensures calculations are precise and free from subtle bugs. Let's integrate them.
 
-### Step 1: C++ Game Engine (main.cpp)
+### 3.5.1 Step 1: C++ Game Engine (main.cpp)
 
 ```cpp
 #include <iostream>
@@ -993,7 +993,7 @@ int main() {
 }
 ```
 
-### Step 2: Ada Physics Engine (physics.adb)
+### 3.5.2 Step 2: Ada Physics Engine (physics.adb)
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -1039,7 +1039,7 @@ package body Physics is
 end Physics;
 ```
 
-### Step 3: Build and Run
+### 3.5.3 Step 3: Build and Run
 
 ```bash
 gnatmake physics.adb -c
@@ -1060,9 +1060,9 @@ Stepping physics with delta time:  1.60000000000000E-02
 - Memory management is explicit but safe
 - No runtime overhead from C++ exceptions
 
-## Tools and Best Practices for Mixed-Language Projects
+## 3.6 Tools and Best Practices for Mixed-Language Projects
 
-### GNAT Project Files for Mixed Projects
+### 3.6.1 GNAT Project Files for Mixed Projects
 
 GNAT project files (`*.gpr`) manage mixed-language builds:
 
@@ -1087,7 +1087,7 @@ end Mixed_Project;
 - `Library_Options` links required libraries (e.g., math library)
 - `Object_Suffix` ensures consistent object file naming
 
-### GNAT Studio Features for Interoperability
+### 3.6.2 GNAT Studio Features for Interoperability
 
 GNAT Studio provides excellent support for mixed-language projects:
 - **Syntax Highlighting**: C/C++ code in Ada files (and vice versa)
@@ -1101,7 +1101,7 @@ To enable these features:
 3. Under **Build**, select **Mixed Language Project**
 4. Add C/C++ source files to the project
 
-### Common Pitfalls and Solutions
+### 3.6.3 Common Pitfalls and Solutions
 
 | **Pitfall** | **Cause** | **Solution** |
 | :--- | :--- | :--- |
@@ -1112,7 +1112,7 @@ To enable these features:
 | **Exception Propagation** | C++ exceptions crossing into Ada | Catch exceptions in C++ and return error codes |
 | **Calling Convention Errors** | Incorrect calling conventions | Use `pragma Import (C, ...)` with exact names |
 
-### Best Practices Checklist
+### 3.6.4 Best Practices Checklist
 
 1. **Use C as a Bridge for C++**: Always wrap C++ code in C-compatible interfaces
 2. **Verify Data Types**: Use `Interfaces.C` types for all interoperable data
@@ -1124,9 +1124,9 @@ To enable these features:
 
 > "The key to successful language interoperability is treating the interface as a contract. Define clear boundaries, specify ownership rules, and verify everything at compile time. Ada's strong typing makes this contract enforceable." — Senior Software Architect
 
-## Advanced Techniques: Performance Optimization
+## 3.7 Advanced Techniques: Performance Optimization
 
-### Zero-Copy Data Sharing
+### 3.7.1 Zero-Copy Data Sharing
 
 For high-performance applications, avoid copying data between languages:
 
@@ -1171,7 +1171,7 @@ void process_buffer(float* buffer, size_t size) {
 - Ideal for large datasets (e.g., image processing)
 - Uses Ada's automatic memory management for deallocation
 
-### Inline C Code in Ada
+### 3.7.2 Inline C Code in Ada
 
 For performance-critical sections, use GNAT's `pragma Import (C, ...)` with inline assembly:
 
@@ -1207,7 +1207,7 @@ gcc -O3 inline.c main.o -o app
 - Allows compiler optimizations across language boundaries
 - Ideal for tight loops and mathematical operations
 
-### Cross-Language Inlining
+### 3.7.3 Cross-Language Inlining
 
 For small functions, use `pragma Inline` to optimize across boundaries:
 
@@ -1239,9 +1239,9 @@ int32_t add(int32_t a, int32_t b) {
 - No function call overhead
 - Optimized for performance-critical paths
 
-## Real-World Applications and Case Studies
+## 3.8 Real-World Applications and Case Studies
 
-### Case Study: Embedded Systems with Ada and C
+### 3.8.1 Case Study: Embedded Systems with Ada and C
 
 Many embedded systems use C for hardware drivers and Ada for application logic. Let's integrate them:
 
@@ -1294,7 +1294,7 @@ gcc gpio.c main.o -o app
 - No runtime overhead from inter-language calls
 - Compile-time verification of parameter types
 
-### Case Study: Web Server with Ada and C Libraries
+### 3.8.2 Case Study: Web Server with Ada and C Libraries
 
 A high-performance web server uses C libraries for networking and Ada for business logic:
 
@@ -1363,7 +1363,7 @@ gcc network.c web_server.o -o server -lsocket
 - No memory management issues
 - Clear separation of concerns
 
-## Conclusion
+## 3.9 Conclusion
 
 Ada's interoperability with C and C++ is a powerful tool for building robust, high-performance applications. By leveraging standardized type mappings, explicit calling conventions, and careful memory management, developers can seamlessly integrate Ada with existing libraries and frameworks. Unlike languages with limited interoperability, Ada provides compile-time verification of interface contracts—ensuring safety and reliability from the start.
 
@@ -1379,9 +1379,9 @@ As you experiment with these techniques, remember:
 
 By mastering these skills, you'll unlock the full potential of Ada while leveraging the vast ecosystem of C and C++ libraries. The result? Software that is not only functional but also safe, reliable, and maintainable—exactly what modern applications demand.
 
-## Resources and Further Learning
+## 3.10 Resources and Further Learning
 
-### Core Documentation
+### 3.10.1 Core Documentation
 
 | **Resource** | **URL** | **Description** |
 | :--- | :--- | :--- |
@@ -1390,14 +1390,14 @@ By mastering these skills, you'll unlock the full potential of Ada while leverag
 | **Interfaces.C Documentation** | [https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Interfaces_C.html](https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Interfaces_C.html) | Standard Ada-C interoperability package |
 | **Ada.Strings.C_Utils** | [https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Strings_C_Utils.html](https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Strings_C_Utils.html) | String conversion utilities for C interoperability |
 
-### Books and Tutorials
+### 3.10.2 Books and Tutorials
 
 - **"Ada 2022: The Craft of Programming" by John Barnes**: Covers interoperability techniques in depth
 - **"Professional Ada Programming" by John English**: Practical examples of mixed-language projects
 - **"Ada for C++ Programmers" by Stephen Michell**: Focuses on Ada-C++ interoperability
 - **AdaCore Learning Portal**: [https://learn.adacore.com](https://learn.adacore.com) with free tutorials on interoperability
 
-### Online Communities
+### 3.10.3 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -1406,7 +1406,7 @@ By mastering these skills, you'll unlock the full potential of Ada while leverag
 | **Reddit r/Ada** | [https://reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub Ada Projects** | [https://github.com/topics/ada](https://github.com/topics/ada) | Real-world Ada code examples |
 
-### Advanced Topics
+### 3.10.4 Advanced Topics
 
 - **Formal Verification of Interoperability**: Using SPARK to verify C interfaces
 - **Cross-Platform Interoperability**: Handling different ABIs and calling conventions

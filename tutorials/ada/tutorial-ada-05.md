@@ -1,8 +1,8 @@
-# 5. Exception Handling and Robust Error Management in Ada
+# 1 . Exception Handling and Robust Error Management in Ada
 
 In everyday programming, errors are inevitable—whether it's a missing file, invalid user input, or a network timeout. How we handle these errors determines whether our programs crash unexpectedly or recover gracefully. Ada's exception handling system transforms error management from an afterthought into a first-class design element with precise semantics and verifiable properties. This tutorial explores Ada's robust approach to exceptions, showing how to build systems that fail safely rather than catastrophically. You'll learn to design error handling strategies that not only recover from problems but also prove their correctness—turning what is often a source of fragility into a foundation for reliability.
 
-#### Error Management Philosophy
+#### 1.0.0.1 Error Management Philosophy
 
 > **Traditional approach:** "Let's try to avoid errors and handle the ones we anticipate"  
 >  
@@ -10,7 +10,7 @@ In everyday programming, errors are inevitable—whether it's a missing file, in
 
 This fundamental shift in perspective is what makes Ada uniquely suited for building reliable software across diverse domains. Whether you're developing a home automation system, a personal finance application, or a data processing tool, Ada's exception system provides the tools to handle errors predictably and safely.
 
-## Why Exception Handling Matters in General Programming
+## 1.1 Why Exception Handling Matters in General Programming
 
 Most programming languages treat exceptions as a secondary concern—something to handle only when absolutely necessary. Ada flips this perspective: exceptions are a core part of the design process. Consider a simple calculator application:
 
@@ -40,7 +40,7 @@ end Process_Division;
 
 This simple addition transforms the calculator from a fragile tool that crashes to a reliable component that handles errors gracefully. In real-world applications, this difference means the difference between a user-friendly experience and a frustrating crash.
 
-### The Cost of Poor Error Handling
+### 1.1.1 The Cost of Poor Error Handling
 
 Consider a common scenario: a weather application that fetches data from an online service. Without proper error handling:
 
@@ -73,11 +73,11 @@ end Get_Weather;
 
 This version continues functioning even when network issues occur, providing a much better user experience. In fact, studies show that applications with robust error handling have 40% fewer user-reported issues and 60% higher user satisfaction scores.
 
-## Basic Exception Structure
+## 1.2 Basic Exception Structure
 
 Ada's exception system is built around three core components: declaration, raising, and handling. Let's explore each in detail.
 
-### Exception Declaration
+### 1.2.1 Exception Declaration
 
 Exceptions are declared like variables, but with the `exception` keyword:
 
@@ -89,7 +89,7 @@ Network_Error    : exception;
 
 These declarations create unique exception identifiers that can be raised and handled throughout your program.
 
-### Raising Exceptions
+### 1.2.2 Raising Exceptions
 
 Exceptions are raised using the `raise` statement:
 
@@ -110,7 +110,7 @@ You can also provide additional context when raising exceptions:
 raise File_Not_Found with "File not found: " & Filename;
 ```
 
-### Exception Handling
+### 1.2.3 Exception Handling
 
 Exception handlers use the `exception` keyword followed by `when` clauses:
 
@@ -129,14 +129,14 @@ exception
 end Process_File;
 ```
 
-### Key Syntax Notes
+### 1.2.4 Key Syntax Notes
 
 - **`when others`**: A catch-all handler that matches any exception
 - **`Exception_Message`**: Function from `Ada.Exceptions` that returns the exception message
 - **`raise` with context**: Provides additional information when raising exceptions
 - **`exception` block**: Must appear at the end of a subprogram body
 
-### Complete Example: File Processing
+### 1.2.5 Complete Example: File Processing
 
 Let's create a complete example that demonstrates all aspects of exception handling:
 
@@ -202,11 +202,11 @@ This example demonstrates:
 - Using `Exception_Message` for error reporting
 - Nested exception handling blocks
 
-## Exception Propagation Mechanics
+## 1.3 Exception Propagation Mechanics
 
 Understanding how exceptions propagate through your program is essential for building reliable error handling systems. Ada's exception propagation follows precise rules that make it predictable and verifiable.
 
-### Propagation Path
+### 1.3.1 Propagation Path
 
 When an exception is raised, it follows this path:
 
@@ -218,7 +218,7 @@ When an exception is raised, it follows this path:
 
 This follows the static call tree, not the dynamic call sequence. Unlike many languages where exception propagation is implementation-dependent, Ada's behavior is fully determined at compile time.
 
-### Stack Unwinding
+### 1.3.2 Stack Unwinding
 
 When an exception propagates up the call stack, Ada performs these actions:
 
@@ -229,7 +229,7 @@ When an exception propagates up the call stack, Ada performs these actions:
 
 This determinism is essential for reliability in any application, not just safety-critical systems.
 
-### Example: Exception Propagation
+### 1.3.3 Example: Exception Propagation
 
 ```ada
 procedure Outer is
@@ -250,7 +250,7 @@ In this example:
 - `Inner` has no handler, so exception propagates to `Outer`
 - `Outer` handles the exception and prints the message
 
-### Multiple Handlers Example
+### 1.3.4 Multiple Handlers Example
 
 ```ada
 procedure Multiple_Handlers is
@@ -276,18 +276,18 @@ This demonstrates that:
 - Subsequent handlers are ignored once an exception is handled
 - The `others` handler only catches exceptions not handled by specific handlers
 
-### Exception Propagation Best Practices
+### 1.3.5 Exception Propagation Best Practices
 
 - **Handle exceptions at the appropriate level of abstraction**: Don't handle low-level file errors in a high-level business logic component
 - **Never swallow exceptions without action**: If you catch an exception, either handle it properly or re-raise it
 - **Preserve context when propagating exceptions**: Include relevant information when re-raising exceptions
 - **Use specific exception types rather than `others`**: The `others` handler should be a last resort
 
-## Custom Exception Hierarchies
+## 1.4 Custom Exception Hierarchies
 
 While Ada doesn't have inheritance-based exception hierarchies like some object-oriented languages, it provides powerful mechanisms for creating structured exception taxonomies.
 
-### Exception Package Hierarchy
+### 1.4.1 Exception Package Hierarchy
 
 Using package structure to organize exceptions:
 
@@ -326,7 +326,7 @@ end Read_File;
 
 This approach creates a clear taxonomy of exceptions organized by domain.
 
-### Tagged Type Exception Pattern
+### 1.4.2 Tagged Type Exception Pattern
 
 For more complex scenarios, you can create exception hierarchies using tagged types:
 
@@ -356,9 +356,9 @@ end Exceptions;
 
 This pattern allows you to create an extensible exception hierarchy while maintaining Ada's strong typing guarantees.
 
-### Exception Hierarchy Design Guidelines
+### 1.4.3 Exception Hierarchy Design Guidelines
 
-#### Good Hierarchy
+#### 1.4.3.1 Good Hierarchy
 
 - Organized by error domain (files, network, etc.)
 - Clear distinction between recoverable and fatal
@@ -366,7 +366,7 @@ This pattern allows you to create an extensible exception hierarchy while mainta
 - Minimal use of generic exceptions
 - Documentation of recovery strategies
 
-#### Poor Hierarchy
+#### 1.4.3.2 Poor Hierarchy
 
 - Too many specific exception types
 - Unclear recovery semantics
@@ -376,7 +376,7 @@ This pattern allows you to create an extensible exception hierarchy while mainta
 
 The goal is to create an exception taxonomy that guides proper error handling rather than complicating it.
 
-### Practical Example: Weather Data System
+### 1.4.4 Practical Example: Weather Data System
 
 ```ada
 package Weather_System.Exceptions is
@@ -409,11 +409,11 @@ end Weather_System.Exceptions;
 
 This structure organizes exceptions by domain (sensors, network, data) and provides a clear taxonomy for error handling.
 
-## Exception Context and Diagnostics
+## 1.5 Exception Context and Diagnostics
 
 Providing rich context is essential for effective error handling. Ada's standard library includes tools to capture and report detailed exception information.
 
-### Exception Context Example
+### 1.5.1 Exception Context Example
 
 ```ada
 with Ada.Exceptions; use Ada.Exceptions;
@@ -467,7 +467,7 @@ package body Sensor_Exceptions is
 end Sensor_Exceptions;
 ```
 
-### Context Information Best Practices
+### 1.5.2 Context Information Best Practices
 
 - Include component identifier (sensor ID, task name)
 - Capture relevant parameter values
@@ -476,7 +476,7 @@ end Sensor_Exceptions;
 - Include error severity level
 - Provide recovery suggestions when possible
 
-### Complete Context Example
+### 1.5.3 Complete Context Example
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -559,11 +559,11 @@ end Process_Weather_Data;
 
 This example demonstrates how to capture and use detailed context information when handling exceptions.
 
-## Exception Contracts and Verification
+## 1.6 Exception Contracts and Verification
 
 One of Ada's most powerful capabilities is specifying exception behavior as part of Design by Contract, enabling formal verification of error handling.
 
-### Basic Exception Contracts
+### 1.6.1 Basic Exception Contracts
 
 ```ada
 function Calculate_Safety_Margin (
@@ -577,7 +577,7 @@ function Calculate_Safety_Margin (
 
 This contract specifies exactly when and why exceptions may occur.
 
-### Exceptional Postconditions
+### 1.6.2 Exceptional Postconditions
 
 ```ada
 procedure Process_Command (
@@ -598,7 +598,7 @@ procedure Process_Command (
 
 This specifies behavior even when exceptions occur.
 
-### Verification Level Comparison
+### 1.6.3 Verification Level Comparison
 
 | Verification Level | Confidence | Effort | Best For |
 | :--- | :--- | :--- | :--- |
@@ -608,9 +608,9 @@ This specifies behavior even when exceptions occur.
 
 For robust applications, all three levels should be used to ensure comprehensive exception verification.
 
-### Advanced Exception Contract Patterns
+### 1.6.4 Advanced Exception Contract Patterns
 
-#### 1\. Recovery Guarantees
+#### 1.6.4.1 \. Recovery Guarantees
 
 Specify what state is preserved after exception handling:
 
@@ -627,7 +627,7 @@ procedure Update_System_State (
 
 Guarantees system remains available even when updates fail.
 
-#### 2\. Exception Chaining
+#### 1.6.4.2 \. Exception Chaining
 
 Preserve context when propagating exceptions:
 
@@ -645,7 +645,7 @@ end Process_Data;
 
 Maintains error context through multiple handling layers.
 
-#### 3\. Resource Safety Contracts
+#### 1.6.4.3 \. Resource Safety Contracts
 
 Guarantee resource cleanup during exception propagation:
 
@@ -673,16 +673,16 @@ end Process_With_Resource;
 
 Uses Ada's controlled types to guarantee resource safety.
 
-### Common Exception Contract Pitfalls
+### 1.6.5 Common Exception Contract Pitfalls
 
-#### Pitfall: Overly Broad Contracts
+#### 1.6.5.1 Pitfall: Overly Broad Contracts
 
 ```ada
 Exceptional_Cases =>
    (others => True); -- All exceptions allowed
 ```
 
-#### Solution: Precise Exception Specification
+#### 1.6.5.2 Solution: Precise Exception Specification
 
 ```ada
 Exceptional_Cases =>
@@ -691,14 +691,14 @@ Exceptional_Cases =>
     others         => False);
 ```
 
-#### Pitfall: Ignoring Exception Context
+#### 1.6.5.3 Pitfall: Ignoring Exception Context
 
 ```ada
 Exceptional_Cases =>
    (others => True); -- No context provided
 ```
 
-#### Solution: Context-Rich Contracts
+#### 1.6.5.4 Solution: Context-Rich Contracts
 
 ```ada
 Exceptional_Cases =>
@@ -707,13 +707,13 @@ Exceptional_Cases =>
       Contains_Numeric_Value(Exception_Message));
 ```
 
-## Error Recovery Patterns for Reliable Systems
+## 1.7 Error Recovery Patterns for Reliable Systems
 
 In any application where reliability matters, error recovery isn't optional—it's a fundamental requirement. Ada provides patterns for implementing robust recovery strategies.
 
-### Recovery Pattern Taxonomy
+### 1.7.1 Recovery Pattern Taxonomy
 
-#### 1\. Retry Pattern
+#### 1.7.1.1 \. Retry Pattern
 
 For transient errors that may resolve with repetition:
 
@@ -745,7 +745,7 @@ begin
 end Read_Sensor_With_Retry;
 ```
 
-#### 2\. Fallback Pattern
+#### 1.7.1.2 \. Fallback Pattern
 
 For providing degraded functionality when primary fails:
 
@@ -775,7 +775,7 @@ exception
 end Get_Temperature;
 ```
 
-#### 3\. Circuit Breaker Pattern
+#### 1.7.1.3 \. Circuit Breaker Pattern
 
 For preventing cascading failures in dependent systems:
 
@@ -817,7 +817,7 @@ package Circuit_Breaker is
    end Call_With_Circuit_Breaker;
 ```
 
-#### 4\. State Restoration Pattern
+#### 1.7.1.4 \. State Restoration Pattern
 
 For ensuring system integrity after error recovery:
 
@@ -851,7 +851,7 @@ exception
 end Process_Command;
 ```
 
-### Real-World Example: Weather Data Processing System
+### 1.7.2 Real-World Example: Weather Data Processing System
 
 Let's build a complete example of error handling for a weather data application:
 
@@ -1018,13 +1018,13 @@ This example demonstrates:
 - State restoration for data processing
 - Comprehensive exception handling
 
-## Combining Exceptions with Design by Contract
+## 1.8 Combining Exceptions with Design by Contract
 
 The real power of Ada's exception system emerges when combined with Design by Contract, creating a complete framework for specifying and verifying error behavior.
 
-### Contract-Exception Integration Patterns
+### 1.8.1 Contract-Exception Integration Patterns
 
-#### 1\. Preconditions as Exception Prevention
+#### 1.8.1.1 \. Preconditions as Exception Prevention
 
 Use preconditions to prevent exceptions:
 
@@ -1042,7 +1042,7 @@ end Calculate_Square_Root;
 
 With the precondition, the implementation no longer needs to check for negative values.
 
-#### 2\. Exceptions as Contract Violations
+#### 1.8.1.2 \. Exceptions as Contract Violations
 
 Use exceptions to handle contract violations:
 
@@ -1078,7 +1078,7 @@ end Set_Temperature;
 
 The exception handler ensures the postcondition holds even when exceptions occur.
 
-### Verification of Contract-Exception Integration
+### 1.8.2 Verification of Contract-Exception Integration
 
 ```ada
 -- Complete specification with exception contracts
@@ -1114,9 +1114,9 @@ function Process_Command (
 -- [gnatprove]   therefore Post is satisfied
 ```
 
-### Contract-Exception Anti-Patterns
+### 1.8.3 Contract-Exception Anti-Patterns
 
-#### Avoid: Redundant Checks
+#### 1.8.3.1 Avoid: Redundant Checks
 
 ```ada
 function Calculate (X : Float) return Float with
@@ -1133,7 +1133,7 @@ begin
 end Calculate;
 ```
 
-#### Prefer: Contract Enforcement
+#### 1.8.3.2 Prefer: Contract Enforcement
 
 ```ada
 function Calculate (X : Float) return Float with
@@ -1147,7 +1147,7 @@ begin
 end Calculate;
 ```
 
-#### Avoid: Exception Swallowing
+#### 1.8.3.3 Avoid: Exception Swallowing
 
 ```ada
 procedure Process is
@@ -1159,7 +1159,7 @@ exception
 end Process;
 ```
 
-#### Prefer: Contextual Handling
+#### 1.8.3.4 Prefer: Contextual Handling
 
 ```ada
 procedure Process is
@@ -1172,7 +1172,7 @@ exception
 end Process;
 ```
 
-### Verification Strategy for Contract-Exception Integration
+### 1.8.4 Verification Strategy for Contract-Exception Integration
 
 1. **Static verification**: Use `gnatprove` to verify no contract violations can occur
 2. **Runtime verification**: Compile with `-gnata` to catch violations during testing
@@ -1182,9 +1182,9 @@ end Process;
 
 This multi-layered approach ensures comprehensive verification of error handling behavior.
 
-## Real-World Error Management Case Studies
+## 1.9 Real-World Error Management Case Studies
 
-### Personal Finance Application
+### 1.9.1 Personal Finance Application
 
 Consider a personal finance application that processes transactions:
 
@@ -1222,7 +1222,7 @@ This implementation ensures:
 - System state is preserved after failures
 - Errors are properly logged for debugging
 
-### File Processing System
+### 1.9.2 File Processing System
 
 A robust file processing system with exception handling:
 
@@ -1288,9 +1288,9 @@ This example demonstrates:
 - Multiple levels of error handling (per-line, per-file, global)
 - Clear error messages for users
 
-## Exercises: Building Verified Error Management Systems
+## 1.10 Exercises: Building Verified Error Management Systems
 
-### Exercise 1: Personal Finance Transaction System
+### 1.10.1 Exercise 1: Personal Finance Transaction System
 
 Design an error management system for a personal finance application:
 
@@ -1302,7 +1302,7 @@ Design an error management system for a personal finance application:
 
 > **Challenge:** Prove that account balances remain consistent even during error conditions.
 
-#### Solution Guidance
+#### 1.10.1.1 Solution Guidance
 
 Start with exception declarations:
 
@@ -1380,7 +1380,7 @@ procedure Process_Transaction (Account : Account_ID; Amount : Money) with
 
 This ensures account balances remain consistent regardless of error conditions.
 
-### Exercise 2: Weather Data Processing System
+### 1.10.2 Exercise 2: Weather Data Processing System
 
 Build a weather data processing system with robust error handling:
 
@@ -1392,7 +1392,7 @@ Build a weather data processing system with robust error handling:
 
 > **Challenge:** Prove that the system never delivers invalid weather data due to error conditions.
 
-#### Solution Guidance
+#### 1.10.2.1 Solution Guidance
 
 Create a circuit breaker pattern for network requests:
 
@@ -1473,16 +1473,16 @@ function Read_Sensor_With_Retry (
 
 This ensures that valid temperature data is always returned when possible.
 
-### Error Management Verification Strategy
+### 1.10.3 Error Management Verification Strategy
 
-#### Static Verification
+#### 1.10.3.1 Static Verification
 
 - Use `gnatprove` to verify no unhandled exceptions
 - Prove exception contracts hold
 - Verify resource safety during propagation
 - Confirm error recovery guarantees
 
-#### Runtime Verification
+#### 1.10.3.2 Runtime Verification
 
 - Compile with `-gnata` for runtime checks
 - Test all exception paths
@@ -1491,11 +1491,11 @@ This ensures that valid temperature data is always returned when possible.
 
 For robust applications, both static and runtime verification are required to demonstrate comprehensive error management.
 
-## Next Steps: Generics and Template Programming
+## 1.11 Next Steps: Generics and Template Programming
 
 Now that you've mastered Ada's exception handling system, you're ready to explore how to create reusable, verifiable components through generics. In the next tutorial, we'll dive into Ada's powerful generic programming system, showing how to:
 
-### Upcoming: Generics and Template Programming
+### 1.11.1 Upcoming: Generics and Template Programming
 
 - Create reusable components with formal parameters
 - Specify constraints on generic parameters
@@ -1503,7 +1503,7 @@ Now that you've mastered Ada's exception handling system, you're ready to explor
 - Combine generics with Design by Contract
 - Apply generics to error management patterns
 
-### Practice Challenge
+### 1.11.2 Practice Challenge
 
 Enhance your personal finance system with generics:
 
@@ -1513,7 +1513,7 @@ Enhance your personal finance system with generics:
 - Verify that instantiations maintain safety properties
 - Create a verification plan for generic components
 
-#### The Path to Verified Reusability
+#### 1.11.2.1 The Path to Verified Reusability
 
 Exception handling provides the foundation for building reliable systems, but generics enable building reliable systems efficiently. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
 

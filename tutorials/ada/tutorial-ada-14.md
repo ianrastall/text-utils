@@ -1,4 +1,4 @@
-# 14\. Build Systems and Project Files in Ada
+# 1 \. Build Systems and Project Files in Ada
 
 > "Project files transform build management from a manual chore into a systematic process—making it easy to build, maintain, and share your code."
 
@@ -13,7 +13,7 @@ Project files are configuration files that tell the compiler exactly how to buil
 
 This chapter will show you how to use project files effectively, with practical examples for everyday programming tasks. You'll learn to build systems that scale with your projects, from simple calculators to home automation tools, without needing specialized knowledge of build systems.
 
-## Why Project Files Matter for Everyday Programming
+## 1.1 Why Project Files Matter for Everyday Programming
 
 Most programming languages have build systems, but Ada's project files stand out for their simplicity and integration with the language. Unlike complex build tools like Make or CMake that require separate syntax, Ada project files use Ada's familiar syntax—meaning you can learn them quickly without adding another language to your repertoire.
 
@@ -40,7 +40,7 @@ This is error-prone—forgetting a file or specifying the wrong compiler options
 gnatmake -P home_automation.gpr
 ```
 
-### Project Files vs. Manual Compilation
+### 1.1.1 Project Files vs. Manual Compilation
 
 | **Aspect** | **Manual Compilation** | **Project Files** |
 | :--- | :--- | :--- |
@@ -52,11 +52,11 @@ gnatmake -P home_automation.gpr
 
 Project files also make collaboration easier. When you share your project with others, they can build it immediately without needing to know your specific build process. This is especially valuable for beginners—no more "it works on my machine" issues because everyone uses the same build instructions.
 
-## Basic Project File Structure
+## 1.2 Basic Project File Structure
 
 Ada project files use a simple but powerful syntax that's easy to learn. Let's break down the basic structure with a practical example.
 
-### Simple Project File Example
+### 1.2.1 Simple Project File Example
 
 ```ada
 project Simple_Calculator is
@@ -78,7 +78,7 @@ This project file defines a simple calculator application. Let's examine each pa
 
 - **`end Simple_Calculator;`**: Ends the project declaration.
 
-### Creating and Using a Project File
+### 1.2.2 Creating and Using a Project File
 
 To create this project file:
 1. Create a file named `simple_calculator.gpr` in your project directory
@@ -103,7 +103,7 @@ To create this project file:
 
 The compiler will automatically find all source files in the `src` directory, compile them, and link them into an executable. This is much simpler than manually compiling each file!
 
-### Project File Naming Conventions
+### 1.2.3 Project File Naming Conventions
 
 Ada project files typically use the `.gpr` extension (GNAT Project file). While you can name them anything, using descriptive names helps:
 - `home_automation.gpr` for a home automation project
@@ -112,11 +112,11 @@ Ada project files typically use the `.gpr` extension (GNAT Project file). While 
 
 Avoid generic names like `project.gpr`—this makes it harder to distinguish between projects when you have multiple projects open.
 
-## Common Project File Elements Explained
+## 1.3 Common Project File Elements Explained
 
 Project files have several key elements that control how your project is built. Let's explore these in detail with practical examples.
 
-### Source Directories
+### 1.3.1 Source Directories
 
 The `Source_Dirs` attribute tells the compiler where to find source files. You can specify multiple directories:
 
@@ -140,7 +140,7 @@ for Source_Dirs use ("../common", "src");
 
 This includes source files from a parent directory's `common` folder.
 
-### Object Directory
+### 1.3.2 Object Directory
 
 The `Object_Dir` attribute specifies where compiled object files go. It's good practice to keep object files separate from source files:
 
@@ -166,7 +166,7 @@ end Calculator;
 
 This creates separate object directories for debug and release builds.
 
-### Main Program Specification
+### 1.3.3 Main Program Specification
 
 The `Main` attribute specifies the entry point of your application. This is required for executables:
 
@@ -189,7 +189,7 @@ end case;
 
 This allows you to have different entry points for different build types.
 
-### Compiler and Linker Options
+### 1.3.4 Compiler and Linker Options
 
 You can control compiler and linker behavior with the `Compiler` and `Linker` packages:
 
@@ -216,7 +216,7 @@ The `Compiler` package controls compilation options:
 The `Linker` package controls linking options:
 - `-Wl,-Map=obj/mapfile`: Generate a map file showing memory layout
 
-### Configuration-Specific Settings
+### 1.3.5 Configuration-Specific Settings
 
 You can define different settings for different build configurations:
 
@@ -248,11 +248,11 @@ You can build with:
 gnatmake -P my_project.gpr -XBuild=release
 ```
 
-## Advanced Project File Features
+## 1.4 Advanced Project File Features
 
 Once you've mastered the basics, you can explore more advanced project file features for complex projects.
 
-### Project Dependencies
+### 1.4.1 Project Dependencies
 
 You can reference other projects as dependencies:
 
@@ -286,7 +286,7 @@ end Main_Project;
 
 This tells the linker to look for libraries in the `lib` directory and link with `math_utils`.
 
-### Library Projects
+### 1.4.2 Library Projects
 
 Ada supports creating libraries that can be used by other projects:
 
@@ -316,7 +316,7 @@ project Main_Project is
 end Main_Project;
 ```
 
-### Conditional Compilation
+### 1.4.3 Conditional Compilation
 
 You can use conditional statements in project files:
 
@@ -359,11 +359,11 @@ end My_Project;
 
 This defines a build type variable that controls compiler options.
 
-## Best Practices for Project Organization
+## 1.5 Best Practices for Project Organization
 
 Well-organized projects are easier to maintain and collaborate on. Here are some best practices for organizing your Ada projects.
 
-### Directory Structure
+### 1.5.1 Directory Structure
 
 A good directory structure separates concerns:
 ```
@@ -385,7 +385,7 @@ This structure:
 - Separates object files by build type
 - Provides clear locations for documentation and libraries
 
-### Naming Conventions
+### 1.5.2 Naming Conventions
 
 Consistent naming makes projects easier to understand:
 - Project files: `home_automation.gpr`, `personal_finance.gpr`
@@ -395,7 +395,7 @@ Consistent naming makes projects easier to understand:
 
 Avoid generic names like `common` or `utils`—be specific about what the directory contains.
 
-### Version Control
+### 1.5.3 Version Control
 
 Project files should be included in version control:
 - Add `.gpr` files to your repository
@@ -404,7 +404,7 @@ Project files should be included in version control:
 
 This ensures everyone on your team can build the project consistently.
 
-### Project File Comments
+### 1.5.4 Project File Comments
 
 Add comments to explain your project structure:
 
@@ -440,15 +440,15 @@ end Home_Automation;
 
 Comments help others (and your future self) understand why the project is structured a certain way.
 
-## Practical Exercises: Building Your First Project
+## 1.6 Practical Exercises: Building Your First Project
 
 Let's put what you've learned into practice with some hands-on exercises.
 
-### Exercise 1: Simple Calculator Application
+### 1.6.1 Exercise 1: Simple Calculator Application
 
 Create a calculator application with separate modules for different operations.
 
-#### Step 1: Create the Project Structure
+#### 1.6.1.1 Step 1: Create the Project Structure
 
 ```bash
 mkdir calculator
@@ -456,7 +456,7 @@ cd calculator
 mkdir src src/add src/subtract src/multiply src/divide obj obj/debug obj/release
 ```
 
-#### Step 2: Create Source Files
+#### 1.6.1.2 Step 2: Create Source Files
 
 `src/add/add.adb`:
 ```ada
@@ -500,7 +500,7 @@ begin
 end Main;
 ```
 
-#### Step 3: Create the Project File
+#### 1.6.1.3 Step 3: Create the Project File
 
 `project.gpr`:
 ```ada
@@ -515,7 +515,7 @@ project Calculator is
 end Calculator;
 ```
 
-#### Step 4: Build and Run
+#### 1.6.1.4 Step 4: Build and Run
 
 ```bash
 gnatmake -P project.gpr
@@ -524,11 +524,11 @@ gnatmake -P project.gpr
 
 This creates a simple calculator application with separate modules for each operation. You can easily extend it by adding new modules to the project.
 
-### Exercise 2: Debug and Release Configurations
+### 1.6.2 Exercise 2: Debug and Release Configurations
 
 Modify the calculator project to support different build configurations.
 
-#### Step 1: Update the Project File
+#### 1.6.2.1 Step 1: Update the Project File
 
 ```ada
 project Calculator is
@@ -550,33 +550,33 @@ project Calculator is
 end Calculator;
 ```
 
-#### Step 2: Build Different Configurations
+#### 1.6.2.2 Step 2: Build Different Configurations
 
 ```bash
-# Build debug version
+# 2 Build debug version
 gnatmake -P project.gpr
 
-# Build release version
+# 3 Build release version
 gnatmake -P project.gpr -XBuild=release
 ```
 
-#### Step 3: Test Both Configurations
+#### 3.0.0.1 Step 3: Test Both Configurations
 
 ```bash
-# Run debug version
+# 4 Run debug version
 ./calculator
 
-# Run release version (from obj/release directory)
+# 5 Run release version (from obj/release directory)
 obj/release/calculator
 ```
 
 This demonstrates how to create different build configurations for development and deployment.
 
-## Common Pitfalls and How to Avoid Them
+## 5.1 Common Pitfalls and How to Avoid Them
 
 Even with project files, beginners can encounter common issues. Let's explore these pitfalls and how to solve them.
 
-### Pitfall 1: Incorrect Source Directory Paths
+### 5.1.1 Pitfall 1: Incorrect Source Directory Paths
 
 **Problem**: The compiler can't find source files because of incorrect paths.
 
@@ -595,7 +595,7 @@ for Source_Dirs use ("src");
 
 If your project file is in the root directory, and source files are in a `src` directory, use `"src"`. If your project file is in a subdirectory, adjust the path accordingly.
 
-### Pitfall 2: Forgetting to Specify the Main Program
+### 5.1.2 Pitfall 2: Forgetting to Specify the Main Program
 
 **Problem**: The compiler doesn't know which file is the entry point.
 
@@ -621,7 +621,7 @@ end Calculator;
 
 The `Main` attribute is required for executable projects.
 
-### Pitfall 3: Using Incompatible Compiler Switches
+### 5.1.3 Pitfall 3: Using Incompatible Compiler Switches
 
 **Problem**: Some compiler switches don't work together.
 
@@ -645,23 +645,23 @@ For debug builds, use:
 for Default_Switches ("Ada") use ("-g", "-O0", "-gnata");
 ```
 
-### Pitfall 4: Not Cleaning Object Files After Changes
+### 5.1.4 Pitfall 4: Not Cleaning Object Files After Changes
 
 **Problem**: Changes to source files aren't reflected in the build because old object files are used.
 
 **Solution**: Clean object files before rebuilding:
 
 ```bash
-# Clean object files
+# 6 Clean object files
 gnatclean -P project.gpr
 
-# Rebuild
+# 7 Rebuild
 gnatmake -P project.gpr
 ```
 
 Or better yet, use separate object directories for different build configurations so they don't interfere with each other.
 
-### Pitfall 5: Incorrect Project File Location
+### 7.0.1 Pitfall 5: Incorrect Project File Location
 
 **Problem**: The project file isn't in the right location.
 
@@ -678,11 +678,11 @@ project_root/
 
 This makes paths consistent and easy to understand.
 
-## Integrating Project Files with IDEs
+## 7.1 Integrating Project Files with IDEs
 
 Most Ada IDEs integrate seamlessly with project files, making development even easier.
 
-### GNAT Programming Studio (GPS)
+### 7.1.1 GNAT Programming Studio (GPS)
 
 GPS is the official Ada IDE and works perfectly with project files:
 
@@ -697,7 +697,7 @@ With GPS:
 - You can debug directly within the IDE
 - Project files are automatically updated when you add files
 
-### Visual Studio Code with Ada Extension
+### 7.1.2 Visual Studio Code with Ada Extension
 
 If you prefer VS Code:
 1. Install the Ada extension
@@ -728,7 +728,7 @@ VS Code with the Ada extension provides:
 - Build automation
 - Debugging capabilities
 
-### Project File Integration Benefits
+### 7.1.3 Project File Integration Benefits
 
 | **IDE Feature** | **Manual Compilation** | **Project File Integration** |
 | :--- | :--- | :--- |
@@ -740,11 +740,11 @@ VS Code with the Ada extension provides:
 
 Using an IDE with project files saves time and reduces errors. You can focus on writing code instead of managing build commands.
 
-## Real-World Project Examples
+## 7.2 Real-World Project Examples
 
 Let's look at practical examples of project files for common applications.
 
-### Home Automation System
+### 7.2.1 Home Automation System
 
 ```ada
 project Home_Automation is
@@ -776,7 +776,7 @@ This project:
 - Links with SQLite for database storage
 - Uses consistent naming conventions
 
-### Personal Finance Tool
+### 7.2.2 Personal Finance Tool
 
 ```ada
 project Personal_Finance is
@@ -800,7 +800,7 @@ This project:
 - Includes debugging information
 - Has a simple, maintainable configuration
 
-### Simple Game Project
+### 7.2.3 Simple Game Project
 
 ```ada
 project Simple_Game is
@@ -828,11 +828,11 @@ This project:
 - Uses consistent naming conventions
 - Is easy to extend with new features
 
-## Next Steps for Mastering Project Files
+## 7.3 Next Steps for Mastering Project Files
 
 Now that you've learned the basics, here are some next steps to continue your journey:
 
-### 1\. Explore Advanced Project Features
+### 7.3.1 \. Explore Advanced Project Features
 
 Try these more advanced project file features:
 - **Conditional compilation**: Build different code for different platforms
@@ -840,28 +840,28 @@ Try these more advanced project file features:
 - **Custom variables**: Define project-specific variables
 - **Build scripts**: Automate complex build processes
 
-### 2\. Practice with Real-World Projects
+### 7.3.2 \. Practice with Real-World Projects
 
 Apply project files to your own projects:
 - Build a home automation system with temperature sensors
 - Create a personal finance tool with data visualization
 - Develop a simple game with graphics and sound
 
-### 3\. Learn About Project Hierarchies
+### 7.3.3 \. Learn About Project Hierarchies
 
 For larger projects, use multiple project files:
 - A main project that depends on library projects
 - Separate projects for different components
 - Hierarchical project structures for complex systems
 
-### 4\. Join the Ada Community
+### 7.3.4 \. Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore forums**: For technical support
 - **GitHub repositories**: For Ada projects and examples
 - **Ada mailing lists**: For discussions and questions
 
-## Conclusion: The Power of Streamlined Builds
+## 7.4 Conclusion: The Power of Streamlined Builds
 
 > "Project files transform build management from a manual chore into a systematic process—making it easy to build, maintain, and share your code."
 
