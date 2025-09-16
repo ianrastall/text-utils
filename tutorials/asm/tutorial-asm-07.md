@@ -1,4 +1,4 @@
-# Chapter 7: x64 Addressing Modes and Memory Access
+# 7. x64 Addressing Modes and Memory Access
 
 ## 7.1 The Critical Role of Addressing Modes in x64 Programming
 
