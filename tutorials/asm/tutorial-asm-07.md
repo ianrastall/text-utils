@@ -6,7 +6,7 @@ Addressing modes represent the fundamental mechanism through which Assembly lang
 
 At the heart of this importance lies a fundamental truth: **the choice of addressing mode directly determines how the processor accesses memory, which in turn impacts performance, correctness, and compatibility**. Consider a simple operation like accessing an array element. The same logical operation can be expressed through multiple addressing modes, each with dramatically different performance characteristics:
 
-```nasm
+```x86asm
 ; Array access using different addressing modes
 MOV RAX, [array + RDI*8]    ; Base + index + scale (optimal)
 MOV RAX, [array + RDI + RDI*7] ; Base + index + displacement (suboptimal)
@@ -125,7 +125,7 @@ Modern x64 processors contain specialized hardware for address calculation:
 
 Understanding these hardware details explains why seemingly equivalent code sequences exhibit different performance. For example:
 
-```nasm
+```x86asm
 ; Version A: Two simple addressing modes
 MOV RAX, [RBX]
 MOV RCX, [RDI]
@@ -148,7 +148,7 @@ The register addressing mode represents the simplest and fastest form of operand
 ### 7.3.1 Syntax and Implementation
 
 * **Syntax:** Register name as operand
-  ```nasm
+  ```x86asm
   MOV RAX, RBX      ; Register to register move
   ADD RCX, RDX      ; Register addition
   ```
@@ -178,7 +178,7 @@ D8: MODRM = 11 (MOD) 011 (REG=RAX) 000 (R/M=RBX)
 * **No address calculation:** Bypasses AGU entirely
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; Register addressing (fastest)
 MOV RAX, RBX
 
@@ -201,7 +201,7 @@ Register addressing typically executes 4-10x faster than memory addressing, even
   - Preserve callee-saved registers across function calls
 
 * **Common Idioms:**
-  ```nasm
+  ```x86asm
   ; Efficient loop with register-based counters
   MOV RCX, length   ; Loop counter in RCX
   MOV RSI, array    ; Pointer in RSI
@@ -227,7 +227,7 @@ The immediate addressing mode incorporates constant values directly within instr
 ### 7.4.1 Syntax and Implementation
 
 * **Syntax:** Numeric constant as operand
-  ```nasm
+  ```x86asm
   MOV RAX, 42       ; 64-bit immediate
   MOV EAX, 1000     ; 32-bit immediate
   MOV AX, 0x1234    ; 16-bit immediate
@@ -278,7 +278,7 @@ C0: MODRM = 11 (MOD) 000 (REG=EAX) 000 (R/M=EAX)
   - **Instruction Alignment:** Large immediates can affect instruction alignment
 
 **Size Comparison:**
-```nasm
+```x86asm
 ; 7 bytes (using 32-bit immediate)
 MOV RAX, 1
 
@@ -291,19 +291,19 @@ For constants between -128 and 127, the sign-extended 8-bit form is significantl
 ### 7.4.3 Practical Applications
 
 * **Initialization:**
-  ```nasm
+  ```x86asm
   XOR RAX, RAX      ; Fast zeroing (better than MOV RAX, 0)
   MOV RCX, 1000     ; Loop counter initialization
   ```
 
 * **Constant Arithmetic:**
-  ```nasm
+  ```x86asm
   ADD RAX, 8        ; Pointer advancement
   AND RDI, 0xF      ; Masking operations
   ```
 
 * **Flag Setting:**
-  ```nasm
+  ```x86asm
   TEST RAX, 1       ; Check least significant bit
   CMP RBX, 0x7FFFFFFF ; Compare with large constant
   ```
@@ -312,7 +312,7 @@ For constants between -128 and 127, the sign-extended 8-bit form is significantl
   - Use sign-extended 8-bit immediates when possible
   - Prefer `XOR` for zeroing registers
   - Use `LEA` for complex constant calculations
-  ```nasm
+  ```x86asm
   ; Better than multiple ADD/SHL instructions
   LEA RAX, [RBX + RBX*4 + 10] ; RAX = RBX*5 + 10
   ```
@@ -324,7 +324,7 @@ The direct addressing mode specifies a fixed memory address directly within the 
 ### 7.5.1 Syntax and Implementation
 
 * **Syntax:** Memory address as operand
-  ```nasm
+  ```x86asm
   MOV RAX, [0x7FFFFFFF]  ; Load from absolute address
   MOV [0x1000], RBX      ; Store to absolute address
   ```
@@ -382,7 +382,7 @@ Direct addressing faces significant constraints in x64:
   - **Global Offset Table (GOT):** For external symbols
 
 * **Example Replacement:**
-  ```nasm
+  ```x86asm
   ; Position-dependent (bad)
   MOV RAX, [0x1000]
   
@@ -402,7 +402,7 @@ Register indirect addressing uses the value in a register as a memory address, p
 ### 7.6.1 Syntax and Implementation
 
 * **Syntax:** Register in square brackets
-  ```nasm
+  ```x86asm
   MOV RAX, [RBX]    ; Load from address in RBX
   MOV [RDI], RSI    ; Store to address in RDI
   ```
@@ -433,7 +433,7 @@ Register indirect addressing uses the value in a register as a memory address, p
 * **No Additional Calculation:** Register value used directly
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; Register indirect (efficient)
 MOV RAX, [RBX]
 
@@ -449,14 +449,14 @@ The register indirect mode is among the fastest memory access patterns because:
 ### 7.6.3 Practical Applications
 
 * **Pointer Manipulation:**
-  ```nasm
+  ```x86asm
   MOV RSI, ptr      ; Load pointer
   MOV RAX, [RSI]    ; Dereference pointer
   ADD RSI, 8        ; Advance pointer
   ```
 
 * **Linked Data Structures:**
-  ```nasm
+  ```x86asm
   ; Traverse linked list
   MOV RSI, list_head
   list_loop:
@@ -467,7 +467,7 @@ The register indirect mode is among the fastest memory access patterns because:
   ```
 
 * **String Operations:**
-  ```nasm
+  ```x86asm
   ; String length calculation
   MOV RDI, string
   XOR RCX, RCX
@@ -491,7 +491,7 @@ Base + displacement addressing combines a base register with a constant offset, 
 ### 7.7.1 Syntax and Implementation
 
 * **Syntax:** Base register plus constant offset
-  ```nasm
+  ```x86asm
   MOV EAX, [RBP-4]  ; Stack variable access
   MOV RBX, [RCX+8]  ; Structure field access
   ```
@@ -523,7 +523,7 @@ FC: Displacement (-4, sign-extended)
   - 32-bit displacement: Slightly larger instruction
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; Base + 8-bit displacement (optimal)
 MOV EAX, [RBP-4]
 
@@ -539,7 +539,7 @@ The 8-bit displacement form is preferred when possible, as it:
 ### 7.7.3 Practical Applications
 
 * **Stack Variable Access:**
-  ```nasm
+  ```x86asm
   ; Function with locals
   push rbp
   mov rbp, rsp
@@ -550,7 +550,7 @@ The 8-bit displacement form is preferred when possible, as it:
   ```
 
 * **Structure Field Access:**
-  ```nasm
+  ```x86asm
   ; struct Point { int x; int y; }
   mov rcx, point_ptr
   mov eax, [rcx]     ; x coordinate
@@ -558,7 +558,7 @@ The 8-bit displacement form is preferred when possible, as it:
   ```
 
 * **Array Access (Fixed Index):**
-  ```nasm
+  ```x86asm
   ; Access fixed array element
   mov rsi, array
   mov rax, [rsi+32]  ; 5th element (8-byte elements)
@@ -576,7 +576,7 @@ Base + index addressing combines two registers to form an address, enabling flex
 ### 7.8.1 Syntax and Implementation
 
 * **Syntax:** Base register plus index register
-  ```nasm
+  ```x86asm
   MOV RAX, [RBX+RSI]  ; Base + index
   MOV [RDI+RDX], RCX  ; Base + index store
   ```
@@ -608,7 +608,7 @@ Base + index addressing combines two registers to form an address, enabling flex
 * **SIB Byte Overhead:** Additional byte in instruction encoding
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; Register indirect (fastest)
 MOV RAX, [RBX]
 
@@ -624,7 +624,7 @@ The base + index mode is slower than simpler modes because:
 ### 7.8.3 Practical Applications
 
 * **Array Access with Variable Index:**
-  ```nasm
+  ```x86asm
   ; Access array element i
   mov rbx, array
   mov rsi, i
@@ -632,7 +632,7 @@ The base + index mode is slower than simpler modes because:
   ```
 
 * **Multidimensional Arrays:**
-  ```nasm
+  ```x86asm
   ; Access matrix[i][j]
   mov rax, i
   mov rbx, j
@@ -644,7 +644,7 @@ The base + index mode is slower than simpler modes because:
   ```
 
 * **Pointer Chasing:**
-  ```nasm
+  ```x86asm
   ; Follow pointer chain
   mov rbx, root
   mov rsi, offset
@@ -663,7 +663,7 @@ Base + index + scale addressing extends base + index by incorporating a scaling 
 ### 7.9.1 Syntax and Implementation
 
 * **Syntax:** Base register plus scaled index
-  ```nasm
+  ```x86asm
   MOV RAX, [RBX+RSI*8]  ; 64-bit array access
   MOV XMM0, [RDI+RCX*4] ; 32-bit float array access
   ```
@@ -695,7 +695,7 @@ F3: SIB = 11 (SCALE=8) 110 (INDEX=RSI) 011 (BASE=RBX)
 * **Scale Factor Impact:** No performance difference between scale factors
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; Base + index + scale (optimal)
 MOV RAX, [RBX+RSI*8]
 
@@ -712,7 +712,7 @@ The base + index + scale mode is significantly faster than the alternative becau
 ### 7.9.3 Practical Applications
 
 * **Array Access:**
-  ```nasm
+  ```x86asm
   ; 64-bit integer array
   mov rbx, array
   mov rsi, i
@@ -725,7 +725,7 @@ The base + index + scale mode is significantly faster than the alternative becau
   ```
 
 * **Structure Arrays:**
-  ```nasm
+  ```x86asm
   ; struct Point { int x; int y; } points[100]
   mov rax, i
   mov rbx, points
@@ -734,7 +734,7 @@ The base + index + scale mode is significantly faster than the alternative becau
   ```
 
 * **Matrix Operations:**
-  ```nasm
+  ```x86asm
   ; Matrix[row][col] with row-major ordering
   mov rax, row
   mov rbx, col
@@ -757,7 +757,7 @@ RIP-relative addressing represents a x64-specific innovation that enables effici
 ### 7.10.1 Syntax and Implementation
 
 * **Syntax:** Address relative to instruction pointer
-  ```nasm
+  ```x86asm
   MOV RAX, [RIP + var]  ; Global variable access
   LEA RSI, [RIP + msg]  ; String address calculation
   ```
@@ -789,7 +789,7 @@ RIP-relative addressing represents a x64-specific innovation that enables effici
 * **Displacement Limit:** ±2GB range (32-bit displacement)
 
 **Performance Comparison:**
-```nasm
+```x86asm
 ; RIP-relative (position-independent)
 MOV RAX, [RIP + var]
 
@@ -805,7 +805,7 @@ RIP-relative addressing performs as well as absolute addressing but:
 ### 7.10.3 Practical Applications
 
 * **Global Variable Access:**
-  ```nasm
+  ```x86asm
   SECTION .data
   counter: DD 0
   
@@ -819,7 +819,7 @@ RIP-relative addressing performs as well as absolute addressing but:
   ```
 
 * **String Literals:**
-  ```nasm
+  ```x86asm
   SECTION .rodata
   msg: DB 'Hello, RIP!', 0
   
@@ -832,7 +832,7 @@ RIP-relative addressing performs as well as absolute addressing but:
   ```
 
 * **Position-Independent Code:**
-  ```nasm
+  ```x86asm
   ; Shared library code
   SECTION .text
   GLOBAL my_function
@@ -854,7 +854,7 @@ The address size override prefix (67h) allows switching between 64-bit and 32-bi
 ### 7.11.1 Syntax and Implementation
 
 * **Syntax:** Implicitly applied by assembler
-  ```nasm
+  ```x86asm
   ; Assembler may insert 67h prefix
   MOV EAX, [EBX+ESI*4+8]
   ```
@@ -887,7 +887,7 @@ B3: SIB = 10 (SCALE=4) 110 (INDEX=ESI) 011 (BASE=EBX)
   - When address fits in 32 bits and 64-bit is unnecessary
 
 * **Practical Examples:**
-  ```nasm
+  ```x86asm
   ; Access 32-bit array in 64-bit code
   MOV EAX, [EBX+ESI*4+8]  ; Assembler adds 67h prefix
   
@@ -930,7 +930,7 @@ The size of memory operands significantly impacts instruction encoding, executio
 
 * **Explicit Size:**
   - Using size directives when destination doesn't specify size
-  ```nasm
+  ```x86asm
   MOV BYTE [mem], 5    ; 8-bit store
   MOV WORD [mem], 1000 ; 16-bit store
   MOV DWORD [mem], 0   ; 32-bit store
@@ -957,7 +957,7 @@ The size of memory operands significantly impacts instruction encoding, executio
   - Affects multi-threaded programming
 
 **Size Comparison:**
-```nasm
+```x86asm
 ; 8-bit accesses (poor cache utilization)
 MOV BYTE [rdi], al
 MOV BYTE [rdi+1], ah
@@ -980,14 +980,14 @@ Larger operand sizes generally provide better performance due to:
 ### 7.12.3 Common Pitfalls and Best Practices
 
 * **Partial Register Updates:**
-  ```nasm
+  ```x86asm
   MOV AL, 1
   ADD AX, 10  ; Partial register update (may cause stall)
   ```
   Modern processors handle this well, but it's still a habit to avoid.
 
 * **Misaligned Accesses:**
-  ```nasm
+  ```x86asm
   MOV DWORD [mem+1], eax  ; Misaligned 32-bit access
   ```
   May cause performance penalty or exception (depending on processor).
@@ -1034,7 +1034,7 @@ Memory alignment refers to the requirement that certain data types be stored at 
   - Misaligned accesses may not be atomic
 
 **Alignment Performance Comparison:**
-```nasm
+```x86asm
 ; Aligned access (fast)
 MOVAPS XMM0, [array]  ; array aligned to 16 bytes
 
@@ -1047,7 +1047,7 @@ The misaligned version may be 2-10x slower than the aligned version, depending o
 ### 7.13.3 Ensuring Proper Alignment
 
 * **Data Definition Directives:**
-  ```nasm
+  ```x86asm
   ALIGN 16          ; Align next instruction/data
   buffer: 
       RESB 256      ; Buffer aligned to 16 bytes
@@ -1058,7 +1058,7 @@ The misaligned version may be 2-10x slower than the aligned version, depending o
 * **Stack Alignment:**
   - x64 ABI requires 16-byte stack alignment before CALL
   - Function prologue must preserve alignment
-  ```nasm
+  ```x86asm
   push rbp
   mov rbp, rsp
   sub rsp, 32       ; Must be multiple of 16 + 8 (for push rbp)
@@ -1069,7 +1069,7 @@ The misaligned version may be 2-10x slower than the aligned version, depending o
   - Manually adjust pointers if necessary
 
 * **Structure Padding:**
-  ```nasm
+  ```x86asm
   ; Structure with proper alignment
   struc point
       .x resd 1     ; 4 bytes
@@ -1100,7 +1100,7 @@ The pattern of memory accesses—how addresses are calculated and accessed—has
   - Minimal cache misses
 
 * **Example:**
-  ```nasm
+  ```x86asm
   MOV RCX, length
   MOV RSI, array
   XOR RAX, RAX
@@ -1122,7 +1122,7 @@ The pattern of memory accesses—how addresses are calculated and accessed—has
   - Stride vs. cache line size determines performance
 
 * **Example:**
-  ```nasm
+  ```x86asm
   MOV RCX, length
   MOV RSI, array
   MOV RDX, 8          ; Stride of 8 elements
@@ -1148,7 +1148,7 @@ The pattern of memory accesses—how addresses are calculated and accessed—has
   - High cache miss rate
 
 * **Example:**
-  ```nasm
+  ```x86asm
   MOV RCX, length
   MOV RSI, indices
   XOR RAX, RAX
@@ -1167,7 +1167,7 @@ The pattern of memory accesses—how addresses are calculated and accessed—has
 * **Definition:** Processing data in chunks that fit within cache
 * **Purpose:** Improve cache utilization for large datasets
 * **Implementation:**
-  ```nasm
+  ```x86asm
   ; Matrix multiplication with tiling
   MOV RCX, 0
   outer_loop:
@@ -1190,7 +1190,7 @@ The pattern of memory accesses—how addresses are calculated and accessed—has
 
 * **Definition:** Hinting to processor to load data into cache early
 * **Implementation:**
-  ```nasm
+  ```x86asm
   MOV RCX, length
   MOV RSI, array
   loop_with_prefetch:
@@ -1291,7 +1291,7 @@ This section provides concrete examples demonstrating how addressing mode select
 Consider summing an array of 64-bit integers:
 
 * **Naive Implementation:**
-  ```nasm
+  ```x86asm
   ; Poor: Sequential but inefficient addressing
   MOV RCX, length
   MOV RSI, array
@@ -1306,7 +1306,7 @@ Consider summing an array of 64-bit integers:
   - **Throughput:** ~1 element per cycle
 
 * **Unrolled Implementation:**
-  ```nasm
+  ```x86asm
   ; Better: Loop unrolling
   MOV RCX, length
   SHR RCX, 2        ; Process 4 elements per iteration
@@ -1331,7 +1331,7 @@ Consider summing an array of 64-bit integers:
   - **Throughput:** ~1.5-2 elements per cycle
 
 * **Vectorized Implementation:**
-  ```nasm
+  ```x86asm
   ; Best: Vectorization with AVX2
   MOV RCX, length
   SHR RCX, 3        ; Process 8 elements per iteration
@@ -1370,7 +1370,7 @@ Data structure layout significantly impacts memory access patterns:
   struct Point { float x, y, z; };
   Point points[1000];
   ```
-  ```nasm
+  ```x86asm
   ; Process all x coordinates
   MOV RCX, 1000
   MOV RSI, points
@@ -1389,7 +1389,7 @@ Data structure layout significantly impacts memory access patterns:
   ```c
   float xs[1000], ys[1000], zs[1000];
   ```
-  ```nasm
+  ```x86asm
   ; Process all x coordinates
   MOV RCX, 1000
   MOV RSI, xs
@@ -1410,7 +1410,7 @@ Data structure layout significantly impacts memory access patterns:
 
 False sharing occurs when multiple threads modify variables that happen to reside in the same cache line:
 
-```nasm
+```x86asm
 ; Thread-local data without padding
 thread_data:
     counter DD 0   ; 4 bytes
@@ -1438,7 +1438,7 @@ This section explores sophisticated memory access patterns used in high-performa
 
 Non-temporal stores bypass the cache hierarchy, useful for data that won't be reused soon:
 
-```nasm
+```x86asm
 ; Write data that won't be reused soon
 MOVNTDQ [RDI], XMM0  ; Non-temporal store of 128 bits
 ```
@@ -1462,7 +1462,7 @@ MOVNTDQ [RDI], XMM0  ; Non-temporal store of 128 bits
 
 Special memory types optimize for streaming writes:
 
-```nasm
+```x86asm
 ; Write to write-combining memory (e.g., frame buffer)
 MOV RDI, framebuffer
 MOV DWORD [RDI], 0xFFFFFFFF  ; Writes accumulate in write-combining buffer
@@ -1487,7 +1487,7 @@ MOV DWORD [RDI], 0xFFFFFFFF  ; Writes accumulate in write-combining buffer
 
 Memory barriers enforce ordering of memory operations:
 
-```nasm
+```x86asm
 ; Store buffer flush
 SFENCE
 
@@ -1504,7 +1504,7 @@ LFENCE
   - Implementing synchronization primitives
 
 * **Common Patterns:**
-  ```nasm
+  ```x86asm
   ; Release operation
   MOV [flag], 1
   MFENCE          ; Ensure previous store completes
