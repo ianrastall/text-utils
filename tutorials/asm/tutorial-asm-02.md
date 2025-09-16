@@ -1,4 +1,4 @@
-# Chapter 2: Computer Architecture Fundamentals for Assembly Programmers
+# 2\. Computer Architecture Fundamentals for Assembly Programmers
 
 ## 2.1 The Critical Connection: Why Architecture Matters in Assembly
 
