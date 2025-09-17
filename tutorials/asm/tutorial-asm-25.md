@@ -1,4 +1,4 @@
-# 25. x86 vs. x64: Migration and Compatibility Considerations
+# 25. x86 vs. x64 Migration and Compatibility Considerations
 
 ## 25.1 Introduction to x86 and x64 Architectures
 
