@@ -1,4 +1,4 @@
-# 1\. Introduction To Ada Programming
+# 1. Introduction To Ada Programming
 
 Ada is a high-integrity programming language designed for applications where reliability, maintainability, and efficiency are paramount. Born from military requirements and refined over four decades, Ada provides unparalleled compile-time verification and runtime protection. This introduction explores Ada's unique philosophy, core strengths, and why it remains a valuable choice for robust software development across diverse domains. Whether you're building embedded systems for consumer electronics, real-time data processing applications, or large-scale enterprise software, Ada's disciplined approach helps prevent common programming errors before they reach production.
 
@@ -925,7 +925,7 @@ Ada isn't just a language—it's a methodology for building systems where correc
 
 Ada's greatest strength isn't that it prevents catastrophic failures (though it can do that too). It's that it makes everyday programming easier and more predictable. By catching errors early and enforcing clear design principles, Ada reduces the mental burden of programming. You spend less time debugging and more time solving real problems.
 
-As you continue your Ada journey, remember: the discipline it enforces today prevents problems tomorrow. Whether you're building a small utility or a large-scale system, Ada gives you the tools to create software that works as intended—and keeps working, reliably, for years to come.# 2. Ada's Strong Typing System
+# 2. Ada's Strong Typing System
 
 While most programming languages treat types as mere documentation, Ada transforms them into powerful compile-time verification tools. This chapter explores how Ada's rigorous type system eliminates entire categories of errors before code ever runs, with practical examples demonstrating how constrained types, subtypes, and strong equivalence prevent bugs that plague other languages. You'll learn to leverage Ada's type system as your first line of defense in building reliable software.
 
@@ -1590,9 +1590,7 @@ This contract ensures that the total movement of all control surfaces doesn't ex
 
 Strong typing is Ada's foundation, but contracts are its superpower. When you combine constrained types with formal specifications, you create software that's not just less error-prone, but *provably correct* within its specified domain. This is why Ada remains the language of choice when failure is not an option.
 
-In the next chapter, we'll dive deeper into how contracts work with strong typing to create software that's not just reliable, but mathematically verifiable. You'll learn how to specify exactly what your code should do and have the compiler verify it for you—before it ever runs. This is the true power of Ada's type system: it turns your type definitions into a living specification of your program's behavior.
-
-By the end of the next chapter, you'll be able to create software that's not just less likely to fail, but *guaranteed* to work correctly within its specified domain. This is the difference between writing code that *might* work and writing code that *must* work.# 3. Ada Subprograms: Procedures, Functions, and Packages
+# 3. Ada Subprograms: Procedures, Functions, and Packages
 
 While many programming languages treat functions and procedures as interchangeable constructs, Ada makes a deliberate semantic distinction that enforces clear design principles. This tutorial explores Ada's rigorous approach to subprograms and packages—the foundation of its modular design philosophy. You'll learn how Ada's packaging system creates strong encapsulation boundaries, enables precise visibility control, and supports the development of verifiable components for reliable software systems. Through practical examples, we'll demonstrate how these features transform code organization from a maintenance challenge into a reliability asset.
 
@@ -2753,7 +2751,9 @@ Enhance your home automation system with contracts:
 
 Ada's subprogram and package system provides the structural foundation for building reliable software, but contracts provide the semantic precision needed for verification. When combined with strong typing and formal methods, these features create a pathway from traditional development to mathematically verified software.
 
-This integrated approach is why Ada remains the language of choice for systems where reliability and correctness matter. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain.# 4. Design by Contract in Ada
+This integrated approach is why Ada remains the language of choice for systems where reliability and correctness matter. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain.
+
+# 4. Design by Contract in Ada
 
 Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in complex systems.
 
@@ -3183,7 +3183,9 @@ Enhance your calculator application with concurrency:
 
 Design by Contract transforms Ada from a safe language into a _verifiable_ language. When combined with strong typing and formal methods, it provides a pathway from traditional development to mathematically verified software. This is why Ada remains the language of choice for systems where correctness matters.
 
-As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain. Whether you're building a simple calculator or a complex inventory system, contracts give you the tools to ensure your software behaves exactly as intended.# 5. Exception Handling and Robust Error Management in Ada
+As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain. Whether you're building a simple calculator or a complex inventory system, contracts give you the tools to ensure your software behaves exactly as intended.
+
+# 5. Exception Handling and Robust Error Management in Ada
 
 In everyday programming, errors are inevitable—whether it's a missing file, invalid user input, or a network timeout. How we handle these errors determines whether our programs crash unexpectedly or recover gracefully. Ada's exception handling system transforms error management from an afterthought into a first-class design element with precise semantics and verifiable properties. This tutorial explores Ada's robust approach to exceptions, showing how to build systems that fail safely rather than catastrophically. You'll learn to design error handling strategies that not only recover from problems but also prove their correctness—turning what is often a source of fragility into a foundation for reliability.
 
@@ -4702,7 +4704,9 @@ Enhance your personal finance system with generics:
 
 Exception handling provides the foundation for building reliable systems, but generics enable building reliable systems efficiently. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
 
-This integrated approach is why Ada remains the language of choice for organizations that need both reliability and development efficiency. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but economically sustainable throughout its lifecycle.# 6. Concurrency and Protected Objects in Ada
+This integrated approach is why Ada remains the language of choice for organizations that need both reliability and development efficiency. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but economically sustainable throughout its lifecycle.
+
+# 6. Concurrency and Protected Objects in Ada
 
 While most programming languages treat concurrency as an afterthought requiring external libraries, Ada integrates safe parallelism directly into the language. This tutorial explores Ada's unique tasking model and protected objects—features designed from the ground up for building reliable concurrent systems where race conditions and deadlocks are prevented at compile time. You'll learn how to structure concurrent applications that maintain correctness guarantees even in demanding real-time environments, whether you're building a home automation system, a web server, or a data processing pipeline.
 
@@ -5384,7 +5388,9 @@ Ada's approach to concurrency represents a fundamental shift from how most langu
 
 When combined with strong typing and Design by Contract, Ada's concurrency model enables the development of systems that are not just concurrent, but _provably correct_ in their parallel behavior. This is why Ada remains the language of choice for systems where timing errors can have catastrophic consequences.
 
-For everyday applications, this means your home automation system will never crash when multiple sensors update simultaneously, your web server will handle peak traffic without data corruption, and your applications will respond predictably even under heavy load. The discipline Ada enforces today prevents problems tomorrow—whether you're building a simple calculator or a complex data processing pipeline.# 7. Real-Time Systems Programming in Ada
+For everyday applications, this means your home automation system will never crash when multiple sensors update simultaneously, your web server will handle peak traffic without data corruption, and your applications will respond predictably even under heavy load. The discipline Ada enforces today prevents problems tomorrow—whether you're building a simple calculator or a complex data processing pipeline.
+
+# 7. Real-Time Systems Programming in Ada
 
 In today's interconnected world, many applications require precise timing behavior. Whether you're building a home automation system that needs to respond to sensor data within milliseconds, a web server that must handle requests consistently under load, or a video game that needs smooth frame rates, timing correctness is just as important as functional correctness. Ada provides unique language-level support for real-time programming, allowing developers to specify, verify, and guarantee timing behavior with mathematical precision. This tutorial explores how to leverage Ada's real-time features to build systems that not only do the right thing, but do it at the right time, every time. You'll learn to transform timing requirements from vague aspirations into verifiable system properties.
 
@@ -6121,7 +6127,9 @@ Real-time programming in Ada represents the culmination of the language's design
 
 This integrated approach is why Ada remains the language of choice for systems where timing matters. As you complete this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but **temporally guaranteed** within its specified domain—whether you're building a home automation system, a web server, or a video game.
 
-For everyday developers, this means your applications will behave predictably under all conditions. Your home automation system will respond reliably to commands. Your web server will handle peak traffic without slowdowns. Your video game will maintain smooth frame rates. Ada gives you the tools to build systems that work as intended, every time.# 8. Object-Oriented Programming in Ada
+For everyday developers, this means your applications will behave predictably under all conditions. Your home automation system will respond reliably to commands. Your web server will handle peak traffic without slowdowns. Your video game will maintain smooth frame rates. Ada gives you the tools to build systems that work as intended, every time.
+
+# 8. Object-Oriented Programming in Ada
 
 > **OOP Safety Paradox**
 > 
@@ -6892,7 +6900,9 @@ Object-oriented programming provides the foundation for building flexible system
 
 This integrated approach is why Ada remains the language of choice for organizations that need both flexibility and reliability. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but economically sustainable throughout its lifecycle.
 
-For beginners, this means you'll be able to write code that's both flexible and reliable. You'll be able to create components that work for many different situations without sacrificing safety or predictability. And most importantly, you'll understand exactly how your code works—no hidden surprises, no unexpected behavior. That's the power of Ada's object-oriented programming.# 9\. Generics and Template Programming in Ada
+For beginners, this means you'll be able to write code that's both flexible and reliable. You'll be able to create components that work for many different situations without sacrificing safety or predictability. And most importantly, you'll understand exactly how your code works—no hidden surprises, no unexpected behavior. That's the power of Ada's object-oriented programming.
+
+# 9\. Generics and Template Programming in Ada
 
 > **Why Generics Matter**
 > 
@@ -9134,7 +9144,9 @@ Now that you've learned the basics of Ada's memory management, you're ready to t
 > 
 > "Ada's controlled types transform memory management from a source of bugs into a reliable engineering tool. With controlled types, you don't have to worry about manual cleanup—you can focus on what your program does rather than how it manages resources."
 
-Memory management is a fundamental part of programming, but with Ada, it's simple and safe. Whether you're building a simple calculator or a complex home automation system, Ada's controlled types ensure that your resources are always properly managed. This means your code is simpler, safer, and less prone to errors.# 11\. Aspect Specifications and Pragmas in Ada
+Memory management is a fundamental part of programming, but with Ada, it's simple and safe. Whether you're building a simple calculator or a complex home automation system, Ada's controlled types ensure that your resources are always properly managed. This means your code is simpler, safer, and less prone to errors.
+
+# 11\. Aspect Specifications and Pragmas in Ada
 
 > **What Aspects and Pragmas Are**
 > 
@@ -10051,7 +10063,9 @@ As you continue your Ada journey, remember that aspects and pragmas are just too
 
 By learning to use aspects and pragmas effectively, you're taking an important step toward becoming a more skilled and reliable programmer. These features are part of what makes Ada such a powerful language for building robust, reliable software.
 
-As you continue your Ada journey, remember that aspects and pragmas are just tools to help you build better programs. Use them wisely, and you'll find that your code becomes more reliable, more efficient, and easier to understand.# 12\. SPARK Subset for Formal Verification in Ada
+As you continue your Ada journey, remember that aspects and pragmas are just tools to help you build better programs. Use them wisely, and you'll find that your code becomes more reliable, more efficient, and easier to understand.
+
+# 12\. SPARK Subset for Formal Verification in Ada
 
 > "SPARK transforms code from 'likely correct' to 'provably correct'—not just for safety-critical systems, but for any application where reliability matters."
 
