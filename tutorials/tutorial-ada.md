@@ -8209,7 +8209,7 @@ Remember, the key to mastering generics is practice. Start with simple examples 
 
 Ada's generics are not just for experts—they're a fundamental tool that every programmer should know. By using generics, you can write code once and use it in many different ways, saving time and reducing errors. You've learned how to create generic packages and subprograms, how to constrain generic parameters, and how to use generics with private types. You've seen how Ada's generics compare to C++ templates, and you've learned best practices for using generics effectively.
 
-As you continue your programming journey, remember that generics are a powerful tool that can make your code simpler, cleaner, and more reusable. Whether you're building a home automation system, a game, or a data processing tool, generics will help you write better code. So go forth and create—your reusable components are waiting to be built!# 10\. Memory Management and Controlled Types in Ada
+# 10\. Memory Management and Controlled Types in Ada
 
 > **Why Memory Management Matters**
 > 
@@ -10852,6 +10852,7 @@ The key to SPARK's power is its simplicity. By restricting Ada to a subset where
 As you continue your SPARK journey, remember that formal verification isn't about perfection—it's about building reliable software that you can trust. Whether you're writing a simple calculator or a complex data processing algorithm, SPARK gives you the tools to prove your code works correctly.
 
 SPARK is more than just a programming tool—it's a mindset. It encourages you to think carefully about what your code should do, and then prove that it does it. This mindset will make you a better programmer, regardless of what language or platform you use.
+
 # 13\. Certification and Integration in Ada
 
 > "Certification and integration aren't just for aerospace engineers—they're essential skills for any developer who wants to build reliable, interoperable software that works seamlessly with other systems."
@@ -11625,6 +11626,7 @@ The Ada community is active and supportive. Join:
 Ada's unique combination of strong typing, contracts, and formal verification makes it an excellent choice for building reliable software that integrates seamlessly with other systems. Whether you're building a home automation system, a personal finance tool, or a data processing pipeline, Ada's features help ensure your code is correct, reliable, and maintainable.
 
 The key to successful certification and integration is simplicity. By keeping interfaces clean, using Ada's features to simplify integration, and thoroughly testing integrated systems, you can build software that works reliably across language boundaries.
+
 # 14\. Build Systems and Project Files in Ada
 
 > "Project files transform build management from a manual chore into a systematic process—making it easy to build, maintain, and share your code."
@@ -12504,6 +12506,7 @@ For beginners, project files might seem like an advanced topic, but they're actu
 As you continue your Ada journey, remember that project files aren't just for large projects. They're valuable for any size of project, from simple calculators to complex home automation systems. By using project files from the beginning, you'll develop good habits that will serve you well as your projects grow.
 
 Project files are more than just build tools—they're a mindset. They encourage you to think about your project structure and build process from the beginning, rather than as an afterthought. This mindset will make you a better programmer, regardless of what language or platform you use.
+
 # 15\. Testing Frameworks in Ada
 
 > "Testing isn't just for safety-critical systems—it's essential for any application where reliability matters. With Ada's AUnit framework, you can build robust, maintainable code for home automation, personal finance tools, and more—without specialized knowledge."
@@ -13817,6 +13820,7 @@ For everyday applications, these benefits translate directly to better user expe
 As you continue your Ada journey, remember that testing isn't an extra step—it's an essential part of development. By incorporating testing from the beginning, you'll develop good habits that will serve you well as your projects grow.
 
 Testing is more than just a technical skill—it's a mindset. It encourages you to think carefully about what your code should do, how it should behave, and how to verify that it works correctly. This mindset will make you a better programmer, regardless of what language or platform you use.
+
 # 16\. Embedded Systems Programming in Ada
 
 > "Embedded systems programming isn't just for aerospace engineers—it's about controlling hardware in everyday devices like smart thermostats and wearable tech. Ada provides safe, reliable tools for this task without requiring specialized knowledge."
@@ -14664,6 +14668,7 @@ As you continue your journey with Ada, remember that embedded systems programmin
 The key to success is starting small. Begin with simple projects like blinking an LED, then gradually add complexity as you gain confidence. Use the tools and resources available in the Ada community, and don't be afraid to ask for help when you need it.
 
 Embedded systems programming with Ada isn't just for safety-critical applications—it's for anyone who wants to build reliable, safe hardware control systems for everyday use. With Ada, you can turn your ideas into reality with confidence that your code will work as intended.
+
 # 17\. GUI Development in Ada
 
 > "GUI development in Ada isn't just for aerospace engineers—it's about creating intuitive interfaces for everyday applications like home automation systems and personal finance tools. With Ada's strong typing and reliability features, you can build user-friendly applications that are both safe and maintainable."
@@ -15645,6 +15650,7 @@ Ada's strengths in reliability and maintainability make it an excellent choice f
 For everyday applications, these benefits translate directly to better user experiences. A home automation system that works reliably builds trust with users. A personal finance app that calculates correctly prevents financial mistakes. GUI development with Ada gives you the tools to create professional-looking applications with confidence.
 
 As you continue your journey with Ada, remember that GUI development is about solving real problems for real people. Start with simple projects and gradually build more complex applications as you gain confidence. Use the tools and resources available in the Ada community, and don't be afraid to ask for help when you need it.
+
 # 18\. Distributed Systems in Ada
 
 > "Distributed systems aren't just for aerospace engineers—they're the backbone of everyday applications like smart homes, online games, and cloud services. Ada's reliability features make it an excellent choice for building distributed systems that are both robust and maintainable."
@@ -17133,6 +17139,7 @@ Ada's strengths in reliability and maintainability make it an excellent choice f
 For everyday applications, these benefits translate directly to better user experiences. A smart home system that works reliably builds trust with users. A multiplayer game that handles many players smoothly provides a better experience. Distributed systems with Ada give you the tools to create professional-looking applications with confidence.
 
 As you continue your journey with Ada, remember that distributed systems are about solving real problems for real people. Start with simple projects and gradually build more complex applications as you gain confidence. Use the tools and resources available in the Ada community, and don't be afraid to ask for help when you need it.
+
 # 19\. Scientific Computing in Ada
 
 Scientific computing forms the backbone of modern research and engineering, enabling complex simulations, data analysis, and modeling across disciplines. While Python and Fortran dominate this domain, Ada offers unique advantages that make it a compelling choice for scientific applications—particularly when precision, reliability, and performance are critical. This chapter explores Ada's capabilities for scientific computing, emphasizing practical implementation techniques, numerical methods, data handling, and parallel processing. Unlike previous chapters focused on safety-critical systems, this tutorial targets general scientific applications where correctness and efficiency matter but extreme safety certification is not required. We'll leverage Ada's strong typing, modular design, and concurrency features to build robust scientific software that scales from small research projects to large-scale simulations.
@@ -17834,6 +17841,7 @@ Use `--!` comments for automatic documentation generation with GNATdoc.
 Scientific computing in Ada offers a compelling alternative to traditional languages like Python and Fortran. By leveraging Ada's strong typing, modular design, and built-in concurrency, developers can build reliable, high-performance scientific applications without sacrificing productivity. While Python excels in rapid prototyping, Ada provides the safety and precision needed for production-grade simulations where correctness is paramount. Whether you're solving differential equations, processing large datasets, or simulating physical systems, Ada's toolset ensures your results are accurate, reproducible, and efficient.
 
 This chapter has covered fundamental techniques for scientific computing in Ada, from numerical methods to parallel processing. Future chapters will explore advanced topics like GPU acceleration and formal methods for scientific software. For now, start experimenting with the examples provided—Ada's compiler will catch errors before they become runtime bugs, giving you confidence in your results from day one.
+
 # 20\. Multi-Core Programming in Ada
 
 Multi-core processors are now ubiquitous, with even consumer devices featuring multiple cores to handle parallel workloads. However, harnessing this power effectively requires careful design to avoid common pitfalls like race conditions, deadlocks, and inefficient resource utilization. Ada's built-in concurrency model provides a safe, high-level approach to multi-core programming that minimizes these risks while maximizing performance. Unlike languages that rely on external libraries for threading (e.g., C++'s `std::thread` or Python's `threading` module), Ada integrates concurrency directly into the language with strong compile-time guarantees. This chapter explores Ada's multi-core programming capabilities, focusing on practical techniques for writing safe, efficient parallel code suitable for scientific, engineering, and general-purpose applications. Unlike previous chapters focused on safety-critical systems, this tutorial emphasizes general-purpose multi-core programming where correctness and performance matter but formal certification is not required.
@@ -18938,6 +18946,7 @@ This chapter has provided a comprehensive overview of multi-core programming in 
 > "The greatest challenge in multi-core programming isn't writing parallel code—it's writing correct parallel code. Ada's design philosophy ensures that correctness is built into the language itself, making it the ideal choice for modern parallel computing." — Ada Core Team
 
 This chapter has equipped you with the knowledge to tackle multi-core programming challenges in Ada. By applying these techniques, you'll create software that is not only fast but also reliable and maintainable—qualities that matter in every computing domain, from scientific research to enterprise applications.
+
 # 21\. Modern IDEs for Ada Development
 
 Modern Integrated Development Environments (IDEs) are indispensable tools for software developers, providing a unified interface for writing, debugging, and managing code. For Ada programmers, the right IDE can significantly enhance productivity by offering language-specific features, seamless integration with the GNAT compiler, and robust debugging capabilities. Unlike previous chapters that focused on technical aspects of Ada programming, this chapter shifts focus to the development environment itself, ensuring readers can efficiently leverage modern tools to build reliable and maintainable Ada applications. This chapter covers the most popular IDEs for Ada development, their features, setup procedures, and best practices for maximizing productivity. Whether you're a beginner starting your first Ada project or an experienced developer looking to optimize your workflow, this guide provides actionable insights to streamline your development process.
@@ -19612,6 +19621,7 @@ As you progress in your Ada journey, remember that tooling evolves rapidly. Stay
 - [ ] Configure live templates for common patterns
 
 > "Ada development has never been easier. With modern IDEs handling the tooling complexities, you can focus on what matters: writing elegant, reliable code that solves real-world problems." — Ada Community Evangelist
+
 # 22\. Autonomous Systems, Quantum Security, and AI Integration in Ada
 
 As autonomous systems, quantum-resistant cryptography, and artificial intelligence become increasingly integrated into everyday technology, developers need robust tools to build reliable and secure applications. Ada, with its strong typing, concurrency model, and interoperability features, provides an exceptional foundation for these emerging fields—even in non-safety-critical contexts. While these topics are often associated with high-stakes environments like aerospace or defense, their principles apply equally to consumer applications, educational tools, and personal projects. This chapter explores how Ada can be used to build practical, modern systems that leverage these technologies without requiring formal safety certification. We'll examine concrete examples of autonomous robotics simulations, quantum-resistant communication protocols, and AI-powered applications—all designed for general-purpose development where correctness and maintainability matter but extreme safety certification is not required.
@@ -20297,6 +20307,7 @@ Unlike Python, which struggles with real-time performance due to the GIL, or C++
 As these technologies continue to evolve, Ada's role in modern software development will only grow. Its ability to combine safety-critical features with general-purpose applicability makes it uniquely suited for the next generation of intelligent systems. Start experimenting with the examples in this chapter—Ada's compiler will catch errors before they become runtime bugs, giving you confidence in your code from day one.
 
 > "The future of software isn't about choosing between safety and innovation—it's about building systems that are both safe *and* innovative. Ada provides the tools to make that vision a reality." — Ada Community Evangelist
+
 # 23\. Refactoring and Certification in Ada
 
 Refactoring is the process of restructuring existing code without changing its external behavior. While often associated with legacy systems, refactoring is equally critical for new code—ensuring maintainability, readability, and adaptability from day one. Certification, in this context, refers to systematic verification of code quality through static analysis, testing, and design validation—not formal safety certification (covered in earlier chapters), but rather professional code quality assurance practices applicable to any software project. This chapter explores how Ada's unique language features make refactoring safer and more effective than in other languages, while providing practical tools and techniques for maintaining high-quality code in general-purpose applications. Whether you're building a web application, data processing tool, or educational software, these practices will help you create robust, adaptable systems that stand the test of time.
@@ -21344,6 +21355,7 @@ This chapter has provided practical techniques for refactoring Ada code and veri
 > "Ada's design philosophy ensures that code quality isn't an afterthought—it's built into the language itself. When you refactor in Ada, you're not just improving code; you're preserving the system's integrity for future developers." — Ada Community Evangelist
 
 This chapter has equipped you with practical techniques for maintaining high-quality Ada code through refactoring and certification. By applying these practices, you'll create software that is not only functional today but adaptable for tomorrow's challenges—whether you're building consumer applications, educational tools, or enterprise systems.
+
 # 24\. Ada and C/C++ Interoperability
 
 Interoperability between programming languages is a critical skill for modern software developers, especially when leveraging existing libraries or integrating components written in different languages. While Ada's strong typing and safety features make it ideal for building robust systems, many valuable libraries and frameworks exist only in C or C++. This chapter explores how Ada can seamlessly interact with C and C++ code—enabling developers to harness the strengths of both worlds without sacrificing safety or maintainability. Unlike previous chapters focused on safety-critical systems, this tutorial targets general-purpose applications where interoperability solves practical problems: using a C graphics library for a desktop application, integrating Ada code into a C++ game engine, or connecting to a database via SQLite from Ada. Whether you're a beginner exploring language boundaries or an experienced developer building hybrid systems, these techniques will empower you to create more capable software with fewer limitations.
@@ -22762,6 +22774,7 @@ By mastering these skills, you'll unlock the full potential of Ada while leverag
 > "The true power of Ada's interoperability lies not in connecting languages, but in creating systems where safety and performance coexist without compromise. By mastering these techniques, you'll build software that stands the test of time." — Senior Software Architect
 
 This chapter has equipped you with practical skills for Ada-C/C++ interoperability. Whether you're building a web application, embedded system, or game engine, these techniques will empower you to leverage the best of both worlds—Ada's safety and C/C++'s ecosystem. Start experimenting with the examples provided—Ada's compiler will catch errors before they become runtime bugs, giving you confidence in your code from day one.
+
 # 25\. Ada Quick Reference Guide
 
 > "Ada's design philosophy prioritizes clarity and correctness over convenience. This reference guide embodies that principle by providing precise, actionable information without unnecessary complexity—empowering you to write code that is both reliable and maintainable from day one."
