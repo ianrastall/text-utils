@@ -1216,7 +1216,7 @@ struct Rectangle {
 
 **Usage:**
 ```c
-struct Rectangle r = {{0, 0}, {10, 20}};
+struct Rectangle r = {{ 0, 0 }}, {10, 20}};
 printf("Width: %d, Height: %d\n", r.width, r.height); // Direct access
 printf("Top left: (%d, %d)\n", r.top_left.x, r.top_left.y);
 ```
