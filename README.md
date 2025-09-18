@@ -76,7 +76,7 @@ Designed by me, but coded by LLMs such as Gemini, Qwen, and Claude, at my own di
    - Visit `coding-tutorials.html` for the interactive programming tutorial navigator.
    - Ada tutorials are in `tutorials/ada/`.
    - Assembly language tutorials are in `tutorials/asm/`.
-   - C language tutorials are in `tutorials/c/'.
+   - C language tutorials are in `tutorials/c/`.
    - Etc.
 
 ## Development
