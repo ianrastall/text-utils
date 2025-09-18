@@ -2,6 +2,8 @@
 
 A collection of interactive web-based tools and educational tutorials for text processing, programming, and developer productivity.
 
+Designed by me, but coded by LLMs such as Gemini, Qwen, and Claude, at my own direction.
+
 ## Features
 
 - **Text Tools:**  
@@ -73,6 +75,9 @@ A collection of interactive web-based tools and educational tutorials for text p
 
    - Visit `coding-tutorials.html` for the interactive programming tutorial navigator.
    - Ada tutorials are in `tutorials/ada/`.
+   - Assembly language tutorials are in `tutorials/asm/`.
+   - C language tutorials are in `tutorials/c/`.
+   - Etc.
 
 ## Development
 
