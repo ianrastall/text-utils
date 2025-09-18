@@ -1,4 +1,4 @@
-# 1 . Exception Handling and Robust Error Management in Ada
+# 5. Exception Handling and Robust Error Management in Ada
 
 In everyday programming, errors are inevitable—whether it's a missing file, invalid user input, or a network timeout. How we handle these errors determines whether our programs crash unexpectedly or recover gracefully. Ada's exception handling system transforms error management from an afterthought into a first-class design element with precise semantics and verifiable properties. This tutorial explores Ada's robust approach to exceptions, showing how to build systems that fail safely rather than catastrophically. You'll learn to design error handling strategies that not only recover from problems but also prove their correctness—turning what is often a source of fragility into a foundation for reliability.
 

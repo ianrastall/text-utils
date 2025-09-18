@@ -1,4 +1,4 @@
-# 1 \. Scientific Computing in Ada
+# 19. Scientific Computing in Ada
 
 Scientific computing forms the backbone of modern research and engineering, enabling complex simulations, data analysis, and modeling across disciplines. While Python and Fortran dominate this domain, Ada offers unique advantages that make it a compelling choice for scientific applications—particularly when precision, reliability, and performance are critical. This chapter explores Ada's capabilities for scientific computing, emphasizing practical implementation techniques, numerical methods, data handling, and parallel processing. Unlike previous chapters focused on safety-critical systems, this tutorial targets general scientific applications where correctness and efficiency matter but extreme safety certification is not required. We'll leverage Ada's strong typing, modular design, and concurrency features to build robust scientific software that scales from small research projects to large-scale simulations.
 

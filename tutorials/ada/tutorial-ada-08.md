@@ -1,4 +1,4 @@
-# 1 . Object-Oriented Programming in Ada
+# 8. Object-Oriented Programming in Ada
 
 > **OOP Safety Paradox**
 > 

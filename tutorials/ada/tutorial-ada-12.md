@@ -1,4 +1,4 @@
-# 1 \. SPARK Subset for Formal Verification in Ada
+# 12. SPARK Subset for Formal Verification in Ada
 
 > "SPARK transforms code from 'likely correct' to 'provably correct'—not just for safety-critical systems, but for any application where reliability matters."
 

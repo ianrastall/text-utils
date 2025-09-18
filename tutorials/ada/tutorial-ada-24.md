@@ -1,4 +1,4 @@
-# 1 \. Ada and C/C++ Interoperability
+# 24. Ada and C/C++ Interoperability
 
 Interoperability between programming languages is a critical skill for modern software developers, especially when leveraging existing libraries or integrating components written in different languages. While Ada's strong typing and safety features make it ideal for building robust systems, many valuable libraries and frameworks exist only in C or C++. This chapter explores how Ada can seamlessly interact with C and C++ code—enabling developers to harness the strengths of both worlds without sacrificing safety or maintainability. Unlike previous chapters focused on safety-critical systems, this tutorial targets general-purpose applications where interoperability solves practical problems: using a C graphics library for a desktop application, integrating Ada code into a C++ game engine, or connecting to a database via SQLite from Ada. Whether you're a beginner exploring language boundaries or an experienced developer building hybrid systems, these techniques will empower you to create more capable software with fewer limitations.
 

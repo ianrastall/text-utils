@@ -1,4 +1,4 @@
-# 1 \. Embedded Systems Programming in Ada
+# 16. Embedded Systems Programming in Ada
 
 > "Embedded systems programming isn't just for aerospace engineers—it's about controlling hardware in everyday devices like smart thermostats and wearable tech. Ada provides safe, reliable tools for this task without requiring specialized knowledge."
 

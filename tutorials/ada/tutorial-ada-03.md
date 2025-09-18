@@ -1,4 +1,4 @@
-# 1 . Ada Subprograms: Procedures, Functions, and Packages
+# 3. Ada Subprograms: Procedures, Functions, and Packages
 
 While many programming languages treat functions and procedures as interchangeable constructs, Ada makes a deliberate semantic distinction that enforces clear design principles. This tutorial explores Ada's rigorous approach to subprograms and packages—the foundation of its modular design philosophy. You'll learn how Ada's packaging system creates strong encapsulation boundaries, enables precise visibility control, and supports the development of verifiable components for reliable software systems. Through practical examples, we'll demonstrate how these features transform code organization from a maintenance challenge into a reliability asset.
 

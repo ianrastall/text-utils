@@ -1,4 +1,4 @@
-# 1 \. Aspect Specifications and Pragmas in Ada
+# 11. Aspect Specifications and Pragmas in Ada
 
 > **What Aspects and Pragmas Are**
 > 

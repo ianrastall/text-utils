@@ -1,4 +1,4 @@
-# 1 . Concurrency and Protected Objects in Ada
+# 6. Concurrency and Protected Objects in Ada
 
 While most programming languages treat concurrency as an afterthought requiring external libraries, Ada integrates safe parallelism directly into the language. This tutorial explores Ada's unique tasking model and protected objects—features designed from the ground up for building reliable concurrent systems where race conditions and deadlocks are prevented at compile time. You'll learn how to structure concurrent applications that maintain correctness guarantees even in demanding real-time environments, whether you're building a home automation system, a web server, or a data processing pipeline.
 

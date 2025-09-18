@@ -1,4 +1,4 @@
-# 1 \. GUI Development in Ada
+# 17. GUI Development in Ada
 
 > "GUI development in Ada isn't just for aerospace engineers—it's about creating intuitive interfaces for everyday applications like home automation systems and personal finance tools. With Ada's strong typing and reliability features, you can build user-friendly applications that are both safe and maintainable."
 

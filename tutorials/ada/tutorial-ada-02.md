@@ -1,4 +1,4 @@
-# 1 . Ada's Strong Typing System
+# 2. Ada's Strong Typing System
 
 While most programming languages treat types as mere documentation, Ada transforms them into powerful compile-time verification tools. This chapter explores how Ada's rigorous type system eliminates entire categories of errors before code ever runs, with practical examples demonstrating how constrained types, subtypes, and strong equivalence prevent bugs that plague other languages. You'll learn to leverage Ada's type system as your first line of defense in building reliable software.
 

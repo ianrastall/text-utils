@@ -1,4 +1,4 @@
-# 1 \. Multi-Core Programming in Ada
+# 20. Multi-Core Programming in Ada
 
 Multi-core processors are now ubiquitous, with even consumer devices featuring multiple cores to handle parallel workloads. However, harnessing this power effectively requires careful design to avoid common pitfalls like race conditions, deadlocks, and inefficient resource utilization. Ada's built-in concurrency model provides a safe, high-level approach to multi-core programming that minimizes these risks while maximizing performance. Unlike languages that rely on external libraries for threading (e.g., C++'s `std::thread` or Python's `threading` module), Ada integrates concurrency directly into the language with strong compile-time guarantees. This chapter explores Ada's multi-core programming capabilities, focusing on practical techniques for writing safe, efficient parallel code suitable for scientific, engineering, and general-purpose applications. Unlike previous chapters focused on safety-critical systems, this tutorial emphasizes general-purpose multi-core programming where correctness and performance matter but formal certification is not required.
 

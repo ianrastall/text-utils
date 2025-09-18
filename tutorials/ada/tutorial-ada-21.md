@@ -1,4 +1,4 @@
-# 1 \. Modern IDEs for Ada Development
+# 21. Modern IDEs for Ada Development
 
 Modern Integrated Development Environments (IDEs) are indispensable tools for software developers, providing a unified interface for writing, debugging, and managing code. For Ada programmers, the right IDE can significantly enhance productivity by offering language-specific features, seamless integration with the GNAT compiler, and robust debugging capabilities. Unlike previous chapters that focused on technical aspects of Ada programming, this chapter shifts focus to the development environment itself, ensuring readers can efficiently leverage modern tools to build reliable and maintainable Ada applications. This chapter covers the most popular IDEs for Ada development, their features, setup procedures, and best practices for maximizing productivity. Whether you're a beginner starting your first Ada project or an experienced developer looking to optimize your workflow, this guide provides actionable insights to streamline your development process.
 

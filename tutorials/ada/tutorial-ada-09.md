@@ -1,4 +1,4 @@
-# 1 \. Generics and Template Programming in Ada
+# 9. Generics and Template Programming in Ada
 
 > **Why Generics Matter**
 > 

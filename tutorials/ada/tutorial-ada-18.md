@@ -1,4 +1,4 @@
-# 1 \. Distributed Systems in Ada
+# 18. Distributed Systems in Ada
 
 > "Distributed systems aren't just for aerospace engineers—they're the backbone of everyday applications like smart homes, online games, and cloud services. Ada's reliability features make it an excellent choice for building distributed systems that are both robust and maintainable."
 

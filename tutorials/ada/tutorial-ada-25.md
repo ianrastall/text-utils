@@ -1,4 +1,4 @@
-# 1 \. Ada Quick Reference Guide
+# 25. Ada Quick Reference Guide
 
 > "Ada's design philosophy prioritizes clarity and correctness over convenience. This reference guide embodies that principle by providing precise, actionable information without unnecessary complexity—empowering you to write code that is both reliable and maintainable from day one."
 

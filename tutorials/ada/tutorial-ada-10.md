@@ -1,4 +1,4 @@
-# 1 \. Memory Management and Controlled Types in Ada
+# 10. Memory Management and Controlled Types in Ada
 
 > **Why Memory Management Matters**
 > 

@@ -1,4 +1,4 @@
-# 1 \. Refactoring and Certification in Ada
+# 23. Refactoring and Certification in Ada
 
 Refactoring is the process of restructuring existing code without changing its external behavior. While often associated with legacy systems, refactoring is equally critical for new code—ensuring maintainability, readability, and adaptability from day one. Certification, in this context, refers to systematic verification of code quality through static analysis, testing, and design validation—not formal safety certification (covered in earlier chapters), but rather professional code quality assurance practices applicable to any software project. This chapter explores how Ada's unique language features make refactoring safer and more effective than in other languages, while providing practical tools and techniques for maintaining high-quality code in general-purpose applications. Whether you're building a web application, data processing tool, or educational software, these practices will help you create robust, adaptable systems that stand the test of time.
 
