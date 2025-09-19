@@ -3369,7 +3369,7 @@ int get_bit(uint64_t bb, int square) {
 **Generating Knight Moves (Naive):**
 ```c
 void generate_knight_moves(Square board[8][8], int x, int y, Moves *moves) {
-    int knight_deltas[8][2] = {{-2,-1},{-2,1},{-1,-2},{-1,2},{1,-2},{1,2},{2,-1},{2,1}};
+    int knight_deltas[8][2] = {{ -2 }, { -1 },{-2,1},{-1,-2},{-1,2},{1,-2},{1,2},{2,-1},{2,1}};
     
     for (int i = 0; i < 8; i++) {
         int nx = x + knight_deltas[i][0];
