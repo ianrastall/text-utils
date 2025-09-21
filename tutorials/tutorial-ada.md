@@ -23431,4 +23431,3 @@ This guide has covered the essential building blocks of Ada programming. For dee
 
 With this knowledge, you're ready to tackle real-world programming challenges with confidence.
 
-
