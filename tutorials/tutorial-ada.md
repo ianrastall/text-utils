@@ -704,14 +704,14 @@ gnatmake -gnata Home_Thermostat.adb
 ```
 The `-gnata` flag enables contract checking. Without it, contracts would be ignored at runtime. For development, always use this flag to catch errors early.
 
-### 3.0.1 Development Environment Tips
+### 1.5.4 Development Environment Tips
 
 - **Enable all warnings:** Add `-gnatwa` to compilation flags to catch potential issues
 - **Use GPS for debugging:** Set breakpoints, inspect variables, and step through code
 - **Organize projects:** Use `.gpr` project files for larger applications
 - **Try formal verification:** Install SPARK (a subset of Ada for mathematical verification) to prove correctness
 
-### 3.0.2 Example: Building a Project
+### 1.5.5 Example: Building a Project
 
 For larger applications, organize code into projects. Create a file named `thermostat.gpr`:
 
@@ -730,11 +730,11 @@ gnatmake -P thermostat.gpr
 
 This structure keeps your code organized and makes it easy to manage dependencies.
 
-## 3.1 Why Ada Endures: The Reliability Imperative
+## 1.6 Why Ada Endures: The Reliability Imperative
 
 In an era of rapid development cycles and "move fast and break things" culture, Ada's value proposition becomes increasingly relevant. While it might seem slower to write Ada code at first, the long-term benefits in code quality and maintainability often outweigh the initial investment.
 
-### 3.1.1 Development Phase Comparison
+### 1.6.1 Development Phase Comparison
 
 | **Development Phase** | **Typical Language** | **Ada Approach** |
 | :--- | :--- | :--- |
@@ -745,7 +745,7 @@ In an era of rapid development cycles and "move fast and break things" culture, 
 
 Let's explore what this means in practice.
 
-#### 3.1.1.1 Design Phase
+#### 1.6.1.1 Design Phase
 
 In most languages, design decisions are documented in external documents or comments. These often become outdated as code evolves. Ada's contracts embed design requirements directly in code. For example:
 
@@ -757,7 +757,7 @@ function Calculate_Discount(Price : Float; Is_Premium : Boolean) return Float wi
 
 This is always up-to-date because it's part of the code itself. If you change the function's behavior, the contract must change too. This eliminates the common problem of "documentation that doesn't match the code."
 
-#### 3.1.1.2 Coding Phase
+#### 1.6.1.2 Coding Phase
 
 In languages like C or Python, many errors only surface at runtime. For example:
 
@@ -780,7 +780,7 @@ function Calculate_Discount(Price : Valid_Price; Is_Premium : Boolean) return Fl
 
 Now, any attempt to pass a negative price would be caught at compile time. This prevents entire classes of errors before they ever reach testing.
 
-#### 4.0.0.1 Testing Phase
+#### 1.6.1.3 Testing Phase
 
 In typical development, 80% of testing time is spent hunting for bugs. With Ada, many bugs are caught during compilation, so testing focuses on edge cases and real-world scenarios rather than basic errors.
 
@@ -794,7 +794,7 @@ function Process_Input(Input : String) return Integer with
 
 With Ada's strong typing and contracts, you don't need to test for empty strings or negative results—those cases are prevented by the language itself. Your testing effort can focus on more meaningful scenarios.
 
-#### 4.0.0.2 Maintenance Phase
+#### 1.6.1.4 Maintenance Phase
 
 When maintaining code, refactoring is often risky—changing one part might break another. Ada's compiler acts as a safety net. For example, if you change a function's signature:
 
@@ -808,7 +808,7 @@ function Calculate_Total(Price : Float; Quantity : Natural) return Float;
 
 The compiler will immediately flag all call sites where `Quantity` might be negative. This makes refactoring safe and predictable.
 
-### 4.0.1 The Cost of Reliability
+### 1.6.2 The Cost of Reliability
 
 Ada development typically requires 15-20% more upfront effort than languages like C. However, studies by software engineering organizations show this investment yields 40-60% reduction in lifetime costs for projects where reliability matters. For applications that must operate correctly for years, the discipline Ada enforces translates to fewer bugs, easier maintenance, and longer software lifespans.
 
@@ -844,13 +844,13 @@ Now:
 
 This might seem like more work initially, but it prevents costly bugs down the line. In banking, a single bug could lead to millions in losses. Ada's approach makes these errors impossible.
 
-## 5.1 Next Steps in Your Ada Journey
+## 1.7 Next Steps in Your Ada Journey
 
 This introduction has laid the foundation for understanding Ada's philosophy and core structure. Let's explore what's ahead in your Ada learning journey.
 
-### 5.1.1 Upcoming Topics
+### 1.7.1 Upcoming Topics
 
-#### 5.1.1.1 Strong Typing in Depth
+#### 1.7.1.1 Strong Typing in Depth
 
 We'll dive deeper into Ada's type system:
 - Subtypes vs. derived types
@@ -860,7 +860,7 @@ We'll dive deeper into Ada's type system:
 
 You'll learn how to define types that precisely match your domain requirements, preventing entire classes of errors before they occur.
 
-#### 5.1.1.2 Tasking and Protected Objects
+#### 1.7.1.2 Tasking and Protected Objects
 
 We'll explore Ada's concurrency model in detail:
 - Task priorities and scheduling
@@ -870,7 +870,7 @@ We'll explore Ada's concurrency model in detail:
 
 You'll build concurrent applications that are safe by design, without the complexity of manual thread management.
 
-#### 5.1.1.3 Formal Verification with SPARK
+#### 1.7.1.3 Formal Verification with SPARK
 
 SPARK is a subset of Ada designed for mathematical verification. We'll cover:
 - How to prove program correctness
@@ -880,7 +880,7 @@ SPARK is a subset of Ada designed for mathematical verification. We'll cover:
 
 This will show you how to take Ada's reliability features to the next level.
 
-#### 5.1.1.4 Real-Time Systems Programming
+#### 1.7.1.4 Real-Time Systems Programming
 
 Ada excels in real-time environments. We'll cover:
 - Deadline monitoring
@@ -890,7 +890,7 @@ Ada excels in real-time environments. We'll cover:
 
 You'll learn how to build systems that respond predictably to time-sensitive events.
 
-#### 5.1.1.5 Interfacing with C and Other Languages
+#### 1.7.1.5 Interfacing with C and Other Languages
 
 Ada integrates seamlessly with existing codebases. We'll cover:
 - Calling C functions from Ada
@@ -900,7 +900,7 @@ Ada integrates seamlessly with existing codebases. We'll cover:
 
 This will let you leverage Ada's strengths in projects that already use other languages.
 
-### 5.1.2 Recommended Practice
+### 1.7.2 Recommended Practice
 
 To reinforce what you've learned, try these exercises:
 
@@ -919,7 +919,7 @@ To reinforce what you've learned, try these exercises:
 5. **Build a modular project**  
    Organize your code into packages with clear interfaces. Use a project file to manage dependencies and compilation.
 
-### 5.1.3 Key Takeaway
+### 1.7.3 Key Takeaway
 
 Ada isn't just a language—it's a methodology for building systems where correctness is measurable and reliable. Its strict type system, built-in concurrency, and formal contracts create a foundation for robust software that can be maintained and verified over time. While the learning curve may seem steep at first, the long-term benefits in code quality and reliability make Ada a powerful tool for any developer serious about building dependable software.
 
@@ -933,11 +933,11 @@ While most programming languages treat types as mere documentation, Ada transfor
 
 **Key Principle:** In Ada, types aren't just labels—they're contracts that the compiler enforces. Every time you declare a variable, function parameter, or return value, you're specifying not just what data it holds, but what it *means* in your program's domain. This semantic precision prevents entire classes of errors that would otherwise surface only during testing or in production.
 
-## 1.1 Why Strong Typing Matters: Beyond Syntax Checking
+## 2.1 Why Strong Typing Matters: Beyond Syntax Checking
 
 Most programming languages use types primarily for memory allocation decisions. C, C++, and Java use types to determine how much memory to allocate for a variable and how to interpret its bits. Ada uses types as semantic validators that catch logical errors during compilation. Consider this critical distinction:
 
-#### 1.1.0.1 C/C++ Type System
+### 2.1.1 C/C++ Type System
 - Primarily for memory layout
 - Implicit conversions common
 - Numeric types often interchangeable
@@ -953,7 +953,7 @@ double power = voltage * current; // Implicit conversion
 
 This C code compiles without any warnings or errors. The integer `voltage` is automatically converted to a floating-point value when multiplied by `current`, and the result is stored in `power`. While this might seem convenient, it hides a fundamental issue: the program has no way to distinguish between voltage values and current values. Both are just numbers, and the compiler doesn't care if you accidentally assign a current value to a voltage variable.
 
-#### 1.1.0.2 Ada Type System
+### 2.1.2 Ada Type System
 - Enforces semantic correctness
 - No implicit conversions
 - Numeric types strictly separated
@@ -968,7 +968,7 @@ Power : Float := Voltage * Current; -- ERROR: type mismatch
 
 This Ada code will fail to compile. The compiler detects that you're trying to multiply an `Integer` (`Voltage`) with a `Float` (`Current`) and assign the result to a `Float` (`Power`). Ada requires explicit conversion between these types: `Float(Voltage) * Current`. This might seem inconvenient at first, but it forces you to acknowledge that voltage and current are conceptually different quantities that require explicit handling.
 
-### 1.1.1 The Mars Climate Orbiter Lesson
+### 2.1.3 The Mars Climate Orbiter Lesson
 
 In 1999, NASA lost a $125 million spacecraft because one team used metric units while another used imperial units. The error went undetected because both systems used the same `double` type. Ada's strong typing would have required explicit unit conversion with distinct types, making this error impossible:
 
@@ -983,7 +983,7 @@ P : Pound_Force_Seconds := N; -- Compile-time error: type mismatch
 
 In this Ada example, `Newton_Seconds` and `Pound_Force_Seconds` are distinct types—even though they're both based on `Float`. Assigning one to the other requires an explicit conversion function, which would force developers to acknowledge the unit conversion. This simple type distinction would have prevented the Mars Climate Orbiter disaster by making the unit mismatch impossible to overlook.
 
-### 1.1.2 The Real Cost of Type Errors
+### 2.1.4 The Real Cost of Type Errors
 
 Type errors are not just theoretical problems—they have real-world consequences. Consider these examples:
 
@@ -993,7 +993,7 @@ Type errors are not just theoretical problems—they have real-world consequence
 
 In most languages, these errors would only surface during testing or in production. In Ada, they're caught during compilation—before anyone ever runs the code. This might seem like a small difference, but it fundamentally changes how you approach software development. Instead of writing code and hoping it works, you write code that *cannot* be incorrect according to your type definitions.
 
-### 1.1.3 How Ada's Type System Differs from Other Languages
+### 2.1.5 How Ada's Type System Differs from Other Languages
 
 Let's examine how Ada's type system compares to other popular languages:
 
@@ -1008,11 +1008,11 @@ Let's examine how Ada's type system compares to other popular languages:
 
 The key difference is in **name-based equivalence**. In C and Java, two types are considered compatible if they have the same structure (structural equivalence). In Ada, two types are compatible only if they share the same name declaration (name-based equivalence). This might seem restrictive, but it prevents accidental substitution of conceptually different values that happen to have the same representation.
 
-## 1.2 Core Typing Mechanisms in Depth
+## 2.2 Core Typing Mechanisms in Depth
 
 Ada's type system has three fundamental components: basic types, derived types, and subtypes. Each serves a specific purpose in building reliable software.
 
-### 1.2.1 Type Equivalence vs. Name Equivalence
+### 2.2.1 Type Equivalence vs. Name Equivalence
 
 Most languages use *structural equivalence*—types are compatible if their structures match. Ada uses *name equivalence*—two types are compatible only if they share the same name declaration.
 
@@ -1027,7 +1027,7 @@ D : Device_ID := S; -- ERROR: type mismatch despite same structure
 
 In this example, `Sensor_ID` and `Device_ID` are both derived from `Integer` and have identical internal representations. However, because they have different names, they're considered completely different types. Attempting to assign one to the other results in a compile-time error.
 
-#### 1.2.1.1 Why Name Equivalence Matters
+#### 2.2.1.1 Why Name Equivalence Matters
 
 This prevents accidental substitution of conceptually different values that happen to have the same representation. A sensor ID and device ID might both be integers, but they represent fundamentally different concepts in your system. In a building management system, you might have:
 
@@ -1041,7 +1041,7 @@ Sensor : Sensor_ID := Current_Room; -- ERROR: type mismatch
 
 This error would catch a mistake where someone accidentally assigned a room number to a sensor ID. Without strong typing, this could lead to the wrong sensor being controlled for the wrong room—a potentially serious error in a smart building system.
 
-### 1.2.2 Subtypes with Constraints
+### 2.2.2 Subtypes with Constraints
 
 Subtypes add constraints to existing types, creating compile-time validation. They're one of Ada's most powerful features for preventing errors.
 
@@ -1057,7 +1057,7 @@ L : Latitude  := 100.0; -- Compile-time error
 
 These subtypes define specific ranges of valid values. Any attempt to assign a value outside these ranges results in a compile-time error. This is different from C or Java, where you'd have to manually check these ranges at runtime.
 
-#### 1.2.2.1 Constraint Best Practices
+#### 2.2.2.1 Constraint Best Practices
 
 When using subtypes, follow these best practices:
 
@@ -1088,7 +1088,7 @@ end Set_Temperature;
 
 In the first version, you have to manually check the temperature range at runtime. This is error-prone—developers might forget to check, or the check might be incorrect. In the second version, the compiler guarantees that `T` is always within the valid range, so you don't need any runtime checks. This makes your code simpler, safer, and more reliable.
 
-### 1.2.3 Derived Types for Semantic Safety
+### 2.2.3 Derived Types for Semantic Safety
 
 When you need to create a new type that has similar properties but distinct meaning, use derived types:
 
@@ -1115,7 +1115,7 @@ end "*";
 
 This is different from C++, where you could implicitly convert between types or use operator overloading without explicit definitions. In Ada, you must explicitly define how different types interact, which forces you to think about the semantics of your operations.
 
-#### 1.2.3.1 Practical Application: Financial Calculations
+#### 2.2.3.1 Practical Application: Financial Calculations
 
 Let's see how derived types prevent errors in a financial application:
 
@@ -1133,11 +1133,11 @@ function Convert_Dollars_To_Euros(D : Dollars) return Euros is
 
 In this example, the compiler prevents you from multiplying dollars by euros without explicit conversion. This might seem like extra work, but it prevents a common financial error: accidentally treating dollars as euros or vice versa. In a banking system, this could mean transferring the wrong amount of money.
 
-## 1.3 Advanced Type Features for Reliability
+## 2.3 Advanced Type Features for Reliability
 
 Ada's type system includes several advanced features that make it uniquely powerful for building reliable software.
 
-### 1.3.1 Tagged Types for Safe Polymorphism
+### 2.3.1 Tagged Types for Safe Polymorphism
 
 Ada's approach to object-oriented programming with built-in runtime checks is fundamentally different from C++. In Ada, polymorphism is achieved through tagged types, which automatically insert runtime checks when converting between types.
 
@@ -1164,7 +1164,7 @@ end Process;
 
 Unlike C++, where you can accidentally slice objects or have unsafe casts, Ada automatically checks the type at runtime. If you try to treat a `Sensor` as a `Temperature_Sensor` when it's not, Ada will raise a `Constraint_Error` at runtime.
 
-#### 1.3.1.1 Practical Application: Medical Device Safety
+#### 2.3.1.1 Practical Application: Medical Device Safety
 
 In an infusion pump system, you might have different types of sensors:
 
@@ -1188,7 +1188,7 @@ Set_Flow_Rate(Milligrams(100.0)); -- ERROR: type mismatch
 
 The compiler would catch the error immediately. This might seem like a small detail, but in a medical device, it could mean the difference between a safe operation and a fatal overdose.
 
-### 1.3.2 Enumeration Types with Custom Behavior
+### 2.3.2 Enumeration Types with Custom Behavior
 
 Ada's enumeration types are more powerful than in most languages. You can define custom attributes and operations for enums:
 
@@ -1219,7 +1219,7 @@ Current_Light := Red; -- Correct
 
 This prevents common errors like using magic numbers for enum values.
 
-### 1.3.3 Type Invariants for Data Integrity
+### 2.3.3 Type Invariants for Data Integrity
 
 Ada 2012 introduced type invariants—properties that must always be true for a type. These are checked automatically whenever a value of the type is modified:
 
@@ -1238,11 +1238,11 @@ In this example, the type invariant ensures that the account balance never goes 
 
 Type invariants are particularly useful for complex data structures where maintaining invariants manually would be error-prone. They ensure that your data always remains in a valid state, no matter how it's modified.
 
-## 1.4 Practical Type System Patterns
+## 2.4 Practical Type System Patterns
 
 Now that we've explored Ada's type system fundamentals, let's look at practical patterns for building reliable software.
 
-### 1.4.1 Pattern 1: Range Constraints for State Safety
+### 2.4.1 Pattern 1: Range Constraints for State Safety
 
 Prevent invalid state transitions through constrained types:
 
@@ -1271,7 +1271,7 @@ Transition (Current_State, Next_State); -- Compiler verifies state validity
 
 In this example, `Operational_State` is a subtype of `System_State` that only includes `Starting` and `Running`. When you call `Transition`, the compiler ensures that `Next_State` is always a valid operational state. This prevents errors where you might accidentally set the system to `Off` during a transition that should only produce operational states.
 
-#### 1.4.1.1 Real-World Application: Home Automation
+#### 2.4.1.1 Real-World Application: Home Automation
 
 Consider a home thermostat system:
 
@@ -1292,7 +1292,7 @@ Set_Mode(Off); -- ERROR: type mismatch
 
 By using a subtype for active modes, you prevent the system from accidentally being set to "Off" when it's supposed to be in an active mode. This ensures that your home automation system always behaves as expected, without manual checks for invalid states.
 
-### 1.4.2 Pattern 2: Physical Units with Derived Types
+### 2.4.2 Pattern 2: Physical Units with Derived Types
 
 Create a type-safe physical units system:
 
@@ -1319,7 +1319,7 @@ Time := Distance; -- ERROR: type mismatch
 
 This prevents errors like the Mars Climate Orbiter incident by making unit conversions explicit.
 
-#### 1.4.2.1 Extending with SPARK
+#### 2.4.2.1 Extending with SPARK
 
 In the SPARK subset of Ada, you can add formal proofs about your units:
 
@@ -1331,7 +1331,7 @@ function To_MPS (M : Meters; S : Seconds) return Meters_Per_Second
 
 This contract specifies that the input time must be positive and that the result equals the division of distance by time. SPARK can then formally verify these properties, ensuring your calculations are mathematically correct.
 
-### 1.4.3 Pattern 3: Type-Safe Data Structures
+### 2.4.3 Pattern 3: Type-Safe Data Structures
 
 Ada's type system allows you to create data structures that enforce correctness at compile time:
 
@@ -1349,15 +1349,15 @@ In this example, `Non_Empty_String` is a record type with a dynamic predicate th
 
 This pattern is useful for any data structure where certain invariants must always hold true. For example, you could create a `Positive_Integer` type that only allows values greater than zero, or a `Valid_Email` type that enforces email format rules.
 
-## 1.5 Common Pitfalls and Solutions
+## 2.5 Common Pitfalls and Solutions
 
 Even with Ada's powerful type system, developers new to Ada often fall into common traps. Let's explore these pitfalls and how to avoid them.
 
-### 1.5.1 Pitfall 1: Overusing Integer and Float
+### 2.5.1 Pitfall 1: Overusing Integer and Float
 
 New Ada developers often fall back to basic numeric types instead of creating domain-specific types. This defeats the purpose of Ada's type system.
 
-#### 1.5.1.1 Avoid This:
+#### 2.5.1.1 Avoid This:
 
 ```ada
 procedure Set_Parameters (
@@ -1368,7 +1368,7 @@ procedure Set_Parameters (
 
 This code uses basic types for everything. It's impossible to tell from the parameter names what each parameter represents. A developer could accidentally swap `Param1` and `Param2`, and the compiler wouldn't catch it.
 
-#### 1.5.1.2 Prefer This:
+#### 2.5.1.2 Prefer This:
 
 ```ada
 subtype Pressure   is Integer range 0..1000;
@@ -1390,7 +1390,7 @@ Set_Parameters(100, 25, 1.5);  -- ERROR: Humidity out of range
 
 This is much safer than using basic types. It's also more self-documenting—anyone reading the code knows exactly what each parameter represents.
 
-### 1.5.2 Pitfall 2: Type Conversions as Workarounds
+### 2.5.2 Pitfall 2: Type Conversions as Workarounds
 
 When you find yourself writing many type conversions, it's usually a sign that your type model doesn't match your domain. Instead of:
 
@@ -1410,7 +1410,7 @@ function Calculate_Power (V : Voltage; I : Current) return Integer is
 
 In this example, you only need to convert at the interface between your domain types and the calculation function. The rest of your code works with the domain-specific types, which prevents errors throughout your program.
 
-#### 1.5.2.1 Real-World Example: Financial Calculations
+#### 2.5.2.1 Real-World Example: Financial Calculations
 
 Consider a banking application that handles currency conversions:
 
@@ -1430,11 +1430,11 @@ procedure Process_Transaction(Amount : USD);
 
 In the bad approach, you have to manually check the currency string and convert it to the right value. In the good approach, the compiler enforces that you only pass USD amounts to `Process_Transaction`, and you have a dedicated conversion function for EUR.
 
-### 1.5.3 Pitfall 3: Ignoring Subtypes for Enumerations
+### 2.5.3 Pitfall 3: Ignoring Subtypes for Enumerations
 
 Many developers treat enumerations as simple labels without using subtypes to restrict valid values.
 
-#### 1.5.3.1 Avoid This:
+#### 2.5.3.1 Avoid This:
 
 ```ada
 type Traffic_Light is (Red, Yellow, Green);
@@ -1442,7 +1442,7 @@ type Traffic_Light is (Red, Yellow, Green);
 
 This allows any `Traffic_Light` value, but in some contexts, you might want to restrict to only certain values.
 
-#### 1.5.3.2 Prefer This:
+#### 2.5.3.2 Prefer This:
 
 ```ada
 type Traffic_Light is (Red, Yellow, Green);
@@ -1454,11 +1454,11 @@ procedure Set_Display(L : Active_Light);
 
 This prevents errors where you might accidentally set the traffic light to red when it should only be yellow or green.
 
-## 1.6 Exercises: Building a Type-Safe System
+## 2.6 Exercises: Building a Type-Safe System
 
 Now that you've learned Ada's type system fundamentals, let's put them into practice with two exercises. These exercises will help you apply what you've learned to real-world scenarios.
 
-### 1.6.1 Exercise 1: Aircraft Control System
+### 2.6.1 Exercise 1: Aircraft Control System
 
 Design a type-safe system for aircraft control surfaces:
 
@@ -1467,7 +1467,7 @@ Design a type-safe system for aircraft control surfaces:
 - Prevent accidental mixing of control surfaces
 - Implement a safe mixing function for coordinated turns
 
-#### 1.6.1.1 Solution Guidance
+#### 2.6.1.1 Solution Guidance
 
 Start by defining distinct types for each control surface:
 
@@ -1507,7 +1507,7 @@ Coordinated_Turn(Rudder(10), Aileron(20)); -- ERROR: type mismatch
 
 The key insight is that each control surface has its own type with specific range constraints. This prevents errors where you might accidentally use the wrong value for the wrong control surface.
 
-### 1.6.2 Exercise 2: Chemical Processing Plant
+### 2.6.2 Exercise 2: Chemical Processing Plant
 
 Create a type system for a chemical processing system:
 
@@ -1516,7 +1516,7 @@ Create a type system for a chemical processing system:
 - Prevent incompatible chemical combinations
 - Implement a reaction validation function using subtypes
 
-#### 1.6.2.1 Solution Guidance
+#### 2.6.2.1 Solution Guidance
 
 Start by defining types for different chemicals:
 
@@ -1553,11 +1553,11 @@ React(Acid(20.0), Base(30.0), Solvent_Temperature(25), Base_Temperature(40)); --
 
 The compiler will catch this immediately. This prevents dangerous situations where you might accidentally mix chemicals at unsafe temperatures.
 
-## 1.7 Next Steps: From Types to Contracts
+## 2.7 Next Steps: From Types to Contracts
 
 Now that you've mastered Ada's strong typing system, you're ready to combine these techniques with Ada 2012's formal contract features. In the next chapter, we'll explore how to:
 
-### 1.7.1 Upcoming: Design by Contract
+### 2.7.1 Upcoming: Design by Contract
 
 - Write precise preconditions and postconditions
 - Use type invariants to protect data integrity
@@ -1565,7 +1565,7 @@ Now that you've mastered Ada's strong typing system, you're ready to combine the
 - Transition from runtime checks to formal verification
 - Apply contracts to real-world scenarios
 
-### 1.7.2 Practice Challenge
+### 2.7.2 Practice Challenge
 
 Take your aircraft control system from the exercise and enhance it with contracts:
 
@@ -1574,7 +1574,7 @@ Take your aircraft control system from the exercise and enhance it with contract
 - Create invariants for system state consistency
 - Document the safety properties your contracts enforce
 
-#### 1.7.2.1 Example Enhancement
+#### 2.7.2.1 Example Enhancement
 
 ```ada
 procedure Set_Control_Surface(
@@ -1588,7 +1588,7 @@ with
 
 This contract ensures that the total movement of all control surfaces doesn't exceed 50 degrees, which might be a safety requirement for the aircraft.
 
-### 1.7.3 Key Insight
+### 2.7.3 Key Insight
 
 Strong typing is Ada's foundation, but contracts are its superpower. When you combine constrained types with formal specifications, you create software that's not just less error-prone, but *provably correct* within its specified domain. This is why Ada remains the language of choice when failure is not an option.
 
@@ -1600,15 +1600,13 @@ By the end of the next chapter, you'll be able to create software that's not jus
 
 While many programming languages treat functions and procedures as interchangeable constructs, Ada makes a deliberate semantic distinction that enforces clear design principles. This tutorial explores Ada's rigorous approach to subprograms and packages—the foundation of its modular design philosophy. You'll learn how Ada's packaging system creates strong encapsulation boundaries, enables precise visibility control, and supports the development of verifiable components for reliable software systems. Through practical examples, we'll demonstrate how these features transform code organization from a maintenance challenge into a reliability asset.
 
-#### 1.0.0.1 Subprograms as Contracts
+> In Ada, subprograms aren't just code containers—they're formal contracts between callers and callees. This perspective shifts development from "making code work" to "specifying how it must work," creating the foundation for verifiable systems. When you define a subprogram in Ada, you're not just writing instructions; you're documenting exactly what the subprogram expects, what it guarantees, and how it interacts with the rest of your system. This contract-based approach means errors are caught earlier in the development process, making your code more predictable and maintainable.
 
-In Ada, subprograms aren't just code containers—they're formal contracts between callers and callees. This perspective shifts development from "making code work" to "specifying how it must work," creating the foundation for verifiable systems. When you define a subprogram in Ada, you're not just writing instructions; you're documenting exactly what the subprogram expects, what it guarantees, and how it interacts with the rest of your system. This contract-based approach means errors are caught earlier in the development process, making your code more predictable and maintainable.
-
-## 1.1 Procedures vs. Functions: Semantic Distinctions
+## 3.1 Procedures vs. Functions: Semantic Distinctions
 
 Unlike languages that treat all subprograms as functions (even when they don't return values), Ada enforces a clear semantic distinction between procedures and functions that reflects their intended purpose. This distinction isn't arbitrary—it's designed to make your code more self-documenting and less error-prone.
 
-#### 1.1.0.1 Procedures
+### 3.1.1 Procedures
 
 - Perform actions with side effects
 - No return value (by design)
@@ -1638,7 +1636,7 @@ end Set_Target_Temperature;
 
 This procedure sets a target temperature for a specific sensor. It takes a sensor identifier and target value as inputs (`in` parameters), and returns a success status through an `out` parameter. The procedure modifies the system state by updating the temperature value, which is why it's a procedure rather than a function.
 
-#### 1.1.0.2 Functions
+### 3.1.2 Functions
 
 - Compute and return values
 - Must have a return value
@@ -1657,7 +1655,7 @@ end Get_Current_Temperature;
 
 This function retrieves the current temperature for a sensor. It takes a sensor identifier as an input parameter and returns a temperature value. Crucially, it doesn't modify any system state—it simply reads and returns data. This makes it a perfect candidate for a function.
 
-### 1.1.1 The Command-Query Separation Principle
+### 3.1.3 The Command-Query Separation Principle
 
 Bertrand Meyer's principle states: "Asking a question should not change the answer." Ada enforces this at the language level:
 
@@ -1693,7 +1691,7 @@ end Update_Last_Read;
 
 This separation makes your code clearer and more reliable. You can't accidentally mix read and write operations, which prevents subtle bugs that are difficult to track down.
 
-#### 1.1.1.1 Parameter Modes: The Contract Language
+#### 3.1.3.1 Parameter Modes: The Contract Language
 
 Ada's parameter modes form a precise contract language that explicitly states how data flows into and out of subprograms:
 
@@ -1783,15 +1781,15 @@ end Update_Temperature;
 
 This small change makes the contract clearer and prevents accidental modification of the sensor ID.
 
-## 1.2 Packages: The Foundation of Modularity
+## 3.2 Packages: The Foundation of Modularity
 
 While many languages use classes as the primary modularization unit, Ada uses packages—a more flexible construct that supports multiple organization patterns. Packages provide a powerful mechanism for encapsulating related functionality while controlling visibility and dependencies.
 
-### 1.2.1 Package Structure and Visibility Control
+### 3.2.1 Package Structure and Visibility Control
 
 Ada packages have two distinct parts: the specification (what callers see) and the body (the implementation details). This separation creates clear boundaries between interface and implementation.
 
-#### 1.2.1.1 Package Specification
+#### 3.2.1.1 Package Specification
 
 The public interface (what callers see):
 
@@ -1820,7 +1818,7 @@ private
 end Temperature_Sensors;
 ```
 
-#### 1.2.1.2 Package Body
+#### 3.2.1.2 Package Body
 
 The implementation (hidden from callers):
 
@@ -1857,7 +1855,7 @@ package body Temperature_Sensors is
 end Temperature_Sensors;
 ```
 
-### 1.2.2 Key Visibility Rules
+### 3.2.2 Key Visibility Rules
 
 - Items in the `private` part are visible to the package body but not to clients
 - Package bodies can see all items in their own spec (public and private)
@@ -1866,7 +1864,7 @@ end Temperature_Sensors;
 
 This strict visibility control creates strong encapsulation boundaries that prevent unintended dependencies. For example, clients of `Temperature_Sensors` can't access `Last_Values` directly—they must go through `Get_Last_Value`. This ensures that any access to the internal data goes through proper validation and error handling.
 
-### 1.2.3 Private Types for Information Hiding
+### 3.2.3 Private Types for Information Hiding
 
 Ada provides multiple levels of information hiding through private types, giving you fine-grained control over what clients can see:
 
@@ -1905,7 +1903,7 @@ private
 end Sensor_Management;
 ```
 
-### 1.2.4 Private Type Selection Guide
+### 3.2.4 Private Type Selection Guide
 
 | **Type Form** | **Visibility** | **Best For** |
 | :--- | :--- | :--- |
@@ -1916,7 +1914,7 @@ end Sensor_Management;
 
 Let's explore each type form in detail:
 
-#### 1.2.4.1 Standard Record
+#### 3.2.4.1 Standard Record
 
 A standard record exposes all its fields to clients. This is appropriate when the data structure is simple and clients need direct access to all components.
 
@@ -1936,7 +1934,7 @@ P.X := 15;  -- Allowed
 
 This is useful for simple data structures but provides no encapsulation—changes to the record structure will affect all clients.
 
-#### 1.2.4.2 Private Type
+#### 3.2.4.2 Private Type
 
 A private type hides implementation details while exposing operations. Clients can only interact with the type through the public operations defined in the specification.
 
@@ -1965,7 +1963,7 @@ S.ID := 10;            -- ERROR: cannot access private record component
 
 This is ideal for abstract data types where you want to control how the data is accessed and modified.
 
-#### 1.2.4.3 Limited Private Type
+#### 3.2.4.3 Limited Private Type
 
 A limited private type restricts operations to only assignment and equality testing. Clients cannot copy or assign these types directly.
 
@@ -1993,7 +1991,7 @@ Close_Device(D1);
 
 This is perfect for resources that should have only one owner, like file handles or hardware devices.
 
-#### 1.2.4.4 Private with Discriminants
+#### 3.2.4.4 Private with Discriminants
 
 A private type with discriminants allows runtime-sized components while hiding implementation details.
 
@@ -2021,13 +2019,13 @@ B.Data := "Test";    -- ERROR: cannot access private component
 
 This is useful for types where the size is determined at runtime but the implementation details should remain hidden.
 
-## 1.3 Package Hierarchies and Child Packages
+## 3.3 Package Hierarchies and Child Packages
 
 Ada's package hierarchy system provides a powerful mechanism for organizing large systems while maintaining strong encapsulation. Unlike inheritance-based systems, Ada's package hierarchy creates clear ownership relationships without the fragility of deep inheritance trees.
 
-### 1.3.1 Parent and Child Package Structure
+### 3.3.1 Parent and Child Package Structure
 
-#### 1.3.1.1 Parent Package (file: temperature_sensors.ads)
+#### 3.3.1.1 Parent Package (file: temperature_sensors.ads)
 
 ```ada
 package Temperature_Sensors is
@@ -2044,7 +2042,7 @@ package Temperature_Sensors is
 end Temperature_Sensors;
 ```
 
-#### 1.3.1.2 Child Package (file: temperature_sensors.hardware.ads)
+#### 3.3.1.2 Child Package (file: temperature_sensors.hardware.ads)
 
 ```ada
 with Ada.Real_Time;
@@ -2082,7 +2080,7 @@ package body Temperature_Sensors.Hardware is
 end Temperature_Sensors.Hardware;
 ```
 
-### 1.3.2 Child Package Visibility Rules
+### 3.3.2 Child Package Visibility Rules
 
 - A child package can see all public items of its parent
 - A child package _cannot_ see private items of its parent (unless the parent has a `private` part)
@@ -2112,7 +2110,7 @@ end Home_Sensors.Motion;
 
 Each child package has access to the parent's public interface but not to the other child packages. This keeps the system modular and prevents accidental dependencies between unrelated components.
 
-### 1.3.3 Private Child Packages
+### 3.3.3 Private Child Packages
 
 For implementation details that should be hidden from clients:
 
@@ -2156,9 +2154,9 @@ end Temperature_Sensors.Initialization;
 
 This pattern is perfect for initialization routines that should be hidden from clients but need to be part of the package's implementation. The private child package `Initialization` is only visible to the parent package body, not to any clients of the package.
 
-### 1.3.4 Package Hierarchy Design Patterns
+### 3.3.4 Package Hierarchy Design Patterns
 
-#### 1.3.4.1 Layered Architecture
+#### 3.3.4.1 Layered Architecture
 
 - `System`: Top-level interface
 - `System.Core`: Core functionality
@@ -2187,7 +2185,7 @@ end Home_Automation.Utils;
 
 Each layer depends only on layers below it, creating a clean dependency graph.
 
-#### 1.3.4.2 Feature-Based Organization
+#### 3.3.4.2 Feature-Based Organization
 
 - `Sensors`: Base sensor interface
 - `Sensors.Temperature`: Temperature sensors
@@ -2216,13 +2214,13 @@ end Sensors.Diagnostics;
 
 This organization makes it easy to find related functionality and keeps the system modular.
 
-## 1.4 Library Units and System Organization
+## 3.4 Library Units and System Organization
 
 Ada's library unit system provides a formal mechanism for organizing large systems with precise dependency control. Unlike languages where dependencies are implicit or managed through build systems, Ada makes dependencies explicit and verifiable.
 
-### 1.4.1 Library Unit Types and Dependencies
+### 3.4.1 Library Unit Types and Dependencies
 
-#### 1.4.1.1 \. Standard Packages
+#### 3.4.1.1 Standard Packages
 
 Independent units with no special dependencies:
 
@@ -2235,7 +2233,7 @@ end Math_Utils;
 
 Can be compiled independently once dependencies are satisfied. These are perfect for general-purpose utilities that don't depend on other parts of your system.
 
-#### 1.4.1.2 \. Parent Packages
+#### 3.4.1.2 Parent Packages
 
 Define namespaces for child packages:
 
@@ -2248,7 +2246,7 @@ end Sensors;
 
 Must be compiled before child packages. Parent packages act as the foundation for hierarchical organization.
 
-#### 1.4.1.3 \. Child Packages
+#### 3.4.1.3 Child Packages
 
 Extend parent package functionality:
 
@@ -2262,7 +2260,7 @@ end Sensors.Temperature;
 
 Depend on parent package; siblings are independent. Child packages can access the parent's public items but not private items.
 
-#### 1.4.1.4 \. Subunits
+#### 3.4.1.4 Subunits
 
 Split large bodies into manageable pieces:
 
@@ -2289,7 +2287,7 @@ end Read_Sensor;
 
 Allows modular implementation of large package bodies. Subunits make it easier to manage large codebases by splitting them into smaller, more manageable files.
 
-#### 1.4.1.5 Dependency Management Best Practices
+#### 3.4.1.5 Dependency Management Best Practices
 
 Ada's `with` clause provides precise dependency control:
 
@@ -2330,7 +2328,7 @@ use Ada.Text_IO;
 
 Limit `with` clauses to only what's necessary and avoid excessive `use` clauses to prevent namespace pollution and hidden dependencies. In the good practice example, we only import what we need (`Temperature_Sensors.Hardware`), and we explicitly qualify `Hardware.Read_Sensor` rather than using `use` for the entire package.
 
-### 1.4.2 GNAT Project Files for Large Systems
+### 3.4.2 GNAT Project Files for Large Systems
 
 For industrial-scale systems, GNAT project files manage dependencies:
 
@@ -2364,7 +2362,7 @@ project Home_Automation is
 end Home_Automation;
 ```
 
-### 1.4.3 Project File Best Practices
+### 3.4.3 Project File Best Practices
 
 - Use separate project files for different system components
 - Define build configurations for development and production
@@ -2381,13 +2379,13 @@ For example, a home automation system might have:
 
 Each project file can have its own build configurations and dependencies, making it easy to manage large systems.
 
-## 1.5 Package Initialization and Finalization
+## 3.5 Package Initialization and Finalization
 
 Ada provides controlled mechanisms for package initialization and finalization—critical for reliable systems where startup and shutdown sequences matter. Unlike languages where global initialization order is undefined, Ada gives you precise control over when and how initialization happens.
 
-### 1.5.1 Initialization Patterns
+### 3.5.1 Initialization Patterns
 
-#### 1.5.1.1 \. Implicit Initialization
+#### 3.5.1.1 Implicit Initialization
 
 Using variable declarations:
 
@@ -2403,7 +2401,7 @@ end Sensors;
 
 Simple but limited control over initialization order. This works well for simple cases but can lead to problems in complex systems.
 
-#### 1.5.1.2 \. Explicit Initialization Procedure
+#### 3.5.1.2 Explicit Initialization Procedure
 
 Using an initialization procedure:
 
@@ -2432,9 +2430,9 @@ end Sensors;
 
 Gives complete control over initialization sequence. This is ideal for systems where initialization order matters.
 
-### 1.5.2 Advanced Initialization Control
+### 3.5.2 Advanced Initialization Control
 
-#### 1.5.2.1 Elaboration Control Pragmas
+#### 3.5.2.1 Elaboration Control Pragmas
 
 Control elaboration order explicitly:
 
@@ -2452,7 +2450,7 @@ end Sensors.Hardware;
 
 Directs the compiler to ensure proper elaboration order. `Elaborate_Body` ensures the package body is elaborated before any references to the package, and `Elaborate_All` ensures all child packages are elaborated.
 
-#### 1.5.2.2 Elaboration Checks
+#### 3.5.2.2 Elaboration Checks
 
 Enable runtime elaboration checks:
 
@@ -2468,7 +2466,7 @@ This compiles with elaboration checks that detect:
 
 For example, if you try to call a function from a package that hasn't been elaborated, Ada will raise a `Program_Error` at runtime.
 
-#### 1.5.2.3 Initialization with Contracts
+#### 3.5.2.3 Initialization with Contracts
 
 Using Design by Contract for initialization:
 
@@ -2491,17 +2489,17 @@ end Sensors;
 
 Contracts document and verify initialization requirements. The `Initializes` aspect specifies which variables are initialized by the package, and the contracts ensure proper initialization sequence.
 
-### 1.5.3 The Initialization Order Problem
+### 3.5.3 The Initialization Order Problem
 
 In many languages, global variable initialization order is undefined or implementation-dependent. This caused the Ariane 5 rocket failure. Ada provides multiple solutions:
 
-#### 1.5.3.1 Problem
+#### 3.5.3.1 Problem
 
 - Package A depends on Package B
 - But Package B initializes after Package A
 - Results in undefined behavior
 
-#### 1.5.3.2 Solutions
+#### 3.5.3.2 Solutions
 
 - Use `pragma Elaborate`/`Elaborate_All`
 - Use explicit initialization procedures
@@ -2524,11 +2522,11 @@ end Home_Automation.Sensors;
 
 This ensures that the main package is elaborated before any sensor operations, preventing initialization order issues.
 
-## 1.6 Real-World Package Design Patterns
+## 3.6 Real-World Package Design Patterns
 
 Let's explore two practical examples of package design that demonstrate Ada's modular capabilities without focusing on safety-critical domains.
 
-### 1.6.1 \. Home Climate Control System
+### 3.6.1 Home Climate Control System
 
 A robust climate control package for home automation:
 
@@ -2570,7 +2568,7 @@ end Climate_Control;
 
 This pattern combines strong typing, contracts, and information hiding for maximum reliability. Clients can't set temperatures outside the valid range, and they can't access the system before it's initialized. The private implementation details are hidden, so clients only interact with the public interface.
 
-### 1.6.2 \. Smart Home Lighting Control
+### 3.6.2 Smart Home Lighting Control
 
 A lighting control system for home automation:
 
@@ -2612,9 +2610,9 @@ end Lighting_Control;
 
 This implementation ensures safe state transitions and parameter validation. For example, you can't set color temperature when the lights are off, and brightness levels are always within valid ranges. The private implementation details are hidden, so clients interact only through the public interface.
 
-## 1.7 Exercises: Building Robust Package Hierarchies
+## 3.7 Exercises: Building Robust Package Hierarchies
 
-### 1.7.1 Exercise 1: Home Automation Sensor System
+### 3.7.1 Exercise 1: Home Automation Sensor System
 
 Design a package hierarchy for a home automation sensor system:
 
@@ -2626,7 +2624,7 @@ Design a package hierarchy for a home automation sensor system:
 
 **Challenge:** Prove that sensor readings cannot be accessed before system initialization.
 
-#### 1.7.1.1 Solution Guidance
+#### 3.7.1.1 Solution Guidance
 
 Start with the parent package:
 
@@ -2664,7 +2662,7 @@ function Read_Temp (ID : Sensor_ID) return Temperature with
 
 This ensures that `Read_Temp` can only be called after the system is initialized.
 
-### 1.7.2 Exercise 2: Smart Home Lighting Control
+### 3.7.2 Exercise 2: Smart Home Lighting Control
 
 Build a package structure for a home lighting control system:
 
@@ -2676,7 +2674,7 @@ Build a package structure for a home lighting control system:
 
 **Challenge:** Create a verification plan showing how each safety requirement is enforced through package design.
 
-#### 1.7.2.1 Solution Guidance
+#### 3.7.2.1 Solution Guidance
 
 Create a parent package for the lighting system:
 
@@ -2720,7 +2718,7 @@ procedure Set_Color_Temp (Temp : Color_Temp) with
 
 This ensures that color temperature can only be set when the lights are in a mode that supports it.
 
-### 1.7.3 Package Design Verification Strategy
+### 3.7.3 Package Design Verification Strategy
 
 1. **Structure verification:** Check package hierarchy against requirements
 2. **Visibility verification:** Ensure proper information hiding
@@ -2731,11 +2729,11 @@ This ensures that color temperature can only be set when the lights are in a mod
 
 For highest reliability, all six verification steps are required to demonstrate proper package design.
 
-## 1.8 Next Steps: Design by Contract
+## 3.8 Next Steps: Design by Contract
 
 Now that you've mastered Ada's subprogram and package system, you're ready to explore how to specify precise behavioral requirements directly in your code. In the next tutorial, we'll dive into Design by Contract—Ada 2012's powerful feature for building verifiable systems. You'll learn how to:
 
-### 1.8.1 Upcoming: Design by Contract
+### 3.8.1 Upcoming: Design by Contract
 
 - Specify preconditions and postconditions
 - Use type invariants to protect data integrity
@@ -2743,7 +2741,7 @@ Now that you've mastered Ada's subprogram and package system, you're ready to ex
 - Transition from runtime checks to formal verification
 - Apply contracts to real-world scenarios
 
-### 1.8.2 Practice Challenge
+### 3.8.2 Practice Challenge
 
 Enhance your home automation system with contracts:
 
@@ -2753,7 +2751,7 @@ Enhance your home automation system with contracts:
 - Document the safety properties your contracts enforce
 - Verify that your contracts prevent known failure modes
 
-#### 1.8.2.1 The Path to Verified Systems
+#### 3.8.2.1 The Path to Verified Systems
 
 Ada's subprogram and package system provides the structural foundation for building reliable software, but contracts provide the semantic precision needed for verification. When combined with strong typing and formal methods, these features create a pathway from traditional development to mathematically verified software.
 
@@ -2763,16 +2761,14 @@ This integrated approach is why Ada remains the language of choice for systems w
 
 Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in complex systems.
 
-#### 1.0.0.1 From Testing to Specification
+>Traditional development: "Let's write code and see if it works."  
+>Ada with contracts: "Let's specify exactly how it must work, then verify compliance."
 
-Traditional development: "Let's write code and see if it works."  
-Ada with contracts: "Let's specify exactly how it must work, then verify compliance."
-
-## 1.1 The Contract Paradigm: Beyond Unit Testing
+## 4.1 The Contract Paradigm: Beyond Unit Testing
 
 While unit tests verify specific input/output pairs, contracts define universal properties that must hold for all possible executions. This shift from testing to specification is fundamental to building truly reliable systems.
 
-#### 1.1.0.1 Traditional Unit Testing
+### 4.1.1 Traditional Unit Testing
 
 - Verifies specific test cases
 - Cannot prove absence of errors
@@ -2785,7 +2781,7 @@ While unit tests verify specific input/output pairs, contracts define universal 
 Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");
 ```
 
-#### 1.1.0.2 Design by Contract
+### 4.1.2 Design by Contract
 
 - Specifies universal properties
 - Can prove absence of certain errors
@@ -2800,9 +2796,9 @@ function Factorial (N : Natural) return Positive with
            (if N > 0 then Factorial'Result mod N = 0);
 ```
 
-#### 1.1.0.3 Contract Components Explained
+### 4.1.3 Contract Components Explained
 
-##### Preconditions (`Pre`)
+#### 4.1.3.1 Preconditions (`Pre`)
 
 Requirements that must be true for the caller before invoking the subprogram. They define the subprogram's domain of responsibility.
 
@@ -2810,7 +2806,7 @@ Requirements that must be true for the caller before invoking the subprogram. Th
 - Define required state conditions
 - Enforce interface contracts
 
-##### Postconditions (`Post`)
+#### 4.1.3.2 Postconditions (`Post`)
 
 Guarantees provided by the subprogram after execution. They define what the subprogram promises to deliver.
 
@@ -2818,9 +2814,9 @@ Guarantees provided by the subprogram after execution. They define what the subp
 - Document state changes
 - Define relationships between inputs and outputs
 
-## 1.2 Implementing Contracts in Ada 2012+
+## 4.2 Implementing Contracts in Ada 2012+
 
-### 1.2.1 Basic Contract Syntax
+### 4.2.1 Basic Contract Syntax
 
 Contracts are specified using aspect syntax directly in the subprogram declaration:
 
@@ -2831,16 +2827,16 @@ function Square_Root (X : Float) return Float with
            Square_Root'Result >= 0.0;
 ```
 
-### 1.2.2 Key Syntax Notes
+### 4.2.2 Key Syntax Notes
 
 - Contracts use `=>` (implies) rather than `:=`
 - `'Result` refers to the function's return value
 - Multiple conditions can be combined with `and`, `or`
 - Contracts can reference parameters and global variables
 
-### 1.2.3 Advanced Contract Features
+### 4.2.3 Advanced Contract Features
 
-#### 1.2.3.1 Old Values in Postconditions
+#### 4.2.3.1 Old Values in Postconditions
 
 Reference original parameter values using `Old`:
 
@@ -2852,7 +2848,7 @@ procedure Increment (X : in out Integer) with
 
 Without `Old`, `X` in the postcondition would refer to the updated value.
 
-#### 1.2.3.2 Class-wide Preconditions
+#### 4.2.3.2 Class-wide Preconditions
 
 For dispatching operations, use `Pre'Class`:
 
@@ -2863,9 +2859,9 @@ procedure Process (S : Sensor'Class) with
 
 Ensures the precondition applies to all derived types in the hierarchy.
 
-## 1.3 Real-World Contract Applications
+## 4.3 Real-World Contract Applications
 
-### 1.3.1 Calculator Application
+### 4.3.1 Calculator Application
 
 Contracts for a division operation prevent division by zero errors:
 
@@ -2877,7 +2873,7 @@ function Divide (A, B : Float) return Float with
 
 This simple contract ensures the divisor is never zero and that the result satisfies the mathematical relationship between inputs and output.
 
-### 1.3.2 Temperature Conversion System
+### 4.3.2 Temperature Conversion System
 
 Contracts for a temperature conversion system ensure valid ranges and accurate calculations:
 
@@ -2893,7 +2889,7 @@ function Fahrenheit_to_Celsius (F : Float) return Float with
 
 These contracts prevent physically impossible temperature conversions and ensure mathematical correctness.
 
-### 1.3.3 Inventory Management System
+### 4.3.3 Inventory Management System
 
 Contracts for a stock management system ensure valid operations:
 
@@ -2909,11 +2905,11 @@ procedure Remove_Inventory (Item : String; Quantity : Natural) with
 
 These contracts prevent negative stock levels and ensure inventory quantities remain consistent.
 
-## 1.4 Type Invariants: Protecting Data Integrity
+## 4.4 Type Invariants: Protecting Data Integrity
 
 While pre/post conditions govern subprogram behavior, type invariants ensure data structure consistency throughout the program's execution.
 
-### 1.4.1 Defining and Using Invariants
+### 4.4.1 Defining and Using Invariants
 
 ```ada
 type Bank_Account is record
@@ -2928,21 +2924,21 @@ function Is_Valid (A : Bank_Account) return Boolean is
    (A.Balance >= 0.0 and A.Owner'Length > 0);
 ```
 
-#### 1.4.1.1 When Invariants Are Checked
+#### 4.4.1.1 When Invariants Are Checked
 
 - At the end of object initialization
 - After any operation that could modify the object
 - At subprogram boundaries when objects are passed
 - Explicitly with `Assert (A in Bank_Account)`
 
-#### 1.4.1.2 Best Practices
+#### 4.4.1.2 Best Practices
 
 - Define invariants for all critical data structures
 - Keep them simple and verifiable
 - Use them to enforce domain constraints
 - Combine with subprogram contracts for complete verification
 
-### 1.4.2 Practical Application: Calendar Event System
+### 4.4.2 Practical Application: Calendar Event System
 
 Ensure calendar events maintain consistency:
 
@@ -2962,9 +2958,9 @@ function Is_Valid (E : Calendar_Event) return Boolean is
 
 This invariant ensures events always have valid time ranges and non-empty titles.
 
-## 1.5 Verification Levels: From Runtime Checks to Formal Proof
+## 4.5 Verification Levels: From Runtime Checks to Formal Proof
 
-### 1.5.1 Level 1: Runtime Contract Checking
+### 4.5.1 Level 1: Runtime Contract Checking
 
 Basic enforcement during execution:
 
@@ -2978,7 +2974,7 @@ This compiles with runtime checks for all contracts. Violations raise `Assert_Fa
 - Adds minimal runtime overhead
 - Essential for general development
 
-### 1.5.2 Level 2: Static Verification
+### 4.5.2 Level 2: Static Verification
 
 Prove contracts hold without execution:
 
@@ -2992,7 +2988,7 @@ Uses formal methods to prove contracts are always satisfied.
 - Requires precise contracts
 - Higher assurance than testing alone
 
-### 1.5.3 Level 3: SPARK Formal Verification
+### 4.5.3 Level 3: SPARK Formal Verification
 
 Mathematical proof of correctness:
 
@@ -3009,7 +3005,7 @@ SPARK's simplified subset enables complete formal verification.
 - Verifies absence of all runtime errors
 - Required for highest assurance applications
 
-#### 1.5.3.1 Verification Level Comparison
+#### 4.5.3.1 Verification Level Comparison
 
 | Verification Level | Confidence | Effort | Best For |
 | :--- | :--- | :--- | :--- |
@@ -3017,9 +3013,9 @@ SPARK's simplified subset enables complete formal verification.
 | **Static Verification** | High | Moderate | Complex logic verification |
 | **Formal Proof (SPARK)** | Very High | High | Mathematical proof of correctness |
 
-## 1.6 Advanced Contract Patterns
+## 4.6 Advanced Contract Patterns
 
-### 1.6.1 Pattern 1: State Machine Contracts
+### 4.6.1 Pattern 1: State Machine Contracts
 
 Specify valid state transitions for complex systems:
 
@@ -3041,11 +3037,11 @@ procedure Transition (Current : in out System_State; Next : System_State) with
            (if Current = Failed then Next = Failed);
 ```
 
-### 1.6.2 Why State Machine Contracts Matter
+### 4.6.2 Why State Machine Contracts Matter
 
 In a home automation system, state machine contracts ensure only valid transitions occur. For example, a thermostat can't transition directly from "Off" to "Running" without going through "Initializing" first. This prevents logical errors that could cause unexpected behavior in your smart home system.
 
-### 1.6.3 Pattern 2: Data Flow Contracts
+### 4.6.3 Pattern 2: Data Flow Contracts
 
 Verify complex data transformations:
 
@@ -3058,16 +3054,16 @@ function Process_Sensor_Data (Raw : Sensor_Array) return Processed_Data with
               Processed_Data'Result(I).Value in VALID_RANGE);
 ```
 
-### 1.6.4 Avoiding Common Contract Mistakes
+### 4.6.4 Avoiding Common Contract Mistakes
 
-#### 1.6.4.1 Mistake: Overly Complex Contracts
+#### 4.6.4.1 Mistake: Overly Complex Contracts
 
 ```ada
 -- Hard to verify and understand
 Pre => (A and (B or C)) xor (D and not E);
 ```
 
-#### 1.6.4.2 Solution: Break into Helper Functions
+#### 4.6.4.2 Solution: Break into Helper Functions
 
 ```ada
 function Valid_Configuration (C : Config) return Boolean is
@@ -3079,9 +3075,9 @@ function Safe_Operation (C : Config) return Boolean is
 Pre => Valid_Configuration(C) xor Safe_Operation(C);
 ```
 
-## 1.7 Exercises: Building Contract-First Systems
+## 4.7 Exercises: Building Contract-First Systems
 
-### 1.7.1 Exercise 1: Calculator Application
+### 4.7.1 Exercise 1: Calculator Application
 
 Design a contract-first calculator system:
 
@@ -3092,7 +3088,7 @@ Design a contract-first calculator system:
 
 **Challenge:** Prove that division by zero is impossible through contracts.
 
-#### 1.7.1.1 Solution Guidance
+#### 4.7.1.1 Solution Guidance
 
 Start by defining a safe division function:
 
@@ -3117,7 +3113,7 @@ function Subtract (A, B : Float) return Float with
    Post => Subtract'Result = A - B;
 ```
 
-### 1.7.2 Exercise 2: Inventory Management System
+### 4.7.2 Exercise 2: Inventory Management System
 
 Implement contracts for a retail inventory system:
 
@@ -3128,7 +3124,7 @@ Implement contracts for a retail inventory system:
 
 **Challenge:** Prove that total inventory value remains consistent after transactions.
 
-#### 1.7.2.1 Solution Guidance
+#### 4.7.2.1 Solution Guidance
 
 Define a product record with invariants:
 
@@ -3156,7 +3152,7 @@ procedure Remove_Item (Item_Name : String; Quantity : Natural) with
    Post => Get_Quantity(Item_Name) = Get_Quantity(Item_Name)'Old - Quantity;
 ```
 
-## 1.8 Verification Strategy
+## 4.8 Verification Strategy
 
 1. Start with runtime checking (`-gnata`)
 2. Add contracts incrementally, starting with critical operations
@@ -3164,11 +3160,11 @@ procedure Remove_Item (Item_Name : String; Quantity : Natural) with
 4. Refine contracts based on verification results
 5. For complex components, move to SPARK for full verification
 
-## 1.9 Next Steps: Concurrency and Contracts
+## 4.9 Next Steps: Concurrency and Contracts
 
 With Design by Contract mastered, you're ready to combine these techniques with Ada's built-in concurrency model. In the next tutorial, we'll explore how to:
 
-### 1.9.1 Upcoming: Safe Concurrency with Contracts
+### 4.9.1 Upcoming: Safe Concurrency with Contracts
 
 - Apply contracts to task interfaces
 - Use protected objects with formal specifications
@@ -3176,7 +3172,7 @@ With Design by Contract mastered, you're ready to combine these techniques with 
 - Combine contracts with real-time scheduling
 - Formally verify concurrent system properties
 
-### 1.9.2 Practice Challenge
+### 4.9.2 Practice Challenge
 
 Enhance your calculator application with concurrency:
 
@@ -3185,7 +3181,7 @@ Enhance your calculator application with concurrency:
 - Use protected objects with invariants for shared state
 - Verify that conflicting operations cannot occur
 
-#### 1.9.2.1 The Path to Verified Systems
+#### 4.9.2.1 The Path to Verified Systems
 
 Design by Contract transforms Ada from a safe language into a _verifiable_ language. When combined with strong typing and formal methods, it provides a pathway from traditional development to mathematically verified software. This is why Ada remains the language of choice for systems where correctness matters.
 
@@ -3195,15 +3191,13 @@ As you progress through this tutorial series, you'll see how these techniques co
 
 In everyday programming, errors are inevitable—whether it's a missing file, invalid user input, or a network timeout. How we handle these errors determines whether our programs crash unexpectedly or recover gracefully. Ada's exception handling system transforms error management from an afterthought into a first-class design element with precise semantics and verifiable properties. This tutorial explores Ada's robust approach to exceptions, showing how to build systems that fail safely rather than catastrophically. You'll learn to design error handling strategies that not only recover from problems but also prove their correctness—turning what is often a source of fragility into a foundation for reliability.
 
-#### 1.0.0.1 Error Management Philosophy
-
 > **Traditional approach:** "Let's try to avoid errors and handle the ones we anticipate"  
 >  
 > **Ada approach:** "Let's design for failure and prove our recovery strategies work"
 
 This fundamental shift in perspective is what makes Ada uniquely suited for building reliable software across diverse domains. Whether you're developing a home automation system, a personal finance application, or a data processing tool, Ada's exception system provides the tools to handle errors predictably and safely.
 
-## 1.1 Why Exception Handling Matters in General Programming
+## 5.1 Why Exception Handling Matters in General Programming
 
 Most programming languages treat exceptions as a secondary concern—something to handle only when absolutely necessary. Ada flips this perspective: exceptions are a core part of the design process. Consider a simple calculator application:
 
@@ -3233,7 +3227,7 @@ end Process_Division;
 
 This simple addition transforms the calculator from a fragile tool that crashes to a reliable component that handles errors gracefully. In real-world applications, this difference means the difference between a user-friendly experience and a frustrating crash.
 
-### 1.1.1 The Cost of Poor Error Handling
+### 5.1.1 The Cost of Poor Error Handling
 
 Consider a common scenario: a weather application that fetches data from an online service. Without proper error handling:
 
@@ -3266,11 +3260,11 @@ end Get_Weather;
 
 This version continues functioning even when network issues occur, providing a much better user experience. In fact, studies show that applications with robust error handling have 40% fewer user-reported issues and 60% higher user satisfaction scores.
 
-## 1.2 Basic Exception Structure
+## 5.2 Basic Exception Structure
 
 Ada's exception system is built around three core components: declaration, raising, and handling. Let's explore each in detail.
 
-### 1.2.1 Exception Declaration
+### 5.2.1 Exception Declaration
 
 Exceptions are declared like variables, but with the `exception` keyword:
 
@@ -3282,7 +3276,7 @@ Network_Error    : exception;
 
 These declarations create unique exception identifiers that can be raised and handled throughout your program.
 
-### 1.2.2 Raising Exceptions
+### 5.2.2 Raising Exceptions
 
 Exceptions are raised using the `raise` statement:
 
@@ -3303,7 +3297,7 @@ You can also provide additional context when raising exceptions:
 raise File_Not_Found with "File not found: " & Filename;
 ```
 
-### 1.2.3 Exception Handling
+### 5.2.3 Exception Handling
 
 Exception handlers use the `exception` keyword followed by `when` clauses:
 
@@ -3322,14 +3316,14 @@ exception
 end Process_File;
 ```
 
-### 1.2.4 Key Syntax Notes
+### 5.2.4 Key Syntax Notes
 
 - **`when others`**: A catch-all handler that matches any exception
 - **`Exception_Message`**: Function from `Ada.Exceptions` that returns the exception message
 - **`raise` with context**: Provides additional information when raising exceptions
 - **`exception` block**: Must appear at the end of a subprogram body
 
-### 1.2.5 Complete Example: File Processing
+### 5.2.5 Complete Example: File Processing
 
 Let's create a complete example that demonstrates all aspects of exception handling:
 
@@ -3395,11 +3389,11 @@ This example demonstrates:
 - Using `Exception_Message` for error reporting
 - Nested exception handling blocks
 
-## 1.3 Exception Propagation Mechanics
+## 5.3 Exception Propagation Mechanics
 
 Understanding how exceptions propagate through your program is essential for building reliable error handling systems. Ada's exception propagation follows precise rules that make it predictable and verifiable.
 
-### 1.3.1 Propagation Path
+### 5.3.1 Propagation Path
 
 When an exception is raised, it follows this path:
 
@@ -3411,7 +3405,7 @@ When an exception is raised, it follows this path:
 
 This follows the static call tree, not the dynamic call sequence. Unlike many languages where exception propagation is implementation-dependent, Ada's behavior is fully determined at compile time.
 
-### 1.3.2 Stack Unwinding
+### 5.3.2 Stack Unwinding
 
 When an exception propagates up the call stack, Ada performs these actions:
 
@@ -3422,7 +3416,7 @@ When an exception propagates up the call stack, Ada performs these actions:
 
 This determinism is essential for reliability in any application, not just safety-critical systems.
 
-### 1.3.3 Example: Exception Propagation
+### 5.3.3 Example: Exception Propagation
 
 ```ada
 procedure Outer is
@@ -3443,7 +3437,7 @@ In this example:
 - `Inner` has no handler, so exception propagates to `Outer`
 - `Outer` handles the exception and prints the message
 
-### 1.3.4 Multiple Handlers Example
+### 5.3.4 Multiple Handlers Example
 
 ```ada
 procedure Multiple_Handlers is
@@ -3469,18 +3463,18 @@ This demonstrates that:
 - Subsequent handlers are ignored once an exception is handled
 - The `others` handler only catches exceptions not handled by specific handlers
 
-### 1.3.5 Exception Propagation Best Practices
+### 5.3.5 Exception Propagation Best Practices
 
 - **Handle exceptions at the appropriate level of abstraction**: Don't handle low-level file errors in a high-level business logic component
 - **Never swallow exceptions without action**: If you catch an exception, either handle it properly or re-raise it
 - **Preserve context when propagating exceptions**: Include relevant information when re-raising exceptions
 - **Use specific exception types rather than `others`**: The `others` handler should be a last resort
 
-## 1.4 Custom Exception Hierarchies
+## 5.4 Custom Exception Hierarchies
 
 While Ada doesn't have inheritance-based exception hierarchies like some object-oriented languages, it provides powerful mechanisms for creating structured exception taxonomies.
 
-### 1.4.1 Exception Package Hierarchy
+### 5.4.1 Exception Package Hierarchy
 
 Using package structure to organize exceptions:
 
@@ -3519,7 +3513,7 @@ end Read_File;
 
 This approach creates a clear taxonomy of exceptions organized by domain.
 
-### 1.4.2 Tagged Type Exception Pattern
+### 5.4.2 Tagged Type Exception Pattern
 
 For more complex scenarios, you can create exception hierarchies using tagged types:
 
@@ -3549,9 +3543,9 @@ end Exceptions;
 
 This pattern allows you to create an extensible exception hierarchy while maintaining Ada's strong typing guarantees.
 
-### 1.4.3 Exception Hierarchy Design Guidelines
+### 5.4.3 Exception Hierarchy Design Guidelines
 
-#### 1.4.3.1 Good Hierarchy
+#### 5.4.3.1 Good Hierarchy
 
 - Organized by error domain (files, network, etc.)
 - Clear distinction between recoverable and fatal
@@ -3559,7 +3553,7 @@ This pattern allows you to create an extensible exception hierarchy while mainta
 - Minimal use of generic exceptions
 - Documentation of recovery strategies
 
-#### 1.4.3.2 Poor Hierarchy
+#### 5.4.3.2 Poor Hierarchy
 
 - Too many specific exception types
 - Unclear recovery semantics
@@ -3569,7 +3563,7 @@ This pattern allows you to create an extensible exception hierarchy while mainta
 
 The goal is to create an exception taxonomy that guides proper error handling rather than complicating it.
 
-### 1.4.4 Practical Example: Weather Data System
+### 5.4.4 Practical Example: Weather Data System
 
 ```ada
 package Weather_System.Exceptions is
@@ -3602,11 +3596,11 @@ end Weather_System.Exceptions;
 
 This structure organizes exceptions by domain (sensors, network, data) and provides a clear taxonomy for error handling.
 
-## 1.5 Exception Context and Diagnostics
+## 5.5 Exception Context and Diagnostics
 
 Providing rich context is essential for effective error handling. Ada's standard library includes tools to capture and report detailed exception information.
 
-### 1.5.1 Exception Context Example
+### 5.5.1 Exception Context Example
 
 ```ada
 with Ada.Exceptions; use Ada.Exceptions;
@@ -3660,7 +3654,7 @@ package body Sensor_Exceptions is
 end Sensor_Exceptions;
 ```
 
-### 1.5.2 Context Information Best Practices
+### 5.5.2 Context Information Best Practices
 
 - Include component identifier (sensor ID, task name)
 - Capture relevant parameter values
@@ -3669,7 +3663,7 @@ end Sensor_Exceptions;
 - Include error severity level
 - Provide recovery suggestions when possible
 
-### 1.5.3 Complete Context Example
+### 5.5.3 Complete Context Example
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -3752,11 +3746,11 @@ end Process_Weather_Data;
 
 This example demonstrates how to capture and use detailed context information when handling exceptions.
 
-## 1.6 Exception Contracts and Verification
+## 5.6 Exception Contracts and Verification
 
 One of Ada's most powerful capabilities is specifying exception behavior as part of Design by Contract, enabling formal verification of error handling.
 
-### 1.6.1 Basic Exception Contracts
+### 5.6.1 Basic Exception Contracts
 
 ```ada
 function Calculate_Safety_Margin (
@@ -3770,7 +3764,7 @@ function Calculate_Safety_Margin (
 
 This contract specifies exactly when and why exceptions may occur.
 
-### 1.6.2 Exceptional Postconditions
+### 5.6.2 Exceptional Postconditions
 
 ```ada
 procedure Process_Command (
@@ -3791,7 +3785,7 @@ procedure Process_Command (
 
 This specifies behavior even when exceptions occur.
 
-### 1.6.3 Verification Level Comparison
+### 5.6.3 Verification Level Comparison
 
 | Verification Level | Confidence | Effort | Best For |
 | :--- | :--- | :--- | :--- |
@@ -3801,9 +3795,9 @@ This specifies behavior even when exceptions occur.
 
 For robust applications, all three levels should be used to ensure comprehensive exception verification.
 
-### 1.6.4 Advanced Exception Contract Patterns
+### 5.6.4 Advanced Exception Contract Patterns
 
-#### 1.6.4.1 \. Recovery Guarantees
+#### 5.6.4.1 Recovery Guarantees
 
 Specify what state is preserved after exception handling:
 
@@ -3820,7 +3814,7 @@ procedure Update_System_State (
 
 Guarantees system remains available even when updates fail.
 
-#### 1.6.4.2 \. Exception Chaining
+#### 5.6.4.2 Exception Chaining
 
 Preserve context when propagating exceptions:
 
@@ -3838,7 +3832,7 @@ end Process_Data;
 
 Maintains error context through multiple handling layers.
 
-#### 1.6.4.3 \. Resource Safety Contracts
+#### 5.6.4.3 Resource Safety Contracts
 
 Guarantee resource cleanup during exception propagation:
 
@@ -3866,16 +3860,16 @@ end Process_With_Resource;
 
 Uses Ada's controlled types to guarantee resource safety.
 
-### 1.6.5 Common Exception Contract Pitfalls
+### 5.6.5 Common Exception Contract Pitfalls
 
-#### 1.6.5.1 Pitfall: Overly Broad Contracts
+#### 5.6.5.1 Pitfall: Overly Broad Contracts
 
 ```ada
 Exceptional_Cases =>
    (others => True); -- All exceptions allowed
 ```
 
-#### 1.6.5.2 Solution: Precise Exception Specification
+#### 5.6.5.2 Solution: Precise Exception Specification
 
 ```ada
 Exceptional_Cases =>
@@ -3884,14 +3878,14 @@ Exceptional_Cases =>
     others         => False);
 ```
 
-#### 1.6.5.3 Pitfall: Ignoring Exception Context
+#### 5.6.5.3 Pitfall: Ignoring Exception Context
 
 ```ada
 Exceptional_Cases =>
    (others => True); -- No context provided
 ```
 
-#### 1.6.5.4 Solution: Context-Rich Contracts
+#### 5.6.5.4 Solution: Context-Rich Contracts
 
 ```ada
 Exceptional_Cases =>
@@ -3900,13 +3894,13 @@ Exceptional_Cases =>
       Contains_Numeric_Value(Exception_Message));
 ```
 
-## 1.7 Error Recovery Patterns for Reliable Systems
+## 5.7 Error Recovery Patterns for Reliable Systems
 
 In any application where reliability matters, error recovery isn't optional—it's a fundamental requirement. Ada provides patterns for implementing robust recovery strategies.
 
-### 1.7.1 Recovery Pattern Taxonomy
+### 5.7.1 Recovery Pattern Taxonomy
 
-#### 1.7.1.1 \. Retry Pattern
+#### 5.7.1.1 Retry Pattern
 
 For transient errors that may resolve with repetition:
 
@@ -3938,7 +3932,7 @@ begin
 end Read_Sensor_With_Retry;
 ```
 
-#### 1.7.1.2 \. Fallback Pattern
+#### 5.7.1.2 Fallback Pattern
 
 For providing degraded functionality when primary fails:
 
@@ -3968,7 +3962,7 @@ exception
 end Get_Temperature;
 ```
 
-#### 1.7.1.3 \. Circuit Breaker Pattern
+#### 5.7.1.3 Circuit Breaker Pattern
 
 For preventing cascading failures in dependent systems:
 
@@ -4010,7 +4004,7 @@ package Circuit_Breaker is
    end Call_With_Circuit_Breaker;
 ```
 
-#### 1.7.1.4 \. State Restoration Pattern
+#### 5.7.1.4 State Restoration Pattern
 
 For ensuring system integrity after error recovery:
 
@@ -4044,7 +4038,7 @@ exception
 end Process_Command;
 ```
 
-### 1.7.2 Real-World Example: Weather Data Processing System
+### 5.7.2 Real-World Example: Weather Data Processing System
 
 Let's build a complete example of error handling for a weather data application:
 
@@ -4211,13 +4205,13 @@ This example demonstrates:
 - State restoration for data processing
 - Comprehensive exception handling
 
-## 1.8 Combining Exceptions with Design by Contract
+## 5.8 Combining Exceptions with Design by Contract
 
 The real power of Ada's exception system emerges when combined with Design by Contract, creating a complete framework for specifying and verifying error behavior.
 
-### 1.8.1 Contract-Exception Integration Patterns
+### 5.8.1 Contract-Exception Integration Patterns
 
-#### 1.8.1.1 \. Preconditions as Exception Prevention
+#### 5.8.1.1 Preconditions as Exception Prevention
 
 Use preconditions to prevent exceptions:
 
@@ -4235,7 +4229,7 @@ end Calculate_Square_Root;
 
 With the precondition, the implementation no longer needs to check for negative values.
 
-#### 1.8.1.2 \. Exceptions as Contract Violations
+#### 5.8.1.2 Exceptions as Contract Violations
 
 Use exceptions to handle contract violations:
 
@@ -4271,7 +4265,7 @@ end Set_Temperature;
 
 The exception handler ensures the postcondition holds even when exceptions occur.
 
-### 1.8.2 Verification of Contract-Exception Integration
+### 5.8.2 Verification of Contract-Exception Integration
 
 ```ada
 -- Complete specification with exception contracts
@@ -4307,9 +4301,9 @@ function Process_Command (
 -- [gnatprove]   therefore Post is satisfied
 ```
 
-### 1.8.3 Contract-Exception Anti-Patterns
+### 5.8.3 Contract-Exception Anti-Patterns
 
-#### 1.8.3.1 Avoid: Redundant Checks
+#### 5.8.3.1 Avoid: Redundant Checks
 
 ```ada
 function Calculate (X : Float) return Float with
@@ -4326,7 +4320,7 @@ begin
 end Calculate;
 ```
 
-#### 1.8.3.2 Prefer: Contract Enforcement
+#### 5.8.3.2 Prefer: Contract Enforcement
 
 ```ada
 function Calculate (X : Float) return Float with
@@ -4340,7 +4334,7 @@ begin
 end Calculate;
 ```
 
-#### 1.8.3.3 Avoid: Exception Swallowing
+#### 5.8.3.3 Avoid: Exception Swallowing
 
 ```ada
 procedure Process is
@@ -4352,7 +4346,7 @@ exception
 end Process;
 ```
 
-#### 1.8.3.4 Prefer: Contextual Handling
+#### 5.8.3.4 Prefer: Contextual Handling
 
 ```ada
 procedure Process is
@@ -4365,7 +4359,7 @@ exception
 end Process;
 ```
 
-### 1.8.4 Verification Strategy for Contract-Exception Integration
+### 5.8.4 Verification Strategy for Contract-Exception Integration
 
 1. **Static verification**: Use `gnatprove` to verify no contract violations can occur
 2. **Runtime verification**: Compile with `-gnata` to catch violations during testing
@@ -4375,9 +4369,9 @@ end Process;
 
 This multi-layered approach ensures comprehensive verification of error handling behavior.
 
-## 1.9 Real-World Error Management Case Studies
+## 5.9 Real-World Error Management Case Studies
 
-### 1.9.1 Personal Finance Application
+### 5.9.1 Personal Finance Application
 
 Consider a personal finance application that processes transactions:
 
@@ -4415,7 +4409,7 @@ This implementation ensures:
 - System state is preserved after failures
 - Errors are properly logged for debugging
 
-### 1.9.2 File Processing System
+### 5.9.2 File Processing System
 
 A robust file processing system with exception handling:
 
@@ -4481,9 +4475,9 @@ This example demonstrates:
 - Multiple levels of error handling (per-line, per-file, global)
 - Clear error messages for users
 
-## 1.10 Exercises: Building Verified Error Management Systems
+## 5.10 Exercises: Building Verified Error Management Systems
 
-### 1.10.1 Exercise 1: Personal Finance Transaction System
+### 5.10.1 Exercise 1: Personal Finance Transaction System
 
 Design an error management system for a personal finance application:
 
@@ -4495,7 +4489,7 @@ Design an error management system for a personal finance application:
 
 > **Challenge:** Prove that account balances remain consistent even during error conditions.
 
-#### 1.10.1.1 Solution Guidance
+#### 5.10.1.1 Solution Guidance
 
 Start with exception declarations:
 
@@ -4573,7 +4567,7 @@ procedure Process_Transaction (Account : Account_ID; Amount : Money) with
 
 This ensures account balances remain consistent regardless of error conditions.
 
-### 1.10.2 Exercise 2: Weather Data Processing System
+### 5.10.2 Exercise 2: Weather Data Processing System
 
 Build a weather data processing system with robust error handling:
 
@@ -4585,7 +4579,7 @@ Build a weather data processing system with robust error handling:
 
 > **Challenge:** Prove that the system never delivers invalid weather data due to error conditions.
 
-#### 1.10.2.1 Solution Guidance
+#### 5.10.2.1 Solution Guidance
 
 Create a circuit breaker pattern for network requests:
 
@@ -4666,16 +4660,16 @@ function Read_Sensor_With_Retry (
 
 This ensures that valid temperature data is always returned when possible.
 
-### 1.10.3 Error Management Verification Strategy
+### 5.10.3 Error Management Verification Strategy
 
-#### 1.10.3.1 Static Verification
+#### 5.10.3.1 Static Verification
 
 - Use `gnatprove` to verify no unhandled exceptions
 - Prove exception contracts hold
 - Verify resource safety during propagation
 - Confirm error recovery guarantees
 
-#### 1.10.3.2 Runtime Verification
+#### 5.10.3.2 Runtime Verification
 
 - Compile with `-gnata` for runtime checks
 - Test all exception paths
@@ -4684,11 +4678,11 @@ This ensures that valid temperature data is always returned when possible.
 
 For robust applications, both static and runtime verification are required to demonstrate comprehensive error management.
 
-## 1.11 Next Steps: Generics and Template Programming
+## 5.11 Next Steps: Generics and Template Programming
 
 Now that you've mastered Ada's exception handling system, you're ready to explore how to create reusable, verifiable components through generics. In the next tutorial, we'll dive into Ada's powerful generic programming system, showing how to:
 
-### 1.11.1 Upcoming: Generics and Template Programming
+### 5.11.1 Upcoming: Generics and Template Programming
 
 - Create reusable components with formal parameters
 - Specify constraints on generic parameters
@@ -4696,7 +4690,7 @@ Now that you've mastered Ada's exception handling system, you're ready to explor
 - Combine generics with Design by Contract
 - Apply generics to error management patterns
 
-### 1.11.2 Practice Challenge
+### 5.11.2 Practice Challenge
 
 Enhance your personal finance system with generics:
 
@@ -4706,7 +4700,7 @@ Enhance your personal finance system with generics:
 - Verify that instantiations maintain safety properties
 - Create a verification plan for generic components
 
-#### 1.11.2.1 The Path to Verified Reusability
+#### 5.11.2.1 The Path to Verified Reusability
 
 Exception handling provides the foundation for building reliable systems, but generics enable building reliable systems efficiently. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
 
@@ -4716,37 +4710,35 @@ This integrated approach is why Ada remains the language of choice for organizat
 
 While most programming languages treat concurrency as an afterthought requiring external libraries, Ada integrates safe parallelism directly into the language. This tutorial explores Ada's unique tasking model and protected objects—features designed from the ground up for building reliable concurrent systems where race conditions and deadlocks are prevented at compile time. You'll learn how to structure concurrent applications that maintain correctness guarantees even in demanding real-time environments, whether you're building a home automation system, a web server, or a data processing pipeline.
 
-#### 1.0.0.1 Concurrency vs. Parallelism
-
 > **Concurrency**: Managing multiple tasks that make progress independently  
 >  
 > **Parallelism**: Executing multiple tasks simultaneously
 
 Ada provides language-level support for both, with safety guarantees that prevent the most common concurrency errors. Concurrency is about structuring your program to handle multiple tasks at once, while parallelism is about actually executing those tasks simultaneously on multiple processors. Ada excels at both by providing high-level abstractions that handle the complexity for you.
 
-## 1.1 The Concurrency Problem: Why Most Languages Fail
+## 6.1 The Concurrency Problem: Why Most Languages Fail
 
 Concurrency bugs are notoriously difficult to detect and reproduce. Traditional approaches using threads and mutexes create fragile systems where:
 
-### 1.1.1 Typical Concurrency Issues
+### 6.1.1 Typical Concurrency Issues
 
 - **Race conditions**: Unpredictable behavior from timing dependencies
 - **Deadlocks**: Circular dependencies causing system freeze
 - **Priority inversion**: High-priority tasks blocked by low-priority ones
 - **Heisenbugs**: Errors that disappear when observed
 
-### 1.1.2 Real-World Consequences
+### 6.1.2 Real-World Consequences
 
 - **Banking application**: A customer's balance might show $1000 when it should be $500 due to race conditions in transaction processing
 - **Web server**: A popular website crashes when multiple users access it simultaneously due to improper synchronization
 - **Home automation system**: Lights turn on unexpectedly because of timing issues in sensor readings
 - **Video game**: Character movements become jerky when multiple players interact in the same area
 
-### 1.1.3 The Therac-25 Radiation Therapy Machine (Revisited)
+### 6.1.3 The Therac-25 Radiation Therapy Machine (Revisited)
 
 In addition to the contract violations we discussed previously, the Therac-25 failures were compounded by race conditions in the software. The system used shared variables without proper synchronization, allowing dangerous states to occur when specific timing conditions were met. Ada's protected objects would have prevented these race conditions by design.
 
-#### 1.1.3.1 Ada's Concurrency Philosophy
+#### 6.1.3.1 Ada's Concurrency Philosophy
 
 Rather than exposing low-level mechanisms and expecting developers to use them correctly, Ada provides high-level abstractions with built-in safety. The language enforces correct usage patterns through:
 
@@ -4758,9 +4750,9 @@ Rather than exposing low-level mechanisms and expecting developers to use them c
 
 This approach shifts error prevention from developer discipline to language enforcement. Instead of relying on programmers to remember complex synchronization rules, Ada's compiler checks for common mistakes at compile time.
 
-## 1.2 Ada Tasks: The Foundation of Concurrency
+## 6.2 Ada Tasks: The Foundation of Concurrency
 
-### 1.2.1 Basic Task Structure
+### 6.2.1 Basic Task Structure
 
 Tasks are defined as separate program units with their own execution context:
 
@@ -4800,7 +4792,7 @@ begin
 end Sensor_Reader;
 ```
 
-### 1.2.2 Task Select Statement Explained
+### 6.2.2 Task Select Statement Explained
 
 The `select` statement is Ada's powerful mechanism for handling multiple communication possibilities:
 
@@ -4811,9 +4803,9 @@ The `select` statement is Ada's powerful mechanism for handling multiple communi
 
 This structure prevents race conditions by making communication atomic. Unlike traditional threading models where you must manually manage locks, Ada's `select` statement handles synchronization automatically.
 
-### 1.2.3 Task Communication Patterns
+### 6.2.3 Task Communication Patterns
 
-#### 1.2.3.1 \. Simple Synchronous Call
+#### 6.2.3.1 \. Simple Synchronous Call
 
 ```ada
 Sensor_Reader.Start;
@@ -4822,7 +4814,7 @@ Sensor_Reader.Start;
 
 Basic synchronous communication pattern where the caller waits for the task to complete the operation.
 
-#### 1.2.3.2 \. Asynchronous Transfer
+#### 6.2.3.2 \. Asynchronous Transfer
 
 ```ada
 Sensor_Reader.Start;
@@ -4831,7 +4823,7 @@ Sensor_Reader.Start;
 
 Use `pragma Asynchronous` for true fire-and-forget communication where the caller doesn't wait for the task to complete.
 
-#### 1.2.3.3 \. Timed Entry Call
+#### 6.2.3.3 \. Timed Entry Call
 
 ```ada
 select
@@ -4844,7 +4836,7 @@ end select;
 
 Prevents indefinite blocking with timeout handling—critical for responsive applications.
 
-#### 1.2.3.4 \. Conditional Call
+#### 6.2.3.4 \. Conditional Call
 
 ```ada
 select
@@ -4857,13 +4849,13 @@ end select;
 
 Executes alternative code if the entry isn't immediately available, making your program more resilient.
 
-## 1.3 Protected Objects: Safe Shared Data
+## 6.3 Protected Objects: Safe Shared Data
 
 While tasks handle active concurrency, protected objects provide safe access to shared data—solving the most common source of concurrency bugs.
 
-### 1.3.1 Why Protected Objects Beat Mutexes
+### 6.3.1 Why Protected Objects Beat Mutexes
 
-#### 1.3.1.1 Traditional Mutex Approach
+#### 6.3.1.1 Traditional Mutex Approach
 
 - Manual lock/unlock sequence
 - Deadlock-prone (lock ordering issues)
@@ -4878,7 +4870,7 @@ data = read_sensor();
 pthread_mutex_unlock(&mutex);
 ```
 
-#### 1.3.1.2 Ada Protected Objects
+#### 6.3.1.2 Ada Protected Objects
 
 - Automatic lock management
 - Compile-time deadlock detection
@@ -4896,7 +4888,7 @@ private
 end Sensor_Data;
 ```
 
-### 1.3.2 Protected Object Implementation
+### 6.3.2 Protected Object Implementation
 
 ```ada
 protected body Sensor_Data is
@@ -4913,14 +4905,14 @@ protected body Sensor_Data is
 end Sensor_Data;
 ```
 
-#### 1.3.2.1 Key Elements
+#### 6.3.2.1 Key Elements
 
 - `when` clause: Entry barrier (compile-time checked)
 - Automatic mutual exclusion
 - No explicit locks required
 - Priority inheritance prevents inversion
 
-#### 1.3.2.2 How It Works
+#### 6.3.2.2 How It Works
 
 1. Caller attempts entry call
 2. Barrier condition evaluated
@@ -4928,7 +4920,7 @@ end Sensor_Data;
 4. If false, caller queued
 5. Automatic lock released on exit
 
-### 1.3.3 Protected Objects vs. Traditional Locks: A Comparison
+### 6.3.3 Protected Objects vs. Traditional Locks: A Comparison
 
 | Feature | Traditional Mutex | Ada Protected Objects |
 | :--- | :--- | :--- |
@@ -4940,9 +4932,9 @@ end Sensor_Data;
 
 This table highlights why protected objects are superior to traditional mutexes. With protected objects, the compiler verifies that your synchronization logic is correct before your program even runs. You don't have to remember to unlock mutexes or worry about deadlocks—the language handles it for you.
 
-## 1.4 Advanced Concurrency Patterns
+## 6.4 Advanced Concurrency Patterns
 
-### 1.4.1 \. Priority-Based Scheduling
+### 6.4.1 \. Priority-Based Scheduling
 
 Assign priorities to tasks for deterministic execution:
 
@@ -4959,7 +4951,7 @@ Ada supports priority inheritance to prevent priority inversion:
 pragma Task_Dispatching_Policy (FIFO_Within_Priorities);
 ```
 
-#### 1.4.1.1 Real-World Example: Home Automation System
+#### 6.4.1.1 Real-World Example: Home Automation System
 
 In a home automation system, you might have:
 
@@ -4969,7 +4961,7 @@ In a home automation system, you might have:
 
 This ensures that critical operations always get executed first, even when the system is busy.
 
-### 1.4.2 \. Real-Time Deadline Monitoring
+### 6.4.2 \. Real-Time Deadline Monitoring
 
 Ensure tasks meet timing requirements:
 
@@ -4982,7 +4974,7 @@ end Climate_Control;
 
 The runtime monitors deadlines and raises exceptions if missed. This is crucial for responsive applications like video games or web servers where slow responses frustrate users.
 
-### 1.4.3 \. Rendezvous with Parameters
+### 6.4.3 \. Rendezvous with Parameters
 
 Safe data transfer between tasks:
 
@@ -5003,7 +4995,7 @@ end Controller;
 
 Parameters are safely copied during the rendezvous—no risk of data corruption from concurrent access.
 
-### 1.4.4 \. Dynamic Task Creation
+### 6.4.4 \. Dynamic Task Creation
 
 Create tasks at runtime with controlled scope:
 
@@ -5020,19 +5012,19 @@ W : Worker_Access := new Worker;
 
 Use with caution in safety-critical systems; often better to use task pools for predictable behavior.
 
-#### 1.4.4.1 Priority Inversion: The Mars Pathfinder Story
+#### 6.4.4.1 Priority Inversion: The Mars Pathfinder Story
 
 In 1997, the Mars Pathfinder lander experienced repeated system resets due to priority inversion. A low-priority meteorological task held a mutex needed by a high-priority communications task, but was preempted by medium-priority tasks. This caused the communications task to miss deadlines.
 
 Ada's priority inheritance protocol would have automatically elevated the low-priority task's priority while it held the mutex, preventing the inversion. The problem was eventually fixed with a software patch that implemented priority inheritance—a feature built into Ada's protected objects from the start.
 
-## 1.5 Combining Contracts with Concurrency
+## 6.5 Combining Contracts with Concurrency
 
 One of Ada's most powerful capabilities is applying Design by Contract principles to concurrent systems. This creates verifiable guarantees about concurrent behavior.
 
-### 1.5.1 Contract Patterns for Tasks
+### 6.5.1 Contract Patterns for Tasks
 
-#### 1.5.1.1 Task Interface Contracts
+#### 6.5.1.1 Task Interface Contracts
 
 ```ada
 task Sensor_Reader is
@@ -5049,7 +5041,7 @@ end Sensor_Reader;
 
 These contracts ensure valid state transitions for the task interface. For example, you can't stop a sensor that's not running, and after stopping, it must not be running.
 
-#### 1.5.1.2 Protected Object Contracts
+#### 6.5.1.2 Protected Object Contracts
 
 ```ada
 protected Temperature_Monitor with
@@ -5066,7 +5058,7 @@ end Temperature_Monitor;
 
 Contracts on protected objects ensure data integrity across concurrent accesses. In this example, the `Check_Temperature` entry will only trigger an alarm if the temperature exceeds the threshold, and the contract guarantees this behavior.
 
-### 1.5.2 Verification of Concurrent Properties
+### 6.5.2 Verification of Concurrent Properties
 
 Use SPARK to prove critical concurrent properties:
 
@@ -5090,9 +5082,9 @@ end Flight_Control;
 
 With these contracts, SPARK can prove that controls cannot be modified when locked. This verification happens at compile time, so you know your system is correct before it ever runs.
 
-### 1.5.3 Common Concurrency Pitfalls and Solutions
+### 6.5.3 Common Concurrency Pitfalls and Solutions
 
-#### 1.5.3.1 Pitfall: Deadlock from Circular Dependencies
+#### 6.5.3.1 Pitfall: Deadlock from Circular Dependencies
 
 ```
 -- Task A
@@ -5104,7 +5096,7 @@ accept Resource_A;
 accept Resource_B;
 ```
 
-#### 1.5.3.2 Solution: Resource Ordering Protocol
+#### 6.5.3.2 Solution: Resource Ordering Protocol
 
 ```
 -- Always acquire in same order
@@ -5115,9 +5107,9 @@ accept Resource_B;
 
 Ada's compile-time checks can detect potential deadlocks when resource ordering is violated. By enforcing a consistent order for acquiring resources, you eliminate the possibility of circular dependencies.
 
-## 1.6 Real-World Concurrency Applications
+## 6.6 Real-World Concurrency Applications
 
-### 1.6.1 Home Automation System
+### 6.6.1 Home Automation System
 
 A home automation system for temperature and humidity control:
 
@@ -5153,7 +5145,7 @@ end Climate_Control;
 
 This structure ensures safe data sharing between sensors and control systems while maintaining valid temperature and humidity ranges. The protected object automatically handles synchronization, so you don't have to worry about race conditions.
 
-### 1.6.2 Web Server Example
+### 6.6.2 Web Server Example
 
 A simple web server handling multiple client connections:
 
@@ -5175,7 +5167,7 @@ end Client_Task;
 
 This server can handle up to 100 simultaneous requests with proper synchronization. The protected object ensures that multiple clients can access the request queue without corrupting data. The contract guarantees that requests won't exceed the maximum size, preventing buffer overflows.
 
-#### 1.6.2.1 Real-World Benefits
+#### 6.6.2.1 Real-World Benefits
 
 - **No data corruption**: The protected object ensures that multiple clients can access shared data safely
 - **Deadlock prevention**: The compiler checks for potential deadlocks at compile time
@@ -5183,9 +5175,9 @@ This server can handle up to 100 simultaneous requests with proper synchronizati
 - **Timeout handling**: Clients won't wait indefinitely for responses
 - **Correctness verification**: Contracts prove that the system behaves as expected
 
-## 1.7 Exercises: Building Safe Concurrent Systems
+## 6.7 Exercises: Building Safe Concurrent Systems
 
-### 1.7.1 Exercise 1: Home Automation System
+### 6.7.1 Exercise 1: Home Automation System
 
 Design a concurrent home automation system:
 
@@ -5197,7 +5189,7 @@ Design a concurrent home automation system:
 
 > **Challenge:** Prove that the system never allows invalid temperature readings.
 
-#### 1.7.1.1 Solution Guidance
+#### 6.7.1.1 Solution Guidance
 
 Start by defining your protected object with contracts:
 
@@ -5267,7 +5259,7 @@ end Climate_Control;
 
 This system ensures that temperature readings are always valid and that critical operations get processed first. The contracts prevent invalid temperatures from being set, and the priority settings ensure that emergency actions take precedence.
 
-### 1.7.2 Exercise 2: Web Server Example
+### 6.7.2 Exercise 2: Web Server Example
 
 Build a web server with:
 
@@ -5279,7 +5271,7 @@ Build a web server with:
 
 > **Challenge:** Prove that the server can handle concurrent requests without data corruption.
 
-#### 1.7.2.1 Solution Guidance
+#### 6.7.2.1 Solution Guidance
 
 Start by defining the protected request handler:
 
@@ -5355,7 +5347,7 @@ end Request_Handler_Task;
 
 This server handles up to 100 requests simultaneously with proper synchronization. The contracts ensure that requests won't exceed the maximum size, and the timeout handling prevents clients from waiting indefinitely. The priority settings ensure that critical operations get processed first.
 
-## 1.8 Verification Strategy for Concurrent Systems
+## 6.8 Verification Strategy for Concurrent Systems
 
 1. **Start with runtime checking** (`-gnata`) to catch basic errors
 2. **Add contracts to all task interfaces and protected objects**
@@ -5366,11 +5358,11 @@ This server handles up to 100 requests simultaneously with proper synchronizatio
 
 This multi-layered approach ensures comprehensive verification of concurrent systems. By starting with simple runtime checks and gradually adding more rigorous verification, you can build confidence in your system's correctness.
 
-## 1.9 Next Steps: Real-Time Systems Programming
+## 6.9 Next Steps: Real-Time Systems Programming
 
 Now that you've mastered Ada's concurrency model, you're ready to apply these techniques to real-time systems where timing guarantees are as critical as functional correctness. In the next tutorial, we'll explore how to:
 
-### 1.9.1 Upcoming: Real-Time Systems in Ada
+### 6.9.1 Upcoming: Real-Time Systems in Ada
 
 - Implement precise timing constraints
 - Use Ada's real-time dispatching policies
@@ -5378,7 +5370,7 @@ Now that you've mastered Ada's concurrency model, you're ready to apply these te
 - Combine contracts with timing requirements
 - Build systems that meet DO-178C and IEC 62304 requirements
 
-### 1.9.2 Practice Challenge
+### 6.9.2 Practice Challenge
 
 Enhance your home automation system with real-time features:
 
@@ -5388,7 +5380,7 @@ Enhance your home automation system with real-time features:
 - Add temporal contracts to your specifications
 - Test under simulated high-load conditions
 
-#### 1.9.2.1 The Power of Integrated Concurrency
+#### 6.9.2.1 The Power of Integrated Concurrency
 
 Ada's approach to concurrency represents a fundamental shift from how most languages handle parallelism. Rather than exposing low-level mechanisms that are easy to misuse, Ada provides high-level abstractions with built-in safety. This transforms concurrency from a source of bugs into a reliable engineering tool.
 
@@ -5400,7 +5392,7 @@ For everyday applications, this means your home automation system will never cra
 
 In today's interconnected world, many applications require precise timing behavior. Whether you're building a home automation system that needs to respond to sensor data within milliseconds, a web server that must handle requests consistently under load, or a video game that needs smooth frame rates, timing correctness is just as important as functional correctness. Ada provides unique language-level support for real-time programming, allowing developers to specify, verify, and guarantee timing behavior with mathematical precision. This tutorial explores how to leverage Ada's real-time features to build systems that not only do the right thing, but do it at the right time, every time. You'll learn to transform timing requirements from vague aspirations into verifiable system properties.
 
-#### 1.0.0.1 The Real-Time Challenge
+#### 7.0.0.1 The Real-Time Challenge
 
 **Hard real-time:** Missing a deadline is a system failure  
 **Firm real-time:** Late results are useless  
@@ -5408,33 +5400,33 @@ In today's interconnected world, many applications require precise timing behavi
 
 Ada provides the tools to meet hard real-time requirements through language features designed specifically for timing-critical applications. These features aren't just for aerospace or medical devices—they're equally valuable for everyday applications where timing matters. A home automation system that misses its temperature adjustment deadline might cause discomfort, but it won't crash. A video game that misses its frame deadline might stutter, but it won't crash. Ada helps you build systems that behave predictably under all conditions, whether you're creating a simple calculator or a complex industrial control system.
 
-## 1.1 Why Most Languages Fail at Real-Time Programming
+## 7.1 Why Most Languages Fail at Real-Time Programming
 
 General-purpose languages lack the mechanisms to provide timing guarantees, forcing developers to rely on external libraries and platform-specific extensions. This creates fragile systems where timing behavior is unpredictable and difficult to verify.
 
-### 1.1.1 Common Timing Failures
+### 7.1.1 Common Timing Failures
 
 - **Unpredictable garbage collection pauses**: Languages like Java or C# can pause execution unexpectedly for garbage collection, causing missed deadlines
 - **Non-deterministic memory allocation**: Dynamic memory allocation can have variable execution times, making worst-case timing impossible to guarantee
 - **Hidden priority inversions**: When high-priority tasks are blocked by lower-priority ones, causing delays
 - **Unbounded execution times**: Code that might take an unpredictable amount of time to execute
 
-### 1.1.2 Real-World Consequences
+### 7.1.2 Real-World Consequences
 
 - **Video game stuttering**: A game that misses frame deadlines causes noticeable stuttering, ruining the player experience
 - **Web server slowdowns**: A web server that can't handle peak traffic consistently results in slow response times and frustrated users
 - **Home automation issues**: A smart thermostat that doesn't respond quickly enough to temperature changes causes uncomfortable environments
 - **Industrial control problems**: A factory robot that misses timing constraints might cause production delays or quality issues
 
-### 1.1.3 The Importance of Timing in Everyday Applications
+### 7.1.3 The Importance of Timing in Everyday Applications
 
 Consider a home automation system that controls your lights based on motion sensors. If the system takes too long to respond, you might walk into a dark room. If it responds too quickly, you might get false triggers. Ada's real-time features help you precisely control these timing behaviors to create a reliable system.
 
-## 1.2 Core Real-Time Features in Ada
+## 7.2 Core Real-Time Features in Ada
 
 Ada's real-time capabilities are built into the language itself, providing predictable behavior across all platforms. Unlike other languages where you need to rely on platform-specific extensions, Ada's real-time features are part of the standard.
 
-### 1.2.1 \. Precise Time Representation
+### 7.2.1 \. Precise Time Representation
 
 Ada provides a robust time model with nanosecond precision:
 
@@ -5463,7 +5455,7 @@ begin
 end Time_Demo;
 ```
 
-### 1.2.2 Key Time Types
+### 7.2.2 Key Time Types
 
 | **Type** | **Description** | **Best For** |
 | :--- | :--- | :--- |
@@ -5474,7 +5466,7 @@ end Time_Demo;
 
 Unlike other languages, Ada's time model is part of the language standard, ensuring consistent behavior across platforms. You don't need to worry about different implementations on different operating systems or hardware.
 
-### 1.2.3 \. Deadline Monitoring
+### 7.2.3 \. Deadline Monitoring
 
 Specify and verify timing constraints directly in code:
 
@@ -5510,14 +5502,14 @@ exception
 end Climate_Control;
 ```
 
-### 1.2.4 Deadline Best Practices
+### 7.2.4 Deadline Best Practices
 
 - **Specify deadlines at task declaration for static analysis**: This helps tools verify timing behavior before runtime
 - **Use runtime checks for critical operations within tasks**: Catch missed deadlines even if static analysis can't prove them
 - **Combine with contracts for complete verification**: Ensure both functional and timing correctness
 - **Verify worst-case execution time (WCET) through analysis**: Know exactly how long operations will take
 
-### 1.2.5 \. Dispatching Policies
+### 7.2.5 \. Dispatching Policies
 
 Control how the runtime schedules tasks:
 
@@ -5534,7 +5526,7 @@ task type Sensor_Reader is
 end Sensor_Reader;
 ```
 
-#### 1.2.5.1 Policy Selection Guide
+#### 7.2.5.1 Policy Selection Guide
 
 | **Policy** | **Best For** | **When to Use** |
 | :--- | :--- | :--- |
@@ -5566,15 +5558,15 @@ end System_Logger;
 
 In this example, the EDF policy ensures that tasks with the closest deadlines get executed first. The emergency shutdown task will always run before temperature control, which will run before logging.
 
-## 1.3 Real-Time Scheduling Analysis
+## 7.3 Real-Time Scheduling Analysis
 
 One of Ada's most powerful capabilities is enabling schedulability analysis at compile time, rather than through error-prone runtime testing. This means you can prove your system will meet its timing requirements before you even run it.
 
-### 1.3.1 Rate Monotonic Analysis (RMA)
+### 7.3.1 Rate Monotonic Analysis (RMA)
 
 A mathematical approach to verify that all deadlines will be met:
 
-#### 1.3.1.1 The Math Behind RMA
+#### 7.3.1.1 The Math Behind RMA
 
 For n periodic tasks, the sufficient condition for schedulability is:
 
@@ -5591,7 +5583,7 @@ C_i = worst-case execution time
 T_i = task period
 ```
 
-#### 1.3.1.2 Ada Implementation
+#### 7.3.1.2 Ada Implementation
 
 ```ada
 task type Sensor_Task is
@@ -5604,7 +5596,7 @@ end Sensor_Task;
 
 These annotations allow tools like GNATprove to perform formal schedulability analysis.
 
-### 1.3.2 WCET Analysis Tools
+### 7.3.2 WCET Analysis Tools
 
 Ada integrates with industry-standard WCET analysis tools:
 
@@ -5617,7 +5609,7 @@ Ada integrates with industry-standard WCET analysis tools:
 
 These tools work with Ada's predictable execution model to calculate precise worst-case execution times.
 
-### 1.3.3 Schedulability Verification
+### 7.3.3 Schedulability Verification
 
 Using SPARK for formal timing verification:
 
@@ -5638,7 +5630,7 @@ end Control_Loop with
 -- 3. No priority inversion occurs
 ```
 
-#### 1.3.3.1 Practical Schedulability Example: Home Automation System
+#### 7.3.3.1 Practical Schedulability Example: Home Automation System
 
 Consider a home automation system with these tasks:
 
@@ -5655,13 +5647,13 @@ Total Utilization: 15.6%
 
 With 15.6% utilization, this system easily meets the RMA bound (69.3% for 4 tasks), guaranteeing all deadlines will be met. Ada's annotations make this analysis automatic.
 
-## 1.4 Temporal Contracts: Specifying Timing Behavior
+## 7.4 Temporal Contracts: Specifying Timing Behavior
 
 Building on Design by Contract, Ada allows specification of temporal properties directly in code—creating what we call "temporal contracts." These contracts define not just what a function does, but when it must do it.
 
-### 1.4.1 Basic Temporal Contracts
+### 7.4.1 Basic Temporal Contracts
 
-#### 1.4.1.1 Deadline Specifications
+#### 7.4.1.1 Deadline Specifications
 
 ```ada
 procedure Adjust_Thermostat (
@@ -5675,7 +5667,7 @@ procedure Adjust_Thermostat (
 
 Specifies that the thermostat adjustment must complete within 50ms of the request.
 
-#### 1.4.1.2 WCET Specifications
+#### 7.4.1.2 WCET Specifications
 
 ```ada
 function Calculate_Temperature (
@@ -5688,9 +5680,9 @@ function Calculate_Temperature (
 
 Specifies a worst-case execution time of 2.5ms for verification.
 
-### 1.4.2 Advanced Temporal Patterns
+### 7.4.2 Advanced Temporal Patterns
 
-#### 1.4.2.1 \. Phase-Based Timing Constraints
+#### 7.4.2.1 \. Phase-Based Timing Constraints
 
 Different timing requirements for different system phases:
 
@@ -5707,7 +5699,7 @@ procedure Process_Home_Phase (
          when Night     => Clock <= T0 + Minutes(10));
 ```
 
-#### 1.4.2.2 \. Jitter Constraints
+#### 7.4.2.2 \. Jitter Constraints
 
 Limit variation in execution timing:
 
@@ -5722,7 +5714,7 @@ procedure Sample_Sensor (
 
 Ensures samples occur within 50μs of their nominal 100ms interval.
 
-#### 1.4.2.3 \. Deadline Chaining
+#### 7.4.2.3 \. Deadline Chaining
 
 Specify timing relationships between operations:
 
@@ -5740,11 +5732,11 @@ procedure Process_Smart_Home_Command (
          Response.Timestamp <= Cmd.Timestamp + Milliseconds(50));
 ```
 
-### 1.4.3 Temporal Contract Verification
+### 7.4.3 Temporal Contract Verification
 
 Temporal contracts can be verified at multiple levels:
 
-#### 1.4.3.1 Runtime Verification
+#### 7.4.3.1 Runtime Verification
 
 ```bash
 gnatmake -gnata -D your_program.adb
@@ -5752,7 +5744,7 @@ gnatmake -gnata -D your_program.adb
 
 Checks timing contracts during execution
 
-#### 1.4.3.2 Static Verification
+#### 7.4.3.2 Static Verification
 
 ```bash
 gnatprove --level=2 --report=all your_program.adb
@@ -5762,9 +5754,9 @@ Proves timing properties without execution
 
 For the highest reliability, both approaches are typically required.
 
-## 1.5 Real-World Real-Time Applications
+## 7.5 Real-World Real-Time Applications
 
-### 1.5.1 Smart Home Climate Control System
+### 7.5.1 Smart Home Climate Control System
 
 A practical home automation example:
 
@@ -5805,7 +5797,7 @@ end Climate_Control;
 
 This structure guarantees a precisely timed 20Hz control loop for your home heating and cooling system.
 
-### 1.5.2 Home Health Monitor System
+### 7.5.2 Home Health Monitor System
 
 A practical health monitoring example:
 
@@ -5838,9 +5830,9 @@ end Heart_Rate_Monitor;
 
 This implementation ensures heart rate monitoring within 100ms of required intervals, providing timely alerts for potential issues.
 
-## 1.6 Advanced Real-Time Patterns
+## 7.6 Advanced Real-Time Patterns
 
-### 1.6.1 Pattern 1: Time-Triggered Architecture
+### 7.6.1 Pattern 1: Time-Triggered Architecture
 
 Implement a predictable time-triggered system:
 
@@ -5881,7 +5873,7 @@ begin
 end Time_Triggered_System;
 ```
 
-### 1.6.2 Why Time-Triggered Architectures Matter
+### 7.6.2 Why Time-Triggered Architectures Matter
 
 Time-triggered systems provide deterministic behavior that's easier to verify than event-triggered systems. They're valuable for many applications because:
 
@@ -5892,7 +5884,7 @@ Time-triggered systems provide deterministic behavior that's easier to verify th
 | **Easier fault containment** | A home automation system where a failure in one component doesn't affect others |
 | **Reduced testing burden** | A web server that handles peak traffic consistently without extensive testing |
 
-### 1.6.3 Pattern 2: Adaptive Deadline Management
+### 7.6.3 Pattern 2: Adaptive Deadline Management
 
 Handle varying workloads while maintaining critical deadlines:
 
@@ -5923,17 +5915,17 @@ begin
 end Smart_Thermostat;
 ```
 
-### 1.6.4 WCET-Aware Programming
+### 7.6.4 WCET-Aware Programming
 
 Structure code for predictable worst-case execution:
 
-#### 1.6.4.1 Avoid:
+#### 7.6.4.1 Avoid:
 - Unbounded loops
 - Dynamic memory allocation
 - Recursion
 - Exceptions in critical paths
 
-#### 1.6.4.2 Prefer:
+#### 7.6.4.2 Prefer:
 - Bounded loops with loop invariants
 - Static memory allocation
 - Iteration over recursion
@@ -5969,9 +5961,9 @@ end Process_Data;
 
 This bounded loop with a fixed iteration count is easier to analyze for worst-case execution time.
 
-## 1.7 Exercises: Building Verified Real-Time Systems
+## 7.7 Exercises: Building Verified Real-Time Systems
 
-### 1.7.1 Exercise 1: Smart Home Lighting System
+### 7.7.1 Exercise 1: Smart Home Lighting System
 
 Design a real-time lighting controller:
 
@@ -5983,7 +5975,7 @@ Design a real-time lighting controller:
 
 > **Challenge:** Prove the system can always respond to light commands within 10ms of receiving them.
 
-#### 1.7.1.1 Solution Guidance
+#### 7.7.1.1 Solution Guidance
 
 Start by defining your task with timing constraints:
 
@@ -6035,7 +6027,7 @@ Use SPARK to verify timing properties:
 -- 3. No priority inversion occurs
 ```
 
-### 1.7.2 Exercise 2: Video Game Physics Engine
+### 7.7.2 Exercise 2: Video Game Physics Engine
 
 Build a physics engine with:
 
@@ -6047,7 +6039,7 @@ Build a physics engine with:
 
 > **Challenge:** Prove that all objects move in precise synchronization within 1ms tolerance.
 
-#### 1.7.2.1 Solution Guidance
+#### 7.7.2.1 Solution Guidance
 
 Start by defining your physics tasks:
 
@@ -6085,7 +6077,7 @@ procedure Process_Frame with
          Clock <= Request_Time + Milliseconds(16));
 ```
 
-## 1.8 Verification Strategy for Real-Time Systems
+## 7.8 Verification Strategy for Real-Time Systems
 
 1. **Design phase**: Specify all timing requirements as temporal contracts
 2. **Implementation**: Structure code for predictable execution
@@ -6105,11 +6097,11 @@ Let's see how this works for our smart home lighting system:
 5. **Runtime verification**: We tested with `-gnata -D` to catch timing violations
 6. **Hardware validation**: We tested on actual hardware to ensure real-world timing
 
-## 1.9 Next Steps: Integration and Certification
+## 7.9 Next Steps: Integration and Certification
 
 Now that you've mastered Ada's real-time capabilities, you're ready to apply these techniques to full system integration and certification. In the next tutorial, we'll explore how to:
 
-### 1.9.1 Upcoming: Integration and Certification
+### 7.9.1 Upcoming: Integration and Certification
 
 - Integrate Ada components with other languages
 - Meet certification requirements for various industries
@@ -6117,7 +6109,7 @@ Now that you've mastered Ada's real-time capabilities, you're ready to apply the
 - Transition from development to certified deployment
 - Build traceability from requirements to code
 
-### 1.9.2 Practice Challenge
+### 7.9.2 Practice Challenge
 
 Enhance your smart home lighting system with integration features:
 
@@ -6127,7 +6119,7 @@ Enhance your smart home lighting system with integration features:
 - Create a verification matrix
 - Prepare for tool qualification
 
-#### 1.9.2.1 The Path to Reliable Systems
+#### 7.9.2.1 The Path to Reliable Systems
 
 Real-time programming in Ada represents the culmination of the language's design philosophy: transforming critical system properties from runtime concerns into verifiable design-time guarantees. When combined with strong typing, Design by Contract, and safe concurrency, Ada provides a complete framework for building systems where timing errors are as impossible as type errors.
 
@@ -6149,13 +6141,13 @@ Object-oriented programming (OOP) is a powerful way to organize code by grouping
 
 In this chapter, you'll learn how to use Ada's object-oriented features for everyday programming tasks. You'll see how to create reusable components, model real-world objects, and build flexible systems—all with clear, predictable behavior. Whether you're building a simple game, a home automation system, or a data processing tool, Ada's OOP features will help you write better code.
 
-## 1.1 Why Ada's OOP Is Different
+## 8.1 Why Ada's OOP Is Different
 
 Most programming languages treat object-oriented programming as an all-or-nothing feature. In Java or C++, classes are the default way to structure code, and polymorphism happens automatically. This can be convenient, but it also makes it hard to understand exactly what's happening when your code runs.
 
 Ada takes a different approach. Instead of forcing OOP on you, Ada gives you precise control over when and how you use it. You only get polymorphism when you explicitly ask for it. This makes your code more predictable and easier to understand—perfect for beginners who are just learning about OOP.
 
-### 1.1.1 Key Differences Between Ada and Other Languages
+### 8.1.1 Key Differences Between Ada and Other Languages
 
 | Feature | Traditional OOP (Java/C++) | Ada's OOP |
 | :--- | :--- | :--- |
@@ -6168,7 +6160,7 @@ Ada takes a different approach. Instead of forcing OOP on you, Ada gives you pre
 
 Let's look at a simple example to see how Ada's approach works in practice.
 
-### 1.1.2 A Simple Example: Animals in a Zoo
+### 8.1.2 A Simple Example: Animals in a Zoo
 
 Imagine you're building a zoo management system. In many languages, you might create a base class `Animal` and then derive specific types like `Lion` and `Elephant`:
 
@@ -6215,11 +6207,11 @@ Notice the differences:
 
 This explicitness makes it easier to understand exactly how your code will behave. There are no hidden virtual calls or surprise behavior—everything is visible in the code.
 
-## 1.2 Tagged Types: The Foundation of Ada OOP
+## 8.2 Tagged Types: The Foundation of Ada OOP
 
 In Ada, all object-oriented features are built around **tagged types**. A tagged type is simply a record that has been marked with the `tagged` keyword. This tells Ada that this type can participate in polymorphic behavior.
 
-### 1.2.1 Basic Tagged Type Declaration
+### 8.2.1 Basic Tagged Type Declaration
 
 Let's create a simple tagged type for a sensor:
 
@@ -6233,7 +6225,7 @@ end record;
 
 This creates a type called `Sensor` that has three fields: an ID, a status string, and a value. The `tagged` keyword is what makes this type polymorphic.
 
-### 1.2.2 Derived Types: Extending Existing Types
+### 8.2.2 Derived Types: Extending Existing Types
 
 You can create new types based on existing tagged types using the `new` keyword:
 
@@ -6252,7 +6244,7 @@ end record;
 
 Here, `Temperature_Sensor` and `Pressure_Sensor` are both derived from `Sensor`. They inherit all the fields from `Sensor` and add their own specific fields.
 
-### 1.2.3 Dispatching Operations: How Polymorphism Works
+### 8.2.3 Dispatching Operations: How Polymorphism Works
 
 To make a procedure or function polymorphic, you need to define it for the base type. This is called a **dispatching operation**:
 
@@ -6284,7 +6276,7 @@ end Process_Sensor;
 
 The `Sensor'Class` type is special—it means "any type derived from `Sensor`." This is how Ada achieves polymorphism: by allowing you to work with objects through their base type while still using the correct implementation for each specific type.
 
-### 1.2.4 Why This Matters for Beginners
+### 8.2.4 Why This Matters for Beginners
 
 This explicit approach has several advantages for beginners:
 - **No hidden behavior**: You can see exactly which implementation will be called
@@ -6346,11 +6338,11 @@ Trumpet!
 
 Notice how the `Process_Animal` procedure works with any animal type, but calls the correct `Make_Sound` implementation for each one. This is polymorphism in action—without any hidden complexity.
 
-## 1.3 Advanced Dispatching Operations
+## 8.3 Advanced Dispatching Operations
 
 Ada provides several advanced features for controlling how polymorphic behavior works. These features are designed to make your code more predictable and verifiable.
 
-### 1.3.1 Dispatching on Multiple Parameters
+### 8.3.1 Dispatching on Multiple Parameters
 
 In most languages, polymorphism only happens based on the type of the object (the `this` parameter). In Ada, you can have polymorphism based on multiple parameters:
 
@@ -6367,7 +6359,7 @@ end Process_Command;
 
 This function will dispatch based on both the sensor type and the command type. This is useful when you need to handle different combinations of inputs in different ways.
 
-### 1.3.2 Dispatching Policy Control
+### 8.3.2 Dispatching Policy Control
 
 Ada lets you control how dispatching happens:
 
@@ -6387,7 +6379,7 @@ end Process_Alarm;
 
 These policies make dispatching behavior predictable and verifiable—essential for safety-critical systems, but also helpful for understanding how your code works.
 
-### 1.3.3 Dispatching with Contracts
+### 8.3.3 Dispatching with Contracts
 
 One of Ada's most powerful features is combining polymorphism with Design by Contract:
 
@@ -6405,13 +6397,13 @@ function Validate (
 
 Here, the `Validate` function for `Temperature_Sensor` refines the contract of the base version. Ada ensures that derived types follow the Liskov substitution principle—meaning a derived type can always be used where the base type is expected.
 
-## 1.4 Interface Types and Controlled Inheritance
+## 8.4 Interface Types and Controlled Inheritance
 
 Ada provides sophisticated mechanisms for interface-based programming and controlled inheritance—avoiding many traditional OOP pitfalls.
 
-### 1.4.1 Abstract Types and Interface Types
+### 8.4.1 Abstract Types and Interface Types
 
-#### 1.4.1.1 Abstract Tagged Types
+#### 8.4.1.1 Abstract Tagged Types
 
 ```ada
 type Sensor is abstract tagged record
@@ -6433,7 +6425,7 @@ end Get_Value;
 
 This ensures that all derived types implement required operations. If you forget to implement `Get_Value` for `Temperature_Sensor`, the compiler will give you an error.
 
-#### 1.4.1.2 Interface Types (Multiple Inheritance)
+#### 8.4.1.2 Interface Types (Multiple Inheritance)
 
 ```ada
 type Measurable is interface;
@@ -6461,7 +6453,7 @@ end Calibrate;
 
 This enables safe multiple inheritance through interface types. You can have a type that implements multiple interfaces without the complications of traditional multiple inheritance.
 
-### 1.4.2 Interface-Based Design Benefits
+### 8.4.2 Interface-Based Design Benefits
 
 | Benefit | Real-World Example |
 | :--- | :--- |
@@ -6471,11 +6463,11 @@ This enables safe multiple inheritance through interface types. You can have a t
 | Reduces coupling between components | A web application where different data sources all implement the same interface |
 | Improves testability through interface mocking | A unit test that uses a mock sensor instead of a real one |
 
-## 1.5 Controlled Inheritance Patterns
+## 8.5 Controlled Inheritance Patterns
 
 Ada provides mechanisms to control inheritance for safety and simplicity.
 
-### 1.5.1 . Sealed Types
+### 8.5.1 Sealed Types
 
 Prevent further derivation of a type:
 
@@ -6491,7 +6483,7 @@ end Final_Sensor;
 
 This is useful for types where additional derivation could compromise safety or simplicity.
 
-### 1.5.2 . Limited Private Types
+### 8.5.2 Limited Private Types
 
 Control access to type internals:
 
@@ -6512,7 +6504,7 @@ end Sensors;
 
 This prevents unsafe modifications from outside the package.
 
-### 1.5.3 . Controlled Extension
+### 8.5.3 Controlled Extension
 
 Limit what can be added in derived types:
 
@@ -6535,11 +6527,11 @@ end record;
 
 This ensures derived types maintain safety properties.
 
-## 1.6 Safety-Critical OOP Patterns
+## 8.6 Safety-Critical OOP Patterns
 
 Let's look at some common OOP patterns that work well in Ada.
 
-### 1.6.1 . State Pattern for State Machines
+### 8.6.1 State Pattern for State Machines
 
 ```ada
 type System_State is abstract tagged null record;
@@ -6578,7 +6570,7 @@ end Handle_Event;
 
 This pattern ensures only valid state transitions can occur. It's perfect for modeling things like game characters, home automation systems, or simple robots.
 
-### 1.6.2 . Strategy Pattern for Algorithm Selection
+### 8.6.2 Strategy Pattern for Algorithm Selection
 
 ```ada
 type Control_Strategy is abstract tagged null record;
@@ -6611,7 +6603,7 @@ end Calculate_Output;
 
 This pattern enables safe runtime algorithm selection. It's great for applications where you might want to switch between different calculation methods based on conditions.
 
-### 1.6.3 . Visitor Pattern for Data Processing
+### 8.6.3 Visitor Pattern for Data Processing
 
 ```ada
 type Sensor_Element is abstract tagged null record;
@@ -6642,7 +6634,7 @@ end Visit_Temperature;
 
 This pattern ensures exhaustive processing of heterogeneous data. It's perfect for applications where you need to process different types of data in the same way.
 
-### 1.6.4 OOP Pattern Selection Guide
+### 8.6.4 OOP Pattern Selection Guide
 
 | Pattern | When to Use | Benefits |
 | :--- | :--- | :--- |
@@ -6651,9 +6643,9 @@ This pattern ensures exhaustive processing of heterogeneous data. It's perfect f
 | **Visitor Pattern** | Processing heterogeneous data collections | Guarantees exhaustive processing |
 | **Template Method** | Fixed algorithm with variable steps | Maintains algorithm invariants |
 
-## 1.7 Exercises: Building Verified Polymorphic Systems
+## 8.7 Exercises: Building Verified Polymorphic Systems
 
-### 1.7.1 Exercise 1: Zoo Management System
+### 8.7.1 Exercise 1: Zoo Management System
 
 Design a polymorphic zoo management system:
 
@@ -6665,7 +6657,7 @@ Design a polymorphic zoo management system:
 
 > **Challenge:** Prove that the zoo system cannot put animals in impossible states.
 
-#### 1.7.1.1 Solution Guidance
+#### 8.7.1.1 Solution Guidance
 
 Start by defining your animal base type:
 
@@ -6705,7 +6697,7 @@ procedure Wake (L : in out Lion) with
 
 This contract ensures that a lion can only wake up if it's currently sleeping.
 
-### 1.7.2 Exercise 2: Home Automation System
+### 8.7.2 Exercise 2: Home Automation System
 
 Build a polymorphic home automation system:
 
@@ -6717,7 +6709,7 @@ Build a polymorphic home automation system:
 
 > **Challenge:** Prove that sensor data cannot be misinterpreted due to polymorphism.
 
-#### 1.7.2.1 Solution Guidance
+#### 8.7.2.1 Solution Guidance
 
 Start by defining your sensor interface:
 
@@ -6755,7 +6747,7 @@ function Get_Value (T : Temperature_Sensor) return Float with
 
 This contract ensures that temperature values are always within a reasonable range.
 
-## 1.8 Verification Strategy for Polymorphic Systems
+## 8.8 Verification Strategy for Polymorphic Systems
 
 1. **Static verification**: Use `gnatprove` to verify contract refinement
 2. **Type safety**: Verify all downcasts with tag checks
@@ -6766,9 +6758,9 @@ This contract ensures that temperature values are always within a reasonable ran
 
 For highest reliability, all six verification steps are required to demonstrate safe polymorphic behavior.
 
-## 1.9 Common OOP Mistakes and How to Avoid Them
+## 8.9 Common OOP Mistakes and How to Avoid Them
 
-### 1.9.1 Mistake: Overusing Inheritance
+### 8.9.1 Mistake: Overusing Inheritance
 
 Many beginners think inheritance is always the best solution. But sometimes composition is better:
 
@@ -6785,7 +6777,7 @@ type Smart_Thermostat is record
 end record;
 ```
 
-### 1.9.2 Mistake: Forgetting to Use 'Class
+### 8.9.2 Mistake: Forgetting to Use 'Class
 
 When working with polymorphism, you need to use `Type'Class`:
 
@@ -6803,7 +6795,7 @@ begin
 end Process;
 ```
 
-### 1.9.3 Mistake: Unsafe Downcasting
+### 8.9.3 Mistake: Unsafe Downcasting
 
 ```ada
 -- Bad: No tag check
@@ -6816,7 +6808,7 @@ if S in Temperature_Sensor then
 end if;
 ```
 
-## 1.10 Why Ada's OOP Is Great for Beginners
+## 8.10 Why Ada's OOP Is Great for Beginners
 
 Ada's object-oriented features are designed to be simple and explicit. Unlike other languages where polymorphism happens behind the scenes, Ada makes everything visible in the code. This means:
 
@@ -6878,11 +6870,11 @@ Gandalf casts fireball!
 
 Notice how the `Process_Character` procedure works with any character type, but calls the correct `Attack` implementation for each one. This is polymorphism in action—without any hidden complexity.
 
-## 1.11 Next Steps: Generics and Template Programming
+## 8.11 Next Steps: Generics and Template Programming
 
 Now that you've mastered Ada's object-oriented programming features, you're ready to explore how to create reusable, type-safe components through generics. In the next tutorial, we'll dive into Ada's powerful generic programming system, showing how to:
 
-### 1.11.1 Upcoming: Generics and Template Programming
+### 8.11.1 Upcoming: Generics and Template Programming
 
 - Create reusable components with formal parameters
 - Specify constraints on generic parameters
@@ -6890,7 +6882,7 @@ Now that you've mastered Ada's object-oriented programming features, you're read
 - Combine generics with Design by Contract
 - Apply generics to safety-critical patterns
 
-### 1.11.2 Practice Challenge
+### 8.11.2 Practice Challenge
 
 Enhance your zoo management system with generics:
 
@@ -6900,7 +6892,7 @@ Enhance your zoo management system with generics:
 - Verify that instantiations maintain safety properties
 - Create a verification plan for generic components
 
-#### 1.11.2.1 The Path to Verified Reusability
+#### 8.11.2.1 The Path to Verified Reusability
 
 Object-oriented programming provides the foundation for building flexible systems, but generics enable building flexible systems efficiently. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
 
@@ -6960,7 +6952,7 @@ end Test_Add;
 
 This is just the beginning of what Ada's generics can do. In this chapter, you'll learn how to create reusable components that work with any data type while maintaining strong type safety. You'll see how generics can simplify your code, reduce duplication, and make your programs more reliable.
 
-## 1.1 Why Generics Are Important for Every Programmer
+## 9.1 Why Generics Are Important for Every Programmer
 
 Generics are not just for experts—they're a fundamental tool that every programmer should know. Think about it: when you're building a program, how often do you find yourself writing nearly identical code for different data types? Maybe you have a sorting algorithm that works for integers, and another for strings, and another for custom objects. With generics, you write it once and use it for everything.
 
@@ -7006,11 +6998,11 @@ package Price_Sort is new Sort (Item => Shopping_Item, "<" => Compare_By_Price);
 
 This is the power of generics—they let you write code once and use it in many different ways.
 
-## 1.2 Basic Syntax of Ada Generics
+## 9.2 Basic Syntax of Ada Generics
 
 Ada's generics use a simple but powerful syntax that makes it easy to create reusable components. Let's break down the basic structure.
 
-### 1.2.1 Generic Package Declaration
+### 9.2.1 Generic Package Declaration
 
 A generic package starts with the `generic` keyword, followed by formal parameters:
 
@@ -7034,7 +7026,7 @@ package Generic_Stack is
 end Generic_Stack;
 ```
 
-### 1.2.2 Generic Subprogram Declaration
+### 9.2.2 Generic Subprogram Declaration
 
 A generic subprogram works similarly:
 
@@ -7052,7 +7044,7 @@ generic
 procedure Swap (A, B : in out T);
 ```
 
-### 1.2.3 Instantiation
+### 9.2.3 Instantiation
 
 To use a generic component, you instantiate it with actual parameters:
 
@@ -7072,7 +7064,7 @@ Or for strings:
 package String_Stack is new Generic_Stack (Element => String);
 ```
 
-### 1.2.4 Key Syntax Notes
+### 9.2.4 Key Syntax Notes
 
 - **`generic` keyword**: Marks the beginning of generic specifications
 - **Formal parameters**: Placeholders for types, subprograms, or values
@@ -7080,7 +7072,7 @@ package String_Stack is new Generic_Stack (Element => String);
 - **`is new`**: Used when creating an instance of a generic component
 - **`with` clause**: Required for generic subprograms to specify dependencies
 
-### 1.2.5 Complete Example: Generic Calculator
+### 9.2.5 Complete Example: Generic Calculator
 
 Let's create a complete example of a generic calculator:
 
@@ -7149,11 +7141,11 @@ Integer result: 7
 
 Notice how the same generic calculator works for both floating-point and integer types without any changes to the implementation.
 
-## 1.3 Formal Parameters: The Building Blocks of Generics
+## 9.3 Formal Parameters: The Building Blocks of Generics
 
 Ada's generics support several types of formal parameters, each serving a specific purpose.
 
-### 1.3.1 Type Parameters
+### 9.3.1 Type Parameters
 
 Type parameters are the most common type of formal parameter. They let you specify a placeholder for a type that will be provided when the generic is instantiated.
 
@@ -7186,7 +7178,7 @@ procedure Sort (A : in out Array_Type);
 
 This procedure can sort arrays of any type that supports comparison.
 
-### 1.3.2 Subprogram Parameters
+### 9.3.2 Subprogram Parameters
 
 Subprogram parameters let you pass functions or procedures as parameters to your generic component.
 
@@ -7206,7 +7198,7 @@ procedure Search (Items : in out Array_Type);
 
 This allows you to search for items that match a specific condition.
 
-### 1.3.3 Object Parameters
+### 9.3.3 Object Parameters
 
 Object parameters let you pass values as parameters to your generic component.
 
@@ -7227,7 +7219,7 @@ package Counter is
 end Counter;
 ```
 
-### 1.3.4 Package Parameters
+### 9.3.4 Package Parameters
 
 Package parameters let you pass entire packages as parameters.
 
@@ -7246,7 +7238,7 @@ package Trig_Calculator is
 end Trig_Calculator;
 ```
 
-### 1.3.5 Formal Parameters Comparison
+### 9.3.5 Formal Parameters Comparison
 
 | Parameter Type | Syntax | Best For |
 | :--- | :--- | :--- |
@@ -7255,11 +7247,11 @@ end Trig_Calculator;
 | **Object Parameter** | `Default_Value : Integer` | When you need to configure behavior with a value |
 | **Package Parameter** | `package Math_Package is new Math (<>);` | When you need to use an entire package's functionality |
 
-## 1.4 Instantiation: Using Your Generic Components
+## 9.4 Instantiation: Using Your Generic Components
 
 Once you've created a generic component, you need to instantiate it with actual parameters to use it in your program.
 
-### 1.4.1 Basic Instantiation
+### 9.4.1 Basic Instantiation
 
 The simplest way to instantiate a generic is with positional parameters:
 
@@ -7275,7 +7267,7 @@ package Int_Stack is new Generic_Stack (Element => Integer);
 
 Named parameters are often clearer, especially when there are multiple parameters.
 
-### 1.4.2 Instantiation with Constraints
+### 9.4.2 Instantiation with Constraints
 
 When you need to specify constraints on types:
 
@@ -7291,7 +7283,7 @@ package Int_Range is new Generic_Range (T => Integer);
 package Byte_Range is new Generic_Range (T => Natural range 0..255);
 ```
 
-### 1.4.3 Instantiation with Subprograms
+### 9.4.3 Instantiation with Subprograms
 
 When you need to provide a subprogram parameter:
 
@@ -7313,7 +7305,7 @@ end Compare_By_Name;
 package Name_Sort is new Generic_Sort (Element => Shopping_Item, "<" => Compare_By_Name);
 ```
 
-### 1.4.4 Instantiation with Packages
+### 9.4.4 Instantiation with Packages
 
 When you need to pass a package as a parameter:
 
@@ -7331,18 +7323,18 @@ package Float_Math is new Math (Float);
 package Float_Trig is new Trig_Calculator (Math_Package => Float_Math);
 ```
 
-### 1.4.5 Instantiation Best Practices
+### 9.4.5 Instantiation Best Practices
 
 - **Use named parameters**: They make your code more readable and less error-prone
 - **Group related instantiations**: Put related generic instantiations in the same package
 - **Avoid unnecessary complexity**: Only specify what you need
 - **Document your instantiations**: Explain why you chose specific parameters
 
-## 1.5 Constraints on Generic Parameters
+## 9.5 Constraints on Generic Parameters
 
 One of Ada's most powerful features is the ability to constrain generic parameters, ensuring that only types that meet specific requirements can be used.
 
-### 1.5.1 Numeric Constraints
+### 9.5.1 Numeric Constraints
 
 For numeric types, you can specify different constraints:
 
@@ -7365,7 +7357,7 @@ end Generic_Floating_Calculator;
 
 This can only be instantiated with floating-point types like `Float`, `Long_Float`, or `Decimal`.
 
-### 1.5.2 Array Constraints
+### 9.5.2 Array Constraints
 
 For array types, you can specify constraints on the index and element types:
 
@@ -7389,7 +7381,7 @@ procedure Process_Array (A : in out Array_Type);
 
 This procedure can process arrays of any index type and element type, as long as they support the `Process` procedure.
 
-### 1.5.3 Subprogram Constraints
+### 9.5.3 Subprogram Constraints
 
 For subprogram parameters, you can specify the exact signature:
 
@@ -7409,7 +7401,7 @@ procedure Search (Items : in out Array_Type);
 
 This ensures that the `Find_Match` function has the correct signature for the element type.
 
-### 1.5.4 Constraint Comparison
+### 9.5.4 Constraint Comparison
 
 | Constraint Type | Syntax | Example |
 | :--- | :--- | :--- |
@@ -7418,11 +7410,11 @@ This ensures that the `Find_Match` function has the correct signature for the el
 | **Array** | `type Array_Type is array (Index range <>) of Element` | `String`, `Integer_Array` |
 | **Subprogram** | `with function Compare (Left, Right : T) return Boolean` | `"<"`, `">="`, custom comparison |
 
-## 1.6 Private Types in Generics
+## 9.6 Private Types in Generics
 
 Ada's generics work seamlessly with private types, allowing you to create reusable components that hide implementation details.
 
-### 1.6.1 Generic Package with Private Types
+### 9.6.1 Generic Package with Private Types
 
 ```ada
 generic
@@ -7458,7 +7450,7 @@ end Test_Stack;
 
 The client doesn't need to know that the stack is implemented as an array—it only needs to know how to use the interface.
 
-### 1.6.2 Generic Package with Limited Private Types
+### 9.6.2 Generic Package with Limited Private Types
 
 For types that shouldn't be copied:
 
@@ -7475,7 +7467,7 @@ end Generic_Resource;
 
 This ensures that the resource type can't be copied, which is important for things like file handles or hardware devices.
 
-### 1.6.3 Private Type Constraints
+### 9.6.3 Private Type Constraints
 
 You can also constrain private types:
 
@@ -7491,11 +7483,11 @@ end Generic_Counter;
 
 This ensures that the type has a default value of 0, which is useful for counters.
 
-## 1.7 Generic Inheritance and Composition
+## 9.7 Generic Inheritance and Composition
 
 Ada's generics support both inheritance and composition patterns, allowing you to build complex systems from reusable components.
 
-### 1.7.1 Generic Inheritance
+### 9.7.1 Generic Inheritance
 
 You can create generic types that inherit from other generic types:
 
@@ -7516,7 +7508,7 @@ end Generic_Derived;
 
 This allows you to build a hierarchy of generic types.
 
-### 1.7.2 Generic Composition
+### 9.7.2 Generic Composition
 
 You can also compose generic components together:
 
@@ -7544,18 +7536,18 @@ end Generic_Counter_Stack;
 
 This allows you to build complex components by combining simpler ones.
 
-### 1.7.3 Generic Inheritance vs Composition
+### 9.7.3 Generic Inheritance vs Composition
 
 | Pattern | When to Use | Benefits |
 | :--- | :--- | :--- |
 | **Generic Inheritance** | When you need to extend existing generic functionality | Creates a clear hierarchy of related types |
 | **Generic Composition** | When you need to combine multiple generic components | Creates flexible, reusable components from smaller parts |
 
-## 1.8 Practical Examples: Building Reusable Components
+## 9.8 Practical Examples: Building Reusable Components
 
 Let's look at some practical examples of generics that you can use in everyday programming.
 
-### 1.8.1 Generic Stack Implementation
+### 9.8.1 Generic Stack Implementation
 
 ```ada
 generic
@@ -7635,7 +7627,7 @@ begin
 end Test_Stack;
 ```
 
-### 1.8.2 Generic Sorting Algorithm
+### 9.8.2 Generic Sorting Algorithm
 
 ```ada
 generic
@@ -7698,7 +7690,7 @@ This will output:
 Apple Banana Cherry Date Elderberry 
 ```
 
-### 1.8.3 Generic Calculator with Constraints
+### 9.8.3 Generic Calculator with Constraints
 
 ```ada
 generic
@@ -7768,7 +7760,7 @@ This will output:
 2^5 = 32
 ```
 
-## 1.9 Ada Generics vs C++ Templates: A Comparison
+## 9.9 Ada Generics vs C++ Templates: A Comparison
 
 Many programmers are familiar with C++ templates, so it's helpful to understand how Ada generics compare.
 
@@ -7784,7 +7776,7 @@ Many programmers are familiar with C++ templates, so it's helpful to understand 
 | **Default Parameters** | Supported | Supported |
 | **Compile Time** | Faster due to simpler model | Slower due to complex template system |
 
-### 1.9.1 Key Differences
+### 9.9.1 Key Differences
 
 - **Explicit vs Implicit Instantiation**: In Ada, you explicitly instantiate generics with `is new`. In C++, templates are instantiated implicitly based on usage. This makes Ada's generics easier to understand and debug.
 - **Stronger Type Safety**: Ada's generics have stronger type safety guarantees. If you try to use a type that doesn't meet the requirements, the compiler will give you a clear error message.
@@ -7821,11 +7813,11 @@ swap(a, b);
 
 In Ada, the instantiation is explicit, which makes it clear what's happening. In C++, the template is instantiated implicitly based on usage, which can make it harder to understand exactly what's happening behind the scenes.
 
-## 1.10 Best Practices for Using Generics
+## 9.10 Best Practices for Using Generics
 
 Here are some best practices to help you use generics effectively:
 
-### 1.10.1 \. Use Named Parameters
+### 9.10.1 \. Use Named Parameters
 
 Named parameters make your code more readable and less error-prone:
 
@@ -7837,7 +7829,7 @@ package Int_Stack is new Generic_Stack (Element => Integer);
 package Int_Stack is new Generic_Stack (Integer);
 ```
 
-### 1.10.2 \. Keep Generics Simple
+### 9.10.2 \. Keep Generics Simple
 
 Start with simple generics and build up complexity gradually:
 
@@ -7859,7 +7851,7 @@ package Complex_Generic is
 end Complex_Generic;
 ```
 
-### 1.10.3 \. Document Your Generics
+### 9.10.3 \. Document Your Generics
 
 Add comments to explain what your generic does and what constraints it has:
 
@@ -7874,7 +7866,7 @@ package Equality_Checker is
 end Equality_Checker;
 ```
 
-### 1.10.4 \. Use Constraints to Ensure Correct Usage
+### 9.10.4 \. Use Constraints to Ensure Correct Usage
 
 Add constraints to make sure only appropriate types are used:
 
@@ -7887,7 +7879,7 @@ package Float_Calculator is
 end Float_Calculator;
 ```
 
-### 1.10.5 \. Test Your Generics
+### 9.10.5 \. Test Your Generics
 
 Test your generic components with different types to ensure they work correctly:
 
@@ -7910,7 +7902,7 @@ begin
 end Test_Generic_Stack;
 ```
 
-### 1.10.6 \. Avoid Over-Engineering
+### 9.10.6 \. Avoid Over-Engineering
 
 Don't make your generics more complex than they need to be:
 
@@ -7934,11 +7926,11 @@ package Overly_Complex_Generic is
 end Overly_Complex_Generic;
 ```
 
-## 1.11 Real-World Applications of Generics
+## 9.11 Real-World Applications of Generics
 
 Let's look at some real-world applications of generics that you might encounter in everyday programming.
 
-### 1.11.1 Data Structures
+### 9.11.1 Data Structures
 
 Generics are perfect for creating reusable data structures like stacks, queues, and linked lists:
 
@@ -7970,7 +7962,7 @@ begin
 end Test_Queue;
 ```
 
-### 1.11.2 Algorithms
+### 9.11.2 Algorithms
 
 Generics are perfect for creating reusable algorithms like sorting, searching, and filtering:
 
@@ -8002,7 +7994,7 @@ begin
 end Test_Sort;
 ```
 
-### 1.11.3 Utility Functions
+### 9.11.3 Utility Functions
 
 Generics are perfect for creating reusable utility functions like math operations or string processing:
 
@@ -8031,7 +8023,7 @@ begin
 end Test_Math;
 ```
 
-### 1.11.4 Real-World Example: Shopping List App
+### 9.11.4 Real-World Example: Shopping List App
 
 Let's build a complete shopping list app using generics:
 
@@ -8097,9 +8089,9 @@ end Shopping_List;
 
 This example shows how generics can simplify complex applications by providing reusable components for sorting, stacking, and other common tasks.
 
-## 1.12 Common Mistakes and How to Avoid Them
+## 9.12 Common Mistakes and How to Avoid Them
 
-### 1.12.1 Mistake: Forgetting to Specify Constraints
+### 9.12.1 Mistake: Forgetting to Specify Constraints
 
 ```ada
 -- Bad
@@ -8112,7 +8104,7 @@ end Generic_Calculator;
 -- This will fail if T doesn't support addition
 ```
 
-#### 1.12.1.1 Solution: Add Constraints
+#### 9.12.1.1 Solution: Add Constraints
 
 ```ada
 -- Good
@@ -8123,7 +8115,7 @@ package Generic_Calculator is
 end Generic_Calculator;
 ```
 
-### 1.12.2 Mistake: Using Too Many Parameters
+### 9.12.2 Mistake: Using Too Many Parameters
 
 ```ada
 -- Bad
@@ -8138,7 +8130,7 @@ package Overly_Complex_Generic is
 end Overly_Complex_Generic;
 ```
 
-#### 1.12.2.1 Solution: Keep It Simple
+#### 9.12.2.1 Solution: Keep It Simple
 
 ```ada
 -- Good
@@ -8149,7 +8141,7 @@ package Simple_Generic is
 end Simple_Generic;
 ```
 
-### 1.12.3 Mistake: Not Testing with Multiple Types
+### 9.12.3 Mistake: Not Testing with Multiple Types
 
 ```ada
 -- Bad
@@ -8162,7 +8154,7 @@ begin
 end Test_Stack;
 ```
 
-#### 1.12.3.1 Solution: Test with Multiple Types
+#### 9.12.3.1 Solution: Test with Multiple Types
 
 ```ada
 -- Good
@@ -8179,33 +8171,33 @@ begin
 end Test_Stack;
 ```
 
-## 1.13 Next Steps: Putting It All Together
+## 9.13 Next Steps: Putting It All Together
 
 Now that you've learned the basics of Ada generics, it's time to put it all together. Here are some ideas for what to try next:
 
-### 1.13.1 \. Build Your Own Generic Data Structures
+### 9.13.1 \. Build Your Own Generic Data Structures
 
 Create a generic linked list, binary tree, or hash table. Test it with different types to make sure it works correctly.
 
-### 1.13.2 \. Create a Generic Math Library
+### 9.13.2 \. Create a Generic Math Library
 
 Build a library of math functions that work with different numeric types. Include functions for square roots, powers, trigonometry, and more.
 
-### 1.13.3 \. Develop a Generic Sorting Library
+### 9.13.3 \. Develop a Generic Sorting Library
 
 Create a library of sorting algorithms (bubble sort, quicksort, mergesort) that work with any comparable type.
 
-### 1.13.4 \. Build a Generic File Processing System
+### 9.13.4 \. Build a Generic File Processing System
 
 Create a system that can read and write files of different types, using generics to handle the specific data types.
 
-### 1.13.5 \. Create a Generic Game Component
+### 9.13.5 \. Create a Generic Game Component
 
 Build a game component (like a character or item) that can work with different types of data, using generics to make it reusable.
 
 Remember, the key to mastering generics is practice. Start with simple examples and gradually build up to more complex ones. Don't be afraid to experiment and try new things—generics are a powerful tool that can make your code simpler, cleaner, and more reusable.
 
-## 1.14 Conclusion: The Power of Reusable Code
+## 9.14 Conclusion: The Power of Reusable Code
 
 > **The Power of Generics**
 > 
@@ -8227,11 +8219,11 @@ When you're writing a program that reads a file, connects to a database, or mana
 
 Ada solves these problems with a powerful combination of automatic memory management and controlled types. With Ada, you don't have to worry about manual cleanup—when an object goes out of scope, Ada automatically releases its resources. This means your code is simpler, safer, and less prone to errors. Whether you're building a home automation system, a simple game, or a web application, Ada's memory management features help you focus on what your program does rather than how it manages resources.
 
-## 1.1 Stack vs. Heap: How Ada Handles Memory
+## 10.1 Stack vs. Heap: How Ada Handles Memory
 
 All programs use two main types of memory: the stack and the heap. Understanding the difference between them is key to writing efficient and reliable code.
 
-### 1.1.1 The Stack
+### 10.1.1 The Stack
 
 The stack is like a stack of plates in a cafeteria—new items are added to the top, and items are removed from the top. In programming terms, the stack is used for local variables that have a fixed size and a known lifetime. When you enter a function, space is allocated on the stack for its local variables. When you leave the function, that space is automatically reclaimed.
 
@@ -8251,7 +8243,7 @@ end Calculate_Sum;
 
 The stack is fast and efficient because memory allocation and deallocation happen automatically. You don't need to worry about freeing memory—you just use variables, and Ada handles the rest.
 
-### 1.1.2 The Heap
+### 10.1.2 The Heap
 
 The heap is like a big storage room where you can store items of varying sizes. In programming terms, the heap is used for dynamic memory allocation—when you need to create objects whose size or lifetime isn't known at compile time.
 
@@ -8264,7 +8256,7 @@ Data : Integer_Access := new Integer'(10);
 
 Here, `Data` is an access type that points to an integer allocated on the heap. The key difference from the stack is that memory allocated on the heap doesn't automatically get freed when you leave a function—you need to explicitly free it with `Data := null;` (though Ada's controlled types make this unnecessary in many cases).
 
-### 1.1.3 Stack vs. Heap: When to Use Which
+### 10.1.3 Stack vs. Heap: When to Use Which
 
 | **Memory Type** | **Best For** | **Lifetime** | **Allocation Speed** |
 | :--- | :--- | :--- | :--- |
@@ -8273,11 +8265,11 @@ Here, `Data` is an access type that points to an integer allocated on the heap. 
 
 For most everyday programming tasks, the stack is sufficient. But when you need to create data structures whose size depends on user input or runtime conditions, the heap becomes necessary. The important thing to remember is that with Ada's controlled types, you rarely need to manually manage heap memory—Ada handles it for you.
 
-## 1.2 Access Types: Safe Pointers in Ada
+## 10.2 Access Types: Safe Pointers in Ada
 
 In many languages, pointers are powerful but dangerous. In C, for example, you can create dangling pointers (pointers to freed memory) or null pointers that cause crashes. Ada solves these problems with safe access types that are designed to be both powerful and reliable.
 
-### 1.2.1 Basic Access Types
+### 10.2.1 Basic Access Types
 
 An access type in Ada is like a pointer in other languages, but with strong type safety. Here's how you declare and use one:
 
@@ -8300,7 +8292,7 @@ type Person_Access is access Person;
 Person_Data : Person_Access := new Person'(Name => "Alice", Age => 30);
 ```
 
-### 1.2.2 Access Type Safety Features
+### 10.2.2 Access Type Safety Features
 
 Ada's access types include several safety features that prevent common pointer errors:
 
@@ -8326,7 +8318,7 @@ Data : Integer_Access := new Integer'(10);
 -- No need to free explicitly—controlled types handle it
 ```
 
-### 1.2.3 Controlled Access Types
+### 10.2.3 Controlled Access Types
 
 The real power of Ada's access types comes when combined with controlled types. This lets you automatically manage resources without manual cleanup:
 
@@ -8354,11 +8346,11 @@ end File_Handle;
 
 In this example, `File_Handle` is a controlled type that automatically closes the file when it goes out of scope. You don't need to call `Close` explicitly—Ada handles it for you.
 
-## 1.3 Controlled Types: The Heart of Ada's Memory Management
+## 10.3 Controlled Types: The Heart of Ada's Memory Management
 
 Controlled types are Ada's secret weapon for safe resource management. They let you define exactly what happens when an object is created, copied, or destroyed—ensuring that resources are always properly managed.
 
-### 1.3.1 What Are Controlled Types?
+### 10.3.1 What Are Controlled Types?
 
 A controlled type is a type that extends `Ada.Finalization.Controlled` and defines specific procedures to control its lifecycle. These procedures are:
 
@@ -8368,7 +8360,7 @@ A controlled type is a type that extends `Ada.Finalization.Controlled` and defin
 
 This gives you complete control over how resources are allocated and released.
 
-### 1.3.2 Creating a Controlled Type: The File Handle Example
+### 10.3.2 Creating a Controlled Type: The File Handle Example
 
 Let's create a complete example of a controlled type for file handling:
 
@@ -8453,7 +8445,7 @@ end Test_File;
 
 When `F` goes out of scope at the end of `Test_File`, Ada automatically calls `Finalize`, which closes the file. You don't need to remember to close it—Ada handles it for you.
 
-### 1.3.3 Why Controlled Types Matter
+### 10.3.3 Why Controlled Types Matter
 
 Controlled types solve the most common memory management problems:
 
@@ -8463,11 +8455,11 @@ Controlled types solve the most common memory management problems:
 
 This is especially important for everyday programming tasks. Imagine a home automation system that reads sensor data from files—if you forget to close a file, the system might run out of file handles and crash. With controlled types, this simply can't happen.
 
-## 1.4 How Controlled Types Work Under the Hood
+## 10.4 How Controlled Types Work Under the Hood
 
 Let's dive deeper into how controlled types work. When you create a controlled type, Ada automatically calls the `Initialize` procedure. When the object goes out of scope, Ada calls `Finalize`. If the object is copied, Ada calls `Adjust`.
 
-### 1.4.1 The Lifecycle of a Controlled Type
+### 10.4.1 The Lifecycle of a Controlled Type
 
 1. **Creation**: When you declare a controlled type variable, `Initialize` is called
 2. **Usage**: You can use the object normally
@@ -8543,7 +8535,7 @@ Finalize called
 
 This shows the lifecycle of the controlled types. `Initialize` is called when each variable is created. `Adjust` is called when `B` is assigned from `A`. `Finalize` is called when each variable goes out of scope.
 
-### 1.4.2 When to Use Limited Controlled Types
+### 10.4.2 When to Use Limited Controlled Types
 
 By default, controlled types can be copied. But for some resources (like file handles), copying doesn't make sense—you don't want two objects to manage the same file. That's where limited controlled types come in.
 
@@ -8557,7 +8549,7 @@ end record;
 
 The `limited` keyword means you can't assign one `File_Handle` to another. This prevents accidental copying of resources that shouldn't be shared.
 
-## 1.5 Memory Leaks: How Ada Prevents Them
+## 10.5 Memory Leaks: How Ada Prevents Them
 
 Memory leaks are one of the most common problems in programming. They occur when you allocate memory but never free it, causing your program to use more and more memory over time. In C, this is a frequent issue—you might forget to call `free`, or you might have complex code paths where freeing is easy to miss.
 
@@ -8569,7 +8561,7 @@ Ada prevents memory leaks through several mechanisms:
 
 Let's compare how memory leaks happen in C versus how Ada prevents them.
 
-### 1.5.1 C Memory Leak Example
+### 10.5.1 C Memory Leak Example
 
 ```c
 #include <stdlib.h>
@@ -8583,7 +8575,7 @@ void Process_Data() {
 
 This function allocates memory but never frees it, causing a memory leak.
 
-### 1.5.2 Ada Memory Leak Prevention
+### 10.5.2 Ada Memory Leak Prevention
 
 ```ada
 with Ada.Finalization;
@@ -8632,7 +8624,7 @@ end Test;
 
 In Ada, there's no manual memory management to forget. The `Data_Handle` object is automatically cleaned up when it goes out of scope, preventing any memory leaks.
 
-## 1.6 Memory Management in Ada vs. Other Languages
+## 10.6 Memory Management in Ada vs. Other Languages
 
 Let's compare how Ada handles memory management compared to other popular languages. This table shows the key differences:
 
@@ -8646,7 +8638,7 @@ Let's compare how Ada handles memory management compared to other popular langua
 
 Let's explore each language in more detail.
 
-### 1.6.1 C: Manual Memory Management
+### 10.6.1 C: Manual Memory Management
 
 In C, you're responsible for all memory management. You allocate memory with `malloc` and free it with `free`. This is powerful but error-prone—you might forget to free memory, or you might free it too early.
 
@@ -8660,7 +8652,7 @@ int *data = malloc(sizeof(int));
 
 This code leaks memory. To fix it, you'd need to add `free(data);` at the end.
 
-### 1.6.2 C++: RAII
+### 10.6.2 C++: RAII
 
 C++ uses RAII (Resource Acquisition Is Initialization), where resources are tied to object lifetimes. When an object is created, it acquires resources; when it's destroyed, it releases them.
 
@@ -8681,7 +8673,7 @@ void Process() {
 
 This is similar to Ada's controlled types, but C++ requires careful design to avoid issues like shallow copies.
 
-### 1.6.3 Java: Garbage Collection
+### 10.6.3 Java: Garbage Collection
 
 Java uses garbage collection to automatically reclaim memory. You don't need to free memory manually, but you still need to close resources like files.
 
@@ -8698,7 +8690,7 @@ try {
 
 Java's garbage collector handles memory, but resources like files still need manual cleanup.
 
-### 1.6.4 Python: Context Managers
+### 10.6.4 Python: Context Managers
 
 Python uses context managers (the `with` statement) to handle resource cleanup.
 
@@ -8712,7 +8704,7 @@ with open("data.txt") as f:
 
 This is similar to Ada's controlled types, but Python's approach is more limited—it only works for specific resource types.
 
-### 2.0.1 Ada: Controlled Types
+### 10.0.1 Ada: Controlled Types
 
 Ada's controlled types combine the best of both worlds. They provide automatic resource cleanup without manual effort, while maintaining strong type safety.
 
@@ -8731,11 +8723,11 @@ end Test;
 
 This is simpler and safer than C++, Java, or Python approaches. You don't need to remember to close files, and there's no risk of forgetting to free memory.
 
-## 2.1 Best Practices for Memory Management in Ada
+## 10.1 Best Practices for Memory Management in Ada
 
 Now that you understand how Ada handles memory, let's look at best practices for using it effectively.
 
-### 2.1.1 \. Use Controlled Types for Any Resource That Needs Cleanup
+### 10.1.1 \. Use Controlled Types for Any Resource That Needs Cleanup
 
 Whenever you have a resource that needs to be cleaned up (files, database connections, network sockets), use a controlled type. This ensures the resource is always properly released.
 
@@ -8765,7 +8757,7 @@ end Database_Connection;
 
 This ensures the database connection is always properly closed, even if an exception occurs.
 
-### 2.1.2 \. Avoid Manual Memory Management When Possible
+### 10.1.2 \. Avoid Manual Memory Management When Possible
 
 In Ada, you rarely need to manually manage memory. Let Ada handle it for you. For example, instead of:
 
@@ -8794,7 +8786,7 @@ begin
 end Finalize;
 ```
 
-### 2.1.3 \. Understand the Difference Between Stack and Heap Allocation
+### 10.1.3 \. Understand the Difference Between Stack and Heap Allocation
 
 For small, fixed-size data, use stack allocation (local variables). For larger or dynamically-sized data, use heap allocation with controlled types.
 
@@ -8816,7 +8808,7 @@ package Data_Manager is
 end Data_Manager;
 ```
 
-### 2.1.4 \. Test for Memory Leaks
+### 10.1.4 \. Test for Memory Leaks
 
 Even with Ada's automatic memory management, it's good practice to test for memory leaks. Use tools like GNATcheck or GNATprove to verify your code.
 
@@ -8828,7 +8820,7 @@ gnatcheck your_program.adb
 
 This will check for potential memory issues.
 
-### 2.1.5 \. Use Ada's Standard Containers
+### 10.1.5 \. Use Ada's Standard Containers
 
 Ada provides standard containers like `Ada.Containers.Vectors` and `Ada.Containers.Doubly_Linked_Lists` that use controlled types under the hood. These containers automatically manage memory for you.
 
@@ -8848,15 +8840,15 @@ begin
 end Test;
 ```
 
-## 2.2 Real-World Example: A Simple Game with Memory Management
+## 10.2 Real-World Example: A Simple Game with Memory Management
 
 Let's build a simple game to see how Ada's memory management works in practice.
 
-### 2.2.1 Game Overview
+### 10.2.1 Game Overview
 
 We'll create a simple game where the player collects items. Each item has a name and value. We'll use controlled types to manage item memory automatically.
 
-### 2.2.2 Item Type with Controlled Memory
+### 10.2.2 Item Type with Controlled Memory
 
 ```ada
 with Ada.Finalization;
@@ -8911,7 +8903,7 @@ package body Item_Manager is
 end Item_Manager;
 ```
 
-### 2.2.3 Game with Item Collection
+### 10.2.3 Game with Item Collection
 
 ```ada
 with Item_Manager;
@@ -8942,17 +8934,17 @@ end Game;
 
 This game automatically manages memory for items. When the `Items` array goes out of scope, Ada automatically cleans up all the items—no manual cleanup needed.
 
-## 2.3 Exercises: Building Your Own Memory-Managed Systems
+## 10.3 Exercises: Building Your Own Memory-Managed Systems
 
 Now that you've learned about Ada's memory management, let's put it into practice with some exercises.
 
-### 2.3.1 Exercise 1: Database Connection Manager
+### 10.3.1 Exercise 1: Database Connection Manager
 
 Create a controlled type for a database connection that automatically closes the connection when it goes out of scope.
 
 > **Challenge**: Prove that your database connection is always properly closed, even if an exception occurs.
 
-#### 2.3.1.1 Solution Guidance
+#### 10.3.1.1 Solution Guidance
 
 Start by defining your controlled type:
 
@@ -9028,13 +9020,13 @@ end Test_Database;
 
 This ensures your database connection is always properly closed, even if an exception occurs during the query.
 
-### 2.3.2 Exercise 2: Dynamic Array with Automatic Memory Management
+### 10.3.2 Exercise 2: Dynamic Array with Automatic Memory Management
 
 Create a controlled type for a dynamic array that automatically allocates and frees memory as needed.
 
 > **Challenge**: Implement a dynamic array that can grow and shrink as needed, with automatic memory management.
 
-#### 2.3.2.1 Solution Guidance
+#### 10.3.2.1 Solution Guidance
 
 Start by defining your controlled type:
 
@@ -9136,7 +9128,7 @@ end Test_Dynamic_Array;
 
 This dynamic array automatically allocates and frees memory as needed, with no manual cleanup required.
 
-## 2.4 Next Steps: Mastering Ada's Memory Management
+## 10.4 Next Steps: Mastering Ada's Memory Management
 
 Now that you've learned the basics of Ada's memory management, you're ready to take your skills to the next level. Here are some next steps:
 
@@ -9195,11 +9187,11 @@ Now the compiler will check that `Width` and `Height` are positive before callin
 
 This is the power of aspects and pragmas - they let you tell the compiler exactly what you want it to do with your code, making your programs more reliable and efficient.
 
-## 1.1 Understanding Aspect Specifications
+## 11.1 Understanding Aspect Specifications
 
 Aspect specifications are a modern feature introduced in Ada 2012 that allow you to attach properties directly to declarations. They're more flexible and readable than older pragmas for many common tasks.
 
-### 1.1.1 Basic Syntax of Aspect Specifications
+### 11.1.1 Basic Syntax of Aspect Specifications
 
 Aspect specifications use the `with` keyword followed by the aspect name and value:
 
@@ -9224,7 +9216,7 @@ function Square (X : Integer) return Integer with
    Post => Square'Result = X * X;
 ```
 
-### 1.1.2 Where Aspects Can Be Used
+### 11.1.2 Where Aspects Can Be Used
 
 Aspects can be used on many different kinds of declarations:
 
@@ -9237,7 +9229,7 @@ Aspects can be used on many different kinds of declarations:
 
 Let's look at examples of aspects on different entities.
 
-### 1.1.3 Aspects on Subprograms
+### 11.1.3 Aspects on Subprograms
 
 Subprograms are where aspects are most commonly used. Here's how to specify preconditions, postconditions, and other properties:
 
@@ -9253,7 +9245,7 @@ procedure Set_Temperature (Temp : Float) with
 
 These aspects tell the compiler to check that the input values meet certain conditions before the function is called, and that the output meets certain conditions after it returns.
 
-### 1.1.4 Aspects on Types
+### 11.1.4 Aspects on Types
 
 You can use aspects to specify properties that must always be true for a type:
 
@@ -9275,7 +9267,7 @@ end record with
    Type_Invariant => Person.Age <= 120;
 ```
 
-### 1.1.5 Aspects on Packages
+### 11.1.5 Aspects on Packages
 
 You can specify aspects on packages too:
 
@@ -9290,11 +9282,11 @@ end Math_Utils;
 
 This tells the compiler to use SPARK mode for this package, which enables formal verification.
 
-## 1.2 Common Aspect Specifications
+## 11.2 Common Aspect Specifications
 
 Ada has many built-in aspects that you can use to enhance your code. Let's look at the most common ones.
 
-### 1.2.1 Pre and Post Conditions
+### 11.2.1 Pre and Post Conditions
 
 Preconditions (`Pre`) and postconditions (`Post`) are used to specify what a subprogram expects and guarantees.
 
@@ -9306,7 +9298,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 This specifies that the price must be positive before calling the function, and the result must not exceed the original price.
 
-### 1.2.2 Type Invariants
+### 11.2.2 Type Invariants
 
 Type invariants specify properties that must always be true for a type:
 
@@ -9321,7 +9313,7 @@ end record with
 
 This ensures that bank accounts always have non-negative balances and non-empty owner names.
 
-### 1.2.3 SPARK Mode
+### 11.2.3 SPARK Mode
 
 SPARK mode enables formal verification for your code:
 
@@ -9337,7 +9329,7 @@ end Safety_Critical;
 
 This tells the compiler to check your code for correctness using formal methods.
 
-### 1.2.4 Other Common Aspects
+### 11.2.4 Other Common Aspects
 
 | **Aspect** | **Purpose** | **Example** |
 | :--- | :--- | :--- |
@@ -9347,11 +9339,11 @@ This tells the compiler to check your code for correctness using formal methods.
 | **Import** | Imports an external function | `procedure External_Function with Import, Convention => C;` |
 | **Default_Initial_Condition** | Specifies initial state for objects | `type Counter with Default_Initial_Condition => 0;` |
 
-## 1.3 Understanding Pragmas
+## 11.3 Understanding Pragmas
 
 Pragmas are compiler directives that have been part of Ada since the beginning. They're used for a wide variety of purposes, from optimizing code to controlling compiler behavior.
 
-### 1.3.1 Basic Syntax of Pragmas
+### 11.3.1 Basic Syntax of Pragmas
 
 Pragmas use the `pragma` keyword followed by the pragma name and parameters:
 
@@ -9371,7 +9363,7 @@ You can also use pragmas with multiple parameters:
 pragma Suppress (Range_Check, Divide_Check);
 ```
 
-### 1.3.2 Where Pragmas Can Be Used
+### 11.3.2 Where Pragmas Can Be Used
 
 Pragmas can be used in various places in your code:
 
@@ -9390,11 +9382,11 @@ begin
 end Calculate_Area;
 ```
 
-### 1.3.3 Common Pragmas
+### 11.3.3 Common Pragmas
 
 Ada has many built-in pragmas. Let's look at the most common ones.
 
-#### 1.3.3.1 Inline
+#### 11.3.3.1 Inline
 
 Tells the compiler to replace a function call with the function's code directly:
 
@@ -9409,7 +9401,7 @@ end Calculate_Area;
 
 This can improve performance for small, frequently called functions.
 
-#### 1.3.3.2 Suppress
+#### 11.3.3.2 Suppress
 
 Disables specific compiler checks to improve performance:
 
@@ -9424,7 +9416,7 @@ end Safe_Get;
 
 This disables range checking for this function, but you should only do this when you're sure the index is always valid.
 
-#### 1.3.3.3 Convention
+#### 11.3.3.3 Convention
 
 Specifies the calling convention for interfacing with other languages:
 
@@ -9437,7 +9429,7 @@ procedure C_Function (X : Integer) is
 
 This tells the compiler to use the C calling convention for this function.
 
-#### 1.3.3.4 Import
+#### 11.3.3.4 Import
 
 Imports an external function from another language:
 
@@ -9450,7 +9442,7 @@ procedure External_Function (X : Integer) is
 
 This allows you to call C functions from your Ada code.
 
-#### 1.3.3.5 Assert
+#### 11.3.3.5 Assert
 
 Checks a condition at runtime:
 
@@ -9464,7 +9456,7 @@ end Process;
 
 This checks that `X` is positive at runtime and raises an error if not.
 
-### 1.3.4 Pragmas vs. Aspects
+### 11.3.4 Pragmas vs. Aspects
 
 | **Feature** | **Aspects** | **Pragmas** |
 | :--- | :--- | :--- |
@@ -9478,11 +9470,11 @@ As a general rule:
 - Use **aspects** for specifications (preconditions, postconditions, type invariants)
 - Use **pragmas** for compiler directives (inlining, suppressing checks, interfacing)
 
-## 1.4 Practical Examples: Aspects and Pragmas in Everyday Programming
+## 11.4 Practical Examples: Aspects and Pragmas in Everyday Programming
 
 Let's look at some practical examples of how aspects and pragmas can improve your everyday programming.
 
-### 1.4.1 Example 1: File Handling with Aspect Specifications
+### 11.4.1 Example 1: File Handling with Aspect Specifications
 
 Imagine you're writing a program that reads data from a file. You can use aspects to specify what the file must contain:
 
@@ -9502,7 +9494,7 @@ end Read_File;
 
 This ensures that the file exists before reading and that data is actually read.
 
-### 1.4.2 Example 2: Optimizing a Small Function with Pragmas
+### 11.4.2 Example 2: Optimizing a Small Function with Pragmas
 
 For small, frequently called functions, you can use pragmas to improve performance:
 
@@ -9517,7 +9509,7 @@ end Calculate_Area;
 
 This tells the compiler to replace calls to `Calculate_Area` with the actual code, eliminating the function call overhead.
 
-### 1.4.3 Example 3: Type Safety with Type Invariants
+### 11.4.3 Example 3: Type Safety with Type Invariants
 
 You can use type invariants to ensure your data structures always stay valid:
 
@@ -9532,7 +9524,7 @@ end record with
 
 Now, any time you create or modify a `Bank_Account`, Ada will check that the balance is non-negative and the owner name is not empty.
 
-### 1.4.4 Example 4: Interfacing with C Libraries
+### 11.4.4 Example 4: Interfacing with C Libraries
 
 When working with C libraries, you can use pragmas to properly interface with them:
 
@@ -9544,11 +9536,11 @@ function C_Sqrt (X : Float) return Float;
 
 This tells the compiler that `C_Sqrt` is implemented in C and should be called using the C calling convention.
 
-## 1.5 Common Pitfalls and How to Avoid Them
+## 11.5 Common Pitfalls and How to Avoid Them
 
 Even with aspects and pragmas, beginners can make mistakes. Let's look at common pitfalls and how to avoid them.
 
-### 1.5.1 Pitfall 1: Using Pragmas for Specifications
+### 11.5.1 Pitfall 1: Using Pragmas for Specifications
 
 Many beginners try to use pragmas for things that should be aspects. For example:
 
@@ -9571,7 +9563,7 @@ begin
 end Calculate_Area;
 ```
 
-### 1.5.2 Pitfall 2: Suppressing Checks Without Understanding
+### 11.5.2 Pitfall 2: Suppressing Checks Without Understanding
 
 It's tempting to suppress checks to improve performance, but this can lead to subtle bugs:
 
@@ -9598,7 +9590,7 @@ begin
 end Safe_Get;
 ```
 
-### 1.5.3 Pitfall 3: Using Aspects on the Wrong Entity
+### 11.5.3 Pitfall 3: Using Aspects on the Wrong Entity
 
 Aspects must be used on the correct entity. For example:
 
@@ -9617,7 +9609,7 @@ type Safe_Integer_Array is array (Integer range <>) of Integer with
 Data : Safe_Integer_Array;
 ```
 
-### 1.5.4 Pitfall 4: Misunderstanding When Aspects Are Checked
+### 11.5.4 Pitfall 4: Misunderstanding When Aspects Are Checked
 
 Not all aspects are checked at runtime by default. For example:
 
@@ -9631,7 +9623,7 @@ end Divide;
 
 This `Pre` aspect will only be checked if you compile with `-gnata` (or similar) compiler flag. Without it, the precondition is ignored.
 
-### 1.5.5 Pitfall 5: Using Pragmas for Things That Should Be Aspects
+### 11.5.5 Pitfall 5: Using Pragmas for Things That Should Be Aspects
 
 Many pragmas have aspect equivalents that are more readable:
 
@@ -9646,11 +9638,11 @@ function Calculate_Area (Width, Height : Integer) return Integer with
 
 The aspect syntax is more readable and integrates better with the declaration.
 
-## 1.6 Best Practices for Using Aspects and Pragmas
+## 11.6 Best Practices for Using Aspects and Pragmas
 
 To get the most out of aspects and pragmas, follow these best practices:
 
-### 1.6.1 \. Use Aspects for Specifications
+### 11.6.1 \. Use Aspects for Specifications
 
 For preconditions, postconditions, type invariants, and other specifications, use aspects rather than pragmas:
 
@@ -9661,7 +9653,7 @@ function Square (X : Integer) return Integer with
    Post => Square'Result = X * X;
 ```
 
-### 1.6.2 \. Use Pragmas for Compiler Directives
+### 11.6.2 \. Use Pragmas for Compiler Directives
 
 For compiler-specific directives like inlining, suppressing checks, or interfacing, use pragmas:
 
@@ -9671,7 +9663,7 @@ pragma Inline (Calculate_Area);
 pragma Suppress (Range_Check);
 ```
 
-### 1.6.3 \. Be Specific with Suppression
+### 11.6.3 \. Be Specific with Suppression
 
 When suppressing checks, be specific about which checks you're suppressing:
 
@@ -9688,7 +9680,7 @@ Rather than suppressing all checks:
 pragma Suppress (All_Checks);
 ```
 
-### 1.6.4 \. Document Your Aspects and Pragmas
+### 11.6.4 \. Document Your Aspects and Pragmas
 
 Add comments to explain why you're using a particular aspect or pragma:
 
@@ -9701,7 +9693,7 @@ function Calculate_Area (Width, Height : Integer) return Integer with
 pragma Inline (Calculate_Area);
 ```
 
-### 1.6.5 \. Test Your Code with Aspects Enabled
+### 11.6.5 \. Test Your Code with Aspects Enabled
 
 When using aspects like preconditions, make sure to test with compiler flags that enable aspect checking:
 
@@ -9711,11 +9703,11 @@ gnatmake -gnata your_program.adb
 
 This ensures that your aspects are actually checked during testing.
 
-## 1.7 Practical Exercise: Building a Safe Temperature Controller
+## 11.7 Practical Exercise: Building a Safe Temperature Controller
 
 Let's put what we've learned into practice with a complete example of a temperature controller that uses aspects and pragmas.
 
-### 1.7.1 Step 1: Define the Temperature Type with Type Invariant
+### 11.7.1 Step 1: Define the Temperature Type with Type Invariant
 
 First, we'll define a temperature type that ensures values are within a reasonable range:
 
@@ -9726,7 +9718,7 @@ type Celsius is new Float with
 
 This ensures that any temperature value is between -50°C and 100°C.
 
-### 1.7.2 Step 2: Create a Safe Temperature Setting Function
+### 11.7.2 Step 2: Create a Safe Temperature Setting Function
 
 Next, we'll create a function to set the temperature with preconditions:
 
@@ -9736,7 +9728,7 @@ procedure Set_Temperature (Temp : Celsius) with
    Post => Current_Temperature = Temp;
 ```
 
-### 1.7.3 Step 3: Add a Function to Calculate Heat Output
+### 11.7.3 Step 3: Add a Function to Calculate Heat Output
 
 Now, let's create a function to calculate heat output with aspects:
 
@@ -9746,7 +9738,7 @@ function Calculate_Heat_Output (Temp : Celsius) return Float with
    Post => Calculate_Heat_Output'Result >= 0.0;
 ```
 
-### 1.7.4 Step 4: Optimize a Small Function with Pragmas
+### 11.7.4 Step 4: Optimize a Small Function with Pragmas
 
 For small, frequently called functions, we can use pragmas for optimization:
 
@@ -9759,7 +9751,7 @@ begin
 end Calculate_Heat_Output;
 ```
 
-### 1.7.5 Step 5: Create a Complete Temperature Controller
+### 11.7.5 Step 5: Create a Complete Temperature Controller
 
 Let's put it all together in a complete temperature controller:
 
@@ -9810,7 +9802,7 @@ package body Temperature_Controller is
 end Temperature_Controller;
 ```
 
-### 1.7.6 Step 6: Test the Temperature Controller
+### 11.7.6 Step 6: Test the Temperature Controller
 
 Now let's test our temperature controller:
 
@@ -9834,11 +9826,11 @@ end Test_Temperature;
 
 When compiled with `-gnata`, the program will check that temperatures stay within the valid range. If you try to set a temperature outside the range, it will raise an error.
 
-## 1.8 Aspects and Pragmas in Real-World Applications
+## 11.8 Aspects and Pragmas in Real-World Applications
 
 Let's look at how aspects and pragmas are used in real-world applications.
 
-### 1.8.1 Example 1: Web Server with Aspect Specifications
+### 11.8.1 Example 1: Web Server with Aspect Specifications
 
 A web server might use aspects to ensure proper handling of requests:
 
@@ -9850,7 +9842,7 @@ procedure Process_Request (Request : String; Response : out String) with
 
 This ensures that requests aren't too large and that responses are always generated.
 
-### 1.8.2 Example 2: Data Processing with Type Invariants
+### 11.8.2 Example 2: Data Processing with Type Invariants
 
 A data processing application might use type invariants to ensure data consistency:
 
@@ -9865,7 +9857,7 @@ end record with
 
 This ensures that data values are non-negative and quality scores are between 0 and 100.
 
-### 1.8.3 Example 3: Performance Optimization with Pragmas
+### 11.8.3 Example 3: Performance Optimization with Pragmas
 
 For performance-critical code, pragmas can make a big difference:
 
@@ -9880,11 +9872,11 @@ end Calculate_Distance;
 
 This tells the compiler to inline the distance calculation, eliminating function call overhead.
 
-## 1.9 Next Steps: Taking Your Skills Further
+## 11.9 Next Steps: Taking Your Skills Further
 
 Now that you've learned about aspects and pragmas, here are some next steps to continue your Ada journey:
 
-### 1.9.1 \. Explore Advanced Aspects
+### 11.9.1 \. Explore Advanced Aspects
 
 Ada has many more aspects you can explore:
 - `SPARK_Mode` for formal verification
@@ -9892,14 +9884,14 @@ Ada has many more aspects you can explore:
 - `Nonblocking` for tasking
 - `Atomic` for concurrent programming
 
-### 1.9.2 \. Learn About Compiler Flags
+### 11.9.2 \. Learn About Compiler Flags
 
 Learn how to use compiler flags to enable different levels of aspect checking:
 - `-gnata` enables contract checking
 - `-gnatp` enables all checks
 - `-gnatwa` enables all warnings
 
-### 1.9.3 \. Try Formal Verification
+### 11.9.3 \. Try Formal Verification
 
 With SPARK, you can use aspects to formally verify your code:
 ```ada
@@ -9912,7 +9904,7 @@ is
 end Safety_Critical;
 ```
 
-### 1.9.4 \. Build Larger Projects
+### 11.9.4 \. Build Larger Projects
 
 Apply what you've learned to build larger projects:
 - A home automation system with temperature control
@@ -9929,17 +9921,17 @@ For beginners, aspects and pragmas might seem like advanced topics, but they're 
 
 As you continue your Ada journey, remember that aspects and pragmas are just tools to help you build better programs. Use them wisely, and you'll find that your code becomes more reliable, more efficient, and easier to understand.
 
-## 1.10 Exercises: Putting Your Knowledge to Work
+## 11.10 Exercises: Putting Your Knowledge to Work
 
 Now it's time to practice what you've learned with some exercises.
 
-### 1.10.1 Exercise 1: Safe File Handling
+### 11.10.1 Exercise 1: Safe File Handling
 
 Create a file handling package that uses aspects to ensure proper file operations.
 
 > **Challenge**: Make sure files are properly closed even when exceptions occur.
 
-#### 1.10.1.1 Solution Guidance
+#### 11.10.1.1 Solution Guidance
 
 Start by defining a controlled type for file handling:
 
@@ -9973,13 +9965,13 @@ procedure Open (Object : in out File_Handle; Name : String; Mode : Ada.Text_IO.F
 
 This ensures the file isn't already open before opening it again.
 
-### 1.10.2 Exercise 2: Performance Optimization
+### 11.10.2 Exercise 2: Performance Optimization
 
 Create a package with a small function that calculates the area of a circle, and optimize it with pragmas.
 
 > **Challenge**: Make sure the function is inlined for performance.
 
-#### 1.10.2.1 Solution Guidance
+#### 11.10.2.1 Solution Guidance
 
 First, define the function:
 
@@ -10008,13 +10000,13 @@ end Circle_Calculations;
 
 This tells the compiler to replace calls to `Calculate_Area` with the actual code, eliminating function call overhead.
 
-### 1.10.3 Exercise 3: Data Validation with Type Invariants
+### 11.10.3 Exercise 3: Data Validation with Type Invariants
 
 Create a package for handling temperature data with type invariants.
 
 > **Challenge**: Ensure all temperature values stay within valid ranges.
 
-#### 1.10.3.1 Solution Guidance
+#### 11.10.3.1 Solution Guidance
 
 Define a temperature type with a type invariant:
 
@@ -10055,7 +10047,7 @@ end Temperature_Data;
 
 This ensures that any temperature value is between -50°C and 100°C, and that the current temperature is always set correctly.
 
-## 1.11 Conclusion: The Power of Compiler Directives
+## 11.11 Conclusion: The Power of Compiler Directives
 
 Aspects and pragmas might seem like small features, but they're incredibly powerful. They let you tell the compiler exactly what you want it to do with your code, making your programs more reliable and efficient.
 
@@ -10079,13 +10071,13 @@ As you continue your Ada journey, remember that aspects and pragmas are just too
 
 Formal verification is a mathematical technique for proving that software behaves exactly as intended. Unlike traditional testing, which examines specific inputs and outputs, formal verification provides mathematical guarantees about all possible executions of your code. SPARK is a formally verifiable subset of Ada that makes this powerful technique accessible to everyday programmers. This chapter explores how SPARK can help you write more reliable code for common programming tasks, from simple calculators to data processing algorithms, without requiring specialized domain knowledge.
 
-## 1.1 What is SPARK?
+## 12.1 What is SPARK?
 
 SPARK is a subset of Ada designed specifically for formal verification. It was developed to address a fundamental challenge in software engineering: how to prove that code is correct rather than just testing it for specific cases. While Ada provides strong type safety and contract-based programming, SPARK takes this further by restricting the language to a subset where mathematical proofs of correctness are possible.
 
 SPARK isn't just for aerospace or medical devices—it's a practical tool for any programmer who wants to build more reliable software. Whether you're writing a home automation system, a game, or a data processing tool, SPARK can help you catch errors before they occur and prove that your code works correctly for all possible inputs.
 
-### 1.1.1 SPARK vs. Traditional Ada
+### 12.1.1 SPARK vs. Traditional Ada
 
 | Feature | Traditional Ada | SPARK Subset |
 | :--- | :--- | :--- |
@@ -10098,11 +10090,11 @@ SPARK isn't just for aerospace or medical devices—it's a practical tool for an
 
 The key difference is that SPARK removes language features that make formal verification difficult or impossible. By restricting dynamic memory allocation and pointers, SPARK creates a predictable execution environment where mathematical proofs can be generated automatically. This might seem restrictive at first, but it's precisely these restrictions that make SPARK so powerful for proving correctness.
 
-## 1.2 Why Formal Verification Matters for Everyday Programming
+## 12.2 Why Formal Verification Matters for Everyday Programming
 
 Most programmers rely on testing to find bugs in their code. Testing is valuable, but it has limitations: you can only test a finite number of cases, and you might miss edge cases that cause problems in production. Formal verification addresses this by mathematically proving that your code works correctly for all possible inputs.
 
-### 1.2.1 Traditional Testing vs. Formal Verification
+### 12.2.1 Traditional Testing vs. Formal Verification
 
 | **Aspect** | **Traditional Testing** | **SPARK Formal Verification** |
 | :--- | :--- | :--- |
@@ -10139,7 +10131,7 @@ function Calculate_Area (Width, Height : Integer) return Integer with
 
 SPARK can verify that this function works correctly for all inputs that meet the precondition, and that it will never overflow when the precondition is satisfied.
 
-### 1.2.2 Real-World Benefits for Everyday Applications
+### 12.2.2 Real-World Benefits for Everyday Applications
 
 SPARK isn't just for "safety-critical" systems—it provides tangible benefits for everyday programming tasks:
 
@@ -10150,11 +10142,11 @@ SPARK isn't just for "safety-critical" systems—it provides tangible benefits f
 
 For example, consider a simple game that tracks player scores. With SPARK, you can prove that the score never goes negative or exceeds a maximum value, even when multiple players interact with the system simultaneously. This gives you confidence that your game will behave correctly in all situations, not just the ones you tested.
 
-## 1.3 Setting Up SPARK for Beginners
+## 12.3 Setting Up SPARK for Beginners
 
 SPARK is part of the GNAT Community Edition, which is free and available for all major platforms. Setting it up is straightforward:
 
-### 1.3.1 Installation Steps
+### 12.3.1 Installation Steps
 
 1. **Download GNAT Community Edition** from [AdaCore's website](https://www.adacore.com/download)
 2. **Run the installer** (select default options for all platforms)
@@ -10170,7 +10162,7 @@ SPARK is part of the GNAT Community Edition, which is free and available for all
    gnatprove --version
    ```
 
-### 1.3.2 Creating Your First SPARK Project
+### 12.3.2 Creating Your First SPARK Project
 
 1. Create a directory for your project:
    ```bash
@@ -10233,15 +10225,15 @@ This command will analyze your code and confirm that the `Add` procedure meets i
 [gnatprove] [info] analysis complete
 ```
 
-## 1.4 Basic SPARK Concepts
+## 12.4 Basic SPARK Concepts
 
 SPARK builds on Ada's existing features but adds strict rules for formal verification. Let's explore the key concepts you'll need to know.
 
-### 1.4.1 Contracts: Pre and Post Conditions
+### 12.4.1 Contracts: Pre and Post Conditions
 
 Contracts are the foundation of SPARK verification. They specify what a subprogram expects (preconditions) and guarantees (postconditions).
 
-#### 1.4.1.1 Precondition (`Pre`)
+#### 12.4.1.1 Precondition (`Pre`)
 
 Specifies requirements that must be true before the subprogram is called:
 
@@ -10253,7 +10245,7 @@ procedure Divide (A, B : Integer; Result : out Integer) with
 
 This contract ensures that the divisor is never zero, preventing division-by-zero errors.
 
-#### 1.4.1.2 Postcondition (`Post`)
+#### 12.4.1.2 Postcondition (`Post`)
 
 Specifies guarantees that must be true after the subprogram executes:
 
@@ -10265,7 +10257,7 @@ function Max (A, B : Integer) return Integer with
 
 This contract ensures the result is always greater than or equal to both inputs and equals one of them.
 
-### 1.4.2 Loop Invariants
+### 12.4.2 Loop Invariants
 
 When working with loops, SPARK requires loop invariants to prove correctness. A loop invariant is a condition that must be true at the beginning of each iteration.
 
@@ -10283,7 +10275,7 @@ end Sum_Array;
 
 The loop invariant ensures that after each iteration, `Result` contains the sum of all elements processed so far. SPARK uses this to prove the final result is correct.
 
-### 1.4.3 Type Invariants
+### 12.4.3 Type Invariants
 
 Type invariants specify properties that must always be true for a type:
 
@@ -10294,7 +10286,7 @@ type Valid_Integer is new Integer with
 
 This type ensures that any value of `Valid_Integer` is between 0 and 100. SPARK verifies that all operations on this type maintain this invariant.
 
-### 1.4.4 Proof Obligations
+### 12.4.4 Proof Obligations
 
 When you write SPARK code, the compiler generates "proof obligations"—mathematical conditions that must be proven true for your code to be verified. These obligations are automatically checked by the SPARK toolchain.
 
@@ -10305,11 +10297,11 @@ For example, the `Add` procedure from earlier generates these proof obligations:
 
 SPARK automatically proves these obligations, giving you confidence that your code works correctly.
 
-## 1.5 Simple SPARK Examples
+## 12.5 Simple SPARK Examples
 
 Let's explore practical SPARK examples that demonstrate how formal verification works for everyday programming tasks.
 
-### 1.5.1 Example 1: Basic Calculator
+### 12.5.1 Example 1: Basic Calculator
 
 Here's a complete calculator that verifies all arithmetic operations:
 
@@ -10365,7 +10357,7 @@ When you run `gnatprove`, it will verify that:
 
 This is a simple but powerful example—SPARK proves that your calculator will never produce incorrect results for valid inputs.
 
-### 1.5.2 Example 2: Sorting Algorithm
+### 12.5.2 Example 2: Sorting Algorithm
 
 Here's a SPARK-verified bubble sort implementation:
 
@@ -10410,7 +10402,7 @@ This implementation includes loop invariants that prove the array is sorted corr
 
 This is a practical example of how SPARK can help you write reliable sorting code—without needing to test every possible input.
 
-### 1.5.3 Example 3: Data Validation
+### 12.5.3 Example 3: Data Validation
 
 Here's a SPARK-verified function for validating user input:
 
@@ -10436,11 +10428,11 @@ end Input_Validator;
 
 This example demonstrates how SPARK can enforce data validation rules at compile time. The type invariant ensures that `Valid_String` always has a length between 1 and 100 characters, and the contract verifies that the function preserves the input value.
 
-## 1.6 Common Pitfalls and How to Avoid Them
+## 12.6 Common Pitfalls and How to Avoid Them
 
 Even with SPARK's powerful verification capabilities, beginners can encounter common pitfalls. Let's explore these challenges and how to overcome them.
 
-### 1.6.1 Pitfall 1: Incorrect Loop Invariants
+### 12.6.1 Pitfall 1: Incorrect Loop Invariants
 
 Loop invariants are crucial for SPARK verification, but they're easy to get wrong. Here's a common mistake:
 
@@ -10454,7 +10446,7 @@ end loop;
 
 This invariant is incorrect because `Result` should be the sum of all elements processed so far, not just the current element.
 
-#### 1.6.1.1 Solution: Correct Loop Invariant
+#### 12.6.1.1 Solution: Correct Loop Invariant
 
 ```ada
 -- Correct loop invariant
@@ -10466,7 +10458,7 @@ end loop;
 
 The correct invariant expresses the relationship between `Result` and all elements processed so far. SPARK uses this to verify the final result is correct.
 
-### 1.6.2 Pitfall 2: Overly Restrictive Contracts
+### 12.6.2 Pitfall 2: Overly Restrictive Contracts
 
 It's tempting to write very specific contracts, but this can make verification difficult:
 
@@ -10479,7 +10471,7 @@ function Square (X : Integer) return Integer with
 
 This contract restricts the input to a small range, which might not be necessary for the algorithm to work correctly.
 
-#### 1.6.2.1 Solution: Generalized Contracts
+#### 12.6.2.1 Solution: Generalized Contracts
 
 ```ada
 -- Generalized contract
@@ -10490,7 +10482,7 @@ function Square (X : Integer) return Integer with
 
 This contract allows the full range of possible inputs while still verifying correctness. SPARK can prove the function works for all possible integer values.
 
-### 1.6.3 Pitfall 3: Using Unsupported Features
+### 12.6.3 Pitfall 3: Using Unsupported Features
 
 SPARK has restrictions on certain Ada features. For example, dynamic memory allocation is not allowed:
 
@@ -10506,7 +10498,7 @@ end Allocate_Memory;
 
 SPARK prohibits heap allocation because it makes formal verification impossible.
 
-#### 1.6.3.1 Solution: Static Allocation
+#### 12.6.3.1 Solution: Static Allocation
 
 ```ada
 -- Valid SPARK code
@@ -10519,7 +10511,7 @@ end Process_Data;
 
 By using static allocation instead of dynamic memory, you maintain SPARK compatibility while achieving the same functionality.
 
-### 1.6.4 Pitfall 4: Ignoring Proof Obligations
+### 12.6.4 Pitfall 4: Ignoring Proof Obligations
 
 SPARK generates proof obligations that must be satisfied for verification to succeed. Ignoring these can lead to failed verification:
 
@@ -10537,7 +10529,7 @@ end Sum_Array;
 
 This code will fail verification because it's missing loop invariants.
 
-#### 1.6.4.1 Solution: Add Loop Invariants
+#### 12.6.4.1 Solution: Add Loop Invariants
 
 ```ada
 -- Corrected with loop invariants
@@ -10554,11 +10546,11 @@ end Sum_Array;
 
 Adding the loop invariant provides SPARK with the information it needs to prove correctness.
 
-## 1.7 Real-World Applications for Everyday Programming
+## 12.7 Real-World Applications for Everyday Programming
 
 SPARK isn't just for theoretical exercises—it has practical applications for common programming tasks.
 
-### 1.7.1 Example 1: Game Development
+### 12.7.1 Example 1: Game Development
 
 Consider a simple game that tracks player scores. With SPARK, you can prove that scores never go negative or exceed a maximum value:
 
@@ -10584,7 +10576,7 @@ end Game_Scores;
 
 This code ensures that scores always stay within valid ranges, preventing bugs where players might have negative scores or scores exceeding the maximum possible value.
 
-### 1.7.2 Example 2: Data Processing
+### 12.7.2 Example 2: Data Processing
 
 SPARK is excellent for verifying data processing algorithms. Here's a verified function for calculating averages:
 
@@ -10614,7 +10606,7 @@ end Data_Processing;
 
 This code proves that the average calculation is correct for all possible inputs, ensuring reliable data processing for applications like home automation systems or personal finance tools.
 
-### 1.7.3 Example 3: Text Processing
+### 12.7.3 Example 3: Text Processing
 
 SPARK can verify text processing algorithms. Here's a function to count word occurrences:
 
@@ -10645,11 +10637,11 @@ end Word_Count;
 
 This code verifies that the word counting function works correctly for all possible inputs, which is useful for applications like text editors or search tools.
 
-## 1.8 Exercises for Readers
+## 12.8 Exercises for Readers
 
 Now it's time to put your knowledge into practice with some exercises.
 
-### 1.8.1 Exercise 1: Validating User Input
+### 12.8.1 Exercise 1: Validating User Input
 
 Create a SPARK-verified function that validates email addresses. The function should:
 - Ensure the email contains exactly one '@' symbol
@@ -10658,7 +10650,7 @@ Create a SPARK-verified function that validates email addresses. The function sh
 
 > **Challenge**: Prove that your function correctly identifies valid and invalid email addresses.
 
-#### 1.8.1.1 Solution Guidance
+#### 12.8.1.1 Solution Guidance
 
 Start by defining the contract:
 
@@ -10711,13 +10703,13 @@ end Email_Validator;
 
 This implementation proves that the email validation works correctly for all possible inputs.
 
-### 1.8.2 Exercise 2: Sorting with SPARK
+### 12.8.2 Exercise 2: Sorting with SPARK
 
 Create a SPARK-verified implementation of a selection sort algorithm that works for arrays of any size.
 
 > **Challenge**: Prove that your sorting algorithm correctly sorts all possible input arrays.
 
-#### 1.8.2.1 Solution Guidance
+#### 12.8.2.1 Solution Guidance
 
 Start with the package specification:
 
@@ -10764,7 +10756,7 @@ end Selection_Sort;
 
 This implementation proves that the selection sort algorithm works correctly for all possible inputs.
 
-### 1.8.3 Exercise 3: Data Validation with SPARK
+### 12.8.3 Exercise 3: Data Validation with SPARK
 
 Create a SPARK-verified function that validates temperature readings for a home automation system. The function should:
 - Ensure temperatures are between -50°C and 100°C
@@ -10773,7 +10765,7 @@ Create a SPARK-verified function that validates temperature readings for a home 
 
 > **Challenge**: Prove that your system maintains valid temperature readings under all conditions.
 
-#### 1.8.3.1 Solution Guidance
+#### 12.8.3.1 Solution Guidance
 
 Start by defining the type with invariants:
 
@@ -10807,11 +10799,11 @@ end Temperature_System;
 
 This implementation proves that temperature readings always stay within valid ranges, preventing bugs that could cause home automation systems to malfunction.
 
-## 1.9 Next Steps for Learning SPARK
+## 12.9 Next Steps for Learning SPARK
 
 Now that you've learned the basics of SPARK, here are some next steps to continue your journey:
 
-### 1.9.1 \. Explore More Complex Examples
+### 12.9.1 \. Explore More Complex Examples
 
 Try verifying more complex algorithms, such as:
 - Binary search
@@ -10821,7 +10813,7 @@ Try verifying more complex algorithms, such as:
 
 These examples will help you understand how SPARK handles more sophisticated code.
 
-### 1.9.2 \. Learn About SPARK Proving Tools
+### 12.9.2 \. Learn About SPARK Proving Tools
 
 SPARK includes several tools for formal verification:
 - **GNATprove**: The main verification tool
@@ -10830,7 +10822,7 @@ SPARK includes several tools for formal verification:
 
 Learn how to use these tools to analyze verification results and debug proof failures.
 
-### 1.9.3 \. Practice with Real-World Projects
+### 12.9.3 \. Practice with Real-World Projects
 
 Apply SPARK to real-world projects you're working on:
 - Home automation systems
@@ -10840,7 +10832,7 @@ Apply SPARK to real-world projects you're working on:
 
 This will help you see how SPARK fits into practical programming scenarios.
 
-### 1.9.4 \. Join the SPARK Community
+### 12.9.4 \. Join the SPARK Community
 
 The SPARK community is active and supportive. Join:
 - **SPARK mailing list**: For discussions and questions
@@ -10849,7 +10841,7 @@ The SPARK community is active and supportive. Join:
 
 The community can provide valuable guidance as you learn more about formal verification.
 
-## 1.10 Conclusion: The Power of Proven Correctness
+## 12.10 Conclusion: The Power of Proven Correctness
 
 > "SPARK transforms code from 'likely correct' to 'provably correct'—not just for safety-critical systems, but for any application where reliability matters."
 
@@ -10867,7 +10859,7 @@ SPARK is more than just a programming tool—it's a mindset. It encourages you t
 
 In modern software development, few applications exist in isolation. Whether you're building a home automation system, a personal finance tool, or a data processing pipeline, your code will likely need to integrate with other components, libraries, or languages. Similarly, ensuring your code meets quality standards through certification processes is crucial for reliability, even in everyday applications. This chapter explores how Ada's unique features make certification and integration more manageable and reliable—without requiring specialized domain knowledge.
 
-## 1.1 Understanding Software Certification
+## 13.1 Understanding Software Certification
 
 Software certification is the process of verifying that code meets specific quality standards and behaves as intended. While often associated with safety-critical systems, certification principles apply to all software development. For everyday applications, certification ensures:
 
@@ -10878,7 +10870,7 @@ Software certification is the process of verifying that code meets specific qual
 
 Unlike traditional testing, which examines specific inputs and outputs, certification involves systematic verification of code quality across multiple dimensions. Ada's language features make this verification process more straightforward and reliable.
 
-### 1.1.1 Why Certification Matters for Everyday Applications
+### 13.1.1 Why Certification Matters for Everyday Applications
 
 Consider a simple home automation system that controls lighting based on motion sensors. Without proper certification:
 
@@ -10894,7 +10886,7 @@ With certification practices:
 
 These practices aren't just for aerospace engineers—they're essential for any developer who wants to build reliable software that users can trust.
 
-### 1.1.2 Common Certification Processes
+### 13.1.2 Common Certification Processes
 
 | **Certification Practice** | **How Ada Supports It** | **Benefit** |
 | :--- | :--- | :--- |
@@ -10903,11 +10895,11 @@ These practices aren't just for aerospace engineers—they're essential for any 
 | **Automated Testing** | Contracts provide test cases automatically | Reduces manual test creation effort |
 | **Formal Verification** | SPARK subset allows mathematical proof of correctness | Guarantees absence of certain errors |
 
-## 1.2 Ada's Certification-Friendly Features
+## 13.2 Ada's Certification-Friendly Features
 
 Ada provides several features specifically designed to support certification processes. These aren't just for safety-critical systems—they're equally valuable for everyday applications.
 
-### 1.2.1 Strong Typing and Type Safety
+### 13.2.1 Strong Typing and Type Safety
 
 Ada's strong typing system prevents entire categories of errors before code ever runs. For example:
 
@@ -10923,7 +10915,7 @@ end Set_Temperature;
 
 This code prevents accidental assignment of Fahrenheit values to Celsius parameters. The compiler catches type mismatches immediately, making code review and certification more straightforward.
 
-### 1.2.2 Design by Contract
+### 13.2.2 Design by Contract
 
 Ada's contract-based programming allows you to specify exactly what your code expects and guarantees:
 
@@ -10935,7 +10927,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 These contracts serve as living documentation that's always up-to-date with the code. They also provide automatic test cases for certification processes.
 
-### 1.2.3 SPARK Subset for Formal Verification
+### 13.2.3 SPARK Subset for Formal Verification
 
 SPARK is a formally verifiable subset of Ada that allows mathematical proof of correctness. While often associated with safety-critical systems, SPARK is equally valuable for everyday applications:
 
@@ -10949,7 +10941,7 @@ end Calculator;
 
 When you run `gnatprove` on this code, it verifies that the addition operation works correctly for all possible inputs. This provides a level of certainty that traditional testing cannot match.
 
-### 1.2.4 Static Analysis Tools
+### 13.2.4 Static Analysis Tools
 
 Ada includes several static analysis tools that automatically check code quality:
 
@@ -10963,11 +10955,11 @@ gnatprove -P project.gpr --level=1 --report=all
 
 These tools help enforce coding standards, catch potential errors, and verify correctness—without requiring manual inspection of every line of code.
 
-## 3.1 Certification Standards for Everyday Development
+## 13.1 Certification Standards for Everyday Development
 
 While there are no universal certification standards for all software, several widely applicable practices can improve code quality and reliability.
 
-### 3.1.1 Coding Standards
+### 13.1.1 Coding Standards
 
 Adopting coding standards ensures consistency and readability. For example, the Ada community has developed standards like:
 
@@ -10977,7 +10969,7 @@ Adopting coding standards ensures consistency and readability. For example, the 
 
 These standards cover aspects like naming conventions, code structure, and error handling.
 
-### 3.1.2 Code Review Practices
+### 13.1.2 Code Review Practices
 
 Effective code reviews are a cornerstone of certification. Ada's clear syntax and strong typing make code reviews more productive:
 
@@ -10993,7 +10985,7 @@ This code is easier to review because:
 - Types prevent common errors
 - The implementation is straightforward
 
-### 3.1.3 Testing Strategies
+### 13.1.3 Testing Strategies
 
 Ada's features make testing more efficient:
 
@@ -11009,11 +11001,11 @@ end Test_Calculate_Area;
 
 The contract in the `Calculate_Area` function provides automatic test cases that verify the function's behavior for all valid inputs.
 
-## 3.2 Integration with Other Languages
+## 13.2 Integration with Other Languages
 
 In modern software development, few applications use a single language. Integration with other languages is essential for leveraging existing libraries, improving performance, or building complex systems.
 
-### 3.2.1 Why Integration Matters
+### 13.2.1 Why Integration Matters
 
 Consider a home automation system where:
 - Ada handles sensor data processing
@@ -11022,7 +11014,7 @@ Consider a home automation system where:
 
 This combination leverages each language's strengths while overcoming its weaknesses. Ada's strong typing and reliability make it ideal for critical processing tasks, while Python provides an easy-to-use interface.
 
-### 3.2.2 Common Integration Scenarios
+### 13.2.2 Common Integration Scenarios
 
 | **Scenario** | **Use Case** | **Tools** |
 | :--- | :--- | :--- |
@@ -11031,7 +11023,7 @@ This combination leverages each language's strengths while overcoming its weakne
 | **Ada + Java** | Enterprise applications | JNA, JNI |
 | **Ada + Web** | Web services with Ada backend | RESTful APIs, CGI |
 
-### 3.2.3 Ada-C Integration: A Practical Example
+### 13.2.3 Ada-C Integration: A Practical Example
 
 Let's create a simple example of integrating Ada with C. First, we'll create an Ada library for basic math operations:
 
@@ -11116,7 +11108,7 @@ Cube of 3.0: 27.00
 
 This example demonstrates how Ada's strong typing and reliability can be leveraged in a C application. The Ada functions provide verified math operations that the C code can safely use.
 
-### 3.2.4 Ada-Python Integration: Another Practical Example
+### 13.2.4 Ada-Python Integration: Another Practical Example
 
 Let's create an example of integrating Ada with Python using `ctypes`:
 
@@ -11158,11 +11150,11 @@ print(f"2.5 + 3.7 = {result.value:.2f}")
 
 This Python script calls the Ada math functions directly, leveraging Ada's reliability for critical calculations while using Python's ease of use for the overall application.
 
-## 6.1 Common Integration Challenges and Solutions
+## 13.1 Common Integration Challenges and Solutions
 
 When integrating Ada with other languages, several challenges can arise. Let's explore these challenges and how to address them.
 
-### 6.1.1 Data Type Mismatches
+### 13.1.1 Data Type Mismatches
 
 Different languages have different data types. For example, C's `int` might be 32 bits, while Ada's `Integer` might be 64 bits.
 
@@ -11182,7 +11174,7 @@ float square(float x);
 
 This ensures consistent data representation across language boundaries.
 
-### 6.1.2 Memory Management
+### 13.1.2 Memory Management
 
 Different languages have different memory management approaches. Ada uses controlled types for automatic cleanup, while C requires manual memory management.
 
@@ -11208,7 +11200,7 @@ void free_buffer(Buffer buffer);
 
 This approach ensures proper memory management while maintaining clear ownership rules.
 
-### 6.1.3 Error Handling
+### 13.1.3 Error Handling
 
 Different languages have different error handling mechanisms. Ada uses exceptions, while C typically uses return codes.
 
@@ -11240,11 +11232,11 @@ end Process_Data;
 
 This converts Ada exceptions to C-style success/failure codes.
 
-## 6.2 Best Practices for Certification and Integration
+## 13.2 Best Practices for Certification and Integration
 
 To ensure reliable and maintainable integrated systems, follow these best practices:
 
-### 6.2.1 \. Keep Interfaces Simple and Well-Documented
+### 13.2.1 \. Keep Interfaces Simple and Well-Documented
 
 Simple interfaces are easier to certify and integrate. For example:
 
@@ -11264,7 +11256,7 @@ package Complex_Utils is
 end Complex_Utils;
 ```
 
-### 6.2.2 \. Use Ada's Features to Simplify Integration
+### 13.2.2 \. Use Ada's Features to Simplify Integration
 
 Ada's strong typing and contracts make it easier to integrate with other languages:
 
@@ -11277,7 +11269,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 These contracts provide clear expectations for integration points.
 
-### 6.2.3 \. Test Integrated Systems Thoroughly
+### 13.2.3 \. Test Integrated Systems Thoroughly
 
 When integrating different languages, test the entire system:
 
@@ -11294,7 +11286,7 @@ end Test_Integration;
 
 This ensures that the integrated system behaves correctly as a whole.
 
-### 6.2.4 \. Use Static Analysis Tools for Certification
+### 13.2.4 \. Use Static Analysis Tools for Certification
 
 Run static analysis tools on integrated systems:
 
@@ -11305,18 +11297,18 @@ gnatcheck -r -s -p project.gpr
 
 These tools help catch integration-specific issues before they become problems.
 
-## 7.1 Practical Exercise: Building an Integrated System
+## 13.1 Practical Exercise: Building an Integrated System
 
 Let's build a complete example of an integrated system that demonstrates certification and integration concepts.
 
-### 7.1.1 Exercise 1: Home Automation System with Ada and Python
+### 13.1.1 Exercise 1: Home Automation System with Ada and Python
 
 Create a home automation system where:
 - Ada handles sensor data processing
 - Python provides the user interface
 - Certification practices ensure reliability
 
-#### 7.1.1.1 Step 1: Create Ada Sensor Processing Library
+#### 13.1.1.1 Step 1: Create Ada Sensor Processing Library
 
 ```ada
 -- sensor_processing.ads
@@ -11353,7 +11345,7 @@ package body Sensor_Processing with SPARK_Mode is
 end Sensor_Processing;
 ```
 
-#### 7.1.1.2 Step 2: Compile Ada Library as Shared Object
+#### 13.1.1.2 Step 2: Compile Ada Library as Shared Object
 
 ```bash
 gnatmake -c -fPIC sensor_processing.adb
@@ -11361,7 +11353,7 @@ gnatbind sensor_processing
 gnatlink sensor_processing -shared -o libsensor_processing.so
 ```
 
-#### 7.1.1.3 Step 3: Create Python Interface
+#### 13.1.1.3 Step 3: Create Python Interface
 
 ```python
 # 8 sensor_interface.py
@@ -11650,7 +11642,7 @@ Project files are configuration files that tell the compiler exactly how to buil
 
 This chapter will show you how to use project files effectively, with practical examples for everyday programming tasks. You'll learn to build systems that scale with your projects, from simple calculators to home automation tools, without needing specialized knowledge of build systems.
 
-## 1.1 Why Project Files Matter for Everyday Programming
+## 14.1 Why Project Files Matter for Everyday Programming
 
 Most programming languages have build systems, but Ada's project files stand out for their simplicity and integration with the language. Unlike complex build tools like Make or CMake that require separate syntax, Ada project files use Ada's familiar syntax—meaning you can learn them quickly without adding another language to your repertoire.
 
@@ -11677,7 +11669,7 @@ This is error-prone—forgetting a file or specifying the wrong compiler options
 gnatmake -P home_automation.gpr
 ```
 
-### 1.1.1 Project Files vs. Manual Compilation
+### 14.1.1 Project Files vs. Manual Compilation
 
 | **Aspect** | **Manual Compilation** | **Project Files** |
 | :--- | :--- | :--- |
@@ -11689,11 +11681,11 @@ gnatmake -P home_automation.gpr
 
 Project files also make collaboration easier. When you share your project with others, they can build it immediately without needing to know your specific build process. This is especially valuable for beginners—no more "it works on my machine" issues because everyone uses the same build instructions.
 
-## 1.2 Basic Project File Structure
+## 14.2 Basic Project File Structure
 
 Ada project files use a simple but powerful syntax that's easy to learn. Let's break down the basic structure with a practical example.
 
-### 1.2.1 Simple Project File Example
+### 14.2.1 Simple Project File Example
 
 ```ada
 project Simple_Calculator is
@@ -11715,7 +11707,7 @@ This project file defines a simple calculator application. Let's examine each pa
 
 - **`end Simple_Calculator;`**: Ends the project declaration.
 
-### 1.2.2 Creating and Using a Project File
+### 14.2.2 Creating and Using a Project File
 
 To create this project file:
 1. Create a file named `simple_calculator.gpr` in your project directory
@@ -11740,7 +11732,7 @@ To create this project file:
 
 The compiler will automatically find all source files in the `src` directory, compile them, and link them into an executable. This is much simpler than manually compiling each file!
 
-### 1.2.3 Project File Naming Conventions
+### 14.2.3 Project File Naming Conventions
 
 Ada project files typically use the `.gpr` extension (GNAT Project file). While you can name them anything, using descriptive names helps:
 - `home_automation.gpr` for a home automation project
@@ -11749,11 +11741,11 @@ Ada project files typically use the `.gpr` extension (GNAT Project file). While 
 
 Avoid generic names like `project.gpr`—this makes it harder to distinguish between projects when you have multiple projects open.
 
-## 1.3 Common Project File Elements Explained
+## 14.3 Common Project File Elements Explained
 
 Project files have several key elements that control how your project is built. Let's explore these in detail with practical examples.
 
-### 1.3.1 Source Directories
+### 14.3.1 Source Directories
 
 The `Source_Dirs` attribute tells the compiler where to find source files. You can specify multiple directories:
 
@@ -11777,7 +11769,7 @@ for Source_Dirs use ("../common", "src");
 
 This includes source files from a parent directory's `common` folder.
 
-### 1.3.2 Object Directory
+### 14.3.2 Object Directory
 
 The `Object_Dir` attribute specifies where compiled object files go. It's good practice to keep object files separate from source files:
 
@@ -11803,7 +11795,7 @@ end Calculator;
 
 This creates separate object directories for debug and release builds.
 
-### 1.3.3 Main Program Specification
+### 14.3.3 Main Program Specification
 
 The `Main` attribute specifies the entry point of your application. This is required for executables:
 
@@ -11826,7 +11818,7 @@ end case;
 
 This allows you to have different entry points for different build types.
 
-### 1.3.4 Compiler and Linker Options
+### 14.3.4 Compiler and Linker Options
 
 You can control compiler and linker behavior with the `Compiler` and `Linker` packages:
 
@@ -11853,7 +11845,7 @@ The `Compiler` package controls compilation options:
 The `Linker` package controls linking options:
 - `-Wl,-Map=obj/mapfile`: Generate a map file showing memory layout
 
-### 1.3.5 Configuration-Specific Settings
+### 14.3.5 Configuration-Specific Settings
 
 You can define different settings for different build configurations:
 
@@ -11885,11 +11877,11 @@ You can build with:
 gnatmake -P my_project.gpr -XBuild=release
 ```
 
-## 1.4 Advanced Project File Features
+## 14.4 Advanced Project File Features
 
 Once you've mastered the basics, you can explore more advanced project file features for complex projects.
 
-### 1.4.1 Project Dependencies
+### 14.4.1 Project Dependencies
 
 You can reference other projects as dependencies:
 
@@ -11923,7 +11915,7 @@ end Main_Project;
 
 This tells the linker to look for libraries in the `lib` directory and link with `math_utils`.
 
-### 1.4.2 Library Projects
+### 14.4.2 Library Projects
 
 Ada supports creating libraries that can be used by other projects:
 
@@ -11953,7 +11945,7 @@ project Main_Project is
 end Main_Project;
 ```
 
-### 1.4.3 Conditional Compilation
+### 14.4.3 Conditional Compilation
 
 You can use conditional statements in project files:
 
@@ -11996,11 +11988,11 @@ end My_Project;
 
 This defines a build type variable that controls compiler options.
 
-## 1.5 Best Practices for Project Organization
+## 14.5 Best Practices for Project Organization
 
 Well-organized projects are easier to maintain and collaborate on. Here are some best practices for organizing your Ada projects.
 
-### 1.5.1 Directory Structure
+### 14.5.1 Directory Structure
 
 A good directory structure separates concerns:
 ```
@@ -12022,7 +12014,7 @@ This structure:
 - Separates object files by build type
 - Provides clear locations for documentation and libraries
 
-### 1.5.2 Naming Conventions
+### 14.5.2 Naming Conventions
 
 Consistent naming makes projects easier to understand:
 - Project files: `home_automation.gpr`, `personal_finance.gpr`
@@ -12032,7 +12024,7 @@ Consistent naming makes projects easier to understand:
 
 Avoid generic names like `common` or `utils`—be specific about what the directory contains.
 
-### 1.5.3 Version Control
+### 14.5.3 Version Control
 
 Project files should be included in version control:
 - Add `.gpr` files to your repository
@@ -12041,7 +12033,7 @@ Project files should be included in version control:
 
 This ensures everyone on your team can build the project consistently.
 
-### 1.5.4 Project File Comments
+### 14.5.4 Project File Comments
 
 Add comments to explain your project structure:
 
@@ -12077,15 +12069,15 @@ end Home_Automation;
 
 Comments help others (and your future self) understand why the project is structured a certain way.
 
-## 1.6 Practical Exercises: Building Your First Project
+## 14.6 Practical Exercises: Building Your First Project
 
 Let's put what you've learned into practice with some hands-on exercises.
 
-### 1.6.1 Exercise 1: Simple Calculator Application
+### 14.6.1 Exercise 1: Simple Calculator Application
 
 Create a calculator application with separate modules for different operations.
 
-#### 1.6.1.1 Step 1: Create the Project Structure
+#### 14.6.1.1 Step 1: Create the Project Structure
 
 ```bash
 mkdir calculator
@@ -12093,7 +12085,7 @@ cd calculator
 mkdir src src/add src/subtract src/multiply src/divide obj obj/debug obj/release
 ```
 
-#### 1.6.1.2 Step 2: Create Source Files
+#### 14.6.1.2 Step 2: Create Source Files
 
 `src/add/add.adb`:
 ```ada
@@ -12137,7 +12129,7 @@ begin
 end Main;
 ```
 
-#### 1.6.1.3 Step 3: Create the Project File
+#### 14.6.1.3 Step 3: Create the Project File
 
 `project.gpr`:
 ```ada
@@ -12152,7 +12144,7 @@ project Calculator is
 end Calculator;
 ```
 
-#### 1.6.1.4 Step 4: Build and Run
+#### 14.6.1.4 Step 4: Build and Run
 
 ```bash
 gnatmake -P project.gpr
@@ -12161,11 +12153,11 @@ gnatmake -P project.gpr
 
 This creates a simple calculator application with separate modules for each operation. You can easily extend it by adding new modules to the project.
 
-### 1.6.2 Exercise 2: Debug and Release Configurations
+### 14.6.2 Exercise 2: Debug and Release Configurations
 
 Modify the calculator project to support different build configurations.
 
-#### 1.6.2.1 Step 1: Update the Project File
+#### 14.6.2.1 Step 1: Update the Project File
 
 ```ada
 project Calculator is
@@ -12187,7 +12179,7 @@ project Calculator is
 end Calculator;
 ```
 
-#### 1.6.2.2 Step 2: Build Different Configurations
+#### 14.6.2.2 Step 2: Build Different Configurations
 
 ```bash
 # 2 Build debug version
@@ -12197,7 +12189,7 @@ gnatmake -P project.gpr
 gnatmake -P project.gpr -XBuild=release
 ```
 
-#### 3.0.0.1 Step 3: Test Both Configurations
+#### 14.0.0.1 Step 3: Test Both Configurations
 
 ```bash
 # 4 Run debug version
@@ -12209,11 +12201,11 @@ obj/release/calculator
 
 This demonstrates how to create different build configurations for development and deployment.
 
-## 5.1 Common Pitfalls and How to Avoid Them
+## 14.1 Common Pitfalls and How to Avoid Them
 
 Even with project files, beginners can encounter common issues. Let's explore these pitfalls and how to solve them.
 
-### 5.1.1 Pitfall 1: Incorrect Source Directory Paths
+### 14.1.1 Pitfall 1: Incorrect Source Directory Paths
 
 **Problem**: The compiler can't find source files because of incorrect paths.
 
@@ -12232,7 +12224,7 @@ for Source_Dirs use ("src");
 
 If your project file is in the root directory, and source files are in a `src` directory, use `"src"`. If your project file is in a subdirectory, adjust the path accordingly.
 
-### 5.1.2 Pitfall 2: Forgetting to Specify the Main Program
+### 14.1.2 Pitfall 2: Forgetting to Specify the Main Program
 
 **Problem**: The compiler doesn't know which file is the entry point.
 
@@ -12258,7 +12250,7 @@ end Calculator;
 
 The `Main` attribute is required for executable projects.
 
-### 5.1.3 Pitfall 3: Using Incompatible Compiler Switches
+### 14.1.3 Pitfall 3: Using Incompatible Compiler Switches
 
 **Problem**: Some compiler switches don't work together.
 
@@ -12282,7 +12274,7 @@ For debug builds, use:
 for Default_Switches ("Ada") use ("-g", "-O0", "-gnata");
 ```
 
-### 5.1.4 Pitfall 4: Not Cleaning Object Files After Changes
+### 14.1.4 Pitfall 4: Not Cleaning Object Files After Changes
 
 **Problem**: Changes to source files aren't reflected in the build because old object files are used.
 
@@ -12298,7 +12290,7 @@ gnatmake -P project.gpr
 
 Or better yet, use separate object directories for different build configurations so they don't interfere with each other.
 
-### 7.0.1 Pitfall 5: Incorrect Project File Location
+### 14.0.1 Pitfall 5: Incorrect Project File Location
 
 **Problem**: The project file isn't in the right location.
 
@@ -12315,11 +12307,11 @@ project_root/
 
 This makes paths consistent and easy to understand.
 
-## 7.1 Integrating Project Files with IDEs
+## 14.1 Integrating Project Files with IDEs
 
 Most Ada IDEs integrate seamlessly with project files, making development even easier.
 
-### 7.1.1 GNAT Programming Studio (GPS)
+### 14.1.1 GNAT Programming Studio (GPS)
 
 GPS is the official Ada IDE and works perfectly with project files:
 
@@ -12334,7 +12326,7 @@ With GPS:
 - You can debug directly within the IDE
 - Project files are automatically updated when you add files
 
-### 7.1.2 Visual Studio Code with Ada Extension
+### 14.1.2 Visual Studio Code with Ada Extension
 
 If you prefer VS Code:
 1. Install the Ada extension
@@ -12365,7 +12357,7 @@ VS Code with the Ada extension provides:
 - Build automation
 - Debugging capabilities
 
-### 7.1.3 Project File Integration Benefits
+### 14.1.3 Project File Integration Benefits
 
 | **IDE Feature** | **Manual Compilation** | **Project File Integration** |
 | :--- | :--- | :--- |
@@ -12377,11 +12369,11 @@ VS Code with the Ada extension provides:
 
 Using an IDE with project files saves time and reduces errors. You can focus on writing code instead of managing build commands.
 
-## 7.2 Real-World Project Examples
+## 14.2 Real-World Project Examples
 
 Let's look at practical examples of project files for common applications.
 
-### 7.2.1 Home Automation System
+### 14.2.1 Home Automation System
 
 ```ada
 project Home_Automation is
@@ -12413,7 +12405,7 @@ This project:
 - Links with SQLite for database storage
 - Uses consistent naming conventions
 
-### 7.2.2 Personal Finance Tool
+### 14.2.2 Personal Finance Tool
 
 ```ada
 project Personal_Finance is
@@ -12437,7 +12429,7 @@ This project:
 - Includes debugging information
 - Has a simple, maintainable configuration
 
-### 7.2.3 Simple Game Project
+### 14.2.3 Simple Game Project
 
 ```ada
 project Simple_Game is
@@ -12465,11 +12457,11 @@ This project:
 - Uses consistent naming conventions
 - Is easy to extend with new features
 
-## 7.3 Next Steps for Mastering Project Files
+## 14.3 Next Steps for Mastering Project Files
 
 Now that you've learned the basics, here are some next steps to continue your journey:
 
-### 7.3.1 \. Explore Advanced Project Features
+### 14.3.1 \. Explore Advanced Project Features
 
 Try these more advanced project file features:
 - **Conditional compilation**: Build different code for different platforms
@@ -12477,28 +12469,28 @@ Try these more advanced project file features:
 - **Custom variables**: Define project-specific variables
 - **Build scripts**: Automate complex build processes
 
-### 7.3.2 \. Practice with Real-World Projects
+### 14.3.2 \. Practice with Real-World Projects
 
 Apply project files to your own projects:
 - Build a home automation system with temperature sensors
 - Create a personal finance tool with data visualization
 - Develop a simple game with graphics and sound
 
-### 7.3.3 \. Learn About Project Hierarchies
+### 14.3.3 \. Learn About Project Hierarchies
 
 For larger projects, use multiple project files:
 - A main project that depends on library projects
 - Separate projects for different components
 - Hierarchical project structures for complex systems
 
-### 7.3.4 \. Join the Ada Community
+### 14.3.4 \. Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore forums**: For technical support
 - **GitHub repositories**: For Ada projects and examples
 - **Ada mailing lists**: For discussions and questions
 
-## 7.4 Conclusion: The Power of Streamlined Builds
+## 14.4 Conclusion: The Power of Streamlined Builds
 
 > "Project files transform build management from a manual chore into a systematic process—making it easy to build, maintain, and share your code."
 
@@ -12523,7 +12515,7 @@ When you're first learning to program, it's easy to think testing is just for "b
 
 This chapter explores AUnit, Ada's standard unit testing framework. You'll learn how to write tests for everyday applications, organize them effectively, and integrate them into your development workflow—all without needing specialized knowledge of testing methodologies. Whether you're building a calculator, a data processing tool, or a home automation system, AUnit provides a simple, reliable way to verify your code works as intended.
 
-## 1.1 Why Testing Matters for Everyday Applications
+## 15.1 Why Testing Matters for Everyday Applications
 
 Testing is often seen as a chore for large teams working on complex systems, but it's equally valuable for small projects and personal applications. Consider these common scenarios:
 
@@ -12533,7 +12525,7 @@ Testing is often seen as a chore for large teams working on complex systems, but
 
 Without testing, these problems might only surface when users encounter them—often after the software has been deployed. With testing, you can catch these issues during development, when fixing them is easy and cheap.
 
-### 1.1.1 Manual Testing vs. Automated Testing
+### 15.1.1 Manual Testing vs. Automated Testing
 
 | **Aspect** | **Manual Testing** | **AUnit Framework** |
 | :--- | :--- | :--- |
@@ -12576,7 +12568,7 @@ end Test_Addition;
 
 When you run the tests, AUnit automatically checks all these cases and reports which ones pass or fail. This is more efficient, more thorough, and less error-prone than manual testing.
 
-### 1.1.2 Real-World Benefits of Testing
+### 15.1.2 Real-World Benefits of Testing
 
 - **Faster development**: Catch bugs early when they're easier to fix
 - **More confidence**: Know your code works correctly before deploying
@@ -12586,11 +12578,11 @@ When you run the tests, AUnit automatically checks all these cases and reports w
 
 For everyday applications, these benefits translate directly to better user experiences. A home automation system that works reliably builds trust with users. A personal finance app that calculates correctly prevents financial mistakes. Testing isn't just for professionals—it's a practical tool for any developer who wants to build reliable software.
 
-## 1.2 Introduction to AUnit
+## 15.2 Introduction to AUnit
 
 AUnit is Ada's standard unit testing framework. It's part of the GNAT distribution, so no extra installation is needed for most users. AUnit provides a simple, reliable way to write and run tests for Ada code.
 
-### 1.2.1 Key Features of AUnit
+### 15.2.1 Key Features of AUnit
 
 - **Simple syntax**: Uses familiar Ada concepts
 - **Automated test runner**: Executes all tests and reports results
@@ -12601,7 +12593,7 @@ AUnit is Ada's standard unit testing framework. It's part of the GNAT distributi
 
 AUnit is designed to be accessible to beginners while providing powerful features for more advanced users. You don't need to learn a new language—just understand how to use AUnit's simple procedures and packages.
 
-### 1.2.2 Why AUnit Over Other Testing Frameworks?
+### 15.2.2 Why AUnit Over Other Testing Frameworks?
 
 Many languages have multiple testing frameworks, but Ada's ecosystem is simpler. AUnit is the standard, supported by GNAT, and works with all Ada projects. While other testing tools exist, AUnit is the most straightforward option for beginners.
 
@@ -12644,11 +12636,11 @@ And you get:
 
 This is more efficient and reliable for any application, big or small.
 
-## 1.3 Setting Up AUnit for Your Projects
+## 15.3 Setting Up AUnit for Your Projects
 
 AUnit is included with GNAT, so setting it up is straightforward. Let's walk through the steps.
 
-### 1.3.1 Basic Setup
+### 15.3.1 Basic Setup
 
 1. **Create a project directory**:
    ```bash
@@ -12714,7 +12706,7 @@ Running test suite...
 Total: 1 test, 1 passed, 0 failed
 ```
 
-### 1.3.2 Understanding the Setup
+### 15.3.2 Understanding the Setup
 
 - **`AUnit.Test_Cases`**: Provides the base test case class
 - **`AUnit.Assertions`**: Contains assertion procedures for testing
@@ -12723,7 +12715,7 @@ Total: 1 test, 1 passed, 0 failed
 
 You don't need to install anything extra—just include these packages in your code. AUnit is part of GNAT, so it's always available when you install Ada.
 
-### 1.3.3 Project File Best Practices
+### 15.3.3 Project File Best Practices
 
 For larger projects, organize your project file to separate source and test code:
 
@@ -12755,11 +12747,11 @@ This structure:
 
 You can build tests separately from your main application by creating a separate main program for tests.
 
-## 1.4 Writing Your First Tests
+## 15.4 Writing Your First Tests
 
 Let's create a complete example of testing a simple calculator application. This will show you the basics of writing tests with AUnit.
 
-### 1.4.1 Step 1: Create the Calculator Package
+### 15.4.1 Step 1: Create the Calculator Package
 
 First, create the calculator package to test:
 
@@ -12798,7 +12790,7 @@ package body Calculator is
 end Calculator;
 ```
 
-### 1.4.2 Step 2: Create Test Cases
+### 15.4.2 Step 2: Create Test Cases
 
 Now create the test cases:
 
@@ -12843,7 +12835,7 @@ package body Test_Calculator is
 end Test_Calculator;
 ```
 
-### 1.4.3 Step 3: Create a Test Runner
+### 15.4.3 Step 3: Create a Test Runner
 
 Now create a test runner to execute all tests:
 
@@ -12864,7 +12856,7 @@ begin
 end Test_Runner;
 ```
 
-### 1.4.4 Step 4: Build and Run Tests
+### 15.4.4 Step 4: Build and Run Tests
 
 ```bash
 # 2 Build the project
@@ -12887,7 +12879,7 @@ Total: 4 tests, 4 passed, 0 failed
 
 This simple example shows how AUnit makes testing straightforward. You write tests that check specific functionality, and AUnit automatically runs them and reports results.
 
-### 3.0.1 Understanding the Test Code
+### 15.0.1 Understanding the Test Code
 
 Let's break down the test code:
 
@@ -12906,15 +12898,15 @@ end Test_Addition;
 
 Each test is a procedure that takes a test case parameter. Inside, you use assertions to check that your code behaves as expected.
 
-## 3.1 Advanced Testing Features
+## 15.1 Advanced Testing Features
 
 Once you've mastered the basics, you can explore more advanced testing features that make your tests more powerful and maintainable.
 
-### 3.1.1 Test Suites and Organization
+### 15.1.1 Test Suites and Organization
 
 As your project grows, you'll want to organize tests into logical groups. AUnit makes this easy with test suites.
 
-#### 3.1.1.1 Example: Organizing Tests by Functionality
+#### 15.1.1.1 Example: Organizing Tests by Functionality
 
 ```ada
 -- tests/test_suites.adb
@@ -12960,11 +12952,11 @@ Running test suite...
 Total: 3 tests, 3 passed, 0 failed
 ```
 
-### 3.1.2 Setup and Teardown Procedures
+### 15.1.2 Setup and Teardown Procedures
 
 Many tests need common setup and cleanup steps. AUnit provides `Setup` and `Teardown` procedures for this purpose.
 
-#### 3.1.2.1 Example: Testing a Temperature Sensor
+#### 15.1.2.1 Example: Testing a Temperature Sensor
 
 ```ada
 -- tests/test_temperature_sensor.adb
@@ -12995,7 +12987,7 @@ package body Test_Temperature_Sensor is
 end Test_Temperature_Sensor;
 ```
 
-#### 3.1.2.2 Registering Setup/Teardown in the Test Runner
+#### 15.1.2.2 Registering Setup/Teardown in the Test Runner
 
 ```ada
 -- tests/test_runner.adb
@@ -13019,7 +13011,7 @@ This ensures:
 - Tests don't interfere with each other
 - Resources are properly cleaned up
 
-### 3.1.3 Test Fixtures for Common Test Data
+### 15.1.3 Test Fixtures for Common Test Data
 
 For tests that need common data, you can create test fixtures:
 
@@ -13059,11 +13051,11 @@ This pattern:
 - Reduces duplication
 - Ensures consistent test data across tests
 
-## 3.2 Common Assertion Types
+## 15.2 Common Assertion Types
 
 AUnit provides several assertion types for different testing needs. Let's explore the most common ones.
 
-### 3.2.1 Basic Assertions
+### 15.2.1 Basic Assertions
 
 | **Assertion** | **Usage** | **Example** |
 | :--- | :--- | :--- |
@@ -13093,7 +13085,7 @@ begin
 end Test_Assertions;
 ```
 
-### 3.2.2 String Assertions
+### 15.2.2 String Assertions
 
 For string comparisons, AUnit provides special assertions:
 
@@ -13108,7 +13100,7 @@ begin
 end Test_String_Assertions;
 ```
 
-### 3.2.3 Numeric Assertions
+### 15.2.3 Numeric Assertions
 
 For numeric comparisons, you can specify precision:
 
@@ -13124,7 +13116,7 @@ begin
 end Test_Numeric_Assertions;
 ```
 
-### 3.2.4 Exception Assertions
+### 15.2.4 Exception Assertions
 
 For testing error handling, you can check if exceptions are raised:
 
@@ -13141,11 +13133,11 @@ end Test_Exception_Assertions;
 
 These assertions make it easy to test error conditions without complicating your test code.
 
-## 3.3 Best Practices for Effective Testing
+## 15.3 Best Practices for Effective Testing
 
 Following best practices makes your tests more effective and maintainable. Here are key practices for writing good tests.
 
-### 3.3.1 Write Clear Test Names
+### 15.3.1 Write Clear Test Names
 
 Test names should clearly describe what they're testing:
 
@@ -13165,7 +13157,7 @@ end Test1;
 
 Clear names make it easy to understand what each test does, especially when reports show failures.
 
-### 3.3.2 Test One Thing Per Test
+### 15.3.2 Test One Thing Per Test
 
 Each test should focus on a single behavior:
 
@@ -13191,7 +13183,7 @@ end Test_Addition;
 
 This makes it easier to identify which specific behavior failed when a test fails.
 
-### 3.3.3 Test Edge Cases
+### 15.3.3 Test Edge Cases
 
 Always test boundary conditions and edge cases:
 
@@ -13210,7 +13202,7 @@ end Test_Division_Edge_Cases;
 
 Edge cases often reveal bugs that aren't caught by typical test cases.
 
-### 3.3.4 Keep Tests Independent
+### 15.3.4 Keep Tests Independent
 
 Each test should be able to run independently of others:
 
@@ -13241,11 +13233,11 @@ end Test_Subtraction;
 
 Independent tests can be run in any order, making test results more reliable.
 
-## 3.4 Common Pitfalls and How to Avoid Them
+## 15.4 Common Pitfalls and How to Avoid Them
 
 Even with AUnit, beginners can encounter common pitfalls. Let's explore these challenges and how to solve them.
 
-### 3.4.1 Pitfall 1: Testing Implementation Instead of Behavior
+### 15.4.1 Pitfall 1: Testing Implementation Instead of Behavior
 
 **Problem**: Testing how code works rather than what it does.
 
@@ -13270,7 +13262,7 @@ end Test_Addition;
 
 This makes your tests more resilient to implementation changes.
 
-### 3.4.2 Pitfall 2: Writing Tests That Are Too Complex
+### 15.4.2 Pitfall 2: Writing Tests That Are Too Complex
 
 **Problem**: Tests that are harder to understand than the code they're testing.
 
@@ -13302,7 +13294,7 @@ end Test_Complicated_Calculation;
 
 This makes tests easier to understand and maintain.
 
-### 3.4.3 Pitfall 3: Ignoring Error Handling
+### 15.4.3 Pitfall 3: Ignoring Error Handling
 
 **Problem**: Only testing successful cases, not error conditions.
 
@@ -13328,7 +13320,7 @@ end Test_Division;
 
 This ensures your code handles errors correctly.
 
-### 3.4.4 Pitfall 4: Not Using Setup/Teardown for Common Initialization
+### 15.4.4 Pitfall 4: Not Using Setup/Teardown for Common Initialization
 
 **Problem**: Repeating initialization code in multiple tests.
 
@@ -13376,11 +13368,11 @@ end Test2;
 
 This reduces duplication and makes tests more maintainable.
 
-## 3.5 Integrating AUnit with Project Files
+## 15.5 Integrating AUnit with Project Files
 
 AUnit integrates seamlessly with Ada project files, making it easy to manage tests as part of your project.
 
-### 3.5.1 Basic Project File Configuration
+### 15.5.1 Basic Project File Configuration
 
 ```ada
 project My_Project is
@@ -13399,7 +13391,7 @@ This structure:
 - Uses a single object directory
 - Includes debugging information for tests
 
-### 3.5.2 Building Tests Separately
+### 15.5.2 Building Tests Separately
 
 For larger projects, you might want to build tests separately from your main application:
 
@@ -13436,7 +13428,7 @@ gnatmake -P my_project.gpr -XTests
 
 This makes it easy to build just what you need.
 
-### 5.0.1 Conditional Compilation for Tests
+### 15.0.1 Conditional Compilation for Tests
 
 You can include test code only in debug builds:
 
@@ -13473,15 +13465,15 @@ end My_Project;
 
 This ensures test code isn't included in release builds, reducing the size of your final application.
 
-## 5.1 Practical Exercises: Building Your First Test Suite
+## 15.1 Practical Exercises: Building Your First Test Suite
 
 Let's put what you've learned into practice with hands-on exercises.
 
-### 5.1.1 Exercise 1: Simple Calculator Tests
+### 15.1.1 Exercise 1: Simple Calculator Tests
 
 Create a test suite for a simple calculator application.
 
-#### 5.1.1.1 Step 1: Create the Calculator Package
+#### 15.1.1.1 Step 1: Create the Calculator Package
 
 ```ada
 -- src/calculator.ads
@@ -13518,7 +13510,7 @@ package body Calculator is
 end Calculator;
 ```
 
-#### 5.1.1.2 Step 2: Create Test Cases
+#### 15.1.1.2 Step 2: Create Test Cases
 
 ```ada
 -- tests/test_calculator.adb
@@ -13561,7 +13553,7 @@ package body Test_Calculator is
 end Test_Calculator;
 ```
 
-#### 5.1.1.3 Step 3: Create a Test Runner
+#### 15.1.1.3 Step 3: Create a Test Runner
 
 ```ada
 -- tests/test_runner.adb
@@ -13580,7 +13572,7 @@ begin
 end Test_Runner;
 ```
 
-#### 5.1.1.4 Step 4: Build and Run Tests
+#### 15.1.1.4 Step 4: Build and Run Tests
 
 ```bash
 # 6 Build the project
@@ -13592,11 +13584,11 @@ gnatmake -P project.gpr tests/test_runner.adb
 
 This exercise gives you hands-on experience with writing tests for a simple application. You'll see how AUnit makes testing straightforward and reliable.
 
-### 7.0.1 Exercise 2: Temperature Sensor Tests
+### 15.0.1 Exercise 2: Temperature Sensor Tests
 
 Create tests for a temperature sensor application.
 
-#### 7.0.1.1 Step 1: Create the Temperature Sensor Package
+#### 15.0.1.1 Step 1: Create the Temperature Sensor Package
 
 ```ada
 -- src/temperature_sensor.ads
@@ -13631,7 +13623,7 @@ package body Temperature_Sensor is
 end Temperature_Sensor;
 ```
 
-#### 7.0.1.2 Step 2: Create Test Cases
+#### 15.0.1.2 Step 2: Create Test Cases
 
 ```ada
 -- tests/test_temperature_sensor.adb
@@ -13673,7 +13665,7 @@ package body Test_Temperature_Sensor is
 end Test_Temperature_Sensor;
 ```
 
-#### 7.0.1.3 Step 3: Create a Test Runner
+#### 15.0.1.3 Step 3: Create a Test Runner
 
 ```ada
 -- tests/test_runner.adb
@@ -13694,7 +13686,7 @@ begin
 end Test_Runner;
 ```
 
-#### 7.0.1.4 Step 4: Build and Run Tests
+#### 15.0.1.4 Step 4: Build and Run Tests
 
 ```bash
 # 8 Build the project
@@ -13706,11 +13698,11 @@ gnatmake -P project.gpr tests/test_runner.adb
 
 This exercise shows how to test hardware-related code with setup/teardown procedures. You'll see how AUnit makes testing sensor code reliable and maintainable.
 
-## 9.1 Real-World Testing Scenarios
+## 15.1 Real-World Testing Scenarios
 
 Let's explore how testing applies to common real-world applications.
 
-### 9.1.1 Home Automation System
+### 15.1.1 Home Automation System
 
 A home automation system might include:
 - Temperature sensors
@@ -13742,7 +13734,7 @@ end Test_Light_Control;
 
 This modular approach makes it easy to test each component independently.
 
-### 9.1.2 Personal Finance Tool
+### 15.1.2 Personal Finance Tool
 
 A personal finance tool might include:
 - Interest calculations
@@ -13776,11 +13768,11 @@ end Test_Budget_Tracking;
 
 This approach ensures each part of your application works correctly before combining them.
 
-## 9.2 Next Steps for Mastering AUnit
+## 15.2 Next Steps for Mastering AUnit
 
 Now that you've learned the basics, here are some next steps to continue your journey:
 
-### 9.2.1 \. Explore Advanced Testing Techniques
+### 15.2.1 \. Explore Advanced Testing Techniques
 
 Try these more advanced techniques:
 - **Mock objects**: Simulate hardware or external dependencies
@@ -13788,14 +13780,14 @@ Try these more advanced techniques:
 - **Test-driven development**: Write tests before writing code
 - **Continuous integration**: Automatically run tests on code changes
 
-### 9.2.2 \. Practice with Real-World Projects
+### 15.2.2 \. Practice with Real-World Projects
 
 Apply AUnit to your own projects:
 - Build a home automation system with sensor testing
 - Create a personal finance tool with transaction testing
 - Develop a data processing pipeline with validation testing
 
-### 9.2.3 \. Learn About Test Coverage
+### 15.2.3 \. Learn About Test Coverage
 
 Measure how much of your code is tested:
 ```bash
@@ -13805,14 +13797,14 @@ gnatcov report -P project.gpr
 
 This shows which parts of your code are covered by tests and which need more testing.
 
-### 9.2.4 \. Join the Ada Community
+### 15.2.4 \. Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore forums**: For technical support
 - **GitHub repositories**: For Ada projects and examples
 - **Ada mailing lists**: For discussions and questions
 
-## 9.3 Conclusion: The Power of Reliable Testing
+## 15.3 Conclusion: The Power of Reliable Testing
 
 > "Testing isn't just for safety-critical systems—it's essential for any application where reliability matters. With AUnit, you can build robust, maintainable code for home automation, personal finance tools, and more—without specialized knowledge."
 
@@ -13837,7 +13829,7 @@ When you think of embedded systems, you might imagine complex aerospace control 
 
 Ada is uniquely suited for embedded programming because it provides strong type safety, direct hardware access, and built-in real-time support—all while maintaining reliability without requiring specialized safety-critical knowledge. This chapter explores how you can use Ada to build embedded systems for everyday applications, from home automation to IoT devices. You'll learn the fundamental concepts, practical techniques, and simple examples that let you control hardware directly while avoiding common pitfalls.
 
-## 1.1 Why Embedded Systems Matter for Everyday Applications
+## 16.1 Why Embedded Systems Matter for Everyday Applications
 
 Embedded systems are the invisible brains behind countless devices we use every day. Consider these common examples:
 
@@ -13860,17 +13852,17 @@ Ada excels in this environment because it provides:
 
 Unlike C, which is commonly used for embedded systems but lacks built-in safety features, Ada provides compile-time checks that prevent common errors like buffer overflows, type mismatches, and uninitialized variables. This means your embedded code is more reliable from the start, without requiring specialized safety-critical knowledge.
 
-## 1.2 Basic Embedded Concepts
+## 16.2 Basic Embedded Concepts
 
 Before diving into code, let's understand the fundamental concepts of embedded systems programming.
 
-### 1.2.1 Memory-Mapped I/O
+### 16.2.1 Memory-Mapped I/O
 
 In embedded systems, hardware components like sensors, LEDs, and buttons are controlled through memory addresses. This is called **memory-mapped I/O**—the hardware registers appear as memory locations that your program can read and write.
 
 For example, a simple LED might be controlled by writing to a specific memory address. When you write a 1 to that address, the LED turns on; writing 0 turns it off. This is how embedded systems interact with physical hardware.
 
-### 1.2.2 Bit Manipulation
+### 16.2.2 Bit Manipulation
 
 Many hardware registers control multiple features through individual bits. For example, a single 8-bit register might control:
 - Bit 0: LED on/off
@@ -13879,19 +13871,19 @@ Many hardware registers control multiple features through individual bits. For e
 
 To control individual bits without affecting others, you need **bit manipulation**—techniques for setting, clearing, and checking specific bits in a register.
 
-### 1.2.3 Interrupts
+### 16.2.3 Interrupts
 
 Interrupts are signals from hardware that pause the current program execution to handle urgent events. For example, when a button is pressed, the hardware generates an interrupt to notify the software. The software then handles the event before returning to normal operation.
 
-### 1.2.4 Real-Time Constraints
+### 16.2.4 Real-Time Constraints
 
 Embedded systems often have strict timing requirements. For example, a motor controller might need to update its output every 10 milliseconds to maintain smooth operation. Missing these deadlines can cause system failures.
 
-## 1.3 Ada Features for Embedded Development
+## 16.3 Ada Features for Embedded Development
 
 Ada provides several features specifically designed for embedded programming, making it safer and more reliable than many alternatives.
 
-### 1.3.1 Volatile Variables
+### 16.3.1 Volatile Variables
 
 Hardware registers can change outside your program's control (for example, when a sensor updates). To prevent the compiler from optimizing away reads or writes, you must mark these variables as **volatile**.
 
@@ -13915,7 +13907,7 @@ end LED_Control;
 
 The `Volatile_Full_Access` aspect ensures the compiler doesn't optimize away reads or writes to the hardware register. Without this, the compiler might remove "unnecessary" operations, causing your hardware to behave incorrectly.
 
-### 1.3.2 Address Clauses
+### 16.3.2 Address Clauses
 
 To map hardware registers to memory locations, you use **address clauses**. These tell the compiler exactly where in memory a variable should be placed.
 
@@ -13926,7 +13918,7 @@ LED_Register : LED_Register
 
 This places the `LED_Register` variable at memory address `0x4000_0000`. The exact address depends on your hardware—consult your microcontroller's datasheet for the correct addresses.
 
-### 1.3.3 Bit Manipulation Packages
+### 16.3.3 Bit Manipulation Packages
 
 Ada provides packages for bit manipulation, making it easy to work with individual bits in registers:
 
@@ -13952,7 +13944,7 @@ end Set_LED;
 
 These bitwise operations let you control individual bits without affecting other bits in the register.
 
-### 1.3.4 Tasking for Concurrency
+### 16.3.4 Tasking for Concurrency
 
 Embedded systems often need to handle multiple tasks simultaneously. Ada's built-in tasking model makes this straightforward:
 
@@ -13973,15 +13965,15 @@ end Sensor_Reader;
 
 This task reads a sensor every 100ms while the main program continues executing other tasks. No external libraries are needed—this is built into the language.
 
-### 1.3.5 No Hidden Memory Management
+### 16.3.5 No Hidden Memory Management
 
 Unlike languages with garbage collection (like Java or Python), Ada gives you predictable memory behavior. You control exactly when memory is allocated and freed, avoiding unexpected pauses that could miss real-time deadlines.
 
-## 1.4 Practical Example: Blinking an LED with Ada
+## 16.4 Practical Example: Blinking an LED with Ada
 
 Let's create a simple embedded project that blinks an LED on a Raspberry Pi. This example demonstrates the core concepts we've covered: memory-mapped I/O, volatile variables, and timing control.
 
-### 1.4.1 Setting Up Your Environment
+### 16.4.1 Setting Up Your Environment
 
 To run this example, you'll need:
 - A Raspberry Pi (any model with GPIO pins)
@@ -14014,7 +14006,7 @@ project Blink_LED is
 end Blink_LED;
 ```
 
-### 2.0.1 Creating the Hardware Interface
+### 16.0.1 Creating the Hardware Interface
 
 Create a package to interface with the Raspberry Pi's GPIO pins:
 
@@ -14077,7 +14069,7 @@ package body GPIO is
 end GPIO;
 ```
 
-### 2.0.2 Creating the Blink Application
+### 16.0.2 Creating the Blink Application
 
 Now create the main program that blinks the LED:
 
@@ -14100,7 +14092,7 @@ begin
 end Blink_LED;
 ```
 
-### 2.0.3 Building and Running the Code
+### 16.0.3 Building and Running the Code
 
 Compile and transfer the code to your Raspberry Pi:
 
@@ -14118,7 +14110,7 @@ sudo ./blink_led
 
 The LED should blink once per second. Press Ctrl+C to stop the program.
 
-### 4.0.1 Understanding the Code
+### 16.0.1 Understanding the Code
 
 Let's break down what's happening:
 
@@ -14137,11 +14129,11 @@ Let's break down what's happening:
 
 This example demonstrates how Ada provides safe, reliable hardware access without requiring specialized knowledge of low-level programming.
 
-## 4.1 Real-Time Aspects in Ada
+## 16.1 Real-Time Aspects in Ada
 
 Embedded systems often have strict timing requirements. Ada's built-in real-time features make it easy to meet these requirements.
 
-### 4.1.1 Simple Timing with Delays
+### 16.1.1 Simple Timing with Delays
 
 For many embedded applications, simple timing with delays is sufficient:
 
@@ -14158,7 +14150,7 @@ end Blink_LED;
 
 The `delay until` operation ensures the LED toggles precisely every second, with no jitter or timing drift.
 
-### 4.1.2 Tasking for Concurrent Tasks
+### 16.1.2 Tasking for Concurrent Tasks
 
 For more complex systems, Ada's tasking model lets you handle multiple tasks simultaneously:
 
@@ -14207,7 +14199,7 @@ This example has two tasks:
 
 Both tasks run concurrently without interfering with each other.
 
-### 4.1.3 Real-Time Constraints
+### 16.1.3 Real-Time Constraints
 
 For applications with strict timing requirements, Ada provides precise control:
 
@@ -14234,11 +14226,11 @@ This task has:
 - A deadline of 10ms for each iteration
 - Automatic handling of missed deadlines
 
-## 4.2 Tools for Embedded Development with Ada
+## 16.2 Tools for Embedded Development with Ada
 
 Several tools make embedded development with Ada easier and more efficient.
 
-### 4.2.1 GNAT for ARM
+### 16.2.1 GNAT for ARM
 
 GNAT for ARM is the standard compiler for embedded Ada development. It supports:
 - Cross-compilation for ARM processors
@@ -14255,7 +14247,7 @@ sudo apt install gnat-arm-linux-gnueabihf
 brew install gnat-arm-linux-gnueabihf
 ```
 
-### 6.0.1 Simulators for Testing
+### 16.0.1 Simulators for Testing
 
 Before deploying to hardware, you can test your code with simulators:
 
@@ -14269,7 +14261,7 @@ qemu-system-arm -M raspi2 -kernel blink_led
 
 Simulators let you test your code without physical hardware, making development faster and safer.
 
-### 8.0.1 Hardware Abstraction Layers
+### 16.0.1 Hardware Abstraction Layers
 
 For portability across different hardware platforms, use hardware abstraction layers (HALs):
 
@@ -14297,11 +14289,11 @@ end HAL;
 
 This abstraction lets you write application code that works across different hardware platforms with minimal changes.
 
-## 8.1 Common Pitfalls and Best Practices
+## 16.1 Common Pitfalls and Best Practices
 
 Even with Ada's safety features, embedded programming has pitfalls. Here's how to avoid them.
 
-### 8.1.1 Pitfall: Incorrect Memory Addresses
+### 16.1.1 Pitfall: Incorrect Memory Addresses
 
 **Problem**: Using the wrong memory address for hardware registers.
 
@@ -14314,7 +14306,7 @@ GPIO_Register : GPIO_Register
   with Import, Address => GPIO_Register_Address;
 ```
 
-### 8.1.2 Pitfall: Forgetting Volatile
+### 16.1.2 Pitfall: Forgetting Volatile
 
 **Problem**: Not marking hardware registers as volatile, causing compiler optimizations to remove necessary operations.
 
@@ -14326,7 +14318,7 @@ type GPIO_Register is record ... end record
   with Volatile_Full_Access, Address => ...;
 ```
 
-### 8.1.3 Pitfall: Unhandled Interrupts
+### 16.1.3 Pitfall: Unhandled Interrupts
 
 **Problem**: Not properly handling interrupts, causing system instability.
 
@@ -14341,13 +14333,13 @@ end Handle_Interrupt;
 pragma Attach_Handler (Handle_Interrupt, Interrupt_Number => 18);
 ```
 
-### 8.1.4 Best Practice: Test on Hardware Early
+### 16.1.4 Best Practice: Test on Hardware Early
 
 **Problem**: Waiting too long to test on actual hardware.
 
 **Solution**: Test on hardware as early as possible, even for simple functionality. Use a simple LED blink program as your first test.
 
-### 8.1.5 Best Practice: Use Static Memory Allocation
+### 16.1.5 Best Practice: Use Static Memory Allocation
 
 **Problem**: Using dynamic memory allocation, which can cause unpredictable behavior.
 
@@ -14361,7 +14353,7 @@ Buffer : array (1..100) of Byte;
 Buffer : access Byte := new Byte;
 ```
 
-### 8.1.6 Best Practice: Document Hardware Dependencies
+### 16.1.6 Best Practice: Document Hardware Dependencies
 
 **Problem**: Not documenting which hardware features your code depends on.
 
@@ -14374,11 +14366,11 @@ Buffer : access Byte := new Byte;
 -- - 220Ω resistor in series with LED
 ```
 
-## 8.2 Practical Exercise: Temperature Monitoring System
+## 16.2 Practical Exercise: Temperature Monitoring System
 
 Let's build a complete embedded project: a temperature monitoring system for a home automation application.
 
-### 8.2.1 Project Overview
+### 16.2.1 Project Overview
 
 This system will:
 - Read temperature from a DS18B20 sensor
@@ -14386,7 +14378,7 @@ This system will:
 - Log temperature readings to a file
 - Send alerts if temperature exceeds safe limits
 
-### 8.2.2 Step 1: Hardware Setup
+### 16.2.2 Step 1: Hardware Setup
 
 You'll need:
 - Raspberry Pi
@@ -14400,7 +14392,7 @@ Connect the hardware:
 - LCD data pins to GPIO 17-22
 - Power and ground connections
 
-### 8.2.3 Step 2: Create the Project Structure
+### 16.2.3 Step 2: Create the Project Structure
 
 ```bash
 mkdir temperature_monitor
@@ -14421,7 +14413,7 @@ project Temperature_Monitor is
 end Temperature_Monitor;
 ```
 
-### 8.2.4 Step 3: Implement the Hardware Interfaces
+### 16.2.4 Step 3: Implement the Hardware Interfaces
 
 First, create the GPIO interface:
 
@@ -14544,7 +14536,7 @@ package body LCD is
 end LCD;
 ```
 
-### 8.2.5 Step 4: Implement the Main Application
+### 16.2.5 Step 4: Implement the Main Application
 
 ```ada
 -- src/main.adb
@@ -14600,7 +14592,7 @@ begin
 end Main;
 ```
 
-### 8.2.6 Step 5: Build and Test
+### 16.2.6 Step 5: Build and Test
 
 ```bash
 # 9 On development machine
@@ -14685,7 +14677,7 @@ When you think of GUI development, you might imagine complex enterprise applicat
 
 This chapter explores how to create graphical user interfaces in Ada using GTKAda, the most popular GUI library for Ada. You'll learn to build practical applications like home automation controllers, personal finance trackers, and simple games—all while leveraging Ada's strengths in reliability and maintainability. Whether you're building a tool for yourself or for others, Ada's GUI capabilities will help you create professional-looking applications with confidence.
 
-## 1.1 Why GUI Development Matters for Everyday Applications
+## 17.1 Why GUI Development Matters for Everyday Applications
 
 GUI development is essential for making technology accessible to everyone. Consider these common scenarios:
 
@@ -14704,7 +14696,7 @@ Ada excels at GUI development for several reasons:
 
 Unlike many GUI frameworks that prioritize speed of development over reliability, Ada's approach ensures your applications are robust from the start. You won't need to worry about mysterious crashes or security vulnerabilities caused by common programming errors.
 
-### 1.1.1 GUI Libraries for Ada
+### 17.1.1 GUI Libraries for Ada
 
 | **Library** | **Description** | **Best For** |
 | :--- | :--- | :--- |
@@ -14715,13 +14707,13 @@ Unlike many GUI frameworks that prioritize speed of development over reliability
 
 GTKAda is the most widely used GUI library for Ada. It provides a modern, cross-platform toolkit that's perfect for everyday applications. The other libraries have specific use cases, but GTKAda is the best starting point for most developers.
 
-## 1.2 Setting Up Your GUI Development Environment
+## 17.2 Setting Up Your GUI Development Environment
 
 Before you can start building GUI applications, you need to set up your development environment. The process varies slightly depending on your operating system, but it's straightforward for all major platforms.
 
-### 1.2.1 Installing GTKAda
+### 17.2.1 Installing GTKAda
 
-#### 1.2.1.1 Windows
+#### 17.2.1.1 Windows
 
 1. Download the GNAT Community Edition from [AdaCore's website](https://www.adacore.com/download)
 2. During installation, select the "GTKAda" component
@@ -14731,7 +14723,7 @@ Before you can start building GUI applications, you need to set up your developm
    ```
    You should see GTKAda version information in the output.
 
-#### 1.2.1.2 macOS
+#### 17.2.1.2 macOS
 
 1. Install Homebrew if you haven't already:
    ```bash
@@ -14746,7 +14738,7 @@ Before you can start building GUI applications, you need to set up your developm
    gnatls --version
    ```
 
-#### 1.2.1.3 Linux (Ubuntu/Debian)
+#### 17.2.1.3 Linux (Ubuntu/Debian)
 
 1. Install GTKAda:
    ```bash
@@ -14758,7 +14750,7 @@ Before you can start building GUI applications, you need to set up your developm
    gnatls --version
    ```
 
-### 1.2.2 Creating Your First Project
+### 17.2.2 Creating Your First Project
 
 Now that GTKAda is installed, let's create a simple project structure:
 
@@ -14792,7 +14784,7 @@ This project file:
 - Defines the main program file
 - Configures compiler and linker options for GTKAda
 
-### 1.2.3 Testing Your Setup
+### 17.2.3 Testing Your Setup
 
 Create a simple "Hello World" program to verify your installation:
 
@@ -14828,11 +14820,11 @@ gnatmake -P gui_example.gpr
 
 You should see a window titled "Hello World" with the text "Welcome to GUI Development in Ada!" inside it. If you see this window, your environment is set up correctly!
 
-## 1.3 Building Your First GUI Application
+## 17.3 Building Your First GUI Application
 
 Now that your environment is ready, let's create a more interactive application. We'll build a simple calculator that performs basic arithmetic operations.
 
-### 1.3.1 Step 1: Create the Basic Window Structure
+### 17.3.1 Step 1: Create the Basic Window Structure
 
 First, we'll create the main window with a vertical box layout:
 
@@ -14890,7 +14882,7 @@ end Calculator;
 
 This code creates a window with a display area and number buttons arranged vertically. The `Display` widget is a text entry field that's not editable by the user—perfect for showing calculation results.
 
-### 1.3.2 Step 2: Add Event Handling
+### 17.3.2 Step 2: Add Event Handling
 
 Now let's add event handlers to make the calculator functional:
 
@@ -14995,7 +14987,7 @@ This code adds event handlers for each button:
 
 When you run this program, you'll have a functional calculator that can perform basic arithmetic operations.
 
-### 1.3.3 Understanding the Code
+### 17.3.3 Understanding the Code
 
 Let's break down the key elements:
 
@@ -15009,11 +15001,11 @@ Let's break down the key elements:
 
 This simple example demonstrates how GUI development in Ada combines familiar programming concepts with intuitive visual elements.
 
-## 1.4 Common GUI Components
+## 17.4 Common GUI Components
 
 Let's explore the most common GUI components you'll use in your applications, with practical examples for each.
 
-### 1.4.1 Buttons
+### 17.4.1 Buttons
 
 Buttons are the most fundamental GUI component—they trigger actions when clicked.
 
@@ -15036,7 +15028,7 @@ Set_On_Clicked (Button, (procedure (B : access Gtk_Button_Record'Class) is
 - Disable buttons when they're not applicable
 - Provide visual feedback when buttons are clicked
 
-### 1.4.2 Labels
+### 17.4.2 Labels
 
 Labels display static text information to users.
 
@@ -15057,7 +15049,7 @@ Set_Margin_Top (Label, 10);       -- Add top margin
 - Keep text concise and clear
 - Use appropriate font sizes and colors for readability
 
-### 1.4.3 Text Entries
+### 17.4.3 Text Entries
 
 Text entries allow users to input text.
 
@@ -15084,11 +15076,11 @@ Set_Editable (Entry, False);
 - Validate input before processing
 - Provide clear error messages for invalid input
 
-### 1.4.4 Layout Management
+### 17.4.4 Layout Management
 
 Layout management is crucial for creating professional-looking interfaces. GTKAda provides several layout containers:
 
-#### 1.4.4.1 Vertical Box
+#### 17.4.4.1 Vertical Box
 
 ```ada
 Box := Create (Vertical);
@@ -15098,7 +15090,7 @@ Add (Box, Widget2);
 
 Arranges widgets vertically from top to bottom.
 
-#### 1.4.4.2 Horizontal Box
+#### 17.4.4.2 Horizontal Box
 
 ```ada
 Box := Create (Horizontal);
@@ -15108,7 +15100,7 @@ Add (Box, Widget2);
 
 Arranges widgets horizontally from left to right.
 
-#### 1.4.4.3 Grid Layout
+#### 17.4.4.3 Grid Layout
 
 ```ada
 Grid := Create;
@@ -15122,7 +15114,7 @@ Attach (Grid, Widget3, 0, 1, 2, 1);  -- Column 0, Row 1, width 2, height 1
 
 Arranges widgets in a grid pattern with precise control over placement.
 
-### 1.4.5 Common GUI Components Reference Table
+### 17.4.5 Common GUI Components Reference Table
 
 | **Component** | **Purpose** | **Example Use Case** |
 | :--- | :--- | :--- |
@@ -15135,11 +15127,11 @@ Arranges widgets in a grid pattern with precise control over placement.
 | **Scrollable Area** | View large content in small space | Long text, image galleries |
 | **Progress Bar** | Show progress of long operations | File downloads, data processing |
 
-## 1.5 Advanced GUI Features
+## 17.5 Advanced GUI Features
 
 Once you're comfortable with basic components, you can explore more advanced features that make your applications more powerful and user-friendly.
 
-### 1.5.1 Dialog Boxes
+### 17.5.1 Dialog Boxes
 
 Dialog boxes are essential for interactions that require user input or confirmation.
 
@@ -15180,7 +15172,7 @@ end Open_File;
 
 This code creates a file open dialog that lets users select a file from their system. The `Run` procedure displays the dialog and waits for user input, then returns the selected filename.
 
-### 1.5.2 Custom Widgets
+### 17.5.2 Custom Widgets
 
 Sometimes you need widgets that don't exist in standard libraries. GTKAda allows you to create custom widgets:
 
@@ -15208,7 +15200,7 @@ end Custom_Widgets;
 
 This example creates a custom color picker widget that draws a red gradient background. You can extend this to create more complex widgets with user interaction.
 
-### 1.5.3 Theming and Styling
+### 17.5.3 Theming and Styling
 
 GTKAda supports theming to give your applications a professional look:
 
@@ -15234,7 +15226,7 @@ end Style_Window;
 
 This code styles a window with a light gray background, Arial font, and consistent padding. You can create more complex styles using CSS-like syntax.
 
-### 1.5.4 Advanced GUI Features Reference Table
+### 17.5.4 Advanced GUI Features Reference Table
 
 | **Feature** | **Purpose** | **Example Use Case** |
 | :--- | :--- | :--- |
@@ -15245,11 +15237,11 @@ This code styles a window with a light gray background, Arial font, and consiste
 | **Animations** | Add visual feedback | Progress indicators, interactive elements |
 | **Accessibility Features** | Support for users with disabilities | Screen readers, high-contrast modes |
 
-## 1.6 Best Practices for GUI Development
+## 17.6 Best Practices for GUI Development
 
 Following best practices will make your GUI applications more reliable, maintainable, and user-friendly.
 
-### 1.6.1 Separating UI and Logic
+### 17.6.1 Separating UI and Logic
 
 Keep your user interface code separate from your business logic. This makes your code easier to understand and maintain.
 
@@ -15284,7 +15276,7 @@ In this example:
 
 This separation makes it easy to change the UI without affecting business logic, and vice versa.
 
-### 1.6.2 Error Handling in GUIs
+### 17.6.2 Error Handling in GUIs
 
 GUI applications need special error handling to provide good user experiences.
 
@@ -15310,9 +15302,9 @@ Key error handling practices:
 - Validate input before processing
 - Use dialog boxes for important error messages
 
-### 1.6.3 Design Patterns for GUIs
+### 17.6.3 Design Patterns for GUIs
 
-#### 1.6.3.1 Model-View-Controller (MVC)
+#### 17.6.3.1 Model-View-Controller (MVC)
 
 MVC is a common pattern for organizing GUI applications:
 
@@ -15348,7 +15340,7 @@ In this pattern:
 
 This separation makes your code more modular and easier to test.
 
-### 1.6.4 Best Practices Reference Table
+### 17.6.4 Best Practices Reference Table
 
 | **Practice** | **Why It Matters** | **Example** |
 | :--- | :--- | :--- |
@@ -15359,11 +15351,11 @@ This separation makes your code more modular and easier to test.
 | **Accessibility Features** | Works for all users | Screen reader support, high-contrast modes |
 | **Consistent Styling** | Professional appearance | Uniform colors, fonts, and spacing throughout app |
 
-## 1.7 Real-World Examples
+## 17.7 Real-World Examples
 
 Let's look at practical examples of GUI applications built with Ada that solve real problems.
 
-### 1.7.1 Home Automation Controller
+### 17.7.1 Home Automation Controller
 
 A home automation controller lets you manage lights, temperature, and security from a single interface.
 
@@ -15413,7 +15405,7 @@ end Home_Automation;
 
 This simple example demonstrates how to create a home automation interface with switches for lights, labels for temperature, and status indicators for security systems. You could extend this to add more features like scheduling, remote control, and energy usage monitoring.
 
-### 1.7.2 Personal Finance Tracker
+### 17.7.2 Personal Finance Tracker
 
 A personal finance tracker helps users manage their money with a simple interface.
 
@@ -15483,7 +15475,7 @@ You could extend this to add features like:
 - Budget tracking with alerts
 - Data export to CSV or other formats
 
-### 1.7.3 Data Visualization Tool
+### 17.7.3 Data Visualization Tool
 
 A data visualization tool helps users understand complex data through charts and graphs.
 
@@ -15547,11 +15539,11 @@ This example creates a simple bar chart visualization. You could extend this to:
 - Add interactive elements (hover effects, tooltips)
 - Implement data loading from files or databases
 
-## 1.8 Exercises for Readers
+## 17.8 Exercises for Readers
 
 Now it's time to put your knowledge into practice with some hands-on exercises.
 
-### 1.8.1 Exercise 1: Simple Calculator
+### 17.8.1 Exercise 1: Simple Calculator
 
 Create a calculator application with:
 - A display area showing current input and results
@@ -15562,7 +15554,7 @@ Create a calculator application with:
 
 > **Challenge**: Add support for decimal numbers and more complex operations like square root.
 
-#### 1.8.1.1 Solution Guidance
+#### 17.8.1.1 Solution Guidance
 
 Start by creating the basic window structure with a vertical box layout. Add a text entry for the display area, then create buttons for numbers and operations. For the calculation logic:
 - Store the first number and operation when an operator is pressed
@@ -15570,7 +15562,7 @@ Start by creating the basic window structure with a vertical box layout. Add a t
 - Perform the calculation and display the result
 - Handle division by zero with an error message
 
-### 1.8.2 Exercise 2: Personal Contact Manager
+### 17.8.2 Exercise 2: Personal Contact Manager
 
 Create a contact management application with:
 - A form for adding new contacts (name, phone, email)
@@ -15580,7 +15572,7 @@ Create a contact management application with:
 
 > **Challenge**: Add search functionality and contact categorization.
 
-#### 1.8.2.1 Solution Guidance
+#### 17.8.2.1 Solution Guidance
 
 Create a form with text entries for name, phone, and email. Add a "Save" button that adds the contact to a list. For the list view:
 - Use a `Gtk_Tree_View` with columns for name, phone, and email
@@ -15588,7 +15580,7 @@ Create a form with text entries for name, phone, and email. Add a "Save" button 
 - Add buttons to edit and delete selected contacts
 - Implement file saving and loading using Ada's text file operations
 
-### 1.8.3 Exercise 3: Weather Data Viewer
+### 17.8.3 Exercise 3: Weather Data Viewer
 
 Create a weather data application that:
 - Displays current temperature and conditions
@@ -15598,7 +15590,7 @@ Create a weather data application that:
 
 > **Challenge**: Add weather alerts and historical data comparison.
 
-#### 1.8.3.1 Solution Guidance
+#### 17.8.3.1 Solution Guidance
 
 Start with a simple interface showing temperature and conditions. For the forecast chart:
 - Use a `Gtk_Drawing_Area` to draw bar charts for high/low temperatures
@@ -15606,25 +15598,25 @@ Start with a simple interface showing temperature and conditions. For the foreca
 - Add a text entry for location search
 - Implement error handling for network issues or invalid locations
 
-## 1.9 Next Steps for GUI Development in Ada
+## 17.9 Next Steps for GUI Development in Ada
 
 Now that you've learned the basics of GUI development in Ada, here's how to continue your journey.
 
-### 1.9.1 Explore Advanced GUI Features
+### 17.9.1 Explore Advanced GUI Features
 
 - **Drag and drop**: Allow users to move items between lists or windows
 - **Animations**: Add visual feedback for user interactions
 - **Custom widgets**: Create specialized UI elements for your needs
 - **Accessibility features**: Make your applications usable for everyone
 
-### 1.9.2 Integrate with Ada's Other Features
+### 17.9.2 Integrate with Ada's Other Features
 
 - **Concurrency**: Use tasks to keep your UI responsive during long operations
 - **Networking**: Build applications that communicate over networks
 - **Database access**: Store and retrieve data from databases
 - **File I/O**: Read and write files for data storage
 
-### 1.9.3 Join the Ada Community
+### 17.9.3 Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore Forums**: For technical support and discussions
@@ -15632,7 +15624,7 @@ The Ada community is active and supportive. Join:
 - **Ada mailing lists**: For discussions and questions
 - **Ada conferences**: Events like Ada Europe
 
-### 1.9.4 Build Real-World Applications
+### 17.9.4 Build Real-World Applications
 
 Start with small projects and gradually build more complex applications:
 - A home automation controller
@@ -15641,7 +15633,7 @@ Start with small projects and gradually build more complex applications:
 - A simple game
 - A custom tool for your specific needs
 
-## 1.10 Conclusion: The Power of GUI Development in Ada
+## 17.10 Conclusion: The Power of GUI Development in Ada
 
 > "GUI development in Ada isn't just for aerospace engineers—it's about creating intuitive interfaces for everyday applications like home automation systems and personal finance tools. With Ada's strong typing and reliability features, you can build user-friendly applications that are both safe and maintainable."
 
@@ -15667,7 +15659,7 @@ When you think of distributed systems, you might imagine complex aerospace contr
 
 This chapter explores how to build distributed systems in Ada using practical, everyday examples. You'll learn to create client-server applications, handle network communication, and build systems that work together seamlessly—whether you're developing a home automation system, a multiplayer game, or a simple data collection tool. You'll discover how Ada's strong typing, tasking capabilities, and exception handling make distributed programming more reliable and less error-prone than in many other languages.
 
-## 1.1 Why Distributed Systems Matter for Everyday Applications
+## 18.1 Why Distributed Systems Matter for Everyday Applications
 
 Distributed systems are fundamental to modern technology, but they're often invisible to end users. Consider these common scenarios:
 
@@ -15690,7 +15682,7 @@ Ada excels in this environment because it provides:
 
 Unlike many languages where distributed programming requires complex libraries and frameworks, Ada provides these capabilities directly in the language—making it accessible to beginners while still powerful enough for complex systems.
 
-### 1.1.1 Distributed Systems vs. Traditional Applications
+### 18.1.1 Distributed Systems vs. Traditional Applications
 
 | **Aspect** | **Traditional Application** | **Distributed System** |
 | :--- | :--- | :--- |
@@ -15700,11 +15692,11 @@ Unlike many languages where distributed programming requires complex libraries a
 | **Scalability** | Limited by single machine resources | Can scale across multiple machines |
 | **Complexity** | Simpler to develop and debug | More complex due to network interactions |
 
-## 1.2 Basic Concepts of Distributed Systems
+## 18.2 Basic Concepts of Distributed Systems
 
 Before diving into code, let's understand the fundamental concepts of distributed systems.
 
-### 1.2.1 Client-Server Model
+### 18.2.1 Client-Server Model
 
 The most common distributed system architecture is the client-server model:
 - **Server**: A central program that provides services
@@ -15715,7 +15707,7 @@ This model is used in everyday applications like:
 - Email clients connecting to mail servers
 - Smart home devices connecting to a central hub
 
-### 1.2.2 Message Passing
+### 18.2.2 Message Passing
 
 In distributed systems, components communicate by sending messages over networks. These messages can be:
 - Simple commands ("Turn on lights")
@@ -15724,7 +15716,7 @@ In distributed systems, components communicate by sending messages over networks
 
 Message passing is fundamental to distributed systems because it allows components to communicate without knowing each other's internal details.
 
-### 1.2.3 Network Communication Basics
+### 18.2.3 Network Communication Basics
 
 Distributed systems rely on network protocols to communicate:
 - **TCP/IP**: Reliable, connection-oriented communication
@@ -15733,7 +15725,7 @@ Distributed systems rely on network protocols to communicate:
 
 Ada provides libraries for all these protocols, but for beginners, TCP/IP is the best starting point because it's reliable and widely used.
 
-### 1.2.4 Key Challenges in Distributed Systems
+### 18.2.4 Key Challenges in Distributed Systems
 
 Distributed systems face several challenges that single-machine applications don't:
 - **Network failures**: Connections can drop unexpectedly
@@ -15747,15 +15739,15 @@ Ada helps address these challenges through:
 - Strong typing to prevent data corruption
 - Reliable communication protocols
 
-## 1.3 Ada's Networking Capabilities
+## 18.3 Ada's Networking Capabilities
 
 Ada provides several libraries for network communication, but the most accessible for beginners is GNAT.Sockets. This package provides a straightforward interface for TCP/IP communication.
 
-### 1.3.1 Setting Up Your Environment
+### 18.3.1 Setting Up Your Environment
 
 Before you can start building distributed systems, you need to set up your development environment:
 
-#### 1.3.1.1 Windows
+#### 18.3.1.1 Windows
 1. Download GNAT Community Edition from [AdaCore's website](https://www.adacore.com/download)
 2. During installation, select "GNAT.Sockets" component
 3. Verify installation by opening Command Prompt and running:
@@ -15764,7 +15756,7 @@ Before you can start building distributed systems, you need to set up your devel
    ```
    You should see GNAT.Sockets version information in the output.
 
-#### 1.3.1.2 macOS
+#### 18.3.1.2 macOS
 1. Install Homebrew if you haven't already:
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -15778,7 +15770,7 @@ Before you can start building distributed systems, you need to set up your devel
    gnatls --version
    ```
 
-#### 1.3.1.3 Linux (Ubuntu/Debian)
+#### 18.3.1.3 Linux (Ubuntu/Debian)
 1. Install GNAT:
    ```bash
    sudo apt update
@@ -15789,7 +15781,7 @@ Before you can start building distributed systems, you need to set up your devel
    gnatls --version
    ```
 
-### 1.3.2 Creating Your First Network Project
+### 18.3.2 Creating Your First Network Project
 
 Let's create a simple project structure:
 
@@ -15823,7 +15815,7 @@ This project file:
 - Defines the main program file
 - Configures compiler and linker options for networking
 
-### 1.3.3 Testing Your Setup
+### 18.3.3 Testing Your Setup
 
 Create a simple "Hello World" network program to verify your installation:
 
@@ -15859,13 +15851,13 @@ gnatmake -P distributed_example.gpr
 
 This simple program attempts to connect to a server on port 8080. Since we haven't created a server yet, it will fail—but this confirms your environment is set up correctly for networking.
 
-## 1.4 Building Your First Distributed System
+## 18.4 Building Your First Distributed System
 
 Now that your environment is ready, let's create a distributed calculator application. This system will have:
 - A server that performs calculations
 - A client that sends calculation requests to the server
 
-### 1.4.1 Step 1: Create the Server
+### 18.4.1 Step 1: Create the Server
 
 First, we'll create the server that listens for connections and processes requests:
 
@@ -16024,7 +16016,7 @@ This server:
 - Sends results back to clients
 - Handles errors gracefully
 
-### 1.4.2 Step 2: Create the Client
+### 18.4.2 Step 2: Create the Client
 
 Now let's create the client that sends commands to the server:
 
@@ -16057,7 +16049,7 @@ This client:
 - Sends a calculation command
 - Receives and displays the result
 
-### 1.4.3 Step 3: Build and Test
+### 18.4.3 Step 3: Build and Test
 
 First, build the server:
 
@@ -16091,7 +16083,7 @@ Server response: Result:  8.00000E+00
 
 This confirms your distributed system is working correctly!
 
-### 1.4.4 Understanding the Code
+### 18.4.4 Understanding the Code
 
 Let's break down the key elements:
 
@@ -16107,11 +16099,11 @@ Let's break down the key elements:
 
 This simple example demonstrates how distributed systems work in practice—components communicate over networks to solve problems together.
 
-## 1.5 Handling Failures in Distributed Systems
+## 18.5 Handling Failures in Distributed Systems
 
 Distributed systems must handle network failures gracefully. Let's enhance our calculator system to handle common failure scenarios.
 
-### 1.5.1 Timeouts
+### 18.5.1 Timeouts
 
 Network operations can hang indefinitely if the server doesn't respond. Let's add timeouts to our client:
 
@@ -16164,7 +16156,7 @@ This client:
 - Times out after 5 seconds if no response arrives
 - Checks for available data before attempting to receive
 
-### 1.5.2 Connection Errors
+### 18.5.2 Connection Errors
 
 Let's handle connection errors in the client:
 
@@ -16206,13 +16198,13 @@ This client:
 - Provides clear error messages for users
 - Handles unexpected errors gracefully
 
-## 1.6 Building a Distributed Home Automation System
+## 18.6 Building a Distributed Home Automation System
 
 Let's create a more practical example: a distributed home automation system. This system will:
 - Have a central server that controls lights and temperature
 - Have client devices (like a phone app) that send commands to the server
 
-### 1.6.1 Step 1: Create the Home Automation Server
+### 18.6.1 Step 1: Create the Home Automation Server
 
 ```ada
 -- src/home_automation_server.adb
@@ -16299,7 +16291,7 @@ This server:
 - Validates inputs to prevent invalid values
 - Sends appropriate responses to clients
 
-### 1.6.2 Step 2: Create the Home Automation Client
+### 18.6.2 Step 2: Create the Home Automation Client
 
 ```ada
 -- src/home_automation_client.adb
@@ -16348,7 +16340,7 @@ This client:
 - Displays server responses
 - Exits when the user types "QUIT"
 
-### 1.6.3 Step 3: Build and Test
+### 18.6.3 Step 3: Build and Test
 
 First, build and run the server:
 
@@ -16385,11 +16377,11 @@ Enter command: QUIT
 
 This simple system demonstrates how distributed systems work in practice—multiple components working together to control a real-world system.
 
-## 1.7 Handling Multiple Clients Concurrently
+## 18.7 Handling Multiple Clients Concurrently
 
 Our current server can only handle one client at a time. Let's enhance it to handle multiple clients concurrently using Ada's tasking features.
 
-### 1.7.1 Step 1: Create a Task for Each Client
+### 18.7.1 Step 1: Create a Task for Each Client
 
 ```ada
 -- src/home_automation_server_concurrent.adb
@@ -16490,7 +16482,7 @@ This server:
 - Handles multiple clients simultaneously
 - Maintains shared state (light state and temperature) across clients
 
-### 1.7.2 Step 2: Test with Multiple Clients
+### 18.7.2 Step 2: Test with Multiple Clients
 
 Now you can run multiple client instances and interact with the server simultaneously:
 
@@ -16524,11 +16516,11 @@ Server response: Lights: On, Temperature:  2.50000E+01°C
 
 This demonstrates how distributed systems can handle multiple users simultaneously—a critical capability for real-world applications.
 
-## 1.8 Best Practices for Distributed Systems in Ada
+## 18.8 Best Practices for Distributed Systems in Ada
 
 Following best practices will make your distributed systems more reliable, maintainable, and scalable.
 
-### 1.8.1 Separating Concerns
+### 18.8.1 Separating Concerns
 
 Keep your networking code separate from your business logic. This makes your code easier to understand and maintain.
 
@@ -16555,7 +16547,7 @@ This separation:
 - Makes business logic easier to test
 - Reduces complexity in both areas
 
-### 1.8.2 Error Handling
+### 18.8.2 Error Handling
 
 Always handle network errors gracefully. Never assume connections will always succeed.
 
@@ -16595,7 +16587,7 @@ Key error handling practices:
 - Implement retry logic for transient errors
 - Log errors for debugging and monitoring
 
-### 1.8.3 Security Considerations
+### 18.8.3 Security Considerations
 
 Even simple distributed systems need security considerations:
 
@@ -16630,7 +16622,7 @@ Basic security practices:
 - Avoid sending sensitive information in plain text
 - Implement authentication for privileged operations
 
-### 1.8.4 Scalability Considerations
+### 18.8.4 Scalability Considerations
 
 As your system grows, consider scalability:
 
@@ -16681,11 +16673,11 @@ Scalability practices:
 - Use database storage for persistent data
 - Implement caching for frequently accessed data
 
-## 1.9 Real-World Distributed Systems Examples
+## 18.9 Real-World Distributed Systems Examples
 
 Let's explore practical examples of distributed systems built with Ada.
 
-### 1.9.1 Smart Home Controller
+### 18.9.1 Smart Home Controller
 
 A smart home controller manages lights, temperature, and security across multiple rooms:
 
@@ -16805,7 +16797,7 @@ This system:
 - Provides detailed status reports
 - Handles invalid inputs gracefully
 
-### 1.9.2 Multiplayer Game Server
+### 18.9.2 Multiplayer Game Server
 
 A simple multiplayer game server that tracks player positions:
 
@@ -16929,11 +16921,11 @@ This system:
 - Handles join and movement commands
 - Provides status reports
 
-## 1.10 Exercises for Readers
+## 18.10 Exercises for Readers
 
 Now it's time to put your knowledge into practice with some hands-on exercises.
 
-### 1.10.1 Exercise 1: Distributed Calculator with Tasking
+### 18.10.1 Exercise 1: Distributed Calculator with Tasking
 
 Create a distributed calculator system that:
 - Uses Ada tasking to handle multiple clients concurrently
@@ -16943,7 +16935,7 @@ Create a distributed calculator system that:
 
 > **Challenge**: Add support for more complex operations like square root and exponentiation.
 
-#### 1.10.1.1 Solution Guidance
+#### 18.10.1.1 Solution Guidance
 
 Start by creating a task type for handling client connections:
 
@@ -16983,7 +16975,7 @@ end loop;
 
 Implement error handling for division by zero and invalid inputs. Add a timeout mechanism using Ada's `delay` statement.
 
-### 1.10.2 Exercise 2: Distributed Home Automation System
+### 18.10.2 Exercise 2: Distributed Home Automation System
 
 Create a distributed home automation system that:
 - Controls multiple rooms with lights and temperature
@@ -16993,7 +16985,7 @@ Create a distributed home automation system that:
 
 > **Challenge**: Add support for scheduling (e.g., "Turn on lights at 6 PM").
 
-#### 1.10.2.1 Solution Guidance
+#### 18.10.2.1 Solution Guidance
 
 Start by creating data structures for your home state:
 
@@ -17028,7 +17020,7 @@ end if;
 
 Implement a status command that returns the current state of all rooms.
 
-### 1.10.3 Exercise 3: Multiplayer Game Server
+### 18.10.3 Exercise 3: Multiplayer Game Server
 
 Create a multiplayer game server that:
 - Tracks player positions in a 2D world
@@ -17038,7 +17030,7 @@ Create a multiplayer game server that:
 
 > **Challenge**: Add collision detection to prevent players from moving through walls.
 
-#### 1.10.3.1 Solution Guidance
+#### 18.10.3.1 Solution Guidance
 
 Start by defining player data structures:
 
@@ -17095,25 +17087,25 @@ end if;
 
 Implement collision detection by checking new positions against predefined walls.
 
-## 1.11 Next Steps for Distributed Systems in Ada
+## 18.11 Next Steps for Distributed Systems in Ada
 
 Now that you've learned the basics of distributed systems in Ada, here's how to continue your journey.
 
-### 1.11.1 Explore Advanced Networking Features
+### 18.11.1 Explore Advanced Networking Features
 
 - **UDP for real-time applications**: Faster communication for games and streaming
 - **HTTP for web services**: Create RESTful APIs for web integration
 - **WebSockets for bidirectional communication**: Real-time updates for chat applications
 - **Encryption for secure communication**: Protect sensitive data with SSL/TLS
 
-### 1.11.2 Integrate with Other Ada Features
+### 18.11.2 Integrate with Other Ada Features
 
 - **Tasking for concurrent operations**: Handle multiple clients efficiently
 - **Exception handling for robustness**: Gracefully handle network failures
 - **Strong typing for reliability**: Prevent data corruption and invalid inputs
 - **Distributed Systems Annex**: Advanced features for large-scale systems
 
-### 1.11.3 Join the Ada Community
+### 18.11.3 Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore Forums**: For technical support and discussions
@@ -17121,7 +17113,7 @@ The Ada community is active and supportive. Join:
 - **Ada mailing lists**: For discussions and questions
 - **Ada conferences**: Events like Ada Europe
 
-### 1.11.4 Build Real-World Applications
+### 18.11.4 Build Real-World Applications
 
 Start with small projects and gradually build more complex applications:
 - A chat application for friends
@@ -17129,7 +17121,7 @@ Start with small projects and gradually build more complex applications:
 - A simple online store
 - A distributed sensor network
 
-## 1.12 Conclusion: The Power of Distributed Systems in Ada
+## 18.12 Conclusion: The Power of Distributed Systems in Ada
 
 > "Distributed systems aren't just for aerospace engineers—they're the backbone of everyday applications like smart homes, online games, and cloud services. Ada's reliability features make it an excellent choice for building distributed systems that are both robust and maintainable."
 
@@ -17156,7 +17148,7 @@ Scientific computing forms the backbone of modern research and engineering, enab
 
 > "The combination of Ada's strong typing and generic programming allows for writing highly reusable and type-safe numerical code, reducing the likelihood of subtle bugs that plague other languages." — John Doe, Software Engineer
 
-## 1.1 Why Ada for Scientific Computing?
+## 19.1 Why Ada for Scientific Computing?
 
 Ada was designed for large-scale, reliable systems, but its strengths extend far beyond aerospace and defense. For scientific computing, Ada provides:
 
@@ -17168,7 +17160,7 @@ Ada was designed for large-scale, reliable systems, but its strengths extend far
 
 While Python excels in rapid prototyping and has rich libraries like NumPy and SciPy, its dynamic typing and GIL-limited parallelism can lead to subtle bugs and poor performance for CPU-bound tasks. C++ offers performance but requires careful memory management and lacks built-in safety features. Fortran remains popular in legacy scientific code but struggles with modern software engineering practices like abstraction and modularity. Ada bridges these gaps by combining high-level expressiveness with low-level control.
 
-### 1.1.1 Key Ada Features for Scientific Workflows
+### 19.1.1 Key Ada Features for Scientific Workflows
 
 | **Feature** | **Ada** | **C++** | **Python** | **Fortran** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -17182,11 +17174,11 @@ While Python excels in rapid prototyping and has rich libraries like NumPy and S
 
 This table highlights Ada's competitive advantages. For example, when simulating fluid dynamics, Ada's fixed-point types prevent accumulated rounding errors in pressure calculations, while its tasking model efficiently utilizes multi-core CPUs without the complexity of C++ thread management. Unlike Python, Ada doesn't suffer from the Global Interpreter Lock (GIL), enabling true parallelism for compute-intensive tasks.
 
-## 1.2 Numerical Methods in Ada
+## 19.2 Numerical Methods in Ada
 
 Scientific computing relies heavily on numerical methods to solve mathematical problems that lack analytical solutions. Ada provides robust tools for implementing these methods safely and efficiently.
 
-### 1.2.1 Linear Algebra Operations
+### 19.2.1 Linear Algebra Operations
 
 Matrix operations are fundamental in physics simulations, machine learning, and engineering. Ada's `Ada.Numerics.Generic_Real_Arrays` package offers type-safe matrix and vector operations. Here's a complete example of matrix multiplication:
 
@@ -17253,7 +17245,7 @@ begin
 end Lapack_Example;
 ```
 
-### 1.2.2 Ordinary Differential Equations
+### 19.2.2 Ordinary Differential Equations
 
 ODEs model dynamic systems like planetary motion or chemical reactions. Ada's standard library includes basic ODE solvers, but for production use, third-party libraries like `Ada_Sci` or `GSL` bindings are recommended. Here's a Runge-Kutta 4th-order implementation for a simple pendulum:
 
@@ -17326,7 +17318,7 @@ procedure Backward_Euler (Y : in out Float; T : in out Float; Step : Float) is
    end Backward_Euler;
 ```
 
-### 1.2.3 Numerical Integration
+### 19.2.3 Numerical Integration
 
 Integrating functions numerically is essential for physics simulations and statistics. Ada provides straightforward implementations for common methods:
 
@@ -17384,11 +17376,11 @@ Y : Money := 2.34;
 Z : Money := X + Y;  -- Exact decimal arithmetic
 ```
 
-## 1.3 Data Handling and Visualization
+## 19.3 Data Handling and Visualization
 
 Scientific applications process diverse data formats—from CSV files to HDF5 datasets. Ada provides tools for efficient, type-safe data handling.
 
-### 1.3.1 Reading and Writing Data
+### 19.3.1 Reading and Writing Data
 
 The standard `Ada.Text_IO` package handles basic file operations, but for structured data, GNATCOLL simplifies parsing:
 
@@ -17452,7 +17444,7 @@ begin
 end HDF5_Example;
 ```
 
-### 1.3.2 Data Visualization
+### 19.3.2 Data Visualization
 
 While Ada lacks built-in plotting libraries, it integrates seamlessly with Python's Matplotlib via GNATCOLL.Python:
 
@@ -17502,7 +17494,7 @@ begin
 end Simple_Plot;
 ```
 
-### 1.3.3 Data Processing Pipelines
+### 19.3.3 Data Processing Pipelines
 
 Scientific workflows often involve multi-stage data processing. Ada's packages enable clean, modular design:
 
@@ -17525,11 +17517,11 @@ end Data_Processing;
 
 This structure ensures type safety: `Load` and `Save` handle file I/O, while `Filter` processes data without exposing raw file handles. Each component can be tested independently, reducing integration errors.
 
-## 1.4 Parallel Computing with Ada
+## 19.4 Parallel Computing with Ada
 
 Scientific simulations often require parallelism to handle large datasets or complex calculations. Ada's tasking model provides safe, efficient concurrency without the pitfalls of thread-based programming.
 
-### 1.4.1 Basic Tasking
+### 19.4.1 Basic Tasking
 
 Ada tasks are lightweight threads with built-in synchronization. Here's a parallel matrix multiplication example using tasks:
 
@@ -17572,7 +17564,7 @@ end Parallel_Multiply;
 
 Each task computes one cell of the result matrix. Tasks are created on demand and automatically synchronized through the `Start` entry.
 
-### 1.4.2 Protected Objects for Safe Shared State
+### 19.4.2 Protected Objects for Safe Shared State
 
 When multiple tasks need to access shared data, protected objects ensure mutual exclusion:
 
@@ -17599,7 +17591,7 @@ end Counter;
 
 This protected object safely increments a counter across multiple tasks without explicit locks. Compare this to C++'s `std::mutex`, which requires manual lock/unlock and risks deadlocks if misused.
 
-### 1.4.3 Ada 2022 Parallel Loops
+### 19.4.3 Ada 2022 Parallel Loops
 
 Ada 2022 introduced parallel loops, simplifying parallelism for loop-based computations:
 
@@ -17623,7 +17615,7 @@ end Parallel_Monte_Carlo;
 
 The `parallel` keyword automatically distributes loop iterations across available cores. This syntax is cleaner than manual task management and avoids common concurrency pitfalls.
 
-### 1.4.4 Performance Considerations
+### 19.4.4 Performance Considerations
 
 Parallelism isn't always beneficial. For small datasets, task creation overhead may outweigh gains. Always profile before parallelizing:
 
@@ -17652,9 +17644,9 @@ begin
 end Monitor_Tasks;
 ```
 
-## 1.5 Case Studies
+## 19.5 Case Studies
 
-### 1.5.1 Case Study 1: Heat Equation Simulation
+### 19.5.1 Case Study 1: Heat Equation Simulation
 
 The heat equation models temperature distribution over time. Using finite differences and parallel processing:
 
@@ -17691,7 +17683,7 @@ end Heat_Equation;
 
 This implementation uses Ada 2022's `parallel` loop for the outer dimension, allowing each row to be updated concurrently. The inner loop remains sequential to avoid race conditions.
 
-### 1.5.2 Case Study 2: Monte Carlo Pi Estimation
+### 19.5.2 Case Study 2: Monte Carlo Pi Estimation
 
 Monte Carlo methods use random sampling for numerical integration. Here's a parallelized version:
 
@@ -17720,9 +17712,9 @@ end Monte_Carlo_Pi;
 
 GNATCOLL's `Atomic_Natural` ensures thread-safe increments without locks, making this implementation both safe and efficient.
 
-## 1.6 Best Practices for Scientific Computing in Ada
+## 19.6 Best Practices for Scientific Computing in Ada
 
-### 1.6.1 Type Safety and Precision
+### 19.6.1 Type Safety and Precision
 
 Define specific types for physical quantities to prevent unit errors:
 
@@ -17744,7 +17736,7 @@ This approach catches errors like adding meters to seconds at compile time. For 
 type High_Precision is delta 0.000001 digits 15;
 ```
 
-### 1.6.2 Modular Design
+### 19.6.2 Modular Design
 
 Break scientific workflows into reusable packages:
 
@@ -17761,7 +17753,7 @@ end Euler_Solver;
 
 This structure allows swapping solvers (e.g., Euler vs. Runge-Kutta) without modifying client code.
 
-### 1.6.3 Testing and Validation
+### 19.6.3 Testing and Validation
 
 Use unit tests to validate numerical algorithms:
 
@@ -17783,7 +17775,7 @@ end Test_Runge_Kutta;
 
 GNATtest automates test execution and reporting.
 
-### 1.6.4 Performance Optimization
+### 19.6.4 Performance Optimization
 
 - Use `pragma Profile` to identify bottlenecks
 - Avoid dynamic memory allocation in inner loops
@@ -17802,7 +17794,7 @@ begin
 end Add_Matrices;
 ```
 
-### 1.6.5 Documentation and Code Reuse
+### 19.6.5 Documentation and Code Reuse
 
 Document assumptions and limitations:
 
@@ -17817,26 +17809,26 @@ procedure Solve_Poisson (Grid : in out Grid_Type; Max_Iterations : Positive);
 
 Use `--!` comments for automatic documentation generation with GNATdoc.
 
-## 1.7 Resources and Further Learning
+## 19.7 Resources and Further Learning
 
-### 1.7.1 Core Libraries
+### 19.7.1 Core Libraries
 
 - **GNAT Community Edition**: Free Ada compiler with scientific libraries (https://adacore.com/download)
 - **GNATCOLL**: Collection of scientific and utility libraries (https://github.com/AdaCore/gnatcoll-core)
 - **Ada.Numerics**: Standard numeric package documentation (https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Numerics.html)
 
-### 1.7.2 Books
+### 19.7.2 Books
 
 - *Ada 2022: The Craft of Programming* by John Barnes (covers numerical methods in Ada)
 - *Scientific Computing with Python and Ada* by Michael B. Feldman (comparative analysis)
 
-### 1.7.3 Online Communities
+### 19.7.3 Online Communities
 
 - **Ada-Europe**: Professional organization (https://ada-europe.org)
 - **Reddit r/Ada**: Active community for discussions (https://reddit.com/r/Ada)
 - **Stack Overflow**: Tagged questions (https://stackoverflow.com/questions/tagged/ada)
 
-### 1.7.4 Advanced Topics
+### 19.7.4 Advanced Topics
 
 - **GPU Acceleration**: Use OpenCL bindings for parallel GPU computing
 - **Distributed Computing**: MPI bindings for cluster-scale simulations
@@ -17844,7 +17836,7 @@ Use `--!` comments for automatic documentation generation with GNATdoc.
 
 > "Ada's combination of safety, precision, and performance makes it uniquely suited for scientific computing where errors can propagate and distort results. Its strong typing prevents subtle bugs that plague other languages, while its concurrency model scales efficiently across modern hardware." — Dr. Alan Turing (hypothetical quote for emphasis)
 
-## 1.8 Conclusion
+## 19.8 Conclusion
 
 Scientific computing in Ada offers a compelling alternative to traditional languages like Python and Fortran. By leveraging Ada's strong typing, modular design, and built-in concurrency, developers can build reliable, high-performance scientific applications without sacrificing productivity. While Python excels in rapid prototyping, Ada provides the safety and precision needed for production-grade simulations where correctness is paramount. Whether you're solving differential equations, processing large datasets, or simulating physical systems, Ada's toolset ensures your results are accurate, reproducible, and efficient.
 
@@ -17858,7 +17850,7 @@ Multi-core processors are now ubiquitous, with even consumer devices featuring m
 
 > "The key to effective multi-core programming is not just parallelism, but safe and predictable parallelism. Ada's design ensures that race conditions are impossible by construction." — Dr. John Barnes
 
-## 1.1 Why Ada for Multi-Core Programming?
+## 20.1 Why Ada for Multi-Core Programming?
 
 Ada's concurrency model was designed from the ground up to handle multi-core systems safely. This section compares Ada's approach to other popular languages to highlight its advantages.
 
@@ -17873,9 +17865,9 @@ Ada's concurrency model was designed from the ground up to handle multi-core sys
 
 This table underscores Ada's strengths. For example, while Python's Global Interpreter Lock (GIL) prevents true parallelism in CPU-bound tasks, Ada's tasks run natively on multiple cores without such limitations. C++ offers high performance but requires meticulous manual management of threads and synchronization, leading to subtle bugs. Java provides built-in concurrency but still suffers from race conditions due to its object-oriented synchronization model. Ada's protected objects and task entries ensure safe access to shared data with minimal developer effort.
 
-## 1.2 Core Concepts: Tasks and Protected Objects
+## 20.2 Core Concepts: Tasks and Protected Objects
 
-### 1.2.1 Tasks: The Foundation of Parallelism
+### 20.2.1 Tasks: The Foundation of Parallelism
 
 In Ada, a task is a concurrent thread of execution. Tasks are declared using the `task` or `task type` keywords and can communicate via entries or protected objects.
 
@@ -17918,7 +17910,7 @@ begin
 end;
 ```
 
-### 1.2.2 Protected Objects: Safe Shared Data
+### 20.2.2 Protected Objects: Safe Shared Data
 
 Protected objects provide mutual exclusion for shared data without explicit locks. They are ideal for synchronizing access to shared resources across multiple tasks.
 
@@ -17944,7 +17936,7 @@ end Counter;
 
 This `Counter` protected object safely increments and retrieves a counter value across concurrent tasks. Protected procedures (like `Increment`) run with mutual exclusion, ensuring no two tasks modify the data simultaneously.
 
-### 1.2.3 Example: Producer-Consumer Problem
+### 20.2.3 Example: Producer-Consumer Problem
 
 The classic producer-consumer problem demonstrates synchronization between tasks. Here's an Ada implementation using a protected buffer:
 
@@ -18016,7 +18008,7 @@ end;
 
 This implementation uses a circular buffer protected by a `Buffer` object. The producer and consumer tasks synchronize via the `Put` and `Get` procedures, ensuring no race conditions.
 
-## 1.3 Task Entries and Barriers
+## 20.3 Task Entries and Barriers
 
 Task entries provide a structured way to communicate between tasks. Entries can include barriers that control when the entry is available.
 
@@ -18040,7 +18032,7 @@ end Sensor;
 
 The `when` clause creates a barrier that prevents the `Read` entry from being accepted until `Current_Data > 0.5`. This ensures data validity without busy-waiting.
 
-### 1.3.1 Barrier-Driven Synchronization Example
+### 20.3.1 Barrier-Driven Synchronization Example
 
 ```ada
 task type Controller is
@@ -18068,7 +18060,7 @@ end;
 
 This example demonstrates how barriers can enforce temporal constraints in concurrent systems. The `Controller` task only receives valid sensor data, avoiding erroneous processing.
 
-## 1.4 Parallel Loops in Ada 2022
+## 20.4 Parallel Loops in Ada 2022
 
 Ada 2022 introduced parallel loops, simplifying parallel execution of loop iterations. This feature automatically distributes iterations across available cores.
 
@@ -18111,7 +18103,7 @@ end Parallel_Multiply;
 
 This parallel matrix multiplication distributes the outer loop (rows) across cores, while the inner loops remain sequential to avoid race conditions. The `parallel` keyword is applied to the outer loop for optimal performance.
 
-### 1.4.1 Parallel Loop Optimization Techniques
+### 20.4.1 Parallel Loop Optimization Techniques
 
 Parallel loops can be optimized using the `pragma Tasking` directive:
 
@@ -18136,11 +18128,11 @@ end loop;
 
 This directive helps balance workloads when tasks have varying computational costs.
 
-## 1.5 Task Scheduling and Performance Considerations
+## 20.5 Task Scheduling and Performance Considerations
 
 Ada's task scheduler dynamically distributes tasks across available cores. However, performance depends on task granularity and scheduling policies.
 
-### 1.5.1 Task Granularity
+### 20.5.1 Task Granularity
 
 Fine-grained tasks (e.g., one task per element in a large array) can lead to high overhead. Coarse-grained tasks (e.g., one task per row in a matrix) balance parallelism and overhead.
 
@@ -18158,7 +18150,7 @@ for I in 1..10 parallel loop
 end loop;
 ```
 
-### 1.5.2 Scheduling Policies
+### 20.5.2 Scheduling Policies
 
 Ada allows specifying task priorities and scheduling policies:
 
@@ -18191,7 +18183,7 @@ begin
 end Monitor_Tasks;
 ```
 
-### 1.5.3 Real-World Scheduling Example
+### 20.5.3 Real-World Scheduling Example
 
 ```ada
 with System; use System;
@@ -18236,7 +18228,7 @@ end Scheduler_Example;
 
 This example demonstrates how priority-based scheduling works. The high-priority task completes before the low-priority task, even though both started simultaneously.
 
-## 1.6 Case Study: Parallel Image Processing
+## 20.6 Case Study: Parallel Image Processing
 
 Processing large images benefits from parallelization. Here's a grayscale conversion example:
 
@@ -18293,7 +18285,7 @@ end Process_Image;
 
 Each row is processed in parallel, leveraging multi-core CPUs for faster processing. The `parallel` keyword on the outer loop ensures that each row is processed independently across available cores.
 
-### 1.6.1 Performance Comparison
+### 20.6.1 Performance Comparison
 
 | **Approach** | **Single-Core Time** | **4-Core Time** | **Speedup** |
 | :--- | :--- | :--- | :--- |
@@ -18304,7 +18296,7 @@ Each row is processed in parallel, leveraging multi-core CPUs for faster process
 
 This table shows Ada's competitive performance in real-world image processing tasks. While C++ with OpenMP achieves similar speedup, Ada provides stronger safety guarantees and avoids common concurrency pitfalls.
 
-## 1.7 Case Study: Monte Carlo Pi Estimation
+## 20.7 Case Study: Monte Carlo Pi Estimation
 
 Monte Carlo methods are ideal for parallelization due to their independent random samples:
 
@@ -18333,7 +18325,7 @@ end Monte_Carlo_Pi;
 
 Each iteration is independent, making it perfect for parallel execution. The `Atomic_Natural` ensures safe incrementing of the `Inside` counter.
 
-### 1.7.1 Advanced Monte Carlo Implementation
+### 20.7.1 Advanced Monte Carlo Implementation
 
 For larger-scale simulations, use distributed tasking:
 
@@ -18391,11 +18383,11 @@ end Distributed_Monte_Carlo;
 
 This implementation divides work among multiple tasks, each processing a portion of the samples. Results are collected via `Result` entries, ensuring safe aggregation.
 
-## 1.8 Debugging Multi-Core Programs
+## 20.8 Debugging Multi-Core Programs
 
 Debugging parallel programs is challenging due to non-deterministic behavior. Ada provides tools to help:
 
-### 1.8.1 Using GNAT Debugging Tools
+### 20.8.1 Using GNAT Debugging Tools
 
 GNAT's debugger (GDB) can inspect tasks:
 
@@ -18406,7 +18398,7 @@ GNAT's debugger (GDB) can inspect tasks:
   2    task 0x7f7c9e000001  0x00007f7c9e000001 in ?? ()
 ```
 
-### 1.8.2 Common Pitfalls and Fixes
+### 20.8.2 Common Pitfalls and Fixes
 
 **Race Condition Example:**
 
@@ -18452,7 +18444,7 @@ end B;
 
 This causes a deadlock because tasks wait for each other. Fix by using reentrant protected objects or avoiding circular dependencies.
 
-### 1.8.3 Debugging Tool Example
+### 20.8.3 Debugging Tool Example
 
 ```ada
 with Ada.Task_Identification; use Ada.Task_Identification;
@@ -18489,9 +18481,9 @@ end Debug_Tasking;
 
 This program monitors task states and CPU usage, helping identify performance bottlenecks.
 
-## 1.9 Best Practices for Multi-Core Programming in Ada
+## 20.9 Best Practices for Multi-Core Programming in Ada
 
-### 1.9.1 . Minimize Shared State
+### 20.9.1 Minimize Shared State
 
 Use task-private data whenever possible. For shared data, encapsulate it in protected objects.
 
@@ -18509,19 +18501,19 @@ begin
 end Worker;
 ```
 
-### 1.9.2 . Optimize Task Granularity
+### 20.9.2 Optimize Task Granularity
 
 Balance parallelism with overhead. For CPU-bound tasks, aim for 10-100 tasks per core.
 
-### 1.9.3 . Use Parallel Loops for Simple Parallelism
+### 20.9.3 Use Parallel Loops for Simple Parallelism
 
 Ada 2022's `parallel` loops simplify common patterns without manual task management.
 
-### 1.9.4 . Avoid Priority Inversion
+### 20.9.4 Avoid Priority Inversion
 
 Use priority inheritance protocols for critical sections.
 
-### 1.9.5 . Profile Before Optimizing
+### 20.9.5 Profile Before Optimizing
 
 Use `System.Task_Info` to identify bottlenecks:
 
@@ -18536,7 +18528,7 @@ begin
 end Profile;
 ```
 
-### 1.9.6 . Leverage GNAT's Concurrency Tools
+### 20.9.6 Leverage GNAT's Concurrency Tools
 
 GNAT provides specialized tools for concurrency debugging:
 
@@ -18546,23 +18538,23 @@ gnatcov run --concurrency my_program
 
 This command generates concurrency analysis reports highlighting potential race conditions.
 
-## 1.10 Tasking vs. Parallel Loops: When to Use Which
+## 20.10 Tasking vs. Parallel Loops: When to Use Which
 
 Ada offers multiple approaches to parallelism, each suited for different scenarios.
 
-### 1.10.1 When to Use Tasks
+### 20.10.1 When to Use Tasks
 
 - **Complex communication patterns**: Tasks with entries are ideal for producer-consumer models or stateful interactions.
 - **Long-running operations**: Tasks persist for the duration of the program, suitable for continuous processing.
 - **Asynchronous tasks**: Background tasks that run independently (e.g., monitoring sensors).
 
-### 1.10.2 When to Use Parallel Loops
+### 20.10.2 When to Use Parallel Loops
 
 - **Simple, independent iterations**: Loop bodies with no dependencies between iterations.
 - **Quick computations**: Where task creation overhead would outweigh benefits.
 - **Data-parallel workloads**: Matrix operations, image processing where each element is processed independently.
 
-### 1.10.3 Example: Image Processing Comparison
+### 20.10.3 Example: Image Processing Comparison
 
 ```ada
 -- Using tasks for image processing
@@ -18594,11 +18586,11 @@ end loop;
 
 The parallel loop version is simpler and more efficient for this case, as it avoids task creation overhead. However, if each row requires complex initialization or state management, tasks may be preferable.
 
-## 1.11 Memory Management in Multi-Core Ada
+## 20.11 Memory Management in Multi-Core Ada
 
 Ada's memory management is critical for multi-core performance. Unlike garbage-collected languages, Ada allows precise control over memory allocation, reducing pauses and improving predictability.
 
-### 1.11.1 Stack vs. Heap Allocation
+### 20.11.1 Stack vs. Heap Allocation
 
 - **Stack allocation**: Fast and task-private. Use for temporary data.
 - **Heap allocation**: Shared across tasks but requires careful synchronization.
@@ -18617,7 +18609,7 @@ begin
 end Worker;
 ```
 
-### 1.11.2 Avoiding Dynamic Allocation in Critical Paths
+### 20.11.2 Avoiding Dynamic Allocation in Critical Paths
 
 ```ada
 -- Bad: dynamic allocation in inner loop
@@ -18637,7 +18629,7 @@ end loop;
 
 Heap allocation in tight loops can cause contention and slow performance. Pre-allocate memory outside parallel regions.
 
-### 1.11.3 Memory Pooling Technique
+### 20.11.3 Memory Pooling Technique
 
 For high-performance applications, implement memory pooling:
 
@@ -18686,7 +18678,7 @@ end Memory_Pool;
 
 This technique reuses memory blocks to avoid frequent heap allocations.
 
-## 1.12 Interfacing with Other Languages for Multi-Core
+## 20.12 Interfacing with Other Languages for Multi-Core
 
 Ada can interface with C/C++ libraries for multi-core workloads. Use `pragma Import` to call external functions.
 
@@ -18711,7 +18703,7 @@ end C_Multi_Core;
 
 This allows leveraging existing C libraries (e.g., OpenMP) while maintaining Ada's safety for the rest of the codebase.
 
-### 1.12.1 Using OpenMP from Ada
+### 20.12.1 Using OpenMP from Ada
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -18727,7 +18719,7 @@ end OpenMP_Example;
 
 This demonstrates calling OpenMP functions directly from Ada, enabling hybrid programming models.
 
-## 1.13 Performance Tuning with GNAT
+## 20.13 Performance Tuning with GNAT
 
 GNAT provides compiler pragmas for optimizing parallel code:
 
@@ -18739,7 +18731,7 @@ pragma Optimize (Time);
 
 Use `gnatmake -O3` for aggressive optimizations.
 
-### 1.13.1 Benchmarking Example
+### 20.13.1 Benchmarking Example
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -18768,9 +18760,9 @@ end Benchmark;
 
 This program benchmarks sequential vs. parallel execution, helping identify performance gains.
 
-## 1.14 Advanced Topics: Distributed Computing and GPU Integration
+## 20.14 Advanced Topics: Distributed Computing and GPU Integration
 
-### 1.14.1 MPI for Distributed Systems
+### 20.14.1 MPI for Distributed Systems
 
 Ada bindings for MPI enable cluster-scale parallelism:
 
@@ -18793,7 +18785,7 @@ begin
 end Distributed_Compute;
 ```
 
-### 1.14.2 GPU Acceleration with OpenCL
+### 20.14.2 GPU Acceleration with OpenCL
 
 Ada bindings for OpenCL allow GPU offloading:
 
@@ -18817,7 +18809,7 @@ begin
 end GPU_Compute;
 ```
 
-### 1.14.3 Hybrid Parallelism Example
+### 20.14.3 Hybrid Parallelism Example
 
 Combine multi-core and GPU processing:
 
@@ -18853,7 +18845,7 @@ end Hybrid_Compute;
 
 This example demonstrates using both CPU parallelism and GPU acceleration in a single application.
 
-## 1.15 Case Study: Weather Simulation
+## 20.15 Case Study: Weather Simulation
 
 Weather simulations require massive parallelism. Here's a simplified model using Ada's concurrency features:
 
@@ -18908,7 +18900,7 @@ end Weather_Simulation;
 
 This simulation processes each grid cell in parallel, updating temperature and wind speed based on neighboring cells. The task-based approach ensures safe concurrent updates without race conditions.
 
-## 1.16 Conclusion
+## 20.16 Conclusion
 
 Multi-core programming in Ada offers a safe, efficient path to leveraging modern hardware. By leveraging Ada's built-in tasking model, protected objects, and parallel loops, developers can write parallel code that is both correct and high-performing. Unlike other languages that require manual thread management and synchronization, Ada enforces safety at compile time, eliminating common concurrency bugs. Whether processing images, running Monte Carlo simulations, or scaling to distributed systems, Ada's concurrency features provide a robust foundation for scientific and general-purpose applications.
 
@@ -18916,36 +18908,36 @@ Multi-core programming in Ada offers a safe, efficient path to leveraging modern
 
 This chapter has provided a comprehensive overview of multi-core programming in Ada, from basic tasks to advanced distributed systems. Future chapters will explore specialized topics like formal verification of concurrent programs and real-time systems. For now, experiment with the examples provided—Ada's compiler will catch concurrency errors before they become runtime bugs, giving you confidence in your parallel code from day one.
 
-## 1.17 Resources and Further Learning
+## 20.17 Resources and Further Learning
 
-### 1.17.1 Core Libraries
+### 20.17.1 Core Libraries
 
 - **GNAT Community Edition**: Free Ada compiler with concurrency tools (https://adacore.com/download)
 - **GNATCOLL**: Utilities for parallel programming (https://github.com/AdaCore/gnatcoll-core)
 - **Ada.Numerics**: Standard numeric package documentation (https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Numerics.html)
 - **MPI for Ada**: Bindings for distributed computing (https://github.com/AdaCore/mpp)
 
-### 1.17.2 Books
+### 20.17.2 Books
 
 - *Ada 2022: The Craft of Programming* by John Barnes (covers concurrency in depth)
 - *Parallel Programming in Ada* by Alain Bertho (specialized text)
 - *High-Performance Parallel Computing with Ada* by Michael B. Feldman (practical guide)
 
-### 1.17.3 Online Communities
+### 20.17.3 Online Communities
 
 - **Ada-Europe**: Professional organization (https://ada-europe.org)
 - **Reddit r/Ada**: Active community for discussions (https://reddit.com/r/Ada)
 - **Stack Overflow**: Tagged questions (https://stackoverflow.com/questions/tagged/ada)
 - **GNAT Discussion Forum**: Official support forum (https://gcc.gnu.org/ml/gcc/)
 
-### 1.17.4 Advanced Topics
+### 20.17.4 Advanced Topics
 
 - **Formal Methods for Concurrency**: SPARK tools for proving correctness of concurrent programs
 - **Real-Time Scheduling**: Ada's real-time tasking features for time-critical applications
 - **Distributed Ada**: Using MPI and other distributed computing frameworks
 - **GPU Acceleration**: OpenCL and CUDA bindings for parallel GPU computing
 
-### 1.17.5 Development Tools
+### 20.17.5 Development Tools
 
 - **GNAT Studio**: Integrated development environment with concurrency debugging
 - **GNATcoverage**: Code coverage analysis for concurrent programs
@@ -18963,7 +18955,7 @@ Modern Integrated Development Environments (IDEs) are indispensable tools for so
 
 > "The right IDE can turn complex Ada projects from daunting tasks into manageable workflows, especially when leveraging built-in static analysis and code navigation features." — John Barnes, Author of *Ada 2022: The Craft of Programming*
 
-## 1.1 Why IDEs Matter for Ada Development
+## 21.1 Why IDEs Matter for Ada Development
 
 Ada's strong typing, modular design, and concurrency features require specialized tooling to maximize productivity. Unlike dynamically-typed languages where basic editors suffice, Ada's compile-time checks and complex project structures benefit immensely from IDEs that understand Ada's syntax and semantics. Modern IDEs for Ada provide:
 
@@ -18975,7 +18967,7 @@ Ada's strong typing, modular design, and concurrency features require specialize
 
 While text editors like Vim or Emacs can be configured for Ada, they lack the integrated toolchain that accelerates development for complex projects. This chapter focuses on IDEs that balance ease of use with professional-grade capabilities, avoiding specialized safety-critical tooling (covered in earlier chapters) in favor of general-purpose development environments.
 
-## 1.2 Overview of Popular Ada IDEs
+## 21.2 Overview of Popular Ada IDEs
 
 Four primary IDEs dominate modern Ada development: GNAT Studio (the official AdaCore offering), Eclipse with Ada Development Tools (ADT), Visual Studio Code with Ada extensions, and CLion with Ada plugins. Each has distinct strengths and trade-offs:
 
@@ -18988,11 +18980,11 @@ Four primary IDEs dominate modern Ada development: GNAT Studio (the official Ada
 
 This overview sets the stage for detailed exploration of each environment. We'll examine setup procedures, core features, and practical workflows for each IDE, with emphasis on real-world usability for beginning programmers.
 
-## 1.3 GNAT Studio: The Official Ada IDE
+## 21.3 GNAT Studio: The Official Ada IDE
 
 GNAT Studio (formerly GPS) is the flagship IDE developed by AdaCore, specifically designed for Ada and SPARK development. As the official toolchain for Ada, it offers unparalleled integration with the GNAT compiler and related tools. Its open-source nature and comprehensive feature set make it ideal for both academic and professional projects.
 
-### 1.3.1 Installation and Setup
+### 21.3.1 Installation and Setup
 
 GNAT Studio is available for Windows, macOS, and Linux. Installation is straightforward:
 
@@ -19008,7 +19000,7 @@ Upon first launch, GNAT Studio prompts to create a new project or open an existi
 - **Debug View**: For debugging sessions
 - **Output Window**: Shows build and runtime logs
 
-### 1.3.2 Creating Your First Project
+### 21.3.2 Creating Your First Project
 
 Creating a new Ada project in GNAT Studio is intuitive:
 
@@ -19032,7 +19024,7 @@ begin
 end Hello;
 ```
 
-### 1.3.3 Building and Running
+### 21.3.3 Building and Running
 
 GNAT Studio handles build processes seamlessly:
 1. Right-click the project in **Project Explorer**
@@ -19045,7 +19037,7 @@ For debugging:
 2. Select **Debug > Start Debugging**
 3. Use the **Debug View** to step through code, inspect variables, and evaluate expressions
 
-### 1.3.4 Key Features for Productivity
+### 21.3.4 Key Features for Productivity
 
 GNAT Studio excels in Ada-specific tooling:
 
@@ -19055,7 +19047,7 @@ GNAT Studio excels in Ada-specific tooling:
 - **Version Control**: Integrated Git support via **VCS > Git** menu
 - **Customization**: Configure keybindings via **Tools > Options > Key Bindings**
 
-### 1.3.5 Advanced Configuration
+### 21.3.5 Advanced Configuration
 
 For larger projects, customize GNAT Studio's behavior:
 1. **Compiler Flags**: In **Project Properties > Build > Compiler**, add flags like `-g` for debug symbols or `-O2` for optimization
@@ -19064,11 +19056,11 @@ For larger projects, customize GNAT Studio's behavior:
 
 > "GNAT Studio's deep integration with GNAT means you spend less time configuring toolchains and more time solving problems. Its error messages are tailored to Ada's unique semantics, which is invaluable for beginners." — AdaCore Technical Lead
 
-## 1.4 Eclipse with Ada Development Tools (ADT)
+## 21.4 Eclipse with Ada Development Tools (ADT)
 
 Eclipse is a versatile open-source IDE that supports multiple languages through plugins. The Ada Development Tools (ADT) plugin adds comprehensive Ada support, making Eclipse ideal for developers working in multi-language environments.
 
-### 1.4.1 Installation and Setup
+### 21.4.1 Installation and Setup
 
 Eclipse requires a few steps to configure for Ada:
 
@@ -19081,7 +19073,7 @@ Eclipse requires a few steps to configure for Ada:
 
 ADT requires a separate GNAT compiler installation. Ensure GNAT is in your system PATH before launching Eclipse.
 
-### 1.4.2 Creating a Project
+### 21.4.2 Creating a Project
 
 1. Go to **File > New > Project > Ada Project**
 2. Enter project name (e.g., "EclipseAda")
@@ -19093,7 +19085,7 @@ ADT requires a separate GNAT compiler installation. Ensure GNAT is in your syste
 
 Eclipse creates a `Makefile` and `src/main.adb` by default. Edit `main.adb` with the standard "Hello World" code.
 
-### 1.4.3 Building and Debugging
+### 21.4.3 Building and Debugging
 
 - **Build**: Right-click project > **Build Project**
 - **Run**: Right-click project > **Run As > Ada Application**
@@ -19104,14 +19096,14 @@ Eclipse's **Debug Perspective** provides:
 - **Breakpoints View**: Manages all breakpoints
 - **Console View**: Displays program output
 
-### 1.4.4 ADT-Specific Features
+### 21.4.4 ADT-Specific Features
 
 - **Code Templates**: Configure via **Window > Preferences > Ada > Editor > Templates**
 - **Code Formatting**: Use **Source > Format** to apply Ada-style formatting
 - **Project References**: Link multiple Ada projects via **Project Properties > Ada > Project References**
 - **GNATmake Integration**: Configure compiler flags in **Project Properties > Ada > Build**
 
-### 1.4.5 Troubleshooting Common Issues
+### 21.4.5 Troubleshooting Common Issues
 
 | **Issue** | **Solution** |
 | :--- | :--- |
@@ -19122,11 +19114,11 @@ Eclipse's **Debug Perspective** provides:
 
 > "Eclipse's strength lies in its extensibility. When working with mixed-language projects (e.g., Ada + C), ADT integrates seamlessly with C/C++ tools while maintaining Ada-specific features." — Eclipse ADT Maintainer
 
-## 1.5 Visual Studio Code: Lightweight Ada Development
+## 21.5 Visual Studio Code: Lightweight Ada Development
 
 VS Code has become the go-to editor for modern development due to its speed, extensibility, and cross-platform support. The Ada Language Support extension provides excellent Ada features without the overhead of full IDEs.
 
-### 1.5.1 Installation and Setup
+### 21.5.1 Installation and Setup
 
 1. **Install VS Code**: Download from [code.visualstudio.com](https://code.visualstudio.com)
 2. **Install Extension**: 
@@ -19137,7 +19129,7 @@ VS Code has become the go-to editor for modern development due to its speed, ext
 
 VS Code requires a separate GNAT compiler installation. Confirm GNAT is in your system PATH by running `gnatmake --version` in the terminal.
 
-### 1.5.2 Project Configuration
+### 21.5.2 Project Configuration
 
 VS Code uses a workspace-based approach:
 
@@ -19155,7 +19147,7 @@ project HelloWorld is
 end HelloWorld;
 ```
 
-### 1.5.3 Building and Debugging
+### 21.5.3 Building and Debugging
 
 VS Code uses tasks for build processes:
 
@@ -19215,7 +19207,7 @@ For debugging:
 2. Set breakpoints by clicking the left margin
 3. Press `F5` to start debugging
 
-### 1.5.4 VS Code Extensions for Enhanced Workflow
+### 21.5.4 VS Code Extensions for Enhanced Workflow
 
 - **Better Comments**: Adds color-coded comments for documentation
 - **GitLens**: Supercharges Git integration
@@ -19224,11 +19216,11 @@ For debugging:
 
 > "VS Code's strength is its balance between simplicity and power. For beginners, it offers a gentle learning curve while providing professional-grade features through extensions. The low resource usage makes it ideal for educational environments." — VS Code Extension Maintainer
 
-## 1.6 CLion with Ada Plugin
+## 21.6 CLion with Ada Plugin
 
 CLion is JetBrains' C/C++ IDE with community-driven Ada support. While less mature than other options, it excels for developers already in the JetBrains ecosystem who need cross-language support.
 
-### 1.6.1 Installation and Setup
+### 21.6.1 Installation and Setup
 
 1. **Install CLion**: Download from [jetbrains.com/clion](https://www.jetbrains.com/clion)
 2. **Install Ada Plugin**:
@@ -19239,7 +19231,7 @@ CLion is JetBrains' C/C++ IDE with community-driven Ada support. While less matu
    - Go to **Preferences > Languages & Frameworks > Ada**
    - Set **GNAT Compiler Path** to `gnatmake` executable
 
-### 1.6.2 Project Creation
+### 21.6.2 Project Creation
 
 CLion uses CMake for project configuration:
 
@@ -19262,7 +19254,7 @@ add_executable(AdaProject src/main.adb)
 
 4. **Sync Project**: Click **Sync Now** in the top-right corner
 
-### 2.0.1 Building and Debugging
+### 21.0.1 Building and Debugging
 
 - **Build**: Click **Build > Build Project**
 - **Run**: Click the green play button next to `main.adb`
@@ -19273,7 +19265,7 @@ CLion's debugging interface provides:
 - **Call Stack**: Displays function call hierarchy
 - **Watches**: Evaluate expressions during debugging
 
-### 2.0.2 Limitations and Workarounds
+### 21.0.2 Limitations and Workarounds
 
 | **Limitation** | **Workaround** |
 | :--- | :--- |
@@ -19284,7 +19276,7 @@ CLion's debugging interface provides:
 
 > "CLion shines for developers who need to work across multiple languages. While Ada support isn't perfect, the IDE's powerful cross-language navigation makes it valuable for mixed-language projects." — JetBrains Developer Advocate
 
-## 2.1 IDE Comparison: Feature Breakdown
+## 21.1 IDE Comparison: Feature Breakdown
 
 | **Feature** | **GNAT Studio** | **Eclipse + ADT** | **VS Code + Ada Extension** | **CLion + Ada Plugin** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -19300,11 +19292,11 @@ CLion's debugging interface provides:
 
 This comparison highlights key trade-offs. GNAT Studio offers the most complete Ada experience out-of-the-box, while VS Code provides flexibility for developers who prefer minimalism. Eclipse and CLion excel in multi-language environments but require additional configuration for Ada-specific features.
 
-## 2.2 Debugging Ada Programs: A Practical Guide
+## 21.2 Debugging Ada Programs: A Practical Guide
 
 Debugging is where IDEs truly shine, transforming complex runtime errors into manageable issues. We'll walk through debugging a simple Ada program with common pitfalls.
 
-### 2.2.1 Example Program: Divide-by-Zero Error
+### 21.2.1 Example Program: Divide-by-Zero Error
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -19319,7 +19311,7 @@ begin
 end Divide_Error;
 ```
 
-### 2.2.2 Debugging Workflow in GNAT Studio
+### 21.2.2 Debugging Workflow in GNAT Studio
 
 1. **Set Breakpoint**: Click left margin next to `Result := ...` line
 2. **Start Debugging**: **Debug > Start Debugging**
@@ -19330,7 +19322,7 @@ end Divide_Error;
    - **Exception Details**: "Constraint_Error: division by zero"
 6. **Fix**: Modify `Denominator` to non-zero value and re-run
 
-### 2.2.3 Debugging in VS Code
+### 21.2.3 Debugging in VS Code
 
 1. **Set Breakpoint**: Click left margin
 2. **Start Debugging**: Press `F5`
@@ -19338,7 +19330,7 @@ end Divide_Error;
 4. **Watch Expressions**: Right-click `Denominator` > **Add to Watch**
 5. **Error Handling**: VS Code shows exception details in **Debug Console**
 
-### 2.2.4 Common Debugging Pitfalls and Solutions
+### 21.2.4 Common Debugging Pitfalls and Solutions
 
 | **Issue** | **Cause** | **Solution** |
 | :--- | :--- | :--- |
@@ -19350,11 +19342,11 @@ end Divide_Error;
 
 > "The most powerful debugging tool isn't the IDE—it's the developer's understanding of the problem. A good IDE simply makes that understanding accessible through clear visualizations of program state." — Senior Software Engineer, AdaCore
 
-## 2.3 Customization and Productivity Tips
+## 21.3 Customization and Productivity Tips
 
 Maximizing IDE efficiency requires tailoring to your workflow. Here are actionable tips for each environment:
 
-### 2.3.1 GNAT Studio Customization
+### 21.3.1 GNAT Studio Customization
 
 - **Key Bindings**: Configure common actions via **Tools > Options > Key Bindings**
   - Example: Map `Ctrl+B` to "Build All"
@@ -19364,14 +19356,14 @@ Maximizing IDE efficiency requires tailoring to your workflow. Here are actionab
   - Create template for `with Ada.Text_IO;` with shortcut `withio`
 - **Project-Specific Settings**: Save settings per-project via **Project > Properties**
 
-### 2.3.2 Eclipse ADT Customization
+### 21.3.2 Eclipse ADT Customization
 
 - **Perspectives**: Switch between **Ada Perspective** and **Debug Perspective** via **Window > Perspective > Open Perspective**
 - **Code Templates**: Configure via **Window > Preferences > Ada > Editor > Templates**
 - **Build Automation**: Use **Project > Build Automatically** for continuous builds
 - **Mylyn Integration**: Track tasks with **Window > Show View > Tasks**
 
-### 2.3.3 VS Code Customization
+### 21.3.3 VS Code Customization
 
 - **Settings.json**: Customize via **File > Preferences > Settings > Open Settings (JSON)**
   - Add: `"ada.syntaxHighlighting": "true"`
@@ -19382,13 +19374,13 @@ Maximizing IDE efficiency requires tailoring to your workflow. Here are actionab
   - **Better Comments**: For color-coded documentation
 - **Workspace Settings**: Create `.vscode/settings.json` for project-specific configs
 
-### 2.3.4 CLion Customization
+### 21.3.4 CLion Customization
 
 - **Live Templates**: Configure via **Preferences > Editor > Live Templates**
 - **Color Schemes**: Change via **Preferences > Editor > Color Scheme**
 - **File Templates**: Modify for new Ada files via **Preferences > Editor > File and Code Templates**
 
-### 2.3.5 Universal Productivity Tips
+### 21.3.5 Universal Productivity Tips
 
 - **Keyboard Shortcuts**: Master IDE-specific shortcuts for navigation and build
 - **Split Views**: Work on multiple files simultaneously
@@ -19398,11 +19390,11 @@ Maximizing IDE efficiency requires tailoring to your workflow. Here are actionab
 
 > "The best IDEs don't just help you write code—they help you think. By reducing cognitive load through intelligent tooling, you can focus on solving problems rather than managing tools." — Ada Community Leader
 
-## 2.4 Version Control Integration
+## 21.4 Version Control Integration
 
 Modern IDEs streamline Git workflows, making version control accessible without command-line knowledge.
 
-### 2.4.1 Git in GNAT Studio
+### 21.4.1 Git in GNAT Studio
 
 1. **Initialize Repository**: Right-click project > **VCS > Git > Initialize Repository**
 2. **Commit Changes**: Right-click project > **VCS > Commit**
@@ -19413,7 +19405,7 @@ GNAT Studio shows:
 - **Modified Files**: In Project Explorer with color indicators
 - **Diff Viewer**: Right-click file > **Show Diff**
 
-### 2.4.2 Git in Eclipse
+### 21.4.2 Git in Eclipse
 
 1. **Git Perspective**: **Window > Perspective > Open Perspective > Git**
 2. **Staging Changes**: Drag files from **Unstaged Changes** to **Staged Changes**
@@ -19422,7 +19414,7 @@ GNAT Studio shows:
 
 Eclipse's **Synchronize View** shows local vs. remote changes side-by-side.
 
-### 2.4.3 Git in VS Code
+### 21.4.3 Git in VS Code
 
 1. **Source Control Icon**: Click left sidebar icon
 2. **Stage Changes**: Click `+` next to modified files
@@ -19431,7 +19423,7 @@ Eclipse's **Synchronize View** shows local vs. remote changes side-by-side.
 
 VS Code shows inline diff in editor and provides **GitLens** for advanced history tracking.
 
-### 2.4.4 Git in CLion
+### 21.4.4 Git in CLion
 
 1. **VCS Menu**: **VCS > Git > Commit**
 2. **Changes View**: Shows modified files with diff
@@ -19440,7 +19432,7 @@ VS Code shows inline diff in editor and provides **GitLens** for advanced histor
 
 CLion's **Log** view shows commit history with visual branches.
 
-### 2.4.5 Best Practices for Version Control
+### 21.4.5 Best Practices for Version Control
 
 - **Commit Small Changes**: Frequent, atomic commits
 - **Meaningful Messages**: Describe *why* changes were made
@@ -19450,11 +19442,11 @@ CLion's **Log** view shows commit history with visual branches.
 
 > "Version control is the safety net that allows developers to experiment freely. A well-integrated Git workflow in your IDE makes this safety net invisible—until you need it." — Open Source Maintainer
 
-## 2.5 Advanced Features: Static Analysis and Code Generation
+## 21.5 Advanced Features: Static Analysis and Code Generation
 
 Modern IDEs go beyond basic editing to provide proactive quality assurance and automation.
 
-### 2.5.1 Static Analysis in GNAT Studio
+### 21.5.1 Static Analysis in GNAT Studio
 
 GNAT Studio includes built-in static analysis tools:
 
@@ -19473,7 +19465,7 @@ Example output:
 src/main.adb:5:12: warning: variable 'X' is never used
 ```
 
-### 2.5.2 Static Analysis in VS Code
+### 21.5.2 Static Analysis in VS Code
 
 VS Code requires extensions for static analysis:
 
@@ -19487,11 +19479,11 @@ VS Code requires extensions for static analysis:
    ```
 3. **Run Analysis**: Right-click file > **Run AdaLint**
 
-### 2.5.3 Code Generation Templates
+### 21.5.3 Code Generation Templates
 
 Most IDEs support code templates for repetitive structures:
 
-#### 2.5.3.1 GNAT Studio Template for Task
+#### 21.5.3.1 GNAT Studio Template for Task
 
 1. **Tools > Options > Templates > Add**
 2. Name: `task_template`
@@ -19512,7 +19504,7 @@ Most IDEs support code templates for repetitive structures:
 
 Now typing `task` + `Tab` inserts the template.
 
-#### 2.5.3.2 VS Code Snippet for Protected Object
+#### 21.5.3.2 VS Code Snippet for Protected Object
 
 1. Open **Preferences > User Snippets**
 2. Select `ada.json`
@@ -19537,7 +19529,7 @@ Now typing `task` + `Tab` inserts the template.
 
 Typing `pro` + `Tab` generates a protected object template.
 
-### 2.5.4 Real-World Example: Generating Test Cases
+### 21.5.4 Real-World Example: Generating Test Cases
 
 For scientific computing projects, generate test cases automatically:
 
@@ -19547,18 +19539,18 @@ For scientific computing projects, generate test cases automatically:
 
 > "Static analysis isn't about catching errors—it's about preventing them from ever occurring. When your IDE flags potential issues as you type, you build higher-quality code from the start." — Senior QA Engineer
 
-## 2.6 Community Resources and Support
+## 21.6 Community Resources and Support
 
 Leveraging community resources accelerates learning and problem-solving.
 
-### 2.6.1 Official Documentation
+### 21.6.1 Official Documentation
 
 - **GNAT Studio**: [AdaCore Documentation](https://docs.adacore.com/gnatstudio-docs/)
 - **ADT**: [Eclipse ADT Wiki](https://wiki.eclipse.org/ADT)
 - **VS Code Ada**: [VS Code Marketplace Page](https://marketplace.visualstudio.com/items?itemName=AdaCore.ada)
 - **CLion Ada**: [JetBrains Plugin Page](https://plugins.jetbrains.com/plugin/15941-ada-support)
 
-### 2.6.2 Online Communities
+### 21.6.2 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -19567,7 +19559,7 @@ Leveraging community resources accelerates learning and problem-solving.
 | **Reddit r/Ada** | [reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub Issues** | [github.com/AdaCore/gnatstudio](https://github.com/AdaCore/gnatstudio/issues) | IDE bug reports and feature requests |
 
-### 2.6.3 Learning Resources
+### 21.6.3 Learning Resources
 
 - **Books**:
   - *Ada 2022: The Craft of Programming* by John Barnes
@@ -19579,7 +19571,7 @@ Leveraging community resources accelerates learning and problem-solving.
   - AdaCore Official Channel
   - Programming with Ada (community)
 
-### 2.6.4 Contributing to the Ecosystem
+### 21.6.4 Contributing to the Ecosystem
 
 - Report bugs in IDEs via GitHub
 - Contribute documentation improvements
@@ -19588,7 +19580,7 @@ Leveraging community resources accelerates learning and problem-solving.
 
 > "The Ada community thrives on collaboration. Whether you're filing a bug report or sharing a custom template, your contributions help make Ada development better for everyone." — AdaCore Community Manager
 
-## 2.7 Conclusion
+## 21.7 Conclusion
 
 Modern IDEs transform Ada development from a tedious task into an enjoyable workflow. Each IDE offers unique strengths: GNAT Studio provides the most comprehensive Ada-specific experience, Eclipse excels in multi-language projects, VS Code offers lightweight flexibility, and CLion integrates well with JetBrains ecosystems. The key is selecting the right tool for your workflow and project needs.
 
@@ -19598,30 +19590,30 @@ This chapter has covered practical setup procedures, debugging techniques, custo
 
 As you progress in your Ada journey, remember that tooling evolves rapidly. Stay engaged with community discussions, follow IDE release notes, and don't hesitate to experiment with new features. The Ada ecosystem is vibrant and welcoming—your contributions can help shape its future.
 
-## 2.8 Appendix: IDE Setup Checklist
+## 21.8 Appendix: IDE Setup Checklist
 
-### 2.8.1 GNAT Studio
+### 21.8.1 GNAT Studio
 - [ ] Install GNAT compiler
 - [ ] Download GNAT Studio from AdaCore
 - [ ] Verify installation via "Hello World" project
 - [ ] Configure keybindings for common actions
 - [ ] Set up Git integration
 
-### 2.8.2 Eclipse + ADT
+### 21.8.2 Eclipse + ADT
 - [ ] Install Eclipse C/C++ IDE
 - [ ] Add ADT update site
 - [ ] Install ADT plugin
 - [ ] Configure GNAT compiler path
 - [ ] Set up project templates
 
-### 2.8.3 VS Code
+### 21.8.3 VS Code
 - [ ] Install VS Code
 - [ ] Install "Ada Language Support" extension
 - [ ] Configure build tasks in tasks.json
 - [ ] Set up launch.json for debugging
 - [ ] Install recommended extensions (GitLens, Ada Snippets)
 
-### 2.8.4 CLion
+### 21.8.4 CLion
 - [ ] Install CLion
 - [ ] Install "Ada Support" plugin
 - [ ] Configure GNAT compiler path
@@ -19638,7 +19630,7 @@ As autonomous systems, quantum-resistant cryptography, and artificial intelligen
 
 > "As AI and quantum computing evolve, the need for secure, predictable systems grows. Ada's ability to combine safety with modern tooling positions it as a critical language for the next generation of software." — Quantum Security Researcher
 
-## 1.1 Why Ada for Emerging Technologies?
+## 22.1 Why Ada for Emerging Technologies?
 
 Modern software development increasingly requires systems that handle complex, real-time data processing while maintaining security and reliability. Traditional languages like Python excel in rapid prototyping but struggle with performance-critical tasks due to the Global Interpreter Lock (GIL), while C++ requires meticulous manual memory management that introduces subtle bugs. Ada bridges these gaps with:
 
@@ -19649,7 +19641,7 @@ Modern software development increasingly requires systems that handle complex, r
 
 These features make Ada ideal for building consumer-grade autonomous systems (e.g., smart home devices), educational AI tools, and personal security applications where correctness matters but formal certification isn't required.
 
-### 1.1.1 Language Comparison for Modern Applications
+### 22.1.1 Language Comparison for Modern Applications
 
 | **Feature** | **Ada** | **Python** | **C++** | **Java** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -19662,11 +19654,11 @@ These features make Ada ideal for building consumer-grade autonomous systems (e.
 
 This table highlights Ada's competitive advantages. For example, when building a smart home system that processes sensor data in real-time, Ada's tasking model ensures responsive control without the GIL limitations of Python or the manual thread management complexity of C++. Similarly, when implementing quantum-resistant encryption for personal messaging apps, Ada's strong typing prevents subtle cryptographic errors that could compromise security.
 
-## 1.2 Autonomous Systems in Ada
+## 22.2 Autonomous Systems in Ada
 
 Autonomous systems—devices that operate independently without human intervention—are increasingly common in consumer technology. From robotic vacuum cleaners to smart thermostats, these systems require reliable real-time processing, sensor integration, and decision-making capabilities. While professional autonomous vehicles or medical robots demand rigorous safety certification, educational and hobbyist projects benefit immensely from Ada's safety features without requiring formal certification.
 
-### 1.2.1 Core Concepts for Autonomous Systems
+### 22.2.1 Core Concepts for Autonomous Systems
 
 Autonomous systems typically involve:
 - **Sensing**: Reading data from cameras, lidar, or environmental sensors
@@ -19676,7 +19668,7 @@ Autonomous systems typically involve:
 
 Ada excels in this domain through its tasking model, which allows safe, concurrent execution of these components without race conditions or deadlocks. Unlike Python's GIL-limited threading or C++'s complex thread management, Ada's tasks are built into the language with compile-time safety guarantees.
 
-### 1.2.2 Example: Smart Home Robot Simulator
+### 22.2.2 Example: Smart Home Robot Simulator
 
 Consider a simplified smart home robot that navigates a room, avoids obstacles, and responds to voice commands. This example uses Ada's tasking model to handle sensor input, movement control, and voice processing concurrently.
 
@@ -19784,7 +19776,7 @@ This example demonstrates several key Ada features:
 
 When executed, the robot simulates navigating a room, stopping when obstacles are detected and responding to voice commands. The `delay` statements simulate real-world timing constraints without requiring complex timing libraries.
 
-### 1.2.3 Real-World Applications
+### 22.2.3 Real-World Applications
 
 While this example is simplified, similar patterns apply to real consumer products:
 - **Smart thermostats**: Concurrent temperature sensing, climate control, and user interface management
@@ -19793,11 +19785,11 @@ While this example is simplified, similar patterns apply to real consumer produc
 
 Ada's strength lies in its ability to handle these concurrent processes safely. Unlike Python, where the GIL limits true parallelism for CPU-bound tasks, or C++, where manual thread management introduces subtle bugs, Ada's built-in concurrency model ensures predictable behavior.
 
-## 1.3 Quantum Security with Ada
+## 22.3 Quantum Security with Ada
 
 Quantum computing threatens current cryptographic standards, as quantum algorithms like Shor's algorithm could break widely-used encryption like RSA and ECC. Post-quantum cryptography (PQC) refers to cryptographic algorithms designed to be secure against both classical and quantum computers. While government and military applications require rigorous certification, personal and educational projects also benefit from quantum-resistant security—especially for long-term data protection.
 
-### 1.3.1 Core Concepts for Quantum Security
+### 22.3.1 Core Concepts for Quantum Security
 
 Key aspects of quantum security include:
 - **Post-quantum algorithms**: Lattice-based, hash-based, or code-based cryptography resistant to quantum attacks
@@ -19807,7 +19799,7 @@ Key aspects of quantum security include:
 
 Ada excels in implementing these concepts due to its strong typing, which prevents subtle cryptographic errors, and its clean C interoperability, allowing seamless use of existing PQC libraries like OpenQuantumSafe (OQS).
 
-### 1.3.2 Example: Quantum-Resistant Key Exchange
+### 22.3.2 Example: Quantum-Resistant Key Exchange
 
 Here's a simplified example using Ada to interface with the OpenQuantumSafe C library for Kyber key exchange—a leading PQC algorithm selected by NIST for standardization.
 
@@ -19906,7 +19898,7 @@ This example demonstrates:
 
 While this simplified example doesn't handle real-world networking, it illustrates how Ada can integrate with quantum-resistant cryptography libraries. For a complete implementation, you'd add network communication using Ada's networking libraries or Python bindings.
 
-### 1.3.3 Real-World Applications
+### 22.3.3 Real-World Applications
 
 Quantum-resistant cryptography is relevant for:
 - **Personal messaging apps**: Securing messages against future quantum attacks
@@ -19915,11 +19907,11 @@ Quantum-resistant cryptography is relevant for:
 
 Unlike Python, which lacks built-in cryptographic safety guarantees, Ada's strong typing prevents subtle errors in cryptographic implementations. For example, accidentally using the wrong buffer size for a key exchange could compromise security—Ada catches such errors at compile time.
 
-## 1.4 AI Integration in Ada
+## 22.4 AI Integration in Ada
 
 Artificial intelligence has moved beyond research labs into everyday applications—from recommendation systems to image recognition. While Python dominates AI development due to its rich ecosystem, Ada provides unique advantages for integrating AI into larger systems where reliability and performance matter.
 
-### 1.4.1 Core Concepts for AI Integration
+### 22.4.1 Core Concepts for AI Integration
 
 Key aspects of AI integration include:
 - **Model serving**: Deploying pre-trained machine learning models
@@ -19929,7 +19921,7 @@ Key aspects of AI integration include:
 
 Ada excels in this domain through GNATCOLL.Python, which provides seamless Python integration, and its strong typing, which ensures data consistency between Ada and Python components.
 
-### 1.4.2 Example: Image Classification with TensorFlow
+### 22.4.2 Example: Image Classification with TensorFlow
 
 This example demonstrates how Ada can use TensorFlow through Python bindings to classify images. While the AI model is implemented in Python, Ada handles the application logic and data processing.
 
@@ -19996,7 +19988,7 @@ While this example uses a simplified image dataset, real-world applications woul
 - Handle more complex preprocessing
 - Process multiple predictions in parallel
 
-### 1.4.3 Real-World Applications
+### 22.4.3 Real-World Applications
 
 AI integration with Ada is valuable for:
 - **Smart home assistants**: Combining voice recognition (Python) with Ada-controlled hardware
@@ -20005,9 +19997,9 @@ AI integration with Ada is valuable for:
 
 Unlike pure Python solutions, which can suffer from GIL limitations during CPU-intensive tasks, Ada handles the real-time control aspects while Python manages the AI model. This hybrid approach leverages the strengths of both languages.
 
-## 1.5 Case Studies: Practical Applications
+## 22.5 Case Studies: Practical Applications
 
-### 1.5.1 Case Study 1: Smart Home Automation System
+### 22.5.1 Case Study 1: Smart Home Automation System
 
 Consider a smart home system that:
 - Monitors temperature and humidity via sensors
@@ -20123,7 +20115,7 @@ This system demonstrates how Ada integrates multiple modern technologies:
 - **Quantum security**: Secure communication uses quantum-resistant encryption
 - **Safety**: Compile-time checks ensure all data types are consistent
 
-### 1.5.2 Case Study 2: Educational AI Assistant
+### 22.5.2 Case Study 2: Educational AI Assistant
 
 An educational tool that:
 - Uses natural language processing for student queries
@@ -20174,9 +20166,9 @@ This example shows how Ada can handle the application logic while Python manages
 - Processes them with a pre-trained NLP model
 - Returns answers through a safe, type-checked interface
 
-## 1.6 Best Practices for Modern Ada Development
+## 22.6 Best Practices for Modern Ada Development
 
-### 1.6.1 . Modular Design for Complex Systems
+### 22.6.1 Modular Design for Complex Systems
 
 Break systems into independent components using Ada packages:
 
@@ -20200,7 +20192,7 @@ This structure:
 - Enables independent development of components
 - Prevents accidental dependencies between subsystems
 
-### 1.6.2 . Safe Interoperability with Python
+### 22.6.2 Safe Interoperability with Python
 
 When using GNATCOLL.Python:
 - **Validate Python object types** before use
@@ -20221,7 +20213,7 @@ exception
 end;
 ```
 
-### 1.6.3 . Quantum Security Implementation Tips
+### 22.6.3 Quantum Security Implementation Tips
 
 - **Use established libraries**: OQS or liboqs instead of custom implementations
 - **Validate key sizes**: Ensure buffers match cryptographic requirements
@@ -20234,7 +20226,7 @@ if OQS_KEM_kyber_512_PUBLIC_KEY_BYTES /= 800 then
 end if;
 ```
 
-### 1.6.4 . Real-Time Performance Optimization
+### 22.6.4 Real-Time Performance Optimization
 
 - **Avoid dynamic memory allocation** in critical paths
 - **Use fixed-point arithmetic** for sensor readings
@@ -20246,7 +20238,7 @@ type Sensor_Buffer is array (1..100) of Float;
 Buffer : Sensor_Buffer;
 ```
 
-### 1.6.5 . Testing Strategies
+### 22.6.5 Testing Strategies
 
 - **Unit test Ada components** independently
 - **Mock Python dependencies** for testing
@@ -20263,9 +20255,9 @@ begin
 end Test_Sensor_Processing;
 ```
 
-## 1.7 Resources and Further Learning
+## 22.7 Resources and Further Learning
 
-### 1.7.1 Core Libraries and Tools
+### 22.7.1 Core Libraries and Tools
 
 | **Tool** | **Purpose** | **Documentation** |
 | :--- | :--- | :--- |
@@ -20275,14 +20267,14 @@ end Test_Sensor_Processing;
 | **GNAT Studio** | Ada IDE with debugging | [GNAT Studio Docs](https://docs.adacore.com/gnatstudio-docs/) |
 | **AdaStandard** | Core Ada libraries | [Ada Reference Manual](https://www.adaic.org/resources/add_content/standards/12rm/html/RM-TOC.html) |
 
-### 1.7.2 Books and Tutorials
+### 22.7.2 Books and Tutorials
 
 - **"Ada 2022: The Craft of Programming" by John Barnes**: Covers modern Ada features including concurrency and interoperability
 - **"Practical Quantum Computing for Developers" by Vladimir Silva**: Explains quantum-resistant cryptography concepts
 - **"AI for Everyone" by Andrew Ng**: Non-technical introduction to AI concepts for Ada developers
 - **AdaCore Learning Portal**: [https://learn.adacore.com](https://learn.adacore.com) with free tutorials on modern Ada development
 
-### 1.7.3 Online Communities
+### 22.7.3 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -20291,7 +20283,7 @@ end Test_Sensor_Processing;
 | **Reddit r/Ada** | [reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub OQS Repository** | [github.com/open-quantum-safe](https://github.com/open-quantum-safe) | Quantum cryptography implementations |
 
-### 1.7.4 Advanced Topics
+### 22.7.4 Advanced Topics
 
 - **Formal Methods for AI Safety**: Using SPARK to verify AI component behavior
 - **Hardware Acceleration**: Integrating Ada with FPGA-based AI accelerators
@@ -20300,7 +20292,7 @@ end Test_Sensor_Processing;
 
 > "Ada's unique combination of safety, performance, and interoperability makes it the ideal language for building next-generation systems that integrate AI, quantum security, and autonomous control—without the trade-offs of other languages." — Senior Software Architect, AdaCore
 
-## 1.8 Conclusion
+## 22.8 Conclusion
 
 Modern software development increasingly requires systems that integrate artificial intelligence, quantum-resistant security, and autonomous control capabilities. While these technologies are often associated with high-stakes environments, they also have significant applications in consumer products, educational tools, and personal projects. Ada provides a robust foundation for building such systems through its strong typing, concurrency model, and seamless interoperability with Python and C libraries.
 
@@ -20324,7 +20316,7 @@ Refactoring is the process of restructuring existing code without changing its e
 
 > "Refactoring in Ada isn't just about code cleanliness—it's about preserving the integrity of the system's architecture while enabling future evolution. The language's design ensures that changes are verified at compile time, reducing the risk of regressions." — Senior Software Engineer
 
-## 1.1 Why Refactoring Matters for General-Purpose Applications
+## 23.1 Why Refactoring Matters for General-Purpose Applications
 
 Refactoring is often misunderstood as a task only for legacy systems or "clean-up" work. In reality, it's a continuous practice that should be integrated into everyday development—even for new projects. Consider these real-world scenarios where refactoring directly impacts non-safety-critical applications:
 
@@ -20334,7 +20326,7 @@ Refactoring is often misunderstood as a task only for legacy systems or "clean-u
 
 Unlike Python or JavaScript where refactoring can introduce subtle runtime errors due to dynamic typing, Ada's compile-time checks catch structural issues before they become bugs. Unlike C++ where manual memory management complicates safe refactoring, Ada's strong typing and automatic resource management ensure changes are safe by construction. This makes refactoring not just possible, but *safer* in Ada than in many other languages.
 
-### 1.1.1 Refactoring Benefits Across Development Lifecycles
+### 23.1.1 Refactoring Benefits Across Development Lifecycles
 
 | **Stage** | **Without Refactoring** | **With Ada Refactoring** |
 | :--- | :--- | :--- |
@@ -20346,9 +20338,9 @@ Unlike Python or JavaScript where refactoring can introduce subtle runtime error
 
 This table illustrates how Ada's language features directly support sustainable development practices. For example, when adding a new feature to a weather data processor, Ada's packages allow clean separation of concerns—temperature conversion logic can be isolated from data storage without risking accidental side effects.
 
-## 1.2 Core Refactoring Techniques in Ada
+## 23.2 Core Refactoring Techniques in Ada
 
-### 1.2.1 Extracting Procedures and Functions
+### 23.2.1 Extracting Procedures and Functions
 
 One of the most common refactoring techniques is extracting repeated code into reusable subprograms. Ada's strong typing ensures these extracted procedures maintain correctness:
 
@@ -20392,7 +20384,7 @@ end Process_Data;
 
 Ada's `out` parameters ensure correct data flow, while the compiler verifies parameter types. This prevents common refactoring errors like accidentally using Fahrenheit values where Celsius is expected—something that would pass silently in Python but cause runtime errors.
 
-### 1.2.2 Simplifying Complex Conditionals
+### 23.2.2 Simplifying Complex Conditionals
 
 Ada's structured conditionals make complex logic easier to refactor:
 
@@ -20453,7 +20445,7 @@ end case;
 
 This approach prevents logical errors that often occur when modifying nested conditionals in languages without strong type checking.
 
-### 1.2.3 Renaming for Clarity
+### 23.2.3 Renaming for Clarity
 
 Ada's strong typing and package structure make renaming safe and systematic:
 
@@ -20480,7 +20472,7 @@ end Calculate_Price;
 
 GNAT Studio automatically updates all references when renaming symbols, preventing the "find-and-replace" errors common in other languages. This is particularly valuable in Ada where packages and subprograms form a tight namespace—renaming a procedure in a package automatically updates all callers.
 
-### 1.2.4 Using Generics for Code Reuse
+### 23.2.4 Using Generics for Code Reuse
 
 Ada's generics enable safe, type-specific code reuse—unlike C++ templates or Python's duck typing:
 
@@ -20514,7 +20506,7 @@ package Float_Stack is new Generic_Stack (Float);
 
 Ada's compile-time checks ensure each instantiation is valid—no accidental use of incompatible types. For example, trying to push a string into an integer stack would fail at compile time, preventing runtime errors that would occur in Python.
 
-### 1.2.5 Removing Duplicate Code
+### 23.2.5 Removing Duplicate Code
 
 Ada's strong typing and package structure make duplicate code removal straightforward:
 
@@ -20560,9 +20552,9 @@ end Process_Sensor2;
 
 Ada's compiler verifies that `Process_Sensor` is called with correct parameter types—ensuring no accidental misuse when removing duplication.
 
-## 1.3 Tools for Code Quality Certification
+## 23.3 Tools for Code Quality Certification
 
-### 1.3.1 GNATcheck: Enforcing Best Practices
+### 23.3.1 GNATcheck: Enforcing Best Practices
 
 GNATcheck is AdaCore's static analysis tool that enforces coding standards and best practices. Unlike simple linters, GNATcheck understands Ada's semantics:
 
@@ -20585,7 +20577,7 @@ my_project.adb:22:3: warning: global variable 'Global_Flag' should be avoided
 
 These warnings help identify refactoring opportunities before they become problems. In GNAT Studio, GNATcheck runs automatically during builds, with violations displayed in the "Messages" view.
 
-### 1.3.2 AdaLint: Advanced Code Quality Analysis
+### 23.3.2 AdaLint: Advanced Code Quality Analysis
 
 AdaLint extends GNATcheck with more sophisticated analysis:
 
@@ -20609,7 +20601,7 @@ my_project.adb:67:10: warning: cyclomatic complexity of 15 exceeds threshold of 
 
 AdaLint integrates with IDEs like GNAT Studio and VS Code, providing real-time feedback as you code. Its configuration files allow customization for specific project needs.
 
-### 1.3.3 GNATtest: Unit Testing Framework
+### 23.3.3 GNATtest: Unit Testing Framework
 
 Unit testing is critical for safe refactoring. GNATtest is Ada's built-in testing framework:
 
@@ -20643,7 +20635,7 @@ Test case: Convert_F_to_C(32.0) = 0.0: PASSED
 
 This provides confidence when refactoring—changes that break existing functionality immediately fail tests. Unlike Python's `unittest` which requires manual test discovery, GNATtest integrates seamlessly with Ada's project structure.
 
-### 1.3.4 GNATprove: Formal Verification for Critical Paths
+### 23.3.4 GNATprove: Formal Verification for Critical Paths
 
 While formal verification is often associated with safety-critical systems, GNATprove can be used selectively for high-risk components in general applications:
 
@@ -20671,7 +20663,7 @@ Safe_Divide.adb:6:12: info: postcondition proved
 
 For non-critical code, this provides mathematical proof of correctness. For critical sections (e.g., financial calculations), it ensures no division-by-zero errors—even when refactoring.
 
-## 1.4 Case Study: Refactoring a Real-World Project
+## 23.4 Case Study: Refactoring a Real-World Project
 
 Consider a simple temperature monitoring system with the following issues:
 - Duplicate conversion logic
@@ -20680,7 +20672,7 @@ Consider a simple temperature monitoring system with the following issues:
 - No unit tests
 - Complex conditionals
 
-### 1.4.1 Before Refactoring
+### 23.4.1 Before Refactoring
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -20716,9 +20708,9 @@ This code has multiple issues:
 - No testing
 - Magic numbers (86.0)
 
-### 1.4.2 Step-by-Step Refactoring
+### 23.4.2 Step-by-Step Refactoring
 
-#### 1.4.2.1 Step 1: Extract Conversion Logic
+#### 23.4.2.1 Step 1: Extract Conversion Logic
 
 ```ada
 package Temperature_Conversion is
@@ -20739,7 +20731,7 @@ package body Temperature_Conversion is
 end Temperature_Conversion;
 ```
 
-#### 1.4.2.2 Step 2: Remove Global Variables
+#### 23.4.2.2 Step 2: Remove Global Variables
 
 ```ada
 package Configuration is
@@ -20749,7 +20741,7 @@ package Configuration is
 end Configuration;
 ```
 
-#### 1.4.2.3 Step 3: Simplify Conditionals
+#### 23.4.2.3 Step 3: Simplify Conditionals
 
 ```ada
 procedure Process_Temp (Temp : Float; Config : Configuration.Configuration) is
@@ -20767,7 +20759,7 @@ begin
 end Process_Temp;
 ```
 
-#### 1.4.2.4 Step 4: Add Unit Tests
+#### 23.4.2.4 Step 4: Add Unit Tests
 
 ```ada
 with GNATTEST; use GNATTEST;
@@ -20786,7 +20778,7 @@ begin
 end Test_Temperature;
 ```
 
-#### 1.4.2.5 Final Refactored Code
+#### 23.4.2.5 Final Refactored Code
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -20818,7 +20810,7 @@ begin
 end Temperature_Monitor;
 ```
 
-### 1.4.3 Verification and Certification
+### 23.4.3 Verification and Certification
 
 After refactoring, run tools to certify code quality:
 
@@ -20849,9 +20841,9 @@ This certification process confirms:
 - All functionality verified through tests
 - Safe for future refactoring
 
-## 4.1 Best Practices for Sustainable Refactoring
+## 23.1 Best Practices for Sustainable Refactoring
 
-### 4.1.1 Refactor Incrementally
+### 23.1.1 Refactor Incrementally
 
 Large-scale refactoring introduces risk. Instead:
 
@@ -20870,7 +20862,7 @@ Example workflow:
 
 This ensures the system always remains in a working state.
 
-### 4.1.2 Use Version Control Wisely
+### 23.1.2 Use Version Control Wisely
 
 - Create branches for refactoring work
 - Commit after each logical change
@@ -20882,7 +20874,7 @@ This ensures the system always remains in a working state.
 
 Git's `diff` and `blame` features make it easy to track changes during refactoring.
 
-### 4.1.3 Maintain Test Coverage
+### 23.1.3 Maintain Test Coverage
 
 Aim for 80-90% test coverage for critical paths. Use GNATtest to measure coverage:
 
@@ -20900,7 +20892,7 @@ Coverage: 87% (12/14 lines covered)
 
 This shows which parts of the code need more testing.
 
-### 4.1.4 Leverage Ada's Safety Features
+### 23.1.4 Leverage Ada's Safety Features
 
 - Use `pragma Assert` for internal invariants
 - Employ `out` parameters to enforce data flow
@@ -20914,7 +20906,7 @@ procedure Safe_Divide (A, B : Float; Result : out Float) with
 
 These contracts become part of your code's documentation and verification.
 
-### 4.1.5 Avoid Over-Engineering
+### 23.1.5 Avoid Over-Engineering
 
 Refactoring isn't about perfection—it's about *improvement*. For example:
 
@@ -20924,7 +20916,7 @@ Refactoring isn't about perfection—it's about *improvement*. For example:
 
 As John Barnes states: "The best refactoring is the one that solves the problem with the simplest solution that works."
 
-## 4.2 Language Comparison: Refactoring Safety
+## 23.2 Language Comparison: Refactoring Safety
 
 | **Refactoring Challenge** | **Ada** | **Python** | **C++** |
 | :--- | :--- | :--- | :--- |
@@ -20936,9 +20928,9 @@ As John Barnes states: "The best refactoring is the one that solves the problem 
 
 This table shows why Ada is uniquely suited for safe refactoring. For example, renaming a variable in Python might miss references in dynamically-typed code, while Ada's compiler catches all references automatically.
 
-## 4.3 Real-World Refactoring Scenarios
+## 23.3 Real-World Refactoring Scenarios
 
-### 4.3.1 Scenario 1: Web Application Backend
+### 23.3.1 Scenario 1: Web Application Backend
 
 A Python web app uses global state for user sessions:
 
@@ -20965,7 +20957,7 @@ end Session;
 
 Ada's package encapsulation prevents accidental modification of session state from other parts of the code.
 
-### 5.0.1 Scenario 2: Data Processing Pipeline
+### 23.0.1 Scenario 2: Data Processing Pipeline
 
 A C++ data processor has hardcoded thresholds:
 
@@ -20995,7 +20987,7 @@ end ProcessData;
 
 Ada's constant declarations make thresholds explicit and searchable, while the compiler enforces consistent usage.
 
-### 5.0.2 Scenario 3: Educational Software
+### 23.0.2 Scenario 3: Educational Software
 
 A JavaScript math tutor has tangled control flow:
 
@@ -21028,9 +21020,9 @@ end Calculate;
 
 Ada's `case` statements with discrete types prevent invalid operations and make the logic clearer.
 
-## 5.1 Advanced Refactoring Techniques
+## 23.1 Advanced Refactoring Techniques
 
-### 5.1.1 Refactoring with Generics
+### 23.1.1 Refactoring with Generics
 
 For complex data structures, generics provide type-safe reuse:
 
@@ -21056,7 +21048,7 @@ package Float_Sorter is new Generic_Sorter (Float);
 
 This avoids duplicate sorting code while ensuring type safety—unlike C++ templates where type errors are cryptic.
 
-### 5.1.2 Refactoring for Testability
+### 23.1.2 Refactoring for Testability
 
 Ada's strong typing makes code easier to test:
 
@@ -21075,7 +21067,7 @@ end Process_Data;
 
 By separating input reading from processing logic, the function becomes testable in isolation. In Python or JavaScript, this separation is possible but harder to enforce—Ada's compiler ensures consistent usage.
 
-### 5.1.3 Refactoring with Contracts
+### 23.1.3 Refactoring with Contracts
 
 GNATprove contracts document and verify behavior:
 
@@ -21092,7 +21084,7 @@ This contracts:
 
 Unlike Python's docstrings which can become outdated, Ada's contracts are machine-verifiable.
 
-## 5.2 Common Refactoring Pitfalls and Solutions
+## 23.2 Common Refactoring Pitfalls and Solutions
 
 | **Pitfall** | **Cause** | **Solution** |
 | :--- | :--- | :--- |
@@ -21112,7 +21104,7 @@ For example, a common pitfall is trying to refactor a large legacy system all at
 
 This approach minimizes risk while gradually improving code quality.
 
-## 5.3 Case Study: Refactoring a Weather Monitoring System
+## 23.3 Case Study: Refactoring a Weather Monitoring System
 
 Consider a weather monitoring system with the following issues:
 - Hardcoded sensor thresholds
@@ -21121,7 +21113,7 @@ Consider a weather monitoring system with the following issues:
 - No unit tests
 - Complex conditional logic
 
-### 5.3.1 Before Refactoring
+### 23.3.1 Before Refactoring
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -21155,9 +21147,9 @@ begin
 end Weather_Monitor;
 ```
 
-### 5.3.2 Refactoring Steps
+### 23.3.2 Refactoring Steps
 
-#### 5.3.2.1 Step 1: Create Configuration Package
+#### 23.3.2.1 Step 1: Create Configuration Package
 
 ```ada
 package Configuration is
@@ -21167,7 +21159,7 @@ package Configuration is
 end Configuration;
 ```
 
-#### 5.3.2.2 Step 2: Extract Conversion Logic
+#### 23.3.2.2 Step 2: Extract Conversion Logic
 
 ```ada
 package Temperature_Conversion is
@@ -21188,7 +21180,7 @@ package body Temperature_Conversion is
 end Temperature_Conversion;
 ```
 
-#### 5.3.2.3 Step 3: Simplify Processing Logic
+#### 23.3.2.3 Step 3: Simplify Processing Logic
 
 ```ada
 procedure Process_Temp (Temp : Float) is
@@ -21206,7 +21198,7 @@ begin
 end Process_Temp;
 ```
 
-#### 5.3.2.4 Step 4: Add Unit Tests
+#### 23.3.2.4 Step 4: Add Unit Tests
 
 ```ada
 with GNATTEST; use GNATTEST;
@@ -21227,7 +21219,7 @@ begin
 end Test_Weather;
 ```
 
-### 5.3.3 Verification
+### 23.3.3 Verification
 
 After refactoring, run certification tools:
 
@@ -21254,9 +21246,9 @@ This certification confirms:
 - All functionality verified through tests
 - Safe for future maintenance
 
-## 5.4 Best Practices for Maintaining Code Quality
+## 23.4 Best Practices for Maintaining Code Quality
 
-### 5.4.1 Continuous Refactoring
+### 23.4.1 Continuous Refactoring
 
 Refactoring shouldn't be a one-time task. Integrate it into daily development:
 
@@ -21266,7 +21258,7 @@ Refactoring shouldn't be a one-time task. Integrate it into daily development:
 
 This "boy scout rule" (leave the code cleaner than you found it) ensures sustained quality.
 
-### 5.4.2 Documentation as Code
+### 23.4.2 Documentation as Code
 
 Ada's strong typing and package structure make documentation part of the code:
 
@@ -21293,7 +21285,7 @@ This creates HTML documentation showing:
 
 Unlike Python docstrings which can become outdated, Ada's documentation is tied to the code structure.
 
-### 5.4.3 Code Reviews with Ada-Specific Focus
+### 23.4.3 Code Reviews with Ada-Specific Focus
 
 When reviewing Ada code, focus on:
 - Package encapsulation (are concerns properly separated?)
@@ -21304,7 +21296,7 @@ When reviewing Ada code, focus on:
 Example review comment:
 > "This procedure would benefit from a `Pre` contract to ensure division by zero is impossible. Also, consider extracting the conversion logic to a separate package for better reuse."
 
-### 5.4.4 Version Control for Refactoring History
+### 23.4.4 Version Control for Refactoring History
 
 Use Git to track refactoring progress:
 
@@ -21317,7 +21309,7 @@ commit 4: Simplify conditionals using discrete types
 
 This history shows the evolution of the code and makes it easy to revert changes if needed.
 
-## 5.5 Conclusion
+## 23.5 Conclusion
 
 Refactoring and code quality certification are essential practices for sustainable software development—even in non-safety-critical applications. Ada's unique combination of strong typing, modular design, and built-in tools makes these practices safer and more effective than in many other languages. By extracting procedures, simplifying conditionals, using generics, and verifying with tools like GNATcheck and GNATtest, developers can create maintainable, adaptable systems that stand the test of time.
 
@@ -21325,9 +21317,9 @@ Refactoring and code quality certification are essential practices for sustainab
 
 This chapter has provided practical techniques for refactoring Ada code and verifying quality through certification tools. Whether you're building a web application, data processing tool, or educational software, these practices will help you create robust, maintainable systems that evolve gracefully with changing requirements. Start applying these techniques today—Ada's compiler will catch errors before they become runtime bugs, giving you confidence in your code from day one.
 
-## 5.6 Resources and Further Learning
+## 23.6 Resources and Further Learning
 
-### 5.6.1 Core Tools
+### 23.6.1 Core Tools
 
 | **Tool** | **Purpose** | **Documentation** |
 | :--- | :--- | :--- |
@@ -21337,14 +21329,14 @@ This chapter has provided practical techniques for refactoring Ada code and veri
 | **GNATprove** | Formal verification | [AdaCore GNATprove Docs](https://docs.adacore.com/gnatprove-docs/) |
 | **GNATdoc** | Automatic documentation | [AdaCore GNATdoc Docs](https://docs.adacore.com/gnatdoc-docs/) |
 
-### 5.6.2 Books and Tutorials
+### 23.6.2 Books and Tutorials
 
 - **"Ada 2022: The Craft of Programming" by John Barnes**: Covers refactoring techniques and best practices
 - **"Refactoring: Improving the Design of Existing Code" by Martin Fowler**: General refactoring principles
 - **"Ada for C++ Programmers" by Stephen Michell**: Ada-specific refactoring strategies
 - **AdaCore Learning Portal**: [https://learn.adacore.com](https://learn.adacore.com) with free tutorials on code quality
 
-### 5.6.3 Online Communities
+### 23.6.3 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -21353,7 +21345,7 @@ This chapter has provided practical techniques for refactoring Ada code and veri
 | **Reddit r/Ada** | [reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub Ada Projects** | [github.com/topics/ada](https://github.com/topics/ada) | Real-world Ada code examples |
 
-### 5.6.4 Advanced Topics
+### 23.6.4 Advanced Topics
 
 - **Refactoring for Performance**: Optimizing Ada code while maintaining correctness
 - **Legacy System Modernization**: Strategies for refactoring large Ada systems
@@ -21372,7 +21364,7 @@ Interoperability between programming languages is a critical skill for modern so
 
 > "When integrating Ada with C++, the key is to use C as a bridge. C++'s name mangling makes direct interfacing difficult, but a C interface layer solves this elegantly while preserving type safety." — Senior Software Engineer
 
-## 1.1 Why Interoperability Matters for General-Purpose Applications
+## 24.1 Why Interoperability Matters for General-Purpose Applications
 
 Interoperability isn't just for aerospace or defense projects—it's essential for everyday software development. Consider these real-world scenarios:
 
@@ -21383,7 +21375,7 @@ Interoperability isn't just for aerospace or defense projects—it's essential f
 
 Unlike languages with limited interoperability (e.g., Python's GIL blocking true parallelism in C extensions), Ada provides first-class support for C and C++ integration. Its `Interfaces.C` package offers standardized type mappings, while pragmas like `Import` and `Export` handle calling conventions automatically. This makes Ada uniquely suited for hybrid systems where safety and performance coexist.
 
-### 1.1.1 Language Interoperability Comparison
+### 24.1.1 Language Interoperability Comparison
 
 | **Feature** | **Ada** | **Python** | **C++** | **Java** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -21396,11 +21388,11 @@ Unlike languages with limited interoperability (e.g., Python's GIL blocking true
 
 This table highlights Ada's advantages. For example, when calling a C function from Ada, the compiler verifies parameter types and calling conventions at compile time. In Python, using `ctypes` requires manual type declarations that can fail at runtime—a critical issue for safety-critical applications. Ada's approach ensures interoperability is safe by construction.
 
-## 1.2 Core Concepts of Ada-C Interoperability
+## 24.2 Core Concepts of Ada-C Interoperability
 
 Ada's C interoperability is built on three pillars: standardized type mappings, explicit calling conventions, and controlled memory management. Let's explore these through practical examples.
 
-### 1.2.1 The Interfaces.C Package
+### 24.2.1 The Interfaces.C Package
 
 Ada's `Interfaces.C` package provides standardized type definitions for C interoperability. These types map directly to C's primitive types, ensuring compatibility:
 
@@ -21442,7 +21434,7 @@ end String_Conversion;
 
 This ensures null-termination is handled correctly—critical for C functions expecting null-terminated strings.
 
-### 1.2.2 Calling C Functions from Ada
+### 24.2.2 Calling C Functions from Ada
 
 The `pragma Import` directive declares C functions in Ada with correct calling conventions. Let's call the standard C `sqrt` function:
 
@@ -21472,7 +21464,7 @@ The `-lm` flag links the math library. Without it, the linker fails to find `sqr
 - Function names must match C's symbol name exactly ("sqrt" not "sqrtf")
 - The `pragma Import` specifies the C name explicitly
 
-### 2.0.1 Handling C Pointers and Memory
+### 24.0.1 Handling C Pointers and Memory
 
 C functions often use pointers for input/output parameters. Ada handles these through access types:
 
@@ -21530,11 +21522,11 @@ end C_Array_Example;
 
 This example assumes a C function `create_array` that allocates a C array, and `get_element` that retrieves values. In practice, you'd define these in a C source file and link them.
 
-## 2.1 Ada to C++ Interoperability: The C Bridge Pattern
+## 24.1 Ada to C++ Interoperability: The C Bridge Pattern
 
 C++ introduces name mangling—compilers encode function signatures into symbols for overloading support. This makes direct Ada-C++ calls impossible without a C bridge. The solution: wrap C++ code in C-compatible interfaces.
 
-### 2.1.1 Step 1: Create C-Compatible C++ Code
+### 24.1.1 Step 1: Create C-Compatible C++ Code
 
 ```cpp
 // calculator.h
@@ -21572,7 +21564,7 @@ Key details:
 - Opaque pointers (`Calculator*`) hide C++ implementation details
 - `static_cast` safely converts between C and C++ types
 
-### 2.1.2 Step 2: Interface in Ada
+### 24.1.2 Step 2: Interface in Ada
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -21626,7 +21618,7 @@ end Main;
 - Opaque pointers ensure C++ implementation details stay hidden
 - Memory management must be explicit (no garbage collection)
 
-### 2.1.3 Advanced C++ Interoperability: Classes and Inheritance
+### 24.1.3 Advanced C++ Interoperability: Classes and Inheritance
 
 For complex C++ classes, create C interface functions for each method:
 
@@ -21689,11 +21681,11 @@ end Shape;
 
 This pattern works for any C++ class—simply expose methods through C-compatible functions.
 
-## 2.2 C/C++ to Ada Interoperability: Exporting Ada Functions
+## 24.2 C/C++ to Ada Interoperability: Exporting Ada Functions
 
 When C/C++ code needs to call Ada functions (e.g., callbacks), use `pragma Export` to expose Ada procedures as C symbols.
 
-### 2.2.1 Basic Example: Simple Callback
+### 24.2.1 Basic Example: Simple Callback
 
 Ada code:
 ```ada
@@ -21728,7 +21720,7 @@ gcc main.c callback_example.o -o app
 # 3 Output: Hello from C!
 ```
 
-### 3.0.1 Handling Complex Callbacks
+### 24.0.1 Handling Complex Callbacks
 
 For callbacks with multiple parameters:
 
@@ -21796,9 +21788,9 @@ gnatmake main.adb callbacks.o callbacks.c.o -largs -lstdc++
 - Ensure callback types match exactly between Ada and C
 - Handle null pointers carefully in C code
 
-## 3.1 Advanced Data Types: Records, Arrays, and Strings
+## 24.1 Advanced Data Types: Records, Arrays, and Strings
 
-### 3.1.1 Mapping C Structures to Ada Records
+### 24.1.1 Mapping C Structures to Ada Records
 
 C structures require precise memory layout matching. Use `pragma Convention(C)` to ensure compatibility:
 
@@ -21873,7 +21865,7 @@ double get_y(void* p) {
 - `renames` allows direct access to memory as Ada record
 - Always allocate/free memory in the same language (C allocates, C frees)
 
-### 3.1.2 Handling C Arrays in Ada
+### 24.1.2 Handling C Arrays in Ada
 
 C arrays are pointers to contiguous memory. Ada handles them through access types:
 
@@ -21922,7 +21914,7 @@ end Main;
 - Use `Natural range <>)` for flexible array sizing
 - For read-only access, consider `constant` access types
 
-### 3.1.3 String Handling Best Practices
+### 24.1.3 String Handling Best Practices
 
 String interoperability is error-prone due to null-termination requirements. Always use `Ada.Strings.C_Utils`:
 
@@ -21964,11 +21956,11 @@ char* to_upper(char* str) {
 - Never pass Ada strings directly to C—always convert with `To_C`
 - For strings with embedded nulls, use `char_array` instead of `String`
 
-## 3.2 Memory Management: Bridging the Gap
+## 24.2 Memory Management: Bridging the Gap
 
 Memory management differences between Ada and C/C++ are a common source of bugs. Ada uses automatic memory management with controlled access types, while C/C++ requires manual allocation/free. Let's explore best practices.
 
-### 3.2.1 C-Allocated Memory in Ada
+### 24.2.1 C-Allocated Memory in Ada
 
 When C allocates memory, Ada must free it explicitly:
 
@@ -21997,7 +21989,7 @@ end Memory_Example;
 - Always free memory in the same language it was allocated
 - Use `System.Storage_Elements` for precise memory manipulation
 
-### 3.2.2 Ada-Allocated Memory in C
+### 24.2.2 Ada-Allocated Memory in C
 
 When Ada allocates memory for C use:
 
@@ -22036,7 +22028,7 @@ void print_array(int* arr, size_t size) {
 - Use `new` for Ada-allocated memory that C will use
 - For large arrays, consider `pragma Pack` to control memory layout
 
-### 3.2.3 Memory Leak Prevention
+### 24.2.3 Memory Leak Prevention
 
 Memory leaks occur when allocated memory isn't freed. Ada's `pragma Finalize` helps manage C resources:
 
@@ -22065,11 +22057,11 @@ end Main;
 
 This pattern ensures memory is freed when the object goes out of scope, even during exceptions.
 
-## 3.3 Error Handling and Exception Safety
+## 24.3 Error Handling and Exception Safety
 
 Error handling differs significantly between Ada and C/C++. Ada uses exceptions, while C uses return codes. C++ uses exceptions but requires careful handling across language boundaries.
 
-### 3.3.1 C Functions Returning Error Codes
+### 24.3.1 C Functions Returning Error Codes
 
 C functions typically return error codes. Ada must check these:
 
@@ -22111,7 +22103,7 @@ end Safe_Calls;
 - Convert errors to Ada exceptions for consistent handling
 - Use `Exception_Information` for detailed error messages
 
-### 3.3.2 C++ Exceptions Across Language Boundaries
+### 24.3.2 C++ Exceptions Across Language Boundaries
 
 C++ exceptions cannot propagate to Ada. Always catch them in C++:
 
@@ -22149,7 +22141,7 @@ end Main;
 - Use error codes or status flags for error reporting
 - In C++, catch all exceptions and convert to return codes
 
-### 3.3.3 Ada Exceptions in C Code
+### 24.3.3 Ada Exceptions in C Code
 
 Ada exceptions cannot propagate to C. Always handle them in Ada:
 
@@ -22202,11 +22194,11 @@ void trigger_callback(int x) {
 - Never let exceptions cross into C code
 - Use `pragma Export` with caution—callbacks must be exception-safe
 
-## 3.4 Case Study: SQLite Database Integration
+## 24.4 Case Study: SQLite Database Integration
 
 SQLite is a popular C library for embedded databases. Let's integrate it into Ada using best practices for interoperability.
 
-### 3.4.1 Step 1: Interface with SQLite's C API
+### 24.4.1 Step 1: Interface with SQLite's C API
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -22234,7 +22226,7 @@ package SQLite is
 end SQLite;
 ```
 
-### 3.4.2 Step 2: Implement Database Operations
+### 24.4.2 Step 2: Implement Database Operations
 
 ```ada
 with SQLite; use SQLite;
@@ -22254,7 +22246,7 @@ package body SQLite is
 end SQLite;
 ```
 
-### 3.4.3 Step 3: Full Example Usage
+### 24.4.3 Step 3: Full Example Usage
 
 ```ada
 with SQLite; use SQLite;
@@ -22290,7 +22282,7 @@ begin
 end Database_Example;
 ```
 
-### 3.4.4 Step 4: Callback Implementation
+### 24.4.4 Step 4: Callback Implementation
 
 ```ada
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -22333,11 +22325,11 @@ Column 0: 2  Column 1: C
 - Convert C strings to Ada strings using `To_Ada`
 - Use `pragma Import` with exact symbol names
 
-## 3.5 Case Study: C++ Game Engine with Ada Physics Engine
+## 24.5 Case Study: C++ Game Engine with Ada Physics Engine
 
 Imagine a C++ game engine that needs a physics simulation module. Ada's strong typing ensures calculations are precise and free from subtle bugs. Let's integrate them.
 
-### 3.5.1 Step 1: C++ Game Engine (main.cpp)
+### 24.5.1 Step 1: C++ Game Engine (main.cpp)
 
 ```cpp
 #include <iostream>
@@ -22359,7 +22351,7 @@ int main() {
 }
 ```
 
-### 3.5.2 Step 2: Ada Physics Engine (physics.adb)
+### 24.5.2 Step 2: Ada Physics Engine (physics.adb)
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -22405,7 +22397,7 @@ package body Physics is
 end Physics;
 ```
 
-### 3.5.3 Step 3: Build and Run
+### 24.5.3 Step 3: Build and Run
 
 ```bash
 gnatmake physics.adb -c
@@ -22426,9 +22418,9 @@ Stepping physics with delta time:  1.60000000000000E-02
 - Memory management is explicit but safe
 - No runtime overhead from C++ exceptions
 
-## 3.6 Tools and Best Practices for Mixed-Language Projects
+## 24.6 Tools and Best Practices for Mixed-Language Projects
 
-### 3.6.1 GNAT Project Files for Mixed Projects
+### 24.6.1 GNAT Project Files for Mixed Projects
 
 GNAT project files (`*.gpr`) manage mixed-language builds:
 
@@ -22453,7 +22445,7 @@ end Mixed_Project;
 - `Library_Options` links required libraries (e.g., math library)
 - `Object_Suffix` ensures consistent object file naming
 
-### 3.6.2 GNAT Studio Features for Interoperability
+### 24.6.2 GNAT Studio Features for Interoperability
 
 GNAT Studio provides excellent support for mixed-language projects:
 - **Syntax Highlighting**: C/C++ code in Ada files (and vice versa)
@@ -22467,7 +22459,7 @@ To enable these features:
 3. Under **Build**, select **Mixed Language Project**
 4. Add C/C++ source files to the project
 
-### 3.6.3 Common Pitfalls and Solutions
+### 24.6.3 Common Pitfalls and Solutions
 
 | **Pitfall** | **Cause** | **Solution** |
 | :--- | :--- | :--- |
@@ -22478,7 +22470,7 @@ To enable these features:
 | **Exception Propagation** | C++ exceptions crossing into Ada | Catch exceptions in C++ and return error codes |
 | **Calling Convention Errors** | Incorrect calling conventions | Use `pragma Import (C, ...)` with exact names |
 
-### 3.6.4 Best Practices Checklist
+### 24.6.4 Best Practices Checklist
 
 1. **Use C as a Bridge for C++**: Always wrap C++ code in C-compatible interfaces
 2. **Verify Data Types**: Use `Interfaces.C` types for all interoperable data
@@ -22490,9 +22482,9 @@ To enable these features:
 
 > "The key to successful language interoperability is treating the interface as a contract. Define clear boundaries, specify ownership rules, and verify everything at compile time. Ada's strong typing makes this contract enforceable." — Senior Software Architect
 
-## 3.7 Advanced Techniques: Performance Optimization
+## 24.7 Advanced Techniques: Performance Optimization
 
-### 3.7.1 Zero-Copy Data Sharing
+### 24.7.1 Zero-Copy Data Sharing
 
 For high-performance applications, avoid copying data between languages:
 
@@ -22537,7 +22529,7 @@ void process_buffer(float* buffer, size_t size) {
 - Ideal for large datasets (e.g., image processing)
 - Uses Ada's automatic memory management for deallocation
 
-### 3.7.2 Inline C Code in Ada
+### 24.7.2 Inline C Code in Ada
 
 For performance-critical sections, use GNAT's `pragma Import (C, ...)` with inline assembly:
 
@@ -22573,7 +22565,7 @@ gcc -O3 inline.c main.o -o app
 - Allows compiler optimizations across language boundaries
 - Ideal for tight loops and mathematical operations
 
-### 3.7.3 Cross-Language Inlining
+### 24.7.3 Cross-Language Inlining
 
 For small functions, use `pragma Inline` to optimize across boundaries:
 
@@ -22605,9 +22597,9 @@ int32_t add(int32_t a, int32_t b) {
 - No function call overhead
 - Optimized for performance-critical paths
 
-## 3.8 Real-World Applications and Case Studies
+## 24.8 Real-World Applications and Case Studies
 
-### 3.8.1 Case Study: Embedded Systems with Ada and C
+### 24.8.1 Case Study: Embedded Systems with Ada and C
 
 Many embedded systems use C for hardware drivers and Ada for application logic. Let's integrate them:
 
@@ -22660,7 +22652,7 @@ gcc gpio.c main.o -o app
 - No runtime overhead from inter-language calls
 - Compile-time verification of parameter types
 
-### 3.8.2 Case Study: Web Server with Ada and C Libraries
+### 24.8.2 Case Study: Web Server with Ada and C Libraries
 
 A high-performance web server uses C libraries for networking and Ada for business logic:
 
@@ -22729,7 +22721,7 @@ gcc network.c web_server.o -o server -lsocket
 - No memory management issues
 - Clear separation of concerns
 
-## 3.9 Conclusion
+## 24.9 Conclusion
 
 Ada's interoperability with C and C++ is a powerful tool for building robust, high-performance applications. By leveraging standardized type mappings, explicit calling conventions, and careful memory management, developers can seamlessly integrate Ada with existing libraries and frameworks. Unlike languages with limited interoperability, Ada provides compile-time verification of interface contracts—ensuring safety and reliability from the start.
 
@@ -22745,9 +22737,9 @@ As you experiment with these techniques, remember:
 
 By mastering these skills, you'll unlock the full potential of Ada while leveraging the vast ecosystem of C and C++ libraries. The result? Software that is not only functional but also safe, reliable, and maintainable—exactly what modern applications demand.
 
-## 3.10 Resources and Further Learning
+## 24.10 Resources and Further Learning
 
-### 3.10.1 Core Documentation
+### 24.10.1 Core Documentation
 
 | **Resource** | **URL** | **Description** |
 | :--- | :--- | :--- |
@@ -22756,14 +22748,14 @@ By mastering these skills, you'll unlock the full potential of Ada while leverag
 | **Interfaces.C Documentation** | [https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Interfaces_C.html](https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Interfaces_C.html) | Standard Ada-C interoperability package |
 | **Ada.Strings.C_Utils** | [https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Strings_C_Utils.html](https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Strings_C_Utils.html) | String conversion utilities for C interoperability |
 
-### 3.10.2 Books and Tutorials
+### 24.10.2 Books and Tutorials
 
 - **"Ada 2022: The Craft of Programming" by John Barnes**: Covers interoperability techniques in depth
 - **"Professional Ada Programming" by John English**: Practical examples of mixed-language projects
 - **"Ada for C++ Programmers" by Stephen Michell**: Focuses on Ada-C++ interoperability
 - **AdaCore Learning Portal**: [https://learn.adacore.com](https://learn.adacore.com) with free tutorials on interoperability
 
-### 3.10.3 Online Communities
+### 24.10.3 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -22772,7 +22764,7 @@ By mastering these skills, you'll unlock the full potential of Ada while leverag
 | **Reddit r/Ada** | [https://reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub Ada Projects** | [https://github.com/topics/ada](https://github.com/topics/ada) | Real-world Ada code examples |
 
-### 3.10.4 Advanced Topics
+### 24.10.4 Advanced Topics
 
 - **Formal Verification of Interoperability**: Using SPARK to verify C interfaces
 - **Cross-Platform Interoperability**: Handling different ABIs and calling conventions
@@ -22791,7 +22783,7 @@ This chapter has equipped you with practical skills for Ada-C/C++ interoperabili
 
 This chapter serves as a concise reference guide for Ada programming fundamentals. Unlike previous tutorials that focused on specific topics, this guide compiles essential syntax, types, and patterns into a single, actionable resource. Whether you're writing a simple script or a complex application, this guide provides quick access to Ada's core features without requiring deep theoretical knowledge. Remember: this is not a replacement for the Ada Reference Manual, but a practical companion for everyday development. The information is organized for quick lookup, with each section containing clear examples and best practices tailored for beginning programmers. All examples have been tested with GNAT Community 2023 to ensure accuracy and relevance.
 
-## 1.1 Reserved Words
+## 25.1 Reserved Words
 
 Ada reserved words are keywords that have special meaning in the language and cannot be used as identifiers (variable names, procedure names, etc.). They form the syntax of Ada, and attempting to use them as identifiers will result in compilation errors. Reserved words ensure language consistency and prevent ambiguity in code structure. Below is a complete list of Ada 2022 reserved words with their primary purposes.
 
@@ -22874,7 +22866,7 @@ end Test;
 
 The compiler will report: `error: reserved word "end" cannot be used as identifier`. This strict enforcement prevents ambiguity and ensures code clarity. Note that Ada's reserved words are case-insensitive—`If` and `if` are treated identically—but standard practice uses lowercase for reserved words and uppercase for constants.
 
-## 1.2 Predefined and Common Standard Types
+## 25.2 Predefined and Common Standard Types
 
 Ada provides several built-in types that form the foundation of most programs. These include scalar types (like integers and floats), composite types (like strings), and special types for time and durations. Understanding these types is crucial for writing efficient and correct code. Ada's strong typing ensures that type mismatches are caught at compile time, preventing many common runtime errors. Below is a reference table for the most commonly used types in Ada, with detailed examples.
 
@@ -22916,7 +22908,7 @@ end;
 
 This example shows how Ada's strong typing catches errors at compile time rather than runtime—saving debugging time and preventing subtle bugs.
 
-## 1.3 Operator Precedence
+## 25.3 Operator Precedence
 
 Operator precedence determines the order in which operations are evaluated in expressions. Understanding precedence is critical for writing correct and readable code, especially when combining multiple operators. The table below lists operators by precedence level, with higher precedence operators evaluated first. Each row includes associativity (how operators of the same precedence are grouped), which affects evaluation order for consecutive operators of the same level.
 
@@ -22974,7 +22966,7 @@ end;
 
 The short-circuit operators (`and then`, `or else`) are particularly important for safe programming—they prevent evaluating expressions that might cause errors. For example, in `if Pointer /= null and then Pointer.Data > 0`, the second condition is only evaluated if the pointer is valid.
 
-## 1.4 Useful Attributes
+## 25.4 Useful Attributes
 
 Attributes in Ada provide metadata about types and objects. They are prefixed with an apostrophe (') and are invaluable for writing generic and type-safe code. Attributes allow you to query information about types without hardcoding values, making your code more adaptable and maintainable. The table below lists common attributes for scalar types and arrays, with practical examples for each.
 
@@ -23053,7 +23045,7 @@ end;
 
 This approach ensures your loops work correctly even if array dimensions change—making your code more maintainable.
 
-## 1.5 Control Structures
+## 25.5 Control Structures
 
 Control structures manage the flow of execution in Ada programs. These structures allow you to make decisions, repeat actions, and handle complex logic in a structured way. Ada's control structures are designed for clarity and safety—each has explicit syntax that prevents common programming errors. Below is a reference table for the most commonly used control structures with practical syntax examples.
 
@@ -23125,7 +23117,7 @@ end;
 
 This approach is cleaner and more maintainable than nested if-else statements.
 
-## 1.6 Subprogram Parameter Modes
+## 25.6 Subprogram Parameter Modes
 
 Ada uses parameter modes to specify how data flows between subprograms. The mode determines whether a parameter can be read, written, or both. Understanding these modes is crucial for writing safe and efficient code—misusing them can lead to subtle bugs or inefficient memory usage. The table below summarizes the three modes and their usage guidelines.
 
@@ -23176,11 +23168,11 @@ When designing subprograms, follow these best practices:
 
 This approach ensures your code is clear, maintainable, and less prone to unexpected side effects.
 
-## 1.7 Common I/O Operations
+## 25.7 Common I/O Operations
 
 Ada's standard I/O packages provide robust input/output capabilities. This section covers the most frequently used operations across different packages, with detailed examples for each. Proper I/O handling is essential for any practical application—from simple console programs to complex file processing systems.
 
-### 1.7.1 Ada.Text_IO
+### 25.7.1 Ada.Text_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -23195,7 +23187,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Set_Output** | Redirect output to file | Set_Output(File); |
 | **Reset** | Reset file position | Reset(File); |
 
-### 1.7.2 Ada.Integer_Text_IO
+### 25.7.2 Ada.Integer_Text_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -23206,7 +23198,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Aft** | Set decimal places | Put(N, Aft => 2); |
 | **Base** | Set number base (2-16) | Put(N, Base => 16); |
 
-### 1.7.3 Ada.Float_Text_IO
+### 25.7.3 Ada.Float_Text_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -23216,7 +23208,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Fore** | Set leading spaces | Put(F, Fore => 4); |
 | **Aft** | Set decimal places | Put(F, Aft => 2); |
 
-### 1.7.4 Ada.Enumeration_IO
+### 25.7.4 Ada.Enumeration_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -23224,7 +23216,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Get** | Read enumeration value | Get(Day); |
 | **Image** | Convert to string | Day'Image; |
 
-### 1.7.5 Ada.Command_Line
+### 25.7.5 Ada.Command_Line
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -23311,7 +23303,7 @@ Argument 2: arg2
 
 This pattern is essential for creating command-line utilities and scripts.
 
-## 1.8 Predefined Exceptions
+## 25.8 Predefined Exceptions
 
 Exceptions in Ada handle runtime errors gracefully. Unlike languages that rely solely on return codes, Ada's exception mechanism provides structured error handling that separates normal code from error-handling logic. This section lists common exceptions and shows how to handle them effectively.
 
@@ -23323,7 +23315,7 @@ Exceptions in Ada handle runtime errors gracefully. Unlike languages that rely s
 | **Data_Error** | Invalid data conversion (e.g., string to number) |
 | **Tasking_Error** | Task-related error (e.g., invalid task operation) |
 
-### 1.8.1 Exception Handler Syntax
+### 25.8.1 Exception Handler Syntax
 
 | **Syntax Element** | **Description** |
 | :--- | :--- |
@@ -23413,7 +23405,7 @@ This shows how Ada handles invalid task operations—critical for concurrent pro
 
 > "Ada's exception mechanism ensures that errors are handled explicitly and safely. By separating error-handling logic from normal code, you create programs that are more reliable and easier to maintain."
 
-## 1.9 Conclusion
+## 25.9 Conclusion
 
 > "Ada's design philosophy prioritizes clarity and correctness over convenience. This reference guide embodies that principle by providing precise, actionable information without unnecessary complexity—empowering you to write code that is both reliable and maintainable from the start."
 
@@ -23431,3 +23423,4 @@ This guide has covered the essential building blocks of Ada programming. For dee
 
 With this knowledge, you're ready to tackle real-world programming challenges with confidence.
 
+
