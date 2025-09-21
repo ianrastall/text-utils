@@ -35,25 +35,29 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/es/languages/xml.min.js"></script>
 
   <style>
-    /* Screen styles */
     html, body { 
       width: 100%; 
-      min-height: 100%;
+      min-height: 100vh;
       background-color: #212529;
+	  font-size: 120%;
       font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
     
-    .content-container {
+    /* Content wrapper with padding */
+    .content-wrapper {
       width: 100%;
-      padding: 2rem 3rem;
+      min-height: 100vh;
+      padding: 5rem;  /* Adjust this value for desired padding */
       box-sizing: border-box;
     }
     
     .markdown-body { 
       max-width: 100%; 
       width: 100%;
+      background-color: transparent;
+      border: none;
     }
     
     .markdown-body img { 
@@ -88,22 +92,94 @@
     }
     
     .markdown-body pre { 
-      border-radius: .25rem; 
+      border-radius: .25rem;
       overflow: auto;
       max-width: 100%;
+      background-color: #212529;  /* Slightly lighter than pure black for visibility */
     }
     
+    /* Book title styling - large paragraph, not heading */
+    .book-title {
+      font-size: 2.5rem !important;
+      font-weight: 600 !important;
+      color: #00BFFF !important;  /* powderblue variant */
+      text-align: left !important;
+      margin: 0 0 3rem 0 !important;
+      padding: 0 !important;
+      line-height: 1.2 !important;
+	  border-bottom: thin solid #00BFFF !important;
+    }
+    
+    /* Table styling matching tutorials.css */
+    .markdown-body table,
+    #mainOutput.tutorial-content table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 2rem 0;
+      background-color: #1a1d23;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font-size: 1.1rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .markdown-body table thead,
+    #mainOutput.tutorial-content table thead {
+      background-color: rgba(70, 130, 180, 0.4);
+    }
+
+    .markdown-body table th,
+    #mainOutput.tutorial-content table th {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      color: #ffffff !important;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 1.15rem;
+    }
+
+    .markdown-body table th:last-child,
+    #mainOutput.tutorial-content table th:last-child {
+      border-right: none;
+    }
+
+    .markdown-body table td,
+    #mainOutput.tutorial-content table td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e8e8e8 !important;
+    }
+
+    .markdown-body table td:last-child,
+    #mainOutput.tutorial-content table td:last-child {
+      border-right: none;
+    }
+
+    .markdown-body table tbody tr:nth-child(odd),
+    #mainOutput.tutorial-content table tbody tr:nth-child(odd) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .markdown-body table tbody tr:hover,
+    #mainOutput.tutorial-content table tbody tr:hover {
+      background-color: rgba(70, 130, 180, 0.15);
+    }
   </style>
 </head>
 <body>
-  <div class="content-container">
+  <div class="content-wrapper">
+    <p class="book-title">The Ada Programming Language</p>
     <div id="loading" class="text-white-50 text-center p-4">
       <div class="spinner-border text-secondary mb-3" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
       <p>Loading book content...</p>
     </div>
-    <article id="mainOutput" class="markdown-body tutorial-content" style="display:none;"></article>
+    <article id="mainOutput" class="markdown-body" style="display:none;"></article>
   </div>
 
   <script>
@@ -178,7 +254,7 @@
         output.style.display = '';
         output.innerHTML = `
           <div class="text-white-50">
-            <h1 class="h3">Book Viewer</h1>
+            <h1 class="h3 text-white">Book Viewer</h1>
             <p>Provide a Markdown file via the <code>?src=</code> query parameter.</p>
             <p class="mb-2">Examples:</p>
             <ul>
