@@ -2,15 +2,13 @@
 
 While many programming languages treat functions and procedures as interchangeable constructs, Ada makes a deliberate semantic distinction that enforces clear design principles. This tutorial explores Ada's rigorous approach to subprograms and packages—the foundation of its modular design philosophy. You'll learn how Ada's packaging system creates strong encapsulation boundaries, enables precise visibility control, and supports the development of verifiable components for reliable software systems. Through practical examples, we'll demonstrate how these features transform code organization from a maintenance challenge into a reliability asset.
 
-#### 1.0.0.1 Subprograms as Contracts
+> In Ada, subprograms aren't just code containers—they're formal contracts between callers and callees. This perspective shifts development from "making code work" to "specifying how it must work," creating the foundation for verifiable systems. When you define a subprogram in Ada, you're not just writing instructions; you're documenting exactly what the subprogram expects, what it guarantees, and how it interacts with the rest of your system. This contract-based approach means errors are caught earlier in the development process, making your code more predictable and maintainable.
 
-In Ada, subprograms aren't just code containers—they're formal contracts between callers and callees. This perspective shifts development from "making code work" to "specifying how it must work," creating the foundation for verifiable systems. When you define a subprogram in Ada, you're not just writing instructions; you're documenting exactly what the subprogram expects, what it guarantees, and how it interacts with the rest of your system. This contract-based approach means errors are caught earlier in the development process, making your code more predictable and maintainable.
-
-## 1.1 Procedures vs. Functions: Semantic Distinctions
+## 3.1 Procedures vs. Functions: Semantic Distinctions
 
 Unlike languages that treat all subprograms as functions (even when they don't return values), Ada enforces a clear semantic distinction between procedures and functions that reflects their intended purpose. This distinction isn't arbitrary—it's designed to make your code more self-documenting and less error-prone.
 
-#### 1.1.0.1 Procedures
+### 3.1.1 Procedures
 
 - Perform actions with side effects
 - No return value (by design)
@@ -40,7 +38,7 @@ end Set_Target_Temperature;
 
 This procedure sets a target temperature for a specific sensor. It takes a sensor identifier and target value as inputs (`in` parameters), and returns a success status through an `out` parameter. The procedure modifies the system state by updating the temperature value, which is why it's a procedure rather than a function.
 
-#### 1.1.0.2 Functions
+### 3.1.2 Functions
 
 - Compute and return values
 - Must have a return value
@@ -59,7 +57,7 @@ end Get_Current_Temperature;
 
 This function retrieves the current temperature for a sensor. It takes a sensor identifier as an input parameter and returns a temperature value. Crucially, it doesn't modify any system state—it simply reads and returns data. This makes it a perfect candidate for a function.
 
-### 1.1.1 The Command-Query Separation Principle
+### 3.1.3 The Command-Query Separation Principle
 
 Bertrand Meyer's principle states: "Asking a question should not change the answer." Ada enforces this at the language level:
 
@@ -95,7 +93,7 @@ end Update_Last_Read;
 
 This separation makes your code clearer and more reliable. You can't accidentally mix read and write operations, which prevents subtle bugs that are difficult to track down.
 
-#### 1.1.1.1 Parameter Modes: The Contract Language
+#### 3.1.3.1 Parameter Modes: The Contract Language
 
 Ada's parameter modes form a precise contract language that explicitly states how data flows into and out of subprograms:
 
@@ -185,15 +183,15 @@ end Update_Temperature;
 
 This small change makes the contract clearer and prevents accidental modification of the sensor ID.
 
-## 1.2 Packages: The Foundation of Modularity
+## 3.2 Packages: The Foundation of Modularity
 
 While many languages use classes as the primary modularization unit, Ada uses packages—a more flexible construct that supports multiple organization patterns. Packages provide a powerful mechanism for encapsulating related functionality while controlling visibility and dependencies.
 
-### 1.2.1 Package Structure and Visibility Control
+### 3.2.1 Package Structure and Visibility Control
 
 Ada packages have two distinct parts: the specification (what callers see) and the body (the implementation details). This separation creates clear boundaries between interface and implementation.
 
-#### 1.2.1.1 Package Specification
+#### 3.2.1.1 Package Specification
 
 The public interface (what callers see):
 
@@ -222,7 +220,7 @@ private
 end Temperature_Sensors;
 ```
 
-#### 1.2.1.2 Package Body
+#### 3.2.1.2 Package Body
 
 The implementation (hidden from callers):
 
@@ -259,7 +257,7 @@ package body Temperature_Sensors is
 end Temperature_Sensors;
 ```
 
-### 1.2.2 Key Visibility Rules
+### 3.2.2 Key Visibility Rules
 
 - Items in the `private` part are visible to the package body but not to clients
 - Package bodies can see all items in their own spec (public and private)
@@ -268,7 +266,7 @@ end Temperature_Sensors;
 
 This strict visibility control creates strong encapsulation boundaries that prevent unintended dependencies. For example, clients of `Temperature_Sensors` can't access `Last_Values` directly—they must go through `Get_Last_Value`. This ensures that any access to the internal data goes through proper validation and error handling.
 
-### 1.2.3 Private Types for Information Hiding
+### 3.2.3 Private Types for Information Hiding
 
 Ada provides multiple levels of information hiding through private types, giving you fine-grained control over what clients can see:
 
@@ -307,7 +305,7 @@ private
 end Sensor_Management;
 ```
 
-### 1.2.4 Private Type Selection Guide
+### 3.2.4 Private Type Selection Guide
 
 | **Type Form** | **Visibility** | **Best For** |
 | :--- | :--- | :--- |
@@ -318,7 +316,7 @@ end Sensor_Management;
 
 Let's explore each type form in detail:
 
-#### 1.2.4.1 Standard Record
+#### 3.2.4.1 Standard Record
 
 A standard record exposes all its fields to clients. This is appropriate when the data structure is simple and clients need direct access to all components.
 
@@ -338,7 +336,7 @@ P.X := 15;  -- Allowed
 
 This is useful for simple data structures but provides no encapsulation—changes to the record structure will affect all clients.
 
-#### 1.2.4.2 Private Type
+#### 3.2.4.2 Private Type
 
 A private type hides implementation details while exposing operations. Clients can only interact with the type through the public operations defined in the specification.
 
@@ -367,7 +365,7 @@ S.ID := 10;            -- ERROR: cannot access private record component
 
 This is ideal for abstract data types where you want to control how the data is accessed and modified.
 
-#### 1.2.4.3 Limited Private Type
+#### 3.2.4.3 Limited Private Type
 
 A limited private type restricts operations to only assignment and equality testing. Clients cannot copy or assign these types directly.
 
@@ -395,7 +393,7 @@ Close_Device(D1);
 
 This is perfect for resources that should have only one owner, like file handles or hardware devices.
 
-#### 1.2.4.4 Private with Discriminants
+#### 3.2.4.4 Private with Discriminants
 
 A private type with discriminants allows runtime-sized components while hiding implementation details.
 
@@ -423,13 +421,13 @@ B.Data := "Test";    -- ERROR: cannot access private component
 
 This is useful for types where the size is determined at runtime but the implementation details should remain hidden.
 
-## 1.3 Package Hierarchies and Child Packages
+## 3.3 Package Hierarchies and Child Packages
 
 Ada's package hierarchy system provides a powerful mechanism for organizing large systems while maintaining strong encapsulation. Unlike inheritance-based systems, Ada's package hierarchy creates clear ownership relationships without the fragility of deep inheritance trees.
 
-### 1.3.1 Parent and Child Package Structure
+### 3.3.1 Parent and Child Package Structure
 
-#### 1.3.1.1 Parent Package (file: temperature_sensors.ads)
+#### 3.3.1.1 Parent Package (file: temperature_sensors.ads)
 
 ```ada
 package Temperature_Sensors is
@@ -446,7 +444,7 @@ package Temperature_Sensors is
 end Temperature_Sensors;
 ```
 
-#### 1.3.1.2 Child Package (file: temperature_sensors.hardware.ads)
+#### 3.3.1.2 Child Package (file: temperature_sensors.hardware.ads)
 
 ```ada
 with Ada.Real_Time;
@@ -484,7 +482,7 @@ package body Temperature_Sensors.Hardware is
 end Temperature_Sensors.Hardware;
 ```
 
-### 1.3.2 Child Package Visibility Rules
+### 3.3.2 Child Package Visibility Rules
 
 - A child package can see all public items of its parent
 - A child package _cannot_ see private items of its parent (unless the parent has a `private` part)
@@ -514,7 +512,7 @@ end Home_Sensors.Motion;
 
 Each child package has access to the parent's public interface but not to the other child packages. This keeps the system modular and prevents accidental dependencies between unrelated components.
 
-### 1.3.3 Private Child Packages
+### 3.3.3 Private Child Packages
 
 For implementation details that should be hidden from clients:
 
@@ -558,9 +556,9 @@ end Temperature_Sensors.Initialization;
 
 This pattern is perfect for initialization routines that should be hidden from clients but need to be part of the package's implementation. The private child package `Initialization` is only visible to the parent package body, not to any clients of the package.
 
-### 1.3.4 Package Hierarchy Design Patterns
+### 3.3.4 Package Hierarchy Design Patterns
 
-#### 1.3.4.1 Layered Architecture
+#### 3.3.4.1 Layered Architecture
 
 - `System`: Top-level interface
 - `System.Core`: Core functionality
@@ -589,7 +587,7 @@ end Home_Automation.Utils;
 
 Each layer depends only on layers below it, creating a clean dependency graph.
 
-#### 1.3.4.2 Feature-Based Organization
+#### 3.3.4.2 Feature-Based Organization
 
 - `Sensors`: Base sensor interface
 - `Sensors.Temperature`: Temperature sensors
@@ -618,13 +616,13 @@ end Sensors.Diagnostics;
 
 This organization makes it easy to find related functionality and keeps the system modular.
 
-## 1.4 Library Units and System Organization
+## 3.4 Library Units and System Organization
 
 Ada's library unit system provides a formal mechanism for organizing large systems with precise dependency control. Unlike languages where dependencies are implicit or managed through build systems, Ada makes dependencies explicit and verifiable.
 
-### 1.4.1 Library Unit Types and Dependencies
+### 3.4.1 Library Unit Types and Dependencies
 
-#### 1.4.1.1 \. Standard Packages
+#### 3.4.1.1 \. Standard Packages
 
 Independent units with no special dependencies:
 
@@ -637,7 +635,7 @@ end Math_Utils;
 
 Can be compiled independently once dependencies are satisfied. These are perfect for general-purpose utilities that don't depend on other parts of your system.
 
-#### 1.4.1.2 \. Parent Packages
+#### 3.4.1.2 \. Parent Packages
 
 Define namespaces for child packages:
 
@@ -650,7 +648,7 @@ end Sensors;
 
 Must be compiled before child packages. Parent packages act as the foundation for hierarchical organization.
 
-#### 1.4.1.3 \. Child Packages
+#### 3.4.1.3 \. Child Packages
 
 Extend parent package functionality:
 
@@ -664,7 +662,7 @@ end Sensors.Temperature;
 
 Depend on parent package; siblings are independent. Child packages can access the parent's public items but not private items.
 
-#### 1.4.1.4 \. Subunits
+#### 3.4.1.4 \. Subunits
 
 Split large bodies into manageable pieces:
 
@@ -691,7 +689,7 @@ end Read_Sensor;
 
 Allows modular implementation of large package bodies. Subunits make it easier to manage large codebases by splitting them into smaller, more manageable files.
 
-#### 1.4.1.5 Dependency Management Best Practices
+#### 3.4.1.5 Dependency Management Best Practices
 
 Ada's `with` clause provides precise dependency control:
 
@@ -732,7 +730,7 @@ use Ada.Text_IO;
 
 Limit `with` clauses to only what's necessary and avoid excessive `use` clauses to prevent namespace pollution and hidden dependencies. In the good practice example, we only import what we need (`Temperature_Sensors.Hardware`), and we explicitly qualify `Hardware.Read_Sensor` rather than using `use` for the entire package.
 
-### 1.4.2 GNAT Project Files for Large Systems
+### 3.4.2 GNAT Project Files for Large Systems
 
 For industrial-scale systems, GNAT project files manage dependencies:
 
@@ -766,7 +764,7 @@ project Home_Automation is
 end Home_Automation;
 ```
 
-### 1.4.3 Project File Best Practices
+### 3.4.3 Project File Best Practices
 
 - Use separate project files for different system components
 - Define build configurations for development and production
@@ -783,13 +781,13 @@ For example, a home automation system might have:
 
 Each project file can have its own build configurations and dependencies, making it easy to manage large systems.
 
-## 1.5 Package Initialization and Finalization
+## 3.5 Package Initialization and Finalization
 
 Ada provides controlled mechanisms for package initialization and finalization—critical for reliable systems where startup and shutdown sequences matter. Unlike languages where global initialization order is undefined, Ada gives you precise control over when and how initialization happens.
 
-### 1.5.1 Initialization Patterns
+### 3.5.1 Initialization Patterns
 
-#### 1.5.1.1 \. Implicit Initialization
+#### 3.5.1.1 \. Implicit Initialization
 
 Using variable declarations:
 
@@ -805,7 +803,7 @@ end Sensors;
 
 Simple but limited control over initialization order. This works well for simple cases but can lead to problems in complex systems.
 
-#### 1.5.1.2 \. Explicit Initialization Procedure
+#### 3.5.1.2 \. Explicit Initialization Procedure
 
 Using an initialization procedure:
 
@@ -834,9 +832,9 @@ end Sensors;
 
 Gives complete control over initialization sequence. This is ideal for systems where initialization order matters.
 
-### 1.5.2 Advanced Initialization Control
+### 3.5.2 Advanced Initialization Control
 
-#### 1.5.2.1 Elaboration Control Pragmas
+#### 3.5.2.1 Elaboration Control Pragmas
 
 Control elaboration order explicitly:
 
@@ -854,7 +852,7 @@ end Sensors.Hardware;
 
 Directs the compiler to ensure proper elaboration order. `Elaborate_Body` ensures the package body is elaborated before any references to the package, and `Elaborate_All` ensures all child packages are elaborated.
 
-#### 1.5.2.2 Elaboration Checks
+#### 3.5.2.2 Elaboration Checks
 
 Enable runtime elaboration checks:
 
@@ -870,7 +868,7 @@ This compiles with elaboration checks that detect:
 
 For example, if you try to call a function from a package that hasn't been elaborated, Ada will raise a `Program_Error` at runtime.
 
-#### 1.5.2.3 Initialization with Contracts
+#### 3.5.2.3 Initialization with Contracts
 
 Using Design by Contract for initialization:
 
@@ -893,17 +891,17 @@ end Sensors;
 
 Contracts document and verify initialization requirements. The `Initializes` aspect specifies which variables are initialized by the package, and the contracts ensure proper initialization sequence.
 
-### 1.5.3 The Initialization Order Problem
+### 3.5.3 The Initialization Order Problem
 
 In many languages, global variable initialization order is undefined or implementation-dependent. This caused the Ariane 5 rocket failure. Ada provides multiple solutions:
 
-#### 1.5.3.1 Problem
+#### 3.5.3.1 Problem
 
 - Package A depends on Package B
 - But Package B initializes after Package A
 - Results in undefined behavior
 
-#### 1.5.3.2 Solutions
+#### 3.5.3.2 Solutions
 
 - Use `pragma Elaborate`/`Elaborate_All`
 - Use explicit initialization procedures
@@ -926,11 +924,11 @@ end Home_Automation.Sensors;
 
 This ensures that the main package is elaborated before any sensor operations, preventing initialization order issues.
 
-## 1.6 Real-World Package Design Patterns
+## 3.6 Real-World Package Design Patterns
 
 Let's explore two practical examples of package design that demonstrate Ada's modular capabilities without focusing on safety-critical domains.
 
-### 1.6.1 \. Home Climate Control System
+### 3.6.1 \. Home Climate Control System
 
 A robust climate control package for home automation:
 
@@ -972,7 +970,7 @@ end Climate_Control;
 
 This pattern combines strong typing, contracts, and information hiding for maximum reliability. Clients can't set temperatures outside the valid range, and they can't access the system before it's initialized. The private implementation details are hidden, so clients only interact with the public interface.
 
-### 1.6.2 \. Smart Home Lighting Control
+### 3.6.2 \. Smart Home Lighting Control
 
 A lighting control system for home automation:
 
@@ -1014,9 +1012,9 @@ end Lighting_Control;
 
 This implementation ensures safe state transitions and parameter validation. For example, you can't set color temperature when the lights are off, and brightness levels are always within valid ranges. The private implementation details are hidden, so clients interact only through the public interface.
 
-## 1.7 Exercises: Building Robust Package Hierarchies
+## 3.7 Exercises: Building Robust Package Hierarchies
 
-### 1.7.1 Exercise 1: Home Automation Sensor System
+### 3.7.1 Exercise 1: Home Automation Sensor System
 
 Design a package hierarchy for a home automation sensor system:
 
@@ -1028,7 +1026,7 @@ Design a package hierarchy for a home automation sensor system:
 
 **Challenge:** Prove that sensor readings cannot be accessed before system initialization.
 
-#### 1.7.1.1 Solution Guidance
+#### 3.7.1.1 Solution Guidance
 
 Start with the parent package:
 
@@ -1066,7 +1064,7 @@ function Read_Temp (ID : Sensor_ID) return Temperature with
 
 This ensures that `Read_Temp` can only be called after the system is initialized.
 
-### 1.7.2 Exercise 2: Smart Home Lighting Control
+### 3.7.2 Exercise 2: Smart Home Lighting Control
 
 Build a package structure for a home lighting control system:
 
@@ -1078,7 +1076,7 @@ Build a package structure for a home lighting control system:
 
 **Challenge:** Create a verification plan showing how each safety requirement is enforced through package design.
 
-#### 1.7.2.1 Solution Guidance
+#### 3.7.2.1 Solution Guidance
 
 Create a parent package for the lighting system:
 
@@ -1122,7 +1120,7 @@ procedure Set_Color_Temp (Temp : Color_Temp) with
 
 This ensures that color temperature can only be set when the lights are in a mode that supports it.
 
-### 1.7.3 Package Design Verification Strategy
+### 3.7.3 Package Design Verification Strategy
 
 1. **Structure verification:** Check package hierarchy against requirements
 2. **Visibility verification:** Ensure proper information hiding
@@ -1133,11 +1131,11 @@ This ensures that color temperature can only be set when the lights are in a mod
 
 For highest reliability, all six verification steps are required to demonstrate proper package design.
 
-## 1.8 Next Steps: Design by Contract
+## 3.8 Next Steps: Design by Contract
 
 Now that you've mastered Ada's subprogram and package system, you're ready to explore how to specify precise behavioral requirements directly in your code. In the next tutorial, we'll dive into Design by Contract—Ada 2012's powerful feature for building verifiable systems. You'll learn how to:
 
-### 1.8.1 Upcoming: Design by Contract
+### 3.8.1 Upcoming: Design by Contract
 
 - Specify preconditions and postconditions
 - Use type invariants to protect data integrity
@@ -1145,7 +1143,7 @@ Now that you've mastered Ada's subprogram and package system, you're ready to ex
 - Transition from runtime checks to formal verification
 - Apply contracts to real-world scenarios
 
-### 1.8.2 Practice Challenge
+### 3.8.2 Practice Challenge
 
 Enhance your home automation system with contracts:
 
@@ -1155,7 +1153,7 @@ Enhance your home automation system with contracts:
 - Document the safety properties your contracts enforce
 - Verify that your contracts prevent known failure modes
 
-#### 1.8.2.1 The Path to Verified Systems
+#### 3.8.2.1 The Path to Verified Systems
 
 Ada's subprogram and package system provides the structural foundation for building reliable software, but contracts provide the semantic precision needed for verification. When combined with strong typing and formal methods, these features create a pathway from traditional development to mathematically verified software.
 

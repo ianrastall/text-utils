@@ -2,16 +2,14 @@
 
 Design by Contract (DbC) transforms software development from a process of debugging to one of formal verification. Introduced in Ada 2012, this paradigm allows developers to specify precise behavioral requirements directly in code, enabling the compiler to verify correctness properties at both compile-time and runtime. This tutorial explores how to implement robust contracts that catch errors early, document system behavior precisely, and form the foundation for mathematical verification in complex systems.
 
-#### 1.0.0.1 From Testing to Specification
-
-Traditional development: "Let's write code and see if it works."  
-Ada with contracts: "Let's specify exactly how it must work, then verify compliance."
+>Traditional development: "Let's write code and see if it works."  
+>Ada with contracts: "Let's specify exactly how it must work, then verify compliance."
 
 ## 1.1 The Contract Paradigm: Beyond Unit Testing
 
 While unit tests verify specific input/output pairs, contracts define universal properties that must hold for all possible executions. This shift from testing to specification is fundamental to building truly reliable systems.
 
-#### 1.1.0.1 Traditional Unit Testing
+### 1.1.1 Traditional Unit Testing
 
 - Verifies specific test cases
 - Cannot prove absence of errors
@@ -24,7 +22,7 @@ While unit tests verify specific input/output pairs, contracts define universal 
 Assert (Calculate_Factorial(5) = 120, "Factorial 5 failed");
 ```
 
-#### 1.1.0.2 Design by Contract
+### 1.1.2 Design by Contract
 
 - Specifies universal properties
 - Can prove absence of certain errors
@@ -39,9 +37,9 @@ function Factorial (N : Natural) return Positive with
            (if N > 0 then Factorial'Result mod N = 0);
 ```
 
-#### 1.1.0.3 Contract Components Explained
+### 1.1.3 Contract Components Explained
 
-##### Preconditions (`Pre`)
+#### 1.1.3.1 Preconditions (`Pre`)
 
 Requirements that must be true for the caller before invoking the subprogram. They define the subprogram's domain of responsibility.
 
@@ -49,7 +47,7 @@ Requirements that must be true for the caller before invoking the subprogram. Th
 - Define required state conditions
 - Enforce interface contracts
 
-##### Postconditions (`Post`)
+#### 1.1.3.2 Postconditions (`Post`)
 
 Guarantees provided by the subprogram after execution. They define what the subprogram promises to deliver.
 
