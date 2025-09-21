@@ -35,20 +35,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/es/languages/xml.min.js"></script>
 
   <style>
-	body {padding: 5em;}
-	code {color: skyblue;}
-    /* Keep the page clean and focused */
-    body { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    :root { --page-pad: clamp(1rem, 4vw, 3rem); }
+    html, body { width: 100%; height: 100%; }
+    body {
+      padding: var(--page-pad);
+      background-color: #000; /* ensure dark bg across the page */
+      font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    .content-wrap { width: 100%; }
+    .markdown-body { max-width: 100%; }
+    .markdown-body img { max-width: 100%; height: auto; }
+    code { color: skyblue; }
     /* Optional: slightly larger headings for readability */
     .markdown-body h1 { margin-top: 0.2rem; margin-bottom: 1rem; color: powderblue; }
-	.markdown-body h2 { margin-top: 0.15rem; margin-bottom: 1rem; color: cadetblue; }
+    .markdown-body h2 { margin-top: 0.15rem; margin-bottom: 1rem; color: cadetblue; }
     .markdown-body h3 { margin-top: 0.2rem; margin-bottom: 1rem; color: cornflowerblue; }
-	.markdown-body h4 { margin-top: 0.15rem; margin-bottom: 1rem; color: dodgerblue; }
-    .markdown-body pre { border-radius: .25rem; }
+    .markdown-body h4 { margin-top: 0.15rem; margin-bottom: 1rem; color: dodgerblue; }
+    .markdown-body pre { border-radius: .25rem; overflow: auto; }
   </style>
 </head>
-<body>
-      <div class="card-body">
+<body class="bg-black">
+      <div class="content-wrap">
         <div id="loading" class="text-white-50 text-center p-4">
           <div class="spinner-border text-secondary mb-3" role="status">
             <span class="visually-hidden">Loading...</span>
