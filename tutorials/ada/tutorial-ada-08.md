@@ -770,3 +770,4 @@ Object-oriented programming provides the foundation for building flexible system
 This integrated approach is why Ada remains the language of choice for organizations that need both flexibility and reliability. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but economically sustainable throughout its lifecycle.
 
 For beginners, this means you'll be able to write code that's both flexible and reliable. You'll be able to create components that work for many different situations without sacrificing safety or predictability. And most importantly, you'll understand exactly how your code works—no hidden surprises, no unexpected behavior. That's the power of Ada's object-oriented programming.
+

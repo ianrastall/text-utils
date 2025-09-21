@@ -736,3 +736,4 @@ Real-time programming in Ada represents the culmination of the language's design
 This integrated approach is why Ada remains the language of choice for systems where timing matters. As you complete this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but **temporally guaranteed** within its specified domain—whether you're building a home automation system, a web server, or a video game.
 
 For everyday developers, this means your applications will behave predictably under all conditions. Your home automation system will respond reliably to commands. Your web server will handle peak traffic without slowdowns. Your video game will maintain smooth frame rates. Ada gives you the tools to build systems that work as intended, every time.
+

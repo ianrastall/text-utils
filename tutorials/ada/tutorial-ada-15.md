@@ -1311,3 +1311,4 @@ For everyday applications, these benefits translate directly to better user expe
 As you continue your Ada journey, remember that testing isn't an extra step—it's an essential part of development. By incorporating testing from the beginning, you'll develop good habits that will serve you well as your projects grow.
 
 Testing is more than just a technical skill—it's a mindset. It encourages you to think carefully about what your code should do, how it should behave, and how to verify that it works correctly. This mindset will make you a better programmer, regardless of what language or platform you use.
+

@@ -1306,3 +1306,4 @@ Remember, the key to mastering generics is practice. Start with simple examples 
 Ada's generics are not just for experts—they're a fundamental tool that every programmer should know. By using generics, you can write code once and use it in many different ways, saving time and reducing errors. You've learned how to create generic packages and subprograms, how to constrain generic parameters, and how to use generics with private types. You've seen how Ada's generics compare to C++ templates, and you've learned best practices for using generics effectively.
 
 As you continue your programming journey, remember that generics are a powerful tool that can make your code simpler, cleaner, and more reusable. Whether you're building a home automation system, a game, or a data processing tool, generics will help you write better code. So go forth and create—your reusable components are waiting to be built!
+

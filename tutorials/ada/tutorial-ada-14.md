@@ -877,3 +877,4 @@ For beginners, project files might seem like an advanced topic, but they're actu
 As you continue your Ada journey, remember that project files aren't just for large projects. They're valuable for any size of project, from simple calculators to complex home automation systems. By using project files from the beginning, you'll develop good habits that will serve you well as your projects grow.
 
 Project files are more than just build tools—they're a mindset. They encourage you to think about your project structure and build process from the beginning, rather than as an afterthought. This mindset will make you a better programmer, regardless of what language or platform you use.
+

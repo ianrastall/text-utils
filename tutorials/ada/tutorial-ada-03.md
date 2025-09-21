@@ -1160,3 +1160,4 @@ Enhance your home automation system with contracts:
 Ada's subprogram and package system provides the structural foundation for building reliable software, but contracts provide the semantic precision needed for verification. When combined with strong typing and formal methods, these features create a pathway from traditional development to mathematically verified software.
 
 This integrated approach is why Ada remains the language of choice for systems where reliability and correctness matter. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain.
+

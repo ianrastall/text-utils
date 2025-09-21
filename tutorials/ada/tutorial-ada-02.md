@@ -666,3 +666,4 @@ Strong typing is Ada's foundation, but contracts are its superpower. When you co
 In the next chapter, we'll dive deeper into how contracts work with strong typing to create software that's not just reliable, but mathematically verifiable. You'll learn how to specify exactly what your code should do and have the compiler verify it for you—before it ever runs. This is the true power of Ada's type system: it turns your type definitions into a living specification of your program's behavior.
 
 By the end of the next chapter, you'll be able to create software that's not just less likely to fail, but *guaranteed* to work correctly within its specified domain. This is the difference between writing code that *might* work and writing code that *must* work.
+

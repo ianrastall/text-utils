@@ -429,3 +429,4 @@ Enhance your calculator application with concurrency:
 Design by Contract transforms Ada from a safe language into a _verifiable_ language. When combined with strong typing and formal methods, it provides a pathway from traditional development to mathematically verified software. This is why Ada remains the language of choice for systems where correctness matters.
 
 As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just less error-prone, but _provably correct_ within its specified domain. Whether you're building a simple calculator or a complex inventory system, contracts give you the tools to ensure your software behaves exactly as intended.
+

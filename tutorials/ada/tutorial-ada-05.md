@@ -1518,3 +1518,4 @@ Enhance your personal finance system with generics:
 Exception handling provides the foundation for building reliable systems, but generics enable building reliable systems efficiently. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
 
 This integrated approach is why Ada remains the language of choice for organizations that need both reliability and development efficiency. As you progress through this tutorial series, you'll see how these techniques combine to create software that's not just functionally correct, but economically sustainable throughout its lifecycle.
+

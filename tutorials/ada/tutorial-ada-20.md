@@ -1102,3 +1102,4 @@ This chapter has provided a comprehensive overview of multi-core programming in 
 > "The greatest challenge in multi-core programming isn't writing parallel code—it's writing correct parallel code. Ada's design philosophy ensures that correctness is built into the language itself, making it the ideal choice for modern parallel computing." — Ada Core Team
 
 This chapter has equipped you with the knowledge to tackle multi-core programming challenges in Ada. By applying these techniques, you'll create software that is not only fast but also reliable and maintainable—qualities that matter in every computing domain, from scientific research to enterprise applications.
+

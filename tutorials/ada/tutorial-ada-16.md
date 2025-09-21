@@ -845,3 +845,4 @@ As you continue your journey with Ada, remember that embedded systems programmin
 The key to success is starting small. Begin with simple projects like blinking an LED, then gradually add complexity as you gain confidence. Use the tools and resources available in the Ada community, and don't be afraid to ask for help when you need it.
 
 Embedded systems programming with Ada isn't just for safety-critical applications—it's for anyone who wants to build reliable, safe hardware control systems for everyday use. With Ada, you can turn your ideas into reality with confidence that your code will work as intended.
+

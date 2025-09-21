@@ -683,3 +683,4 @@ Unlike Python, which struggles with real-time performance due to the GIL, or C++
 As these technologies continue to evolve, Ada's role in modern software development will only grow. Its ability to combine safety-critical features with general-purpose applicability makes it uniquely suited for the next generation of intelligent systems. Start experimenting with the examples in this chapter—Ada's compiler will catch errors before they become runtime bugs, giving you confidence in your code from day one.
 
 > "The future of software isn't about choosing between safety and innovation—it's about building systems that are both safe *and* innovative. Ada provides the tools to make that vision a reality." — Ada Community Evangelist
+

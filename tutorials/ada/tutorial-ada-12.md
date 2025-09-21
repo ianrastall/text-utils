@@ -785,3 +785,4 @@ The key to SPARK's power is its simplicity. By restricting Ada to a subset where
 As you continue your SPARK journey, remember that formal verification isn't about perfection—it's about building reliable software that you can trust. Whether you're writing a simple calculator or a complex data processing algorithm, SPARK gives you the tools to prove your code works correctly.
 
 SPARK is more than just a programming tool—it's a mindset. It encourages you to think carefully about what your code should do, and then prove that it does it. This mindset will make you a better programmer, regardless of what language or platform you use.
+

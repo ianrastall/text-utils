@@ -916,3 +916,4 @@ As you continue your Ada journey, remember that aspects and pragmas are just too
 By learning to use aspects and pragmas effectively, you're taking an important step toward becoming a more skilled and reliable programmer. These features are part of what makes Ada such a powerful language for building robust, reliable software.
 
 As you continue your Ada journey, remember that aspects and pragmas are just tools to help you build better programs. Use them wisely, and you'll find that your code becomes more reliable, more efficient, and easier to understand.
+

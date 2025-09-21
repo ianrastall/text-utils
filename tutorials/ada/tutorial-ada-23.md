@@ -1045,3 +1045,4 @@ This chapter has provided practical techniques for refactoring Ada code and veri
 > "Ada's design philosophy ensures that code quality isn't an afterthought—it's built into the language itself. When you refactor in Ada, you're not just improving code; you're preserving the system's integrity for future developers." — Ada Community Evangelist
 
 This chapter has equipped you with practical techniques for maintaining high-quality Ada code through refactoring and certification. By applying these practices, you'll create software that is not only functional today but adaptable for tomorrow's challenges—whether you're building consumer applications, educational tools, or enterprise systems.
+
