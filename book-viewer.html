@@ -5,15 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Viewer</title>
 
-  <!-- Optional: Google Analytics (keeps parity with the site; safe to remove) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);} 
-    gtag('js', new Date());
-    gtag('config', 'G-0V2F0V7FWB');
-  </script>
-
   <!-- Core styles to match site look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,8 +39,6 @@
 	code {color: skyblue;}
     /* Keep the page clean and focused */
     body { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
-    .page-wrap { max-width: 1100px; margin: 24px auto; }
-    .markdown-body img { max-width: 100%; height: auto; }
     /* Optional: slightly larger headings for readability */
     .markdown-body h1 { margin-top: 0.2rem; margin-bottom: 1rem; color: powderblue; }
 	.markdown-body h2 { margin-top: 0.15rem; margin-bottom: 1rem; color: cadetblue; }
@@ -58,7 +47,7 @@
     .markdown-body pre { border-radius: .25rem; }
   </style>
 </head>
-<body class="bg-black">
+<body>
   <div class="container-fluid page-wrap">
     <div class="card bg-dark border-secondary shadow-sm">
       <div class="card-body">
