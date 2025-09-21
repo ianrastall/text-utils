@@ -704,14 +704,14 @@ gnatmake -gnata Home_Thermostat.adb
 ```
 The `-gnata` flag enables contract checking. Without it, contracts would be ignored at runtime. For development, always use this flag to catch errors early.
 
-### 3.0.1 Development Environment Tips
+### 1.5.4 Development Environment Tips
 
 - **Enable all warnings:** Add `-gnatwa` to compilation flags to catch potential issues
 - **Use GPS for debugging:** Set breakpoints, inspect variables, and step through code
 - **Organize projects:** Use `.gpr` project files for larger applications
 - **Try formal verification:** Install SPARK (a subset of Ada for mathematical verification) to prove correctness
 
-### 3.0.2 Example: Building a Project
+### 1.5.5 Example: Building a Project
 
 For larger applications, organize code into projects. Create a file named `thermostat.gpr`:
 
@@ -730,11 +730,11 @@ gnatmake -P thermostat.gpr
 
 This structure keeps your code organized and makes it easy to manage dependencies.
 
-## 3.1 Why Ada Endures: The Reliability Imperative
+## 1.6 Why Ada Endures: The Reliability Imperative
 
 In an era of rapid development cycles and "move fast and break things" culture, Ada's value proposition becomes increasingly relevant. While it might seem slower to write Ada code at first, the long-term benefits in code quality and maintainability often outweigh the initial investment.
 
-### 3.1.1 Development Phase Comparison
+### 1.6.1 Development Phase Comparison
 
 | **Development Phase** | **Typical Language** | **Ada Approach** |
 | :--- | :--- | :--- |
@@ -745,7 +745,7 @@ In an era of rapid development cycles and "move fast and break things" culture, 
 
 Let's explore what this means in practice.
 
-#### 3.1.1.1 Design Phase
+#### 1.6.1.1 Design Phase
 
 In most languages, design decisions are documented in external documents or comments. These often become outdated as code evolves. Ada's contracts embed design requirements directly in code. For example:
 
@@ -757,7 +757,7 @@ function Calculate_Discount(Price : Float; Is_Premium : Boolean) return Float wi
 
 This is always up-to-date because it's part of the code itself. If you change the function's behavior, the contract must change too. This eliminates the common problem of "documentation that doesn't match the code."
 
-#### 3.1.1.2 Coding Phase
+#### 1.6.1.2 Coding Phase
 
 In languages like C or Python, many errors only surface at runtime. For example:
 
@@ -780,7 +780,7 @@ function Calculate_Discount(Price : Valid_Price; Is_Premium : Boolean) return Fl
 
 Now, any attempt to pass a negative price would be caught at compile time. This prevents entire classes of errors before they ever reach testing.
 
-#### 4.0.0.1 Testing Phase
+#### 1.6.1.3 Testing Phase
 
 In typical development, 80% of testing time is spent hunting for bugs. With Ada, many bugs are caught during compilation, so testing focuses on edge cases and real-world scenarios rather than basic errors.
 
@@ -794,7 +794,7 @@ function Process_Input(Input : String) return Integer with
 
 With Ada's strong typing and contracts, you don't need to test for empty strings or negative results—those cases are prevented by the language itself. Your testing effort can focus on more meaningful scenarios.
 
-#### 4.0.0.2 Maintenance Phase
+#### 1.6.1.4 Maintenance Phase
 
 When maintaining code, refactoring is often risky—changing one part might break another. Ada's compiler acts as a safety net. For example, if you change a function's signature:
 
@@ -808,7 +808,7 @@ function Calculate_Total(Price : Float; Quantity : Natural) return Float;
 
 The compiler will immediately flag all call sites where `Quantity` might be negative. This makes refactoring safe and predictable.
 
-### 4.0.1 The Cost of Reliability
+### 1.6.2 The Cost of Reliability
 
 Ada development typically requires 15-20% more upfront effort than languages like C. However, studies by software engineering organizations show this investment yields 40-60% reduction in lifetime costs for projects where reliability matters. For applications that must operate correctly for years, the discipline Ada enforces translates to fewer bugs, easier maintenance, and longer software lifespans.
 
@@ -844,13 +844,13 @@ Now:
 
 This might seem like more work initially, but it prevents costly bugs down the line. In banking, a single bug could lead to millions in losses. Ada's approach makes these errors impossible.
 
-## 5.1 Next Steps in Your Ada Journey
+## 1.7 Next Steps in Your Ada Journey
 
 This introduction has laid the foundation for understanding Ada's philosophy and core structure. Let's explore what's ahead in your Ada learning journey.
 
-### 5.1.1 Upcoming Topics
+### 1.7.1 Upcoming Topics
 
-#### 5.1.1.1 Strong Typing in Depth
+#### 1.7.1.1 Strong Typing in Depth
 
 We'll dive deeper into Ada's type system:
 - Subtypes vs. derived types
@@ -860,7 +860,7 @@ We'll dive deeper into Ada's type system:
 
 You'll learn how to define types that precisely match your domain requirements, preventing entire classes of errors before they occur.
 
-#### 5.1.1.2 Tasking and Protected Objects
+#### 1.7.1.2 Tasking and Protected Objects
 
 We'll explore Ada's concurrency model in detail:
 - Task priorities and scheduling
@@ -870,7 +870,7 @@ We'll explore Ada's concurrency model in detail:
 
 You'll build concurrent applications that are safe by design, without the complexity of manual thread management.
 
-#### 5.1.1.3 Formal Verification with SPARK
+#### 1.7.1.3 Formal Verification with SPARK
 
 SPARK is a subset of Ada designed for mathematical verification. We'll cover:
 - How to prove program correctness
@@ -880,7 +880,7 @@ SPARK is a subset of Ada designed for mathematical verification. We'll cover:
 
 This will show you how to take Ada's reliability features to the next level.
 
-#### 5.1.1.4 Real-Time Systems Programming
+#### 1.7.1.4 Real-Time Systems Programming
 
 Ada excels in real-time environments. We'll cover:
 - Deadline monitoring
@@ -890,7 +890,7 @@ Ada excels in real-time environments. We'll cover:
 
 You'll learn how to build systems that respond predictably to time-sensitive events.
 
-#### 5.1.1.5 Interfacing with C and Other Languages
+#### 1.7.1.5 Interfacing with C and Other Languages
 
 Ada integrates seamlessly with existing codebases. We'll cover:
 - Calling C functions from Ada
@@ -900,7 +900,7 @@ Ada integrates seamlessly with existing codebases. We'll cover:
 
 This will let you leverage Ada's strengths in projects that already use other languages.
 
-### 5.1.2 Recommended Practice
+### 1.7.2 Recommended Practice
 
 To reinforce what you've learned, try these exercises:
 
@@ -919,7 +919,7 @@ To reinforce what you've learned, try these exercises:
 5. **Build a modular project**  
    Organize your code into packages with clear interfaces. Use a project file to manage dependencies and compilation.
 
-### 5.1.3 Key Takeaway
+### 1.7.3 Key Takeaway
 
 Ada isn't just a language—it's a methodology for building systems where correctness is measurable and reliable. Its strict type system, built-in concurrency, and formal contracts create a foundation for robust software that can be maintained and verified over time. While the learning curve may seem steep at first, the long-term benefits in code quality and reliability make Ada a powerful tool for any developer serious about building dependable software.
 
