@@ -36,10 +36,10 @@
 
   <style>
     :root { --page-pad: clamp(1rem, 4vw, 3rem); }
-    html, body { width: 100%; height: 100%; }
+    html, body { width: 100%; height: 100%;
+      background-color: #eee; /* ensure dark bg across the page */ }
     body {
       padding: var(--page-pad);
-      background-color: #000; /* ensure dark bg across the page */
       font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
     .content-wrap { width: 100%; }
