@@ -48,7 +48,6 @@
     .content-container {
       width: 100%;
       padding: 2rem 3rem;
-      box-sizing: border-box;
     }
     
     .markdown-body { 
@@ -88,115 +87,14 @@
     }
     
     .markdown-body pre { 
-      border-radius: .25rem; 
       overflow: auto;
       max-width: 100%;
+	  background-color: #212529;
     }
     
-    /* Print-specific styles */
-    @media print {
-      html, body {
-        background: white !important;
-        color: black !important;
-        font-size: 11pt;
-        margin: 0;
-        padding: 0;
-      }
-      
-      .content-container {
-        padding: 0.5in;
-        width: 100%;
-      }
-      
-      /* Hide loading spinner on print */
-      #loading {
-        display: none !important;
-      }
-      
-      /* Adjust colors for print */
-      .markdown-body h1,
-      .markdown-body h2,
-      .markdown-body h3,
-      .markdown-body h4 {
-        color: black !important;
-        page-break-after: avoid;
-      }
-      
-      code {
-        color: #333 !important;
-        background-color: #f5f5f5 !important;
-      }
-      
-      pre {
-        background-color: #f5f5f5 !important;
-        border: 1px solid #ccc !important;
-        page-break-inside: avoid;
-      }
-      
-      pre code {
-        background-color: transparent !important;
-      }
-      
-      /* Ensure tables print properly */
-      table {
-        border-collapse: collapse !important;
-        width: 100% !important;
-      }
-      
-      table, th, td {
-        border: 1px solid #000 !important;
-        color: black !important;
-        background: white !important;
-      }
-      
-      th {
-        background-color: #f0f0f0 !important;
-      }
-      
-      /* Avoid page breaks in critical elements */
-      h1, h2, h3, h4, h5, h6 {
-        page-break-after: avoid;
-      }
-      
-      p {
-        orphans: 3;
-        widows: 3;
-      }
-      
-      img {
-        max-width: 100% !important;
-        page-break-inside: avoid;
-      }
-      
-      /* Links in print */
-      a {
-        color: black !important;
-        text-decoration: underline !important;
-      }
-      
-      /* Optionally show URLs after links */
-      a[href^="http"]:after {
-        content: " (" attr(href) ")";
-        font-size: 0.8em;
-        color: #666;
-      }
-      
-      /* But not for internal anchors */
-      a[href^="#"]:after {
-        content: "";
-      }
-    }
-    
-    /* Responsive adjustments */
-    @media screen and (max-width: 768px) {
-      .content-container {
-        padding: 1rem;
-      }
-    }
   </style>
 </head>
-<body class="bg-black">
-  <div class="content-container">
+<body>
     <div id="loading" class="text-white-50 text-center p-4">
       <div class="spinner-border text-secondary mb-3" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -204,14 +102,13 @@
       <p>Loading book content...</p>
     </div>
     <article id="mainOutput" class="markdown-body tutorial-content" style="display:none;"></article>
-  </div>
 
   <script>
     // Minimal, self-contained book renderer
     (function() {
       // Apply saved accent theme (matches site behavior without needing header)
       (function applyAccentTheme() {
-        const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+        const savedTheme = 'plum';
         const html = document.documentElement;
         // Clear theme-* classes then add selected
         html.className = (html.className || '')
