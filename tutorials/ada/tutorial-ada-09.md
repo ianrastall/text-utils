@@ -50,7 +50,7 @@ end Test_Add;
 
 This is just the beginning of what Ada's generics can do. In this chapter, you'll learn how to create reusable components that work with any data type while maintaining strong type safety. You'll see how generics can simplify your code, reduce duplication, and make your programs more reliable.
 
-## 1.1 Why Generics Are Important for Every Programmer
+## 9.1 Why Generics Are Important for Every Programmer
 
 Generics are not just for experts—they're a fundamental tool that every programmer should know. Think about it: when you're building a program, how often do you find yourself writing nearly identical code for different data types? Maybe you have a sorting algorithm that works for integers, and another for strings, and another for custom objects. With generics, you write it once and use it for everything.
 
@@ -96,11 +96,11 @@ package Price_Sort is new Sort (Item => Shopping_Item, "<" => Compare_By_Price);
 
 This is the power of generics—they let you write code once and use it in many different ways.
 
-## 1.2 Basic Syntax of Ada Generics
+## 9.2 Basic Syntax of Ada Generics
 
 Ada's generics use a simple but powerful syntax that makes it easy to create reusable components. Let's break down the basic structure.
 
-### 1.2.1 Generic Package Declaration
+### 9.2.1 Generic Package Declaration
 
 A generic package starts with the `generic` keyword, followed by formal parameters:
 
@@ -124,7 +124,7 @@ package Generic_Stack is
 end Generic_Stack;
 ```
 
-### 1.2.2 Generic Subprogram Declaration
+### 9.2.2 Generic Subprogram Declaration
 
 A generic subprogram works similarly:
 
@@ -142,7 +142,7 @@ generic
 procedure Swap (A, B : in out T);
 ```
 
-### 1.2.3 Instantiation
+### 9.2.3 Instantiation
 
 To use a generic component, you instantiate it with actual parameters:
 
@@ -162,7 +162,7 @@ Or for strings:
 package String_Stack is new Generic_Stack (Element => String);
 ```
 
-### 1.2.4 Key Syntax Notes
+### 9.2.4 Key Syntax Notes
 
 - **`generic` keyword**: Marks the beginning of generic specifications
 - **Formal parameters**: Placeholders for types, subprograms, or values
@@ -170,7 +170,7 @@ package String_Stack is new Generic_Stack (Element => String);
 - **`is new`**: Used when creating an instance of a generic component
 - **`with` clause**: Required for generic subprograms to specify dependencies
 
-### 1.2.5 Complete Example: Generic Calculator
+### 9.2.5 Complete Example: Generic Calculator
 
 Let's create a complete example of a generic calculator:
 
@@ -239,11 +239,11 @@ Integer result: 7
 
 Notice how the same generic calculator works for both floating-point and integer types without any changes to the implementation.
 
-## 1.3 Formal Parameters: The Building Blocks of Generics
+## 9.3 Formal Parameters: The Building Blocks of Generics
 
 Ada's generics support several types of formal parameters, each serving a specific purpose.
 
-### 1.3.1 Type Parameters
+### 9.3.1 Type Parameters
 
 Type parameters are the most common type of formal parameter. They let you specify a placeholder for a type that will be provided when the generic is instantiated.
 
@@ -276,7 +276,7 @@ procedure Sort (A : in out Array_Type);
 
 This procedure can sort arrays of any type that supports comparison.
 
-### 1.3.2 Subprogram Parameters
+### 9.3.2 Subprogram Parameters
 
 Subprogram parameters let you pass functions or procedures as parameters to your generic component.
 
@@ -296,7 +296,7 @@ procedure Search (Items : in out Array_Type);
 
 This allows you to search for items that match a specific condition.
 
-### 1.3.3 Object Parameters
+### 9.3.3 Object Parameters
 
 Object parameters let you pass values as parameters to your generic component.
 
@@ -317,7 +317,7 @@ package Counter is
 end Counter;
 ```
 
-### 1.3.4 Package Parameters
+### 9.3.4 Package Parameters
 
 Package parameters let you pass entire packages as parameters.
 
@@ -336,7 +336,7 @@ package Trig_Calculator is
 end Trig_Calculator;
 ```
 
-### 1.3.5 Formal Parameters Comparison
+### 9.3.5 Formal Parameters Comparison
 
 | Parameter Type | Syntax | Best For |
 | :--- | :--- | :--- |
@@ -345,11 +345,11 @@ end Trig_Calculator;
 | **Object Parameter** | `Default_Value : Integer` | When you need to configure behavior with a value |
 | **Package Parameter** | `package Math_Package is new Math (<>);` | When you need to use an entire package's functionality |
 
-## 1.4 Instantiation: Using Your Generic Components
+## 9.4 Instantiation: Using Your Generic Components
 
 Once you've created a generic component, you need to instantiate it with actual parameters to use it in your program.
 
-### 1.4.1 Basic Instantiation
+### 9.4.1 Basic Instantiation
 
 The simplest way to instantiate a generic is with positional parameters:
 
@@ -365,7 +365,7 @@ package Int_Stack is new Generic_Stack (Element => Integer);
 
 Named parameters are often clearer, especially when there are multiple parameters.
 
-### 1.4.2 Instantiation with Constraints
+### 9.4.2 Instantiation with Constraints
 
 When you need to specify constraints on types:
 
@@ -381,7 +381,7 @@ package Int_Range is new Generic_Range (T => Integer);
 package Byte_Range is new Generic_Range (T => Natural range 0..255);
 ```
 
-### 1.4.3 Instantiation with Subprograms
+### 9.4.3 Instantiation with Subprograms
 
 When you need to provide a subprogram parameter:
 
@@ -403,7 +403,7 @@ end Compare_By_Name;
 package Name_Sort is new Generic_Sort (Element => Shopping_Item, "<" => Compare_By_Name);
 ```
 
-### 1.4.4 Instantiation with Packages
+### 9.4.4 Instantiation with Packages
 
 When you need to pass a package as a parameter:
 
@@ -421,18 +421,18 @@ package Float_Math is new Math (Float);
 package Float_Trig is new Trig_Calculator (Math_Package => Float_Math);
 ```
 
-### 1.4.5 Instantiation Best Practices
+### 9.4.5 Instantiation Best Practices
 
 - **Use named parameters**: They make your code more readable and less error-prone
 - **Group related instantiations**: Put related generic instantiations in the same package
 - **Avoid unnecessary complexity**: Only specify what you need
 - **Document your instantiations**: Explain why you chose specific parameters
 
-## 1.5 Constraints on Generic Parameters
+## 9.5 Constraints on Generic Parameters
 
 One of Ada's most powerful features is the ability to constrain generic parameters, ensuring that only types that meet specific requirements can be used.
 
-### 1.5.1 Numeric Constraints
+### 9.5.1 Numeric Constraints
 
 For numeric types, you can specify different constraints:
 
@@ -455,7 +455,7 @@ end Generic_Floating_Calculator;
 
 This can only be instantiated with floating-point types like `Float`, `Long_Float`, or `Decimal`.
 
-### 1.5.2 Array Constraints
+### 9.5.2 Array Constraints
 
 For array types, you can specify constraints on the index and element types:
 
@@ -479,7 +479,7 @@ procedure Process_Array (A : in out Array_Type);
 
 This procedure can process arrays of any index type and element type, as long as they support the `Process` procedure.
 
-### 1.5.3 Subprogram Constraints
+### 9.5.3 Subprogram Constraints
 
 For subprogram parameters, you can specify the exact signature:
 
@@ -499,7 +499,7 @@ procedure Search (Items : in out Array_Type);
 
 This ensures that the `Find_Match` function has the correct signature for the element type.
 
-### 1.5.4 Constraint Comparison
+### 9.5.4 Constraint Comparison
 
 | Constraint Type | Syntax | Example |
 | :--- | :--- | :--- |
@@ -508,11 +508,11 @@ This ensures that the `Find_Match` function has the correct signature for the el
 | **Array** | `type Array_Type is array (Index range <>) of Element` | `String`, `Integer_Array` |
 | **Subprogram** | `with function Compare (Left, Right : T) return Boolean` | `"<"`, `">="`, custom comparison |
 
-## 1.6 Private Types in Generics
+## 9.6 Private Types in Generics
 
 Ada's generics work seamlessly with private types, allowing you to create reusable components that hide implementation details.
 
-### 1.6.1 Generic Package with Private Types
+### 9.6.1 Generic Package with Private Types
 
 ```ada
 generic
@@ -548,7 +548,7 @@ end Test_Stack;
 
 The client doesn't need to know that the stack is implemented as an array—it only needs to know how to use the interface.
 
-### 1.6.2 Generic Package with Limited Private Types
+### 9.6.2 Generic Package with Limited Private Types
 
 For types that shouldn't be copied:
 
@@ -565,7 +565,7 @@ end Generic_Resource;
 
 This ensures that the resource type can't be copied, which is important for things like file handles or hardware devices.
 
-### 1.6.3 Private Type Constraints
+### 9.6.3 Private Type Constraints
 
 You can also constrain private types:
 
@@ -581,11 +581,11 @@ end Generic_Counter;
 
 This ensures that the type has a default value of 0, which is useful for counters.
 
-## 1.7 Generic Inheritance and Composition
+## 9.7 Generic Inheritance and Composition
 
 Ada's generics support both inheritance and composition patterns, allowing you to build complex systems from reusable components.
 
-### 1.7.1 Generic Inheritance
+### 9.7.1 Generic Inheritance
 
 You can create generic types that inherit from other generic types:
 
@@ -606,7 +606,7 @@ end Generic_Derived;
 
 This allows you to build a hierarchy of generic types.
 
-### 1.7.2 Generic Composition
+### 9.7.2 Generic Composition
 
 You can also compose generic components together:
 
@@ -634,18 +634,18 @@ end Generic_Counter_Stack;
 
 This allows you to build complex components by combining simpler ones.
 
-### 1.7.3 Generic Inheritance vs Composition
+### 9.7.3 Generic Inheritance vs Composition
 
 | Pattern | When to Use | Benefits |
 | :--- | :--- | :--- |
 | **Generic Inheritance** | When you need to extend existing generic functionality | Creates a clear hierarchy of related types |
 | **Generic Composition** | When you need to combine multiple generic components | Creates flexible, reusable components from smaller parts |
 
-## 1.8 Practical Examples: Building Reusable Components
+## 9.8 Practical Examples: Building Reusable Components
 
 Let's look at some practical examples of generics that you can use in everyday programming.
 
-### 1.8.1 Generic Stack Implementation
+### 9.8.1 Generic Stack Implementation
 
 ```ada
 generic
@@ -725,7 +725,7 @@ begin
 end Test_Stack;
 ```
 
-### 1.8.2 Generic Sorting Algorithm
+### 9.8.2 Generic Sorting Algorithm
 
 ```ada
 generic
@@ -788,7 +788,7 @@ This will output:
 Apple Banana Cherry Date Elderberry 
 ```
 
-### 1.8.3 Generic Calculator with Constraints
+### 9.8.3 Generic Calculator with Constraints
 
 ```ada
 generic
@@ -858,7 +858,7 @@ This will output:
 2^5 = 32
 ```
 
-## 1.9 Ada Generics vs C++ Templates: A Comparison
+## 9.9 Ada Generics vs C++ Templates: A Comparison
 
 Many programmers are familiar with C++ templates, so it's helpful to understand how Ada generics compare.
 
@@ -874,7 +874,7 @@ Many programmers are familiar with C++ templates, so it's helpful to understand 
 | **Default Parameters** | Supported | Supported |
 | **Compile Time** | Faster due to simpler model | Slower due to complex template system |
 
-### 1.9.1 Key Differences
+### 9.9.1 Key Differences
 
 - **Explicit vs Implicit Instantiation**: In Ada, you explicitly instantiate generics with `is new`. In C++, templates are instantiated implicitly based on usage. This makes Ada's generics easier to understand and debug.
 - **Stronger Type Safety**: Ada's generics have stronger type safety guarantees. If you try to use a type that doesn't meet the requirements, the compiler will give you a clear error message.
@@ -911,11 +911,11 @@ swap(a, b);
 
 In Ada, the instantiation is explicit, which makes it clear what's happening. In C++, the template is instantiated implicitly based on usage, which can make it harder to understand exactly what's happening behind the scenes.
 
-## 1.10 Best Practices for Using Generics
+## 9.10 Best Practices for Using Generics
 
 Here are some best practices to help you use generics effectively:
 
-### 1.10.1 \. Use Named Parameters
+### 9.10.1 \. Use Named Parameters
 
 Named parameters make your code more readable and less error-prone:
 
@@ -927,7 +927,7 @@ package Int_Stack is new Generic_Stack (Element => Integer);
 package Int_Stack is new Generic_Stack (Integer);
 ```
 
-### 1.10.2 \. Keep Generics Simple
+### 9.10.2 \. Keep Generics Simple
 
 Start with simple generics and build up complexity gradually:
 
@@ -949,7 +949,7 @@ package Complex_Generic is
 end Complex_Generic;
 ```
 
-### 1.10.3 \. Document Your Generics
+### 9.10.3 \. Document Your Generics
 
 Add comments to explain what your generic does and what constraints it has:
 
@@ -964,7 +964,7 @@ package Equality_Checker is
 end Equality_Checker;
 ```
 
-### 1.10.4 \. Use Constraints to Ensure Correct Usage
+### 9.10.4 \. Use Constraints to Ensure Correct Usage
 
 Add constraints to make sure only appropriate types are used:
 
@@ -977,7 +977,7 @@ package Float_Calculator is
 end Float_Calculator;
 ```
 
-### 1.10.5 \. Test Your Generics
+### 9.10.5 \. Test Your Generics
 
 Test your generic components with different types to ensure they work correctly:
 
@@ -1000,7 +1000,7 @@ begin
 end Test_Generic_Stack;
 ```
 
-### 1.10.6 \. Avoid Over-Engineering
+### 9.10.6 \. Avoid Over-Engineering
 
 Don't make your generics more complex than they need to be:
 
@@ -1024,11 +1024,11 @@ package Overly_Complex_Generic is
 end Overly_Complex_Generic;
 ```
 
-## 1.11 Real-World Applications of Generics
+## 9.11 Real-World Applications of Generics
 
 Let's look at some real-world applications of generics that you might encounter in everyday programming.
 
-### 1.11.1 Data Structures
+### 9.11.1 Data Structures
 
 Generics are perfect for creating reusable data structures like stacks, queues, and linked lists:
 
@@ -1060,7 +1060,7 @@ begin
 end Test_Queue;
 ```
 
-### 1.11.2 Algorithms
+### 9.11.2 Algorithms
 
 Generics are perfect for creating reusable algorithms like sorting, searching, and filtering:
 
@@ -1092,7 +1092,7 @@ begin
 end Test_Sort;
 ```
 
-### 1.11.3 Utility Functions
+### 9.11.3 Utility Functions
 
 Generics are perfect for creating reusable utility functions like math operations or string processing:
 
@@ -1121,7 +1121,7 @@ begin
 end Test_Math;
 ```
 
-### 1.11.4 Real-World Example: Shopping List App
+### 9.11.4 Real-World Example: Shopping List App
 
 Let's build a complete shopping list app using generics:
 
@@ -1187,9 +1187,9 @@ end Shopping_List;
 
 This example shows how generics can simplify complex applications by providing reusable components for sorting, stacking, and other common tasks.
 
-## 1.12 Common Mistakes and How to Avoid Them
+## 9.12 Common Mistakes and How to Avoid Them
 
-### 1.12.1 Mistake: Forgetting to Specify Constraints
+### 9.12.1 Mistake: Forgetting to Specify Constraints
 
 ```ada
 -- Bad
@@ -1202,7 +1202,7 @@ end Generic_Calculator;
 -- This will fail if T doesn't support addition
 ```
 
-#### 1.12.1.1 Solution: Add Constraints
+#### 9.12.1.1 Solution: Add Constraints
 
 ```ada
 -- Good
@@ -1213,7 +1213,7 @@ package Generic_Calculator is
 end Generic_Calculator;
 ```
 
-### 1.12.2 Mistake: Using Too Many Parameters
+### 9.12.2 Mistake: Using Too Many Parameters
 
 ```ada
 -- Bad
@@ -1228,7 +1228,7 @@ package Overly_Complex_Generic is
 end Overly_Complex_Generic;
 ```
 
-#### 1.12.2.1 Solution: Keep It Simple
+#### 9.12.2.1 Solution: Keep It Simple
 
 ```ada
 -- Good
@@ -1239,7 +1239,7 @@ package Simple_Generic is
 end Simple_Generic;
 ```
 
-### 1.12.3 Mistake: Not Testing with Multiple Types
+### 9.12.3 Mistake: Not Testing with Multiple Types
 
 ```ada
 -- Bad
@@ -1252,7 +1252,7 @@ begin
 end Test_Stack;
 ```
 
-#### 1.12.3.1 Solution: Test with Multiple Types
+#### 9.12.3.1 Solution: Test with Multiple Types
 
 ```ada
 -- Good
@@ -1269,33 +1269,33 @@ begin
 end Test_Stack;
 ```
 
-## 1.13 Next Steps: Putting It All Together
+## 9.13 Next Steps: Putting It All Together
 
 Now that you've learned the basics of Ada generics, it's time to put it all together. Here are some ideas for what to try next:
 
-### 1.13.1 \. Build Your Own Generic Data Structures
+### 9.13.1 \. Build Your Own Generic Data Structures
 
 Create a generic linked list, binary tree, or hash table. Test it with different types to make sure it works correctly.
 
-### 1.13.2 \. Create a Generic Math Library
+### 9.13.2 \. Create a Generic Math Library
 
 Build a library of math functions that work with different numeric types. Include functions for square roots, powers, trigonometry, and more.
 
-### 1.13.3 \. Develop a Generic Sorting Library
+### 9.13.3 \. Develop a Generic Sorting Library
 
 Create a library of sorting algorithms (bubble sort, quicksort, mergesort) that work with any comparable type.
 
-### 1.13.4 \. Build a Generic File Processing System
+### 9.13.4 \. Build a Generic File Processing System
 
 Create a system that can read and write files of different types, using generics to handle the specific data types.
 
-### 1.13.5 \. Create a Generic Game Component
+### 9.13.5 \. Create a Generic Game Component
 
 Build a game component (like a character or item) that can work with different types of data, using generics to make it reusable.
 
 Remember, the key to mastering generics is practice. Start with simple examples and gradually build up to more complex ones. Don't be afraid to experiment and try new things—generics are a powerful tool that can make your code simpler, cleaner, and more reusable.
 
-## 1.14 Conclusion: The Power of Reusable Code
+## 9.14 Conclusion: The Power of Reusable Code
 
 > **The Power of Generics**
 > 

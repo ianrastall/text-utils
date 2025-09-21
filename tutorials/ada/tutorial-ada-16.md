@@ -6,7 +6,7 @@ When you think of embedded systems, you might imagine complex aerospace control 
 
 Ada is uniquely suited for embedded programming because it provides strong type safety, direct hardware access, and built-in real-time support—all while maintaining reliability without requiring specialized safety-critical knowledge. This chapter explores how you can use Ada to build embedded systems for everyday applications, from home automation to IoT devices. You'll learn the fundamental concepts, practical techniques, and simple examples that let you control hardware directly while avoiding common pitfalls.
 
-## 1.1 Why Embedded Systems Matter for Everyday Applications
+## 16.1 Why Embedded Systems Matter for Everyday Applications
 
 Embedded systems are the invisible brains behind countless devices we use every day. Consider these common examples:
 
@@ -29,17 +29,17 @@ Ada excels in this environment because it provides:
 
 Unlike C, which is commonly used for embedded systems but lacks built-in safety features, Ada provides compile-time checks that prevent common errors like buffer overflows, type mismatches, and uninitialized variables. This means your embedded code is more reliable from the start, without requiring specialized safety-critical knowledge.
 
-## 1.2 Basic Embedded Concepts
+## 16.2 Basic Embedded Concepts
 
 Before diving into code, let's understand the fundamental concepts of embedded systems programming.
 
-### 1.2.1 Memory-Mapped I/O
+### 16.2.1 Memory-Mapped I/O
 
 In embedded systems, hardware components like sensors, LEDs, and buttons are controlled through memory addresses. This is called **memory-mapped I/O**—the hardware registers appear as memory locations that your program can read and write.
 
 For example, a simple LED might be controlled by writing to a specific memory address. When you write a 1 to that address, the LED turns on; writing 0 turns it off. This is how embedded systems interact with physical hardware.
 
-### 1.2.2 Bit Manipulation
+### 16.2.2 Bit Manipulation
 
 Many hardware registers control multiple features through individual bits. For example, a single 8-bit register might control:
 - Bit 0: LED on/off
@@ -48,19 +48,19 @@ Many hardware registers control multiple features through individual bits. For e
 
 To control individual bits without affecting others, you need **bit manipulation**—techniques for setting, clearing, and checking specific bits in a register.
 
-### 1.2.3 Interrupts
+### 16.2.3 Interrupts
 
 Interrupts are signals from hardware that pause the current program execution to handle urgent events. For example, when a button is pressed, the hardware generates an interrupt to notify the software. The software then handles the event before returning to normal operation.
 
-### 1.2.4 Real-Time Constraints
+### 16.2.4 Real-Time Constraints
 
 Embedded systems often have strict timing requirements. For example, a motor controller might need to update its output every 10 milliseconds to maintain smooth operation. Missing these deadlines can cause system failures.
 
-## 1.3 Ada Features for Embedded Development
+## 16.3 Ada Features for Embedded Development
 
 Ada provides several features specifically designed for embedded programming, making it safer and more reliable than many alternatives.
 
-### 1.3.1 Volatile Variables
+### 16.3.1 Volatile Variables
 
 Hardware registers can change outside your program's control (for example, when a sensor updates). To prevent the compiler from optimizing away reads or writes, you must mark these variables as **volatile**.
 
@@ -84,7 +84,7 @@ end LED_Control;
 
 The `Volatile_Full_Access` aspect ensures the compiler doesn't optimize away reads or writes to the hardware register. Without this, the compiler might remove "unnecessary" operations, causing your hardware to behave incorrectly.
 
-### 1.3.2 Address Clauses
+### 16.3.2 Address Clauses
 
 To map hardware registers to memory locations, you use **address clauses**. These tell the compiler exactly where in memory a variable should be placed.
 
@@ -95,7 +95,7 @@ LED_Register : LED_Register
 
 This places the `LED_Register` variable at memory address `0x4000_0000`. The exact address depends on your hardware—consult your microcontroller's datasheet for the correct addresses.
 
-### 1.3.3 Bit Manipulation Packages
+### 16.3.3 Bit Manipulation Packages
 
 Ada provides packages for bit manipulation, making it easy to work with individual bits in registers:
 
@@ -121,7 +121,7 @@ end Set_LED;
 
 These bitwise operations let you control individual bits without affecting other bits in the register.
 
-### 1.3.4 Tasking for Concurrency
+### 16.3.4 Tasking for Concurrency
 
 Embedded systems often need to handle multiple tasks simultaneously. Ada's built-in tasking model makes this straightforward:
 
@@ -142,15 +142,15 @@ end Sensor_Reader;
 
 This task reads a sensor every 100ms while the main program continues executing other tasks. No external libraries are needed—this is built into the language.
 
-### 1.3.5 No Hidden Memory Management
+### 16.3.5 No Hidden Memory Management
 
 Unlike languages with garbage collection (like Java or Python), Ada gives you predictable memory behavior. You control exactly when memory is allocated and freed, avoiding unexpected pauses that could miss real-time deadlines.
 
-## 1.4 Practical Example: Blinking an LED with Ada
+## 16.4 Practical Example: Blinking an LED with Ada
 
 Let's create a simple embedded project that blinks an LED on a Raspberry Pi. This example demonstrates the core concepts we've covered: memory-mapped I/O, volatile variables, and timing control.
 
-### 1.4.1 Setting Up Your Environment
+### 16.4.1 Setting Up Your Environment
 
 To run this example, you'll need:
 - A Raspberry Pi (any model with GPIO pins)
@@ -183,7 +183,7 @@ project Blink_LED is
 end Blink_LED;
 ```
 
-### 2.0.1 Creating the Hardware Interface
+### 16.0.1 Creating the Hardware Interface
 
 Create a package to interface with the Raspberry Pi's GPIO pins:
 
@@ -246,7 +246,7 @@ package body GPIO is
 end GPIO;
 ```
 
-### 2.0.2 Creating the Blink Application
+### 16.0.2 Creating the Blink Application
 
 Now create the main program that blinks the LED:
 
@@ -269,7 +269,7 @@ begin
 end Blink_LED;
 ```
 
-### 2.0.3 Building and Running the Code
+### 16.0.3 Building and Running the Code
 
 Compile and transfer the code to your Raspberry Pi:
 
@@ -287,7 +287,7 @@ sudo ./blink_led
 
 The LED should blink once per second. Press Ctrl+C to stop the program.
 
-### 4.0.1 Understanding the Code
+### 16.0.1 Understanding the Code
 
 Let's break down what's happening:
 
@@ -306,11 +306,11 @@ Let's break down what's happening:
 
 This example demonstrates how Ada provides safe, reliable hardware access without requiring specialized knowledge of low-level programming.
 
-## 4.1 Real-Time Aspects in Ada
+## 16.1 Real-Time Aspects in Ada
 
 Embedded systems often have strict timing requirements. Ada's built-in real-time features make it easy to meet these requirements.
 
-### 4.1.1 Simple Timing with Delays
+### 16.1.1 Simple Timing with Delays
 
 For many embedded applications, simple timing with delays is sufficient:
 
@@ -327,7 +327,7 @@ end Blink_LED;
 
 The `delay until` operation ensures the LED toggles precisely every second, with no jitter or timing drift.
 
-### 4.1.2 Tasking for Concurrent Tasks
+### 16.1.2 Tasking for Concurrent Tasks
 
 For more complex systems, Ada's tasking model lets you handle multiple tasks simultaneously:
 
@@ -376,7 +376,7 @@ This example has two tasks:
 
 Both tasks run concurrently without interfering with each other.
 
-### 4.1.3 Real-Time Constraints
+### 16.1.3 Real-Time Constraints
 
 For applications with strict timing requirements, Ada provides precise control:
 
@@ -403,11 +403,11 @@ This task has:
 - A deadline of 10ms for each iteration
 - Automatic handling of missed deadlines
 
-## 4.2 Tools for Embedded Development with Ada
+## 16.2 Tools for Embedded Development with Ada
 
 Several tools make embedded development with Ada easier and more efficient.
 
-### 4.2.1 GNAT for ARM
+### 16.2.1 GNAT for ARM
 
 GNAT for ARM is the standard compiler for embedded Ada development. It supports:
 - Cross-compilation for ARM processors
@@ -424,7 +424,7 @@ sudo apt install gnat-arm-linux-gnueabihf
 brew install gnat-arm-linux-gnueabihf
 ```
 
-### 6.0.1 Simulators for Testing
+### 16.0.1 Simulators for Testing
 
 Before deploying to hardware, you can test your code with simulators:
 
@@ -438,7 +438,7 @@ qemu-system-arm -M raspi2 -kernel blink_led
 
 Simulators let you test your code without physical hardware, making development faster and safer.
 
-### 8.0.1 Hardware Abstraction Layers
+### 16.0.1 Hardware Abstraction Layers
 
 For portability across different hardware platforms, use hardware abstraction layers (HALs):
 
@@ -466,11 +466,11 @@ end HAL;
 
 This abstraction lets you write application code that works across different hardware platforms with minimal changes.
 
-## 8.1 Common Pitfalls and Best Practices
+## 16.1 Common Pitfalls and Best Practices
 
 Even with Ada's safety features, embedded programming has pitfalls. Here's how to avoid them.
 
-### 8.1.1 Pitfall: Incorrect Memory Addresses
+### 16.1.1 Pitfall: Incorrect Memory Addresses
 
 **Problem**: Using the wrong memory address for hardware registers.
 
@@ -483,7 +483,7 @@ GPIO_Register : GPIO_Register
   with Import, Address => GPIO_Register_Address;
 ```
 
-### 8.1.2 Pitfall: Forgetting Volatile
+### 16.1.2 Pitfall: Forgetting Volatile
 
 **Problem**: Not marking hardware registers as volatile, causing compiler optimizations to remove necessary operations.
 
@@ -495,7 +495,7 @@ type GPIO_Register is record ... end record
   with Volatile_Full_Access, Address => ...;
 ```
 
-### 8.1.3 Pitfall: Unhandled Interrupts
+### 16.1.3 Pitfall: Unhandled Interrupts
 
 **Problem**: Not properly handling interrupts, causing system instability.
 
@@ -510,13 +510,13 @@ end Handle_Interrupt;
 pragma Attach_Handler (Handle_Interrupt, Interrupt_Number => 18);
 ```
 
-### 8.1.4 Best Practice: Test on Hardware Early
+### 16.1.4 Best Practice: Test on Hardware Early
 
 **Problem**: Waiting too long to test on actual hardware.
 
 **Solution**: Test on hardware as early as possible, even for simple functionality. Use a simple LED blink program as your first test.
 
-### 8.1.5 Best Practice: Use Static Memory Allocation
+### 16.1.5 Best Practice: Use Static Memory Allocation
 
 **Problem**: Using dynamic memory allocation, which can cause unpredictable behavior.
 
@@ -530,7 +530,7 @@ Buffer : array (1..100) of Byte;
 Buffer : access Byte := new Byte;
 ```
 
-### 8.1.6 Best Practice: Document Hardware Dependencies
+### 16.1.6 Best Practice: Document Hardware Dependencies
 
 **Problem**: Not documenting which hardware features your code depends on.
 
@@ -543,11 +543,11 @@ Buffer : access Byte := new Byte;
 -- - 220Ω resistor in series with LED
 ```
 
-## 8.2 Practical Exercise: Temperature Monitoring System
+## 16.2 Practical Exercise: Temperature Monitoring System
 
 Let's build a complete embedded project: a temperature monitoring system for a home automation application.
 
-### 8.2.1 Project Overview
+### 16.2.1 Project Overview
 
 This system will:
 - Read temperature from a DS18B20 sensor
@@ -555,7 +555,7 @@ This system will:
 - Log temperature readings to a file
 - Send alerts if temperature exceeds safe limits
 
-### 8.2.2 Step 1: Hardware Setup
+### 16.2.2 Step 1: Hardware Setup
 
 You'll need:
 - Raspberry Pi
@@ -569,7 +569,7 @@ Connect the hardware:
 - LCD data pins to GPIO 17-22
 - Power and ground connections
 
-### 8.2.3 Step 2: Create the Project Structure
+### 16.2.3 Step 2: Create the Project Structure
 
 ```bash
 mkdir temperature_monitor
@@ -590,7 +590,7 @@ project Temperature_Monitor is
 end Temperature_Monitor;
 ```
 
-### 8.2.4 Step 3: Implement the Hardware Interfaces
+### 16.2.4 Step 3: Implement the Hardware Interfaces
 
 First, create the GPIO interface:
 
@@ -713,7 +713,7 @@ package body LCD is
 end LCD;
 ```
 
-### 8.2.5 Step 4: Implement the Main Application
+### 16.2.5 Step 4: Implement the Main Application
 
 ```ada
 -- src/main.adb
@@ -769,7 +769,7 @@ begin
 end Main;
 ```
 
-### 8.2.6 Step 5: Build and Test
+### 16.2.6 Step 5: Build and Test
 
 ```bash
 # 9 On development machine

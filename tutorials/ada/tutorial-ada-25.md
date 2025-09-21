@@ -6,7 +6,7 @@
 
 This chapter serves as a concise reference guide for Ada programming fundamentals. Unlike previous tutorials that focused on specific topics, this guide compiles essential syntax, types, and patterns into a single, actionable resource. Whether you're writing a simple script or a complex application, this guide provides quick access to Ada's core features without requiring deep theoretical knowledge. Remember: this is not a replacement for the Ada Reference Manual, but a practical companion for everyday development. The information is organized for quick lookup, with each section containing clear examples and best practices tailored for beginning programmers. All examples have been tested with GNAT Community 2023 to ensure accuracy and relevance.
 
-## 1.1 Reserved Words
+## 25.1 Reserved Words
 
 Ada reserved words are keywords that have special meaning in the language and cannot be used as identifiers (variable names, procedure names, etc.). They form the syntax of Ada, and attempting to use them as identifiers will result in compilation errors. Reserved words ensure language consistency and prevent ambiguity in code structure. Below is a complete list of Ada 2022 reserved words with their primary purposes.
 
@@ -89,7 +89,7 @@ end Test;
 
 The compiler will report: `error: reserved word "end" cannot be used as identifier`. This strict enforcement prevents ambiguity and ensures code clarity. Note that Ada's reserved words are case-insensitive—`If` and `if` are treated identically—but standard practice uses lowercase for reserved words and uppercase for constants.
 
-## 1.2 Predefined and Common Standard Types
+## 25.2 Predefined and Common Standard Types
 
 Ada provides several built-in types that form the foundation of most programs. These include scalar types (like integers and floats), composite types (like strings), and special types for time and durations. Understanding these types is crucial for writing efficient and correct code. Ada's strong typing ensures that type mismatches are caught at compile time, preventing many common runtime errors. Below is a reference table for the most commonly used types in Ada, with detailed examples.
 
@@ -131,7 +131,7 @@ end;
 
 This example shows how Ada's strong typing catches errors at compile time rather than runtime—saving debugging time and preventing subtle bugs.
 
-## 1.3 Operator Precedence
+## 25.3 Operator Precedence
 
 Operator precedence determines the order in which operations are evaluated in expressions. Understanding precedence is critical for writing correct and readable code, especially when combining multiple operators. The table below lists operators by precedence level, with higher precedence operators evaluated first. Each row includes associativity (how operators of the same precedence are grouped), which affects evaluation order for consecutive operators of the same level.
 
@@ -189,7 +189,7 @@ end;
 
 The short-circuit operators (`and then`, `or else`) are particularly important for safe programming—they prevent evaluating expressions that might cause errors. For example, in `if Pointer /= null and then Pointer.Data > 0`, the second condition is only evaluated if the pointer is valid.
 
-## 1.4 Useful Attributes
+## 25.4 Useful Attributes
 
 Attributes in Ada provide metadata about types and objects. They are prefixed with an apostrophe (') and are invaluable for writing generic and type-safe code. Attributes allow you to query information about types without hardcoding values, making your code more adaptable and maintainable. The table below lists common attributes for scalar types and arrays, with practical examples for each.
 
@@ -268,7 +268,7 @@ end;
 
 This approach ensures your loops work correctly even if array dimensions change—making your code more maintainable.
 
-## 1.5 Control Structures
+## 25.5 Control Structures
 
 Control structures manage the flow of execution in Ada programs. These structures allow you to make decisions, repeat actions, and handle complex logic in a structured way. Ada's control structures are designed for clarity and safety—each has explicit syntax that prevents common programming errors. Below is a reference table for the most commonly used control structures with practical syntax examples.
 
@@ -340,7 +340,7 @@ end;
 
 This approach is cleaner and more maintainable than nested if-else statements.
 
-## 1.6 Subprogram Parameter Modes
+## 25.6 Subprogram Parameter Modes
 
 Ada uses parameter modes to specify how data flows between subprograms. The mode determines whether a parameter can be read, written, or both. Understanding these modes is crucial for writing safe and efficient code—misusing them can lead to subtle bugs or inefficient memory usage. The table below summarizes the three modes and their usage guidelines.
 
@@ -391,11 +391,11 @@ When designing subprograms, follow these best practices:
 
 This approach ensures your code is clear, maintainable, and less prone to unexpected side effects.
 
-## 1.7 Common I/O Operations
+## 25.7 Common I/O Operations
 
 Ada's standard I/O packages provide robust input/output capabilities. This section covers the most frequently used operations across different packages, with detailed examples for each. Proper I/O handling is essential for any practical application—from simple console programs to complex file processing systems.
 
-### 1.7.1 Ada.Text_IO
+### 25.7.1 Ada.Text_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -410,7 +410,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Set_Output** | Redirect output to file | Set_Output(File); |
 | **Reset** | Reset file position | Reset(File); |
 
-### 1.7.2 Ada.Integer_Text_IO
+### 25.7.2 Ada.Integer_Text_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -421,7 +421,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Aft** | Set decimal places | Put(N, Aft => 2); |
 | **Base** | Set number base (2-16) | Put(N, Base => 16); |
 
-### 1.7.3 Ada.Float_Text_IO
+### 25.7.3 Ada.Float_Text_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -431,7 +431,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Fore** | Set leading spaces | Put(F, Fore => 4); |
 | **Aft** | Set decimal places | Put(F, Aft => 2); |
 
-### 1.7.4 Ada.Enumeration_IO
+### 25.7.4 Ada.Enumeration_IO
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -439,7 +439,7 @@ Ada's standard I/O packages provide robust input/output capabilities. This secti
 | **Get** | Read enumeration value | Get(Day); |
 | **Image** | Convert to string | Day'Image; |
 
-### 1.7.5 Ada.Command_Line
+### 25.7.5 Ada.Command_Line
 
 | **Procedure/Function** | **Description** | **Example** |
 | :--- | :--- | :--- |
@@ -526,7 +526,7 @@ Argument 2: arg2
 
 This pattern is essential for creating command-line utilities and scripts.
 
-## 1.8 Predefined Exceptions
+## 25.8 Predefined Exceptions
 
 Exceptions in Ada handle runtime errors gracefully. Unlike languages that rely solely on return codes, Ada's exception mechanism provides structured error handling that separates normal code from error-handling logic. This section lists common exceptions and shows how to handle them effectively.
 
@@ -538,7 +538,7 @@ Exceptions in Ada handle runtime errors gracefully. Unlike languages that rely s
 | **Data_Error** | Invalid data conversion (e.g., string to number) |
 | **Tasking_Error** | Task-related error (e.g., invalid task operation) |
 
-### 1.8.1 Exception Handler Syntax
+### 25.8.1 Exception Handler Syntax
 
 | **Syntax Element** | **Description** |
 | :--- | :--- |
@@ -628,7 +628,7 @@ This shows how Ada handles invalid task operations—critical for concurrent pro
 
 > "Ada's exception mechanism ensures that errors are handled explicitly and safely. By separating error-handling logic from normal code, you create programs that are more reliable and easier to maintain."
 
-## 1.9 Conclusion
+## 25.9 Conclusion
 
 > "Ada's design philosophy prioritizes clarity and correctness over convenience. This reference guide embodies that principle by providing precise, actionable information without unnecessary complexity—empowering you to write code that is both reliable and maintainable from the start."
 

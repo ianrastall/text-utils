@@ -8,11 +8,11 @@ When you're writing a program that reads a file, connects to a database, or mana
 
 Ada solves these problems with a powerful combination of automatic memory management and controlled types. With Ada, you don't have to worry about manual cleanup—when an object goes out of scope, Ada automatically releases its resources. This means your code is simpler, safer, and less prone to errors. Whether you're building a home automation system, a simple game, or a web application, Ada's memory management features help you focus on what your program does rather than how it manages resources.
 
-## 1.1 Stack vs. Heap: How Ada Handles Memory
+## 10.1 Stack vs. Heap: How Ada Handles Memory
 
 All programs use two main types of memory: the stack and the heap. Understanding the difference between them is key to writing efficient and reliable code.
 
-### 1.1.1 The Stack
+### 10.1.1 The Stack
 
 The stack is like a stack of plates in a cafeteria—new items are added to the top, and items are removed from the top. In programming terms, the stack is used for local variables that have a fixed size and a known lifetime. When you enter a function, space is allocated on the stack for its local variables. When you leave the function, that space is automatically reclaimed.
 
@@ -32,7 +32,7 @@ end Calculate_Sum;
 
 The stack is fast and efficient because memory allocation and deallocation happen automatically. You don't need to worry about freeing memory—you just use variables, and Ada handles the rest.
 
-### 1.1.2 The Heap
+### 10.1.2 The Heap
 
 The heap is like a big storage room where you can store items of varying sizes. In programming terms, the heap is used for dynamic memory allocation—when you need to create objects whose size or lifetime isn't known at compile time.
 
@@ -45,7 +45,7 @@ Data : Integer_Access := new Integer'(10);
 
 Here, `Data` is an access type that points to an integer allocated on the heap. The key difference from the stack is that memory allocated on the heap doesn't automatically get freed when you leave a function—you need to explicitly free it with `Data := null;` (though Ada's controlled types make this unnecessary in many cases).
 
-### 1.1.3 Stack vs. Heap: When to Use Which
+### 10.1.3 Stack vs. Heap: When to Use Which
 
 | **Memory Type** | **Best For** | **Lifetime** | **Allocation Speed** |
 | :--- | :--- | :--- | :--- |
@@ -54,11 +54,11 @@ Here, `Data` is an access type that points to an integer allocated on the heap. 
 
 For most everyday programming tasks, the stack is sufficient. But when you need to create data structures whose size depends on user input or runtime conditions, the heap becomes necessary. The important thing to remember is that with Ada's controlled types, you rarely need to manually manage heap memory—Ada handles it for you.
 
-## 1.2 Access Types: Safe Pointers in Ada
+## 10.2 Access Types: Safe Pointers in Ada
 
 In many languages, pointers are powerful but dangerous. In C, for example, you can create dangling pointers (pointers to freed memory) or null pointers that cause crashes. Ada solves these problems with safe access types that are designed to be both powerful and reliable.
 
-### 1.2.1 Basic Access Types
+### 10.2.1 Basic Access Types
 
 An access type in Ada is like a pointer in other languages, but with strong type safety. Here's how you declare and use one:
 
@@ -81,7 +81,7 @@ type Person_Access is access Person;
 Person_Data : Person_Access := new Person'(Name => "Alice", Age => 30);
 ```
 
-### 1.2.2 Access Type Safety Features
+### 10.2.2 Access Type Safety Features
 
 Ada's access types include several safety features that prevent common pointer errors:
 
@@ -107,7 +107,7 @@ Data : Integer_Access := new Integer'(10);
 -- No need to free explicitly—controlled types handle it
 ```
 
-### 1.2.3 Controlled Access Types
+### 10.2.3 Controlled Access Types
 
 The real power of Ada's access types comes when combined with controlled types. This lets you automatically manage resources without manual cleanup:
 
@@ -135,11 +135,11 @@ end File_Handle;
 
 In this example, `File_Handle` is a controlled type that automatically closes the file when it goes out of scope. You don't need to call `Close` explicitly—Ada handles it for you.
 
-## 1.3 Controlled Types: The Heart of Ada's Memory Management
+## 10.3 Controlled Types: The Heart of Ada's Memory Management
 
 Controlled types are Ada's secret weapon for safe resource management. They let you define exactly what happens when an object is created, copied, or destroyed—ensuring that resources are always properly managed.
 
-### 1.3.1 What Are Controlled Types?
+### 10.3.1 What Are Controlled Types?
 
 A controlled type is a type that extends `Ada.Finalization.Controlled` and defines specific procedures to control its lifecycle. These procedures are:
 
@@ -149,7 +149,7 @@ A controlled type is a type that extends `Ada.Finalization.Controlled` and defin
 
 This gives you complete control over how resources are allocated and released.
 
-### 1.3.2 Creating a Controlled Type: The File Handle Example
+### 10.3.2 Creating a Controlled Type: The File Handle Example
 
 Let's create a complete example of a controlled type for file handling:
 
@@ -234,7 +234,7 @@ end Test_File;
 
 When `F` goes out of scope at the end of `Test_File`, Ada automatically calls `Finalize`, which closes the file. You don't need to remember to close it—Ada handles it for you.
 
-### 1.3.3 Why Controlled Types Matter
+### 10.3.3 Why Controlled Types Matter
 
 Controlled types solve the most common memory management problems:
 
@@ -244,11 +244,11 @@ Controlled types solve the most common memory management problems:
 
 This is especially important for everyday programming tasks. Imagine a home automation system that reads sensor data from files—if you forget to close a file, the system might run out of file handles and crash. With controlled types, this simply can't happen.
 
-## 1.4 How Controlled Types Work Under the Hood
+## 10.4 How Controlled Types Work Under the Hood
 
 Let's dive deeper into how controlled types work. When you create a controlled type, Ada automatically calls the `Initialize` procedure. When the object goes out of scope, Ada calls `Finalize`. If the object is copied, Ada calls `Adjust`.
 
-### 1.4.1 The Lifecycle of a Controlled Type
+### 10.4.1 The Lifecycle of a Controlled Type
 
 1. **Creation**: When you declare a controlled type variable, `Initialize` is called
 2. **Usage**: You can use the object normally
@@ -324,7 +324,7 @@ Finalize called
 
 This shows the lifecycle of the controlled types. `Initialize` is called when each variable is created. `Adjust` is called when `B` is assigned from `A`. `Finalize` is called when each variable goes out of scope.
 
-### 1.4.2 When to Use Limited Controlled Types
+### 10.4.2 When to Use Limited Controlled Types
 
 By default, controlled types can be copied. But for some resources (like file handles), copying doesn't make sense—you don't want two objects to manage the same file. That's where limited controlled types come in.
 
@@ -338,7 +338,7 @@ end record;
 
 The `limited` keyword means you can't assign one `File_Handle` to another. This prevents accidental copying of resources that shouldn't be shared.
 
-## 1.5 Memory Leaks: How Ada Prevents Them
+## 10.5 Memory Leaks: How Ada Prevents Them
 
 Memory leaks are one of the most common problems in programming. They occur when you allocate memory but never free it, causing your program to use more and more memory over time. In C, this is a frequent issue—you might forget to call `free`, or you might have complex code paths where freeing is easy to miss.
 
@@ -350,7 +350,7 @@ Ada prevents memory leaks through several mechanisms:
 
 Let's compare how memory leaks happen in C versus how Ada prevents them.
 
-### 1.5.1 C Memory Leak Example
+### 10.5.1 C Memory Leak Example
 
 ```c
 #include <stdlib.h>
@@ -364,7 +364,7 @@ void Process_Data() {
 
 This function allocates memory but never frees it, causing a memory leak.
 
-### 1.5.2 Ada Memory Leak Prevention
+### 10.5.2 Ada Memory Leak Prevention
 
 ```ada
 with Ada.Finalization;
@@ -413,7 +413,7 @@ end Test;
 
 In Ada, there's no manual memory management to forget. The `Data_Handle` object is automatically cleaned up when it goes out of scope, preventing any memory leaks.
 
-## 1.6 Memory Management in Ada vs. Other Languages
+## 10.6 Memory Management in Ada vs. Other Languages
 
 Let's compare how Ada handles memory management compared to other popular languages. This table shows the key differences:
 
@@ -427,7 +427,7 @@ Let's compare how Ada handles memory management compared to other popular langua
 
 Let's explore each language in more detail.
 
-### 1.6.1 C: Manual Memory Management
+### 10.6.1 C: Manual Memory Management
 
 In C, you're responsible for all memory management. You allocate memory with `malloc` and free it with `free`. This is powerful but error-prone—you might forget to free memory, or you might free it too early.
 
@@ -441,7 +441,7 @@ int *data = malloc(sizeof(int));
 
 This code leaks memory. To fix it, you'd need to add `free(data);` at the end.
 
-### 1.6.2 C++: RAII
+### 10.6.2 C++: RAII
 
 C++ uses RAII (Resource Acquisition Is Initialization), where resources are tied to object lifetimes. When an object is created, it acquires resources; when it's destroyed, it releases them.
 
@@ -462,7 +462,7 @@ void Process() {
 
 This is similar to Ada's controlled types, but C++ requires careful design to avoid issues like shallow copies.
 
-### 1.6.3 Java: Garbage Collection
+### 10.6.3 Java: Garbage Collection
 
 Java uses garbage collection to automatically reclaim memory. You don't need to free memory manually, but you still need to close resources like files.
 
@@ -479,7 +479,7 @@ try {
 
 Java's garbage collector handles memory, but resources like files still need manual cleanup.
 
-### 1.6.4 Python: Context Managers
+### 10.6.4 Python: Context Managers
 
 Python uses context managers (the `with` statement) to handle resource cleanup.
 
@@ -493,7 +493,7 @@ with open("data.txt") as f:
 
 This is similar to Ada's controlled types, but Python's approach is more limited—it only works for specific resource types.
 
-### 2.0.1 Ada: Controlled Types
+### 10.0.1 Ada: Controlled Types
 
 Ada's controlled types combine the best of both worlds. They provide automatic resource cleanup without manual effort, while maintaining strong type safety.
 
@@ -512,11 +512,11 @@ end Test;
 
 This is simpler and safer than C++, Java, or Python approaches. You don't need to remember to close files, and there's no risk of forgetting to free memory.
 
-## 2.1 Best Practices for Memory Management in Ada
+## 10.1 Best Practices for Memory Management in Ada
 
 Now that you understand how Ada handles memory, let's look at best practices for using it effectively.
 
-### 2.1.1 \. Use Controlled Types for Any Resource That Needs Cleanup
+### 10.1.1 \. Use Controlled Types for Any Resource That Needs Cleanup
 
 Whenever you have a resource that needs to be cleaned up (files, database connections, network sockets), use a controlled type. This ensures the resource is always properly released.
 
@@ -546,7 +546,7 @@ end Database_Connection;
 
 This ensures the database connection is always properly closed, even if an exception occurs.
 
-### 2.1.2 \. Avoid Manual Memory Management When Possible
+### 10.1.2 \. Avoid Manual Memory Management When Possible
 
 In Ada, you rarely need to manually manage memory. Let Ada handle it for you. For example, instead of:
 
@@ -575,7 +575,7 @@ begin
 end Finalize;
 ```
 
-### 2.1.3 \. Understand the Difference Between Stack and Heap Allocation
+### 10.1.3 \. Understand the Difference Between Stack and Heap Allocation
 
 For small, fixed-size data, use stack allocation (local variables). For larger or dynamically-sized data, use heap allocation with controlled types.
 
@@ -597,7 +597,7 @@ package Data_Manager is
 end Data_Manager;
 ```
 
-### 2.1.4 \. Test for Memory Leaks
+### 10.1.4 \. Test for Memory Leaks
 
 Even with Ada's automatic memory management, it's good practice to test for memory leaks. Use tools like GNATcheck or GNATprove to verify your code.
 
@@ -609,7 +609,7 @@ gnatcheck your_program.adb
 
 This will check for potential memory issues.
 
-### 2.1.5 \. Use Ada's Standard Containers
+### 10.1.5 \. Use Ada's Standard Containers
 
 Ada provides standard containers like `Ada.Containers.Vectors` and `Ada.Containers.Doubly_Linked_Lists` that use controlled types under the hood. These containers automatically manage memory for you.
 
@@ -629,15 +629,15 @@ begin
 end Test;
 ```
 
-## 2.2 Real-World Example: A Simple Game with Memory Management
+## 10.2 Real-World Example: A Simple Game with Memory Management
 
 Let's build a simple game to see how Ada's memory management works in practice.
 
-### 2.2.1 Game Overview
+### 10.2.1 Game Overview
 
 We'll create a simple game where the player collects items. Each item has a name and value. We'll use controlled types to manage item memory automatically.
 
-### 2.2.2 Item Type with Controlled Memory
+### 10.2.2 Item Type with Controlled Memory
 
 ```ada
 with Ada.Finalization;
@@ -692,7 +692,7 @@ package body Item_Manager is
 end Item_Manager;
 ```
 
-### 2.2.3 Game with Item Collection
+### 10.2.3 Game with Item Collection
 
 ```ada
 with Item_Manager;
@@ -723,17 +723,17 @@ end Game;
 
 This game automatically manages memory for items. When the `Items` array goes out of scope, Ada automatically cleans up all the items—no manual cleanup needed.
 
-## 2.3 Exercises: Building Your Own Memory-Managed Systems
+## 10.3 Exercises: Building Your Own Memory-Managed Systems
 
 Now that you've learned about Ada's memory management, let's put it into practice with some exercises.
 
-### 2.3.1 Exercise 1: Database Connection Manager
+### 10.3.1 Exercise 1: Database Connection Manager
 
 Create a controlled type for a database connection that automatically closes the connection when it goes out of scope.
 
 > **Challenge**: Prove that your database connection is always properly closed, even if an exception occurs.
 
-#### 2.3.1.1 Solution Guidance
+#### 10.3.1.1 Solution Guidance
 
 Start by defining your controlled type:
 
@@ -809,13 +809,13 @@ end Test_Database;
 
 This ensures your database connection is always properly closed, even if an exception occurs during the query.
 
-### 2.3.2 Exercise 2: Dynamic Array with Automatic Memory Management
+### 10.3.2 Exercise 2: Dynamic Array with Automatic Memory Management
 
 Create a controlled type for a dynamic array that automatically allocates and frees memory as needed.
 
 > **Challenge**: Implement a dynamic array that can grow and shrink as needed, with automatic memory management.
 
-#### 2.3.2.1 Solution Guidance
+#### 10.3.2.1 Solution Guidance
 
 Start by defining your controlled type:
 
@@ -917,7 +917,7 @@ end Test_Dynamic_Array;
 
 This dynamic array automatically allocates and frees memory as needed, with no manual cleanup required.
 
-## 2.4 Next Steps: Mastering Ada's Memory Management
+## 10.4 Next Steps: Mastering Ada's Memory Management
 
 Now that you've learned the basics of Ada's memory management, you're ready to take your skills to the next level. Here are some next steps:
 

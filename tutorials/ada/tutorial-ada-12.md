@@ -4,13 +4,13 @@
 
 Formal verification is a mathematical technique for proving that software behaves exactly as intended. Unlike traditional testing, which examines specific inputs and outputs, formal verification provides mathematical guarantees about all possible executions of your code. SPARK is a formally verifiable subset of Ada that makes this powerful technique accessible to everyday programmers. This chapter explores how SPARK can help you write more reliable code for common programming tasks, from simple calculators to data processing algorithms, without requiring specialized domain knowledge.
 
-## 1.1 What is SPARK?
+## 12.1 What is SPARK?
 
 SPARK is a subset of Ada designed specifically for formal verification. It was developed to address a fundamental challenge in software engineering: how to prove that code is correct rather than just testing it for specific cases. While Ada provides strong type safety and contract-based programming, SPARK takes this further by restricting the language to a subset where mathematical proofs of correctness are possible.
 
 SPARK isn't just for aerospace or medical devices—it's a practical tool for any programmer who wants to build more reliable software. Whether you're writing a home automation system, a game, or a data processing tool, SPARK can help you catch errors before they occur and prove that your code works correctly for all possible inputs.
 
-### 1.1.1 SPARK vs. Traditional Ada
+### 12.1.1 SPARK vs. Traditional Ada
 
 | Feature | Traditional Ada | SPARK Subset |
 | :--- | :--- | :--- |
@@ -23,11 +23,11 @@ SPARK isn't just for aerospace or medical devices—it's a practical tool for an
 
 The key difference is that SPARK removes language features that make formal verification difficult or impossible. By restricting dynamic memory allocation and pointers, SPARK creates a predictable execution environment where mathematical proofs can be generated automatically. This might seem restrictive at first, but it's precisely these restrictions that make SPARK so powerful for proving correctness.
 
-## 1.2 Why Formal Verification Matters for Everyday Programming
+## 12.2 Why Formal Verification Matters for Everyday Programming
 
 Most programmers rely on testing to find bugs in their code. Testing is valuable, but it has limitations: you can only test a finite number of cases, and you might miss edge cases that cause problems in production. Formal verification addresses this by mathematically proving that your code works correctly for all possible inputs.
 
-### 1.2.1 Traditional Testing vs. Formal Verification
+### 12.2.1 Traditional Testing vs. Formal Verification
 
 | **Aspect** | **Traditional Testing** | **SPARK Formal Verification** |
 | :--- | :--- | :--- |
@@ -64,7 +64,7 @@ function Calculate_Area (Width, Height : Integer) return Integer with
 
 SPARK can verify that this function works correctly for all inputs that meet the precondition, and that it will never overflow when the precondition is satisfied.
 
-### 1.2.2 Real-World Benefits for Everyday Applications
+### 12.2.2 Real-World Benefits for Everyday Applications
 
 SPARK isn't just for "safety-critical" systems—it provides tangible benefits for everyday programming tasks:
 
@@ -75,11 +75,11 @@ SPARK isn't just for "safety-critical" systems—it provides tangible benefits f
 
 For example, consider a simple game that tracks player scores. With SPARK, you can prove that the score never goes negative or exceeds a maximum value, even when multiple players interact with the system simultaneously. This gives you confidence that your game will behave correctly in all situations, not just the ones you tested.
 
-## 1.3 Setting Up SPARK for Beginners
+## 12.3 Setting Up SPARK for Beginners
 
 SPARK is part of the GNAT Community Edition, which is free and available for all major platforms. Setting it up is straightforward:
 
-### 1.3.1 Installation Steps
+### 12.3.1 Installation Steps
 
 1. **Download GNAT Community Edition** from [AdaCore's website](https://www.adacore.com/download)
 2. **Run the installer** (select default options for all platforms)
@@ -95,7 +95,7 @@ SPARK is part of the GNAT Community Edition, which is free and available for all
    gnatprove --version
    ```
 
-### 1.3.2 Creating Your First SPARK Project
+### 12.3.2 Creating Your First SPARK Project
 
 1. Create a directory for your project:
    ```bash
@@ -158,15 +158,15 @@ This command will analyze your code and confirm that the `Add` procedure meets i
 [gnatprove] [info] analysis complete
 ```
 
-## 1.4 Basic SPARK Concepts
+## 12.4 Basic SPARK Concepts
 
 SPARK builds on Ada's existing features but adds strict rules for formal verification. Let's explore the key concepts you'll need to know.
 
-### 1.4.1 Contracts: Pre and Post Conditions
+### 12.4.1 Contracts: Pre and Post Conditions
 
 Contracts are the foundation of SPARK verification. They specify what a subprogram expects (preconditions) and guarantees (postconditions).
 
-#### 1.4.1.1 Precondition (`Pre`)
+#### 12.4.1.1 Precondition (`Pre`)
 
 Specifies requirements that must be true before the subprogram is called:
 
@@ -178,7 +178,7 @@ procedure Divide (A, B : Integer; Result : out Integer) with
 
 This contract ensures that the divisor is never zero, preventing division-by-zero errors.
 
-#### 1.4.1.2 Postcondition (`Post`)
+#### 12.4.1.2 Postcondition (`Post`)
 
 Specifies guarantees that must be true after the subprogram executes:
 
@@ -190,7 +190,7 @@ function Max (A, B : Integer) return Integer with
 
 This contract ensures the result is always greater than or equal to both inputs and equals one of them.
 
-### 1.4.2 Loop Invariants
+### 12.4.2 Loop Invariants
 
 When working with loops, SPARK requires loop invariants to prove correctness. A loop invariant is a condition that must be true at the beginning of each iteration.
 
@@ -208,7 +208,7 @@ end Sum_Array;
 
 The loop invariant ensures that after each iteration, `Result` contains the sum of all elements processed so far. SPARK uses this to prove the final result is correct.
 
-### 1.4.3 Type Invariants
+### 12.4.3 Type Invariants
 
 Type invariants specify properties that must always be true for a type:
 
@@ -219,7 +219,7 @@ type Valid_Integer is new Integer with
 
 This type ensures that any value of `Valid_Integer` is between 0 and 100. SPARK verifies that all operations on this type maintain this invariant.
 
-### 1.4.4 Proof Obligations
+### 12.4.4 Proof Obligations
 
 When you write SPARK code, the compiler generates "proof obligations"—mathematical conditions that must be proven true for your code to be verified. These obligations are automatically checked by the SPARK toolchain.
 
@@ -230,11 +230,11 @@ For example, the `Add` procedure from earlier generates these proof obligations:
 
 SPARK automatically proves these obligations, giving you confidence that your code works correctly.
 
-## 1.5 Simple SPARK Examples
+## 12.5 Simple SPARK Examples
 
 Let's explore practical SPARK examples that demonstrate how formal verification works for everyday programming tasks.
 
-### 1.5.1 Example 1: Basic Calculator
+### 12.5.1 Example 1: Basic Calculator
 
 Here's a complete calculator that verifies all arithmetic operations:
 
@@ -290,7 +290,7 @@ When you run `gnatprove`, it will verify that:
 
 This is a simple but powerful example—SPARK proves that your calculator will never produce incorrect results for valid inputs.
 
-### 1.5.2 Example 2: Sorting Algorithm
+### 12.5.2 Example 2: Sorting Algorithm
 
 Here's a SPARK-verified bubble sort implementation:
 
@@ -335,7 +335,7 @@ This implementation includes loop invariants that prove the array is sorted corr
 
 This is a practical example of how SPARK can help you write reliable sorting code—without needing to test every possible input.
 
-### 1.5.3 Example 3: Data Validation
+### 12.5.3 Example 3: Data Validation
 
 Here's a SPARK-verified function for validating user input:
 
@@ -361,11 +361,11 @@ end Input_Validator;
 
 This example demonstrates how SPARK can enforce data validation rules at compile time. The type invariant ensures that `Valid_String` always has a length between 1 and 100 characters, and the contract verifies that the function preserves the input value.
 
-## 1.6 Common Pitfalls and How to Avoid Them
+## 12.6 Common Pitfalls and How to Avoid Them
 
 Even with SPARK's powerful verification capabilities, beginners can encounter common pitfalls. Let's explore these challenges and how to overcome them.
 
-### 1.6.1 Pitfall 1: Incorrect Loop Invariants
+### 12.6.1 Pitfall 1: Incorrect Loop Invariants
 
 Loop invariants are crucial for SPARK verification, but they're easy to get wrong. Here's a common mistake:
 
@@ -379,7 +379,7 @@ end loop;
 
 This invariant is incorrect because `Result` should be the sum of all elements processed so far, not just the current element.
 
-#### 1.6.1.1 Solution: Correct Loop Invariant
+#### 12.6.1.1 Solution: Correct Loop Invariant
 
 ```ada
 -- Correct loop invariant
@@ -391,7 +391,7 @@ end loop;
 
 The correct invariant expresses the relationship between `Result` and all elements processed so far. SPARK uses this to verify the final result is correct.
 
-### 1.6.2 Pitfall 2: Overly Restrictive Contracts
+### 12.6.2 Pitfall 2: Overly Restrictive Contracts
 
 It's tempting to write very specific contracts, but this can make verification difficult:
 
@@ -404,7 +404,7 @@ function Square (X : Integer) return Integer with
 
 This contract restricts the input to a small range, which might not be necessary for the algorithm to work correctly.
 
-#### 1.6.2.1 Solution: Generalized Contracts
+#### 12.6.2.1 Solution: Generalized Contracts
 
 ```ada
 -- Generalized contract
@@ -415,7 +415,7 @@ function Square (X : Integer) return Integer with
 
 This contract allows the full range of possible inputs while still verifying correctness. SPARK can prove the function works for all possible integer values.
 
-### 1.6.3 Pitfall 3: Using Unsupported Features
+### 12.6.3 Pitfall 3: Using Unsupported Features
 
 SPARK has restrictions on certain Ada features. For example, dynamic memory allocation is not allowed:
 
@@ -431,7 +431,7 @@ end Allocate_Memory;
 
 SPARK prohibits heap allocation because it makes formal verification impossible.
 
-#### 1.6.3.1 Solution: Static Allocation
+#### 12.6.3.1 Solution: Static Allocation
 
 ```ada
 -- Valid SPARK code
@@ -444,7 +444,7 @@ end Process_Data;
 
 By using static allocation instead of dynamic memory, you maintain SPARK compatibility while achieving the same functionality.
 
-### 1.6.4 Pitfall 4: Ignoring Proof Obligations
+### 12.6.4 Pitfall 4: Ignoring Proof Obligations
 
 SPARK generates proof obligations that must be satisfied for verification to succeed. Ignoring these can lead to failed verification:
 
@@ -462,7 +462,7 @@ end Sum_Array;
 
 This code will fail verification because it's missing loop invariants.
 
-#### 1.6.4.1 Solution: Add Loop Invariants
+#### 12.6.4.1 Solution: Add Loop Invariants
 
 ```ada
 -- Corrected with loop invariants
@@ -479,11 +479,11 @@ end Sum_Array;
 
 Adding the loop invariant provides SPARK with the information it needs to prove correctness.
 
-## 1.7 Real-World Applications for Everyday Programming
+## 12.7 Real-World Applications for Everyday Programming
 
 SPARK isn't just for theoretical exercises—it has practical applications for common programming tasks.
 
-### 1.7.1 Example 1: Game Development
+### 12.7.1 Example 1: Game Development
 
 Consider a simple game that tracks player scores. With SPARK, you can prove that scores never go negative or exceed a maximum value:
 
@@ -509,7 +509,7 @@ end Game_Scores;
 
 This code ensures that scores always stay within valid ranges, preventing bugs where players might have negative scores or scores exceeding the maximum possible value.
 
-### 1.7.2 Example 2: Data Processing
+### 12.7.2 Example 2: Data Processing
 
 SPARK is excellent for verifying data processing algorithms. Here's a verified function for calculating averages:
 
@@ -539,7 +539,7 @@ end Data_Processing;
 
 This code proves that the average calculation is correct for all possible inputs, ensuring reliable data processing for applications like home automation systems or personal finance tools.
 
-### 1.7.3 Example 3: Text Processing
+### 12.7.3 Example 3: Text Processing
 
 SPARK can verify text processing algorithms. Here's a function to count word occurrences:
 
@@ -570,11 +570,11 @@ end Word_Count;
 
 This code verifies that the word counting function works correctly for all possible inputs, which is useful for applications like text editors or search tools.
 
-## 1.8 Exercises for Readers
+## 12.8 Exercises for Readers
 
 Now it's time to put your knowledge into practice with some exercises.
 
-### 1.8.1 Exercise 1: Validating User Input
+### 12.8.1 Exercise 1: Validating User Input
 
 Create a SPARK-verified function that validates email addresses. The function should:
 - Ensure the email contains exactly one '@' symbol
@@ -583,7 +583,7 @@ Create a SPARK-verified function that validates email addresses. The function sh
 
 > **Challenge**: Prove that your function correctly identifies valid and invalid email addresses.
 
-#### 1.8.1.1 Solution Guidance
+#### 12.8.1.1 Solution Guidance
 
 Start by defining the contract:
 
@@ -636,13 +636,13 @@ end Email_Validator;
 
 This implementation proves that the email validation works correctly for all possible inputs.
 
-### 1.8.2 Exercise 2: Sorting with SPARK
+### 12.8.2 Exercise 2: Sorting with SPARK
 
 Create a SPARK-verified implementation of a selection sort algorithm that works for arrays of any size.
 
 > **Challenge**: Prove that your sorting algorithm correctly sorts all possible input arrays.
 
-#### 1.8.2.1 Solution Guidance
+#### 12.8.2.1 Solution Guidance
 
 Start with the package specification:
 
@@ -689,7 +689,7 @@ end Selection_Sort;
 
 This implementation proves that the selection sort algorithm works correctly for all possible inputs.
 
-### 1.8.3 Exercise 3: Data Validation with SPARK
+### 12.8.3 Exercise 3: Data Validation with SPARK
 
 Create a SPARK-verified function that validates temperature readings for a home automation system. The function should:
 - Ensure temperatures are between -50°C and 100°C
@@ -698,7 +698,7 @@ Create a SPARK-verified function that validates temperature readings for a home 
 
 > **Challenge**: Prove that your system maintains valid temperature readings under all conditions.
 
-#### 1.8.3.1 Solution Guidance
+#### 12.8.3.1 Solution Guidance
 
 Start by defining the type with invariants:
 
@@ -732,11 +732,11 @@ end Temperature_System;
 
 This implementation proves that temperature readings always stay within valid ranges, preventing bugs that could cause home automation systems to malfunction.
 
-## 1.9 Next Steps for Learning SPARK
+## 12.9 Next Steps for Learning SPARK
 
 Now that you've learned the basics of SPARK, here are some next steps to continue your journey:
 
-### 1.9.1 \. Explore More Complex Examples
+### 12.9.1 \. Explore More Complex Examples
 
 Try verifying more complex algorithms, such as:
 - Binary search
@@ -746,7 +746,7 @@ Try verifying more complex algorithms, such as:
 
 These examples will help you understand how SPARK handles more sophisticated code.
 
-### 1.9.2 \. Learn About SPARK Proving Tools
+### 12.9.2 \. Learn About SPARK Proving Tools
 
 SPARK includes several tools for formal verification:
 - **GNATprove**: The main verification tool
@@ -755,7 +755,7 @@ SPARK includes several tools for formal verification:
 
 Learn how to use these tools to analyze verification results and debug proof failures.
 
-### 1.9.3 \. Practice with Real-World Projects
+### 12.9.3 \. Practice with Real-World Projects
 
 Apply SPARK to real-world projects you're working on:
 - Home automation systems
@@ -765,7 +765,7 @@ Apply SPARK to real-world projects you're working on:
 
 This will help you see how SPARK fits into practical programming scenarios.
 
-### 1.9.4 \. Join the SPARK Community
+### 12.9.4 \. Join the SPARK Community
 
 The SPARK community is active and supportive. Join:
 - **SPARK mailing list**: For discussions and questions
@@ -774,7 +774,7 @@ The SPARK community is active and supportive. Join:
 
 The community can provide valuable guidance as you learn more about formal verification.
 
-## 1.10 Conclusion: The Power of Proven Correctness
+## 12.10 Conclusion: The Power of Proven Correctness
 
 > "SPARK transforms code from 'likely correct' to 'provably correct'—not just for safety-critical systems, but for any application where reliability matters."
 

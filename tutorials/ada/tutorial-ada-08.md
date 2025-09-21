@@ -12,13 +12,13 @@ Object-oriented programming (OOP) is a powerful way to organize code by grouping
 
 In this chapter, you'll learn how to use Ada's object-oriented features for everyday programming tasks. You'll see how to create reusable components, model real-world objects, and build flexible systems—all with clear, predictable behavior. Whether you're building a simple game, a home automation system, or a data processing tool, Ada's OOP features will help you write better code.
 
-## 1.1 Why Ada's OOP Is Different
+## 8.1 Why Ada's OOP Is Different
 
 Most programming languages treat object-oriented programming as an all-or-nothing feature. In Java or C++, classes are the default way to structure code, and polymorphism happens automatically. This can be convenient, but it also makes it hard to understand exactly what's happening when your code runs.
 
 Ada takes a different approach. Instead of forcing OOP on you, Ada gives you precise control over when and how you use it. You only get polymorphism when you explicitly ask for it. This makes your code more predictable and easier to understand—perfect for beginners who are just learning about OOP.
 
-### 1.1.1 Key Differences Between Ada and Other Languages
+### 8.1.1 Key Differences Between Ada and Other Languages
 
 | Feature | Traditional OOP (Java/C++) | Ada's OOP |
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ Ada takes a different approach. Instead of forcing OOP on you, Ada gives you pre
 
 Let's look at a simple example to see how Ada's approach works in practice.
 
-### 1.1.2 A Simple Example: Animals in a Zoo
+### 8.1.2 A Simple Example: Animals in a Zoo
 
 Imagine you're building a zoo management system. In many languages, you might create a base class `Animal` and then derive specific types like `Lion` and `Elephant`:
 
@@ -78,11 +78,11 @@ Notice the differences:
 
 This explicitness makes it easier to understand exactly how your code will behave. There are no hidden virtual calls or surprise behavior—everything is visible in the code.
 
-## 1.2 Tagged Types: The Foundation of Ada OOP
+## 8.2 Tagged Types: The Foundation of Ada OOP
 
 In Ada, all object-oriented features are built around **tagged types**. A tagged type is simply a record that has been marked with the `tagged` keyword. This tells Ada that this type can participate in polymorphic behavior.
 
-### 1.2.1 Basic Tagged Type Declaration
+### 8.2.1 Basic Tagged Type Declaration
 
 Let's create a simple tagged type for a sensor:
 
@@ -96,7 +96,7 @@ end record;
 
 This creates a type called `Sensor` that has three fields: an ID, a status string, and a value. The `tagged` keyword is what makes this type polymorphic.
 
-### 1.2.2 Derived Types: Extending Existing Types
+### 8.2.2 Derived Types: Extending Existing Types
 
 You can create new types based on existing tagged types using the `new` keyword:
 
@@ -115,7 +115,7 @@ end record;
 
 Here, `Temperature_Sensor` and `Pressure_Sensor` are both derived from `Sensor`. They inherit all the fields from `Sensor` and add their own specific fields.
 
-### 1.2.3 Dispatching Operations: How Polymorphism Works
+### 8.2.3 Dispatching Operations: How Polymorphism Works
 
 To make a procedure or function polymorphic, you need to define it for the base type. This is called a **dispatching operation**:
 
@@ -147,7 +147,7 @@ end Process_Sensor;
 
 The `Sensor'Class` type is special—it means "any type derived from `Sensor`." This is how Ada achieves polymorphism: by allowing you to work with objects through their base type while still using the correct implementation for each specific type.
 
-### 1.2.4 Why This Matters for Beginners
+### 8.2.4 Why This Matters for Beginners
 
 This explicit approach has several advantages for beginners:
 - **No hidden behavior**: You can see exactly which implementation will be called
@@ -209,11 +209,11 @@ Trumpet!
 
 Notice how the `Process_Animal` procedure works with any animal type, but calls the correct `Make_Sound` implementation for each one. This is polymorphism in action—without any hidden complexity.
 
-## 1.3 Advanced Dispatching Operations
+## 8.3 Advanced Dispatching Operations
 
 Ada provides several advanced features for controlling how polymorphic behavior works. These features are designed to make your code more predictable and verifiable.
 
-### 1.3.1 Dispatching on Multiple Parameters
+### 8.3.1 Dispatching on Multiple Parameters
 
 In most languages, polymorphism only happens based on the type of the object (the `this` parameter). In Ada, you can have polymorphism based on multiple parameters:
 
@@ -230,7 +230,7 @@ end Process_Command;
 
 This function will dispatch based on both the sensor type and the command type. This is useful when you need to handle different combinations of inputs in different ways.
 
-### 1.3.2 Dispatching Policy Control
+### 8.3.2 Dispatching Policy Control
 
 Ada lets you control how dispatching happens:
 
@@ -250,7 +250,7 @@ end Process_Alarm;
 
 These policies make dispatching behavior predictable and verifiable—essential for safety-critical systems, but also helpful for understanding how your code works.
 
-### 1.3.3 Dispatching with Contracts
+### 8.3.3 Dispatching with Contracts
 
 One of Ada's most powerful features is combining polymorphism with Design by Contract:
 
@@ -268,13 +268,13 @@ function Validate (
 
 Here, the `Validate` function for `Temperature_Sensor` refines the contract of the base version. Ada ensures that derived types follow the Liskov substitution principle—meaning a derived type can always be used where the base type is expected.
 
-## 1.4 Interface Types and Controlled Inheritance
+## 8.4 Interface Types and Controlled Inheritance
 
 Ada provides sophisticated mechanisms for interface-based programming and controlled inheritance—avoiding many traditional OOP pitfalls.
 
-### 1.4.1 Abstract Types and Interface Types
+### 8.4.1 Abstract Types and Interface Types
 
-#### 1.4.1.1 Abstract Tagged Types
+#### 8.4.1.1 Abstract Tagged Types
 
 ```ada
 type Sensor is abstract tagged record
@@ -296,7 +296,7 @@ end Get_Value;
 
 This ensures that all derived types implement required operations. If you forget to implement `Get_Value` for `Temperature_Sensor`, the compiler will give you an error.
 
-#### 1.4.1.2 Interface Types (Multiple Inheritance)
+#### 8.4.1.2 Interface Types (Multiple Inheritance)
 
 ```ada
 type Measurable is interface;
@@ -324,7 +324,7 @@ end Calibrate;
 
 This enables safe multiple inheritance through interface types. You can have a type that implements multiple interfaces without the complications of traditional multiple inheritance.
 
-### 1.4.2 Interface-Based Design Benefits
+### 8.4.2 Interface-Based Design Benefits
 
 | Benefit | Real-World Example |
 | :--- | :--- |
@@ -334,11 +334,11 @@ This enables safe multiple inheritance through interface types. You can have a t
 | Reduces coupling between components | A web application where different data sources all implement the same interface |
 | Improves testability through interface mocking | A unit test that uses a mock sensor instead of a real one |
 
-## 1.5 Controlled Inheritance Patterns
+## 8.5 Controlled Inheritance Patterns
 
 Ada provides mechanisms to control inheritance for safety and simplicity.
 
-### 1.5.1 . Sealed Types
+### 8.5.1 Sealed Types
 
 Prevent further derivation of a type:
 
@@ -354,7 +354,7 @@ end Final_Sensor;
 
 This is useful for types where additional derivation could compromise safety or simplicity.
 
-### 1.5.2 . Limited Private Types
+### 8.5.2 Limited Private Types
 
 Control access to type internals:
 
@@ -375,7 +375,7 @@ end Sensors;
 
 This prevents unsafe modifications from outside the package.
 
-### 1.5.3 . Controlled Extension
+### 8.5.3 Controlled Extension
 
 Limit what can be added in derived types:
 
@@ -398,11 +398,11 @@ end record;
 
 This ensures derived types maintain safety properties.
 
-## 1.6 Safety-Critical OOP Patterns
+## 8.6 Safety-Critical OOP Patterns
 
 Let's look at some common OOP patterns that work well in Ada.
 
-### 1.6.1 . State Pattern for State Machines
+### 8.6.1 State Pattern for State Machines
 
 ```ada
 type System_State is abstract tagged null record;
@@ -441,7 +441,7 @@ end Handle_Event;
 
 This pattern ensures only valid state transitions can occur. It's perfect for modeling things like game characters, home automation systems, or simple robots.
 
-### 1.6.2 . Strategy Pattern for Algorithm Selection
+### 8.6.2 Strategy Pattern for Algorithm Selection
 
 ```ada
 type Control_Strategy is abstract tagged null record;
@@ -474,7 +474,7 @@ end Calculate_Output;
 
 This pattern enables safe runtime algorithm selection. It's great for applications where you might want to switch between different calculation methods based on conditions.
 
-### 1.6.3 . Visitor Pattern for Data Processing
+### 8.6.3 Visitor Pattern for Data Processing
 
 ```ada
 type Sensor_Element is abstract tagged null record;
@@ -505,7 +505,7 @@ end Visit_Temperature;
 
 This pattern ensures exhaustive processing of heterogeneous data. It's perfect for applications where you need to process different types of data in the same way.
 
-### 1.6.4 OOP Pattern Selection Guide
+### 8.6.4 OOP Pattern Selection Guide
 
 | Pattern | When to Use | Benefits |
 | :--- | :--- | :--- |
@@ -514,9 +514,9 @@ This pattern ensures exhaustive processing of heterogeneous data. It's perfect f
 | **Visitor Pattern** | Processing heterogeneous data collections | Guarantees exhaustive processing |
 | **Template Method** | Fixed algorithm with variable steps | Maintains algorithm invariants |
 
-## 1.7 Exercises: Building Verified Polymorphic Systems
+## 8.7 Exercises: Building Verified Polymorphic Systems
 
-### 1.7.1 Exercise 1: Zoo Management System
+### 8.7.1 Exercise 1: Zoo Management System
 
 Design a polymorphic zoo management system:
 
@@ -528,7 +528,7 @@ Design a polymorphic zoo management system:
 
 > **Challenge:** Prove that the zoo system cannot put animals in impossible states.
 
-#### 1.7.1.1 Solution Guidance
+#### 8.7.1.1 Solution Guidance
 
 Start by defining your animal base type:
 
@@ -568,7 +568,7 @@ procedure Wake (L : in out Lion) with
 
 This contract ensures that a lion can only wake up if it's currently sleeping.
 
-### 1.7.2 Exercise 2: Home Automation System
+### 8.7.2 Exercise 2: Home Automation System
 
 Build a polymorphic home automation system:
 
@@ -580,7 +580,7 @@ Build a polymorphic home automation system:
 
 > **Challenge:** Prove that sensor data cannot be misinterpreted due to polymorphism.
 
-#### 1.7.2.1 Solution Guidance
+#### 8.7.2.1 Solution Guidance
 
 Start by defining your sensor interface:
 
@@ -618,7 +618,7 @@ function Get_Value (T : Temperature_Sensor) return Float with
 
 This contract ensures that temperature values are always within a reasonable range.
 
-## 1.8 Verification Strategy for Polymorphic Systems
+## 8.8 Verification Strategy for Polymorphic Systems
 
 1. **Static verification**: Use `gnatprove` to verify contract refinement
 2. **Type safety**: Verify all downcasts with tag checks
@@ -629,9 +629,9 @@ This contract ensures that temperature values are always within a reasonable ran
 
 For highest reliability, all six verification steps are required to demonstrate safe polymorphic behavior.
 
-## 1.9 Common OOP Mistakes and How to Avoid Them
+## 8.9 Common OOP Mistakes and How to Avoid Them
 
-### 1.9.1 Mistake: Overusing Inheritance
+### 8.9.1 Mistake: Overusing Inheritance
 
 Many beginners think inheritance is always the best solution. But sometimes composition is better:
 
@@ -648,7 +648,7 @@ type Smart_Thermostat is record
 end record;
 ```
 
-### 1.9.2 Mistake: Forgetting to Use 'Class
+### 8.9.2 Mistake: Forgetting to Use 'Class
 
 When working with polymorphism, you need to use `Type'Class`:
 
@@ -666,7 +666,7 @@ begin
 end Process;
 ```
 
-### 1.9.3 Mistake: Unsafe Downcasting
+### 8.9.3 Mistake: Unsafe Downcasting
 
 ```ada
 -- Bad: No tag check
@@ -679,7 +679,7 @@ if S in Temperature_Sensor then
 end if;
 ```
 
-## 1.10 Why Ada's OOP Is Great for Beginners
+## 8.10 Why Ada's OOP Is Great for Beginners
 
 Ada's object-oriented features are designed to be simple and explicit. Unlike other languages where polymorphism happens behind the scenes, Ada makes everything visible in the code. This means:
 
@@ -741,11 +741,11 @@ Gandalf casts fireball!
 
 Notice how the `Process_Character` procedure works with any character type, but calls the correct `Attack` implementation for each one. This is polymorphism in action—without any hidden complexity.
 
-## 1.11 Next Steps: Generics and Template Programming
+## 8.11 Next Steps: Generics and Template Programming
 
 Now that you've mastered Ada's object-oriented programming features, you're ready to explore how to create reusable, type-safe components through generics. In the next tutorial, we'll dive into Ada's powerful generic programming system, showing how to:
 
-### 1.11.1 Upcoming: Generics and Template Programming
+### 8.11.1 Upcoming: Generics and Template Programming
 
 - Create reusable components with formal parameters
 - Specify constraints on generic parameters
@@ -753,7 +753,7 @@ Now that you've mastered Ada's object-oriented programming features, you're read
 - Combine generics with Design by Contract
 - Apply generics to safety-critical patterns
 
-### 1.11.2 Practice Challenge
+### 8.11.2 Practice Challenge
 
 Enhance your zoo management system with generics:
 
@@ -763,7 +763,7 @@ Enhance your zoo management system with generics:
 - Verify that instantiations maintain safety properties
 - Create a verification plan for generic components
 
-#### 1.11.2.1 The Path to Verified Reusability
+#### 8.11.2.1 The Path to Verified Reusability
 
 Object-oriented programming provides the foundation for building flexible systems, but generics enable building flexible systems efficiently. When combined with strong typing, Design by Contract, and formal verification, Ada's generic system creates a powerful framework for developing and certifying reusable components.
 

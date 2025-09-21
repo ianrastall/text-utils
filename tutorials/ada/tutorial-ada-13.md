@@ -4,7 +4,7 @@
 
 In modern software development, few applications exist in isolation. Whether you're building a home automation system, a personal finance tool, or a data processing pipeline, your code will likely need to integrate with other components, libraries, or languages. Similarly, ensuring your code meets quality standards through certification processes is crucial for reliability, even in everyday applications. This chapter explores how Ada's unique features make certification and integration more manageable and reliable—without requiring specialized domain knowledge.
 
-## 1.1 Understanding Software Certification
+## 13.1 Understanding Software Certification
 
 Software certification is the process of verifying that code meets specific quality standards and behaves as intended. While often associated with safety-critical systems, certification principles apply to all software development. For everyday applications, certification ensures:
 
@@ -15,7 +15,7 @@ Software certification is the process of verifying that code meets specific qual
 
 Unlike traditional testing, which examines specific inputs and outputs, certification involves systematic verification of code quality across multiple dimensions. Ada's language features make this verification process more straightforward and reliable.
 
-### 1.1.1 Why Certification Matters for Everyday Applications
+### 13.1.1 Why Certification Matters for Everyday Applications
 
 Consider a simple home automation system that controls lighting based on motion sensors. Without proper certification:
 
@@ -31,7 +31,7 @@ With certification practices:
 
 These practices aren't just for aerospace engineers—they're essential for any developer who wants to build reliable software that users can trust.
 
-### 1.1.2 Common Certification Processes
+### 13.1.2 Common Certification Processes
 
 | **Certification Practice** | **How Ada Supports It** | **Benefit** |
 | :--- | :--- | :--- |
@@ -40,11 +40,11 @@ These practices aren't just for aerospace engineers—they're essential for any 
 | **Automated Testing** | Contracts provide test cases automatically | Reduces manual test creation effort |
 | **Formal Verification** | SPARK subset allows mathematical proof of correctness | Guarantees absence of certain errors |
 
-## 1.2 Ada's Certification-Friendly Features
+## 13.2 Ada's Certification-Friendly Features
 
 Ada provides several features specifically designed to support certification processes. These aren't just for safety-critical systems—they're equally valuable for everyday applications.
 
-### 1.2.1 Strong Typing and Type Safety
+### 13.2.1 Strong Typing and Type Safety
 
 Ada's strong typing system prevents entire categories of errors before code ever runs. For example:
 
@@ -60,7 +60,7 @@ end Set_Temperature;
 
 This code prevents accidental assignment of Fahrenheit values to Celsius parameters. The compiler catches type mismatches immediately, making code review and certification more straightforward.
 
-### 1.2.2 Design by Contract
+### 13.2.2 Design by Contract
 
 Ada's contract-based programming allows you to specify exactly what your code expects and guarantees:
 
@@ -72,7 +72,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 These contracts serve as living documentation that's always up-to-date with the code. They also provide automatic test cases for certification processes.
 
-### 1.2.3 SPARK Subset for Formal Verification
+### 13.2.3 SPARK Subset for Formal Verification
 
 SPARK is a formally verifiable subset of Ada that allows mathematical proof of correctness. While often associated with safety-critical systems, SPARK is equally valuable for everyday applications:
 
@@ -86,7 +86,7 @@ end Calculator;
 
 When you run `gnatprove` on this code, it verifies that the addition operation works correctly for all possible inputs. This provides a level of certainty that traditional testing cannot match.
 
-### 1.2.4 Static Analysis Tools
+### 13.2.4 Static Analysis Tools
 
 Ada includes several static analysis tools that automatically check code quality:
 
@@ -100,11 +100,11 @@ gnatprove -P project.gpr --level=1 --report=all
 
 These tools help enforce coding standards, catch potential errors, and verify correctness—without requiring manual inspection of every line of code.
 
-## 3.1 Certification Standards for Everyday Development
+## 13.1 Certification Standards for Everyday Development
 
 While there are no universal certification standards for all software, several widely applicable practices can improve code quality and reliability.
 
-### 3.1.1 Coding Standards
+### 13.1.1 Coding Standards
 
 Adopting coding standards ensures consistency and readability. For example, the Ada community has developed standards like:
 
@@ -114,7 +114,7 @@ Adopting coding standards ensures consistency and readability. For example, the 
 
 These standards cover aspects like naming conventions, code structure, and error handling.
 
-### 3.1.2 Code Review Practices
+### 13.1.2 Code Review Practices
 
 Effective code reviews are a cornerstone of certification. Ada's clear syntax and strong typing make code reviews more productive:
 
@@ -130,7 +130,7 @@ This code is easier to review because:
 - Types prevent common errors
 - The implementation is straightforward
 
-### 3.1.3 Testing Strategies
+### 13.1.3 Testing Strategies
 
 Ada's features make testing more efficient:
 
@@ -146,11 +146,11 @@ end Test_Calculate_Area;
 
 The contract in the `Calculate_Area` function provides automatic test cases that verify the function's behavior for all valid inputs.
 
-## 3.2 Integration with Other Languages
+## 13.2 Integration with Other Languages
 
 In modern software development, few applications use a single language. Integration with other languages is essential for leveraging existing libraries, improving performance, or building complex systems.
 
-### 3.2.1 Why Integration Matters
+### 13.2.1 Why Integration Matters
 
 Consider a home automation system where:
 - Ada handles sensor data processing
@@ -159,7 +159,7 @@ Consider a home automation system where:
 
 This combination leverages each language's strengths while overcoming its weaknesses. Ada's strong typing and reliability make it ideal for critical processing tasks, while Python provides an easy-to-use interface.
 
-### 3.2.2 Common Integration Scenarios
+### 13.2.2 Common Integration Scenarios
 
 | **Scenario** | **Use Case** | **Tools** |
 | :--- | :--- | :--- |
@@ -168,7 +168,7 @@ This combination leverages each language's strengths while overcoming its weakne
 | **Ada + Java** | Enterprise applications | JNA, JNI |
 | **Ada + Web** | Web services with Ada backend | RESTful APIs, CGI |
 
-### 3.2.3 Ada-C Integration: A Practical Example
+### 13.2.3 Ada-C Integration: A Practical Example
 
 Let's create a simple example of integrating Ada with C. First, we'll create an Ada library for basic math operations:
 
@@ -253,7 +253,7 @@ Cube of 3.0: 27.00
 
 This example demonstrates how Ada's strong typing and reliability can be leveraged in a C application. The Ada functions provide verified math operations that the C code can safely use.
 
-### 3.2.4 Ada-Python Integration: Another Practical Example
+### 13.2.4 Ada-Python Integration: Another Practical Example
 
 Let's create an example of integrating Ada with Python using `ctypes`:
 
@@ -295,11 +295,11 @@ print(f"2.5 + 3.7 = {result.value:.2f}")
 
 This Python script calls the Ada math functions directly, leveraging Ada's reliability for critical calculations while using Python's ease of use for the overall application.
 
-## 6.1 Common Integration Challenges and Solutions
+## 13.1 Common Integration Challenges and Solutions
 
 When integrating Ada with other languages, several challenges can arise. Let's explore these challenges and how to address them.
 
-### 6.1.1 Data Type Mismatches
+### 13.1.1 Data Type Mismatches
 
 Different languages have different data types. For example, C's `int` might be 32 bits, while Ada's `Integer` might be 64 bits.
 
@@ -319,7 +319,7 @@ float square(float x);
 
 This ensures consistent data representation across language boundaries.
 
-### 6.1.2 Memory Management
+### 13.1.2 Memory Management
 
 Different languages have different memory management approaches. Ada uses controlled types for automatic cleanup, while C requires manual memory management.
 
@@ -345,7 +345,7 @@ void free_buffer(Buffer buffer);
 
 This approach ensures proper memory management while maintaining clear ownership rules.
 
-### 6.1.3 Error Handling
+### 13.1.3 Error Handling
 
 Different languages have different error handling mechanisms. Ada uses exceptions, while C typically uses return codes.
 
@@ -377,11 +377,11 @@ end Process_Data;
 
 This converts Ada exceptions to C-style success/failure codes.
 
-## 6.2 Best Practices for Certification and Integration
+## 13.2 Best Practices for Certification and Integration
 
 To ensure reliable and maintainable integrated systems, follow these best practices:
 
-### 6.2.1 \. Keep Interfaces Simple and Well-Documented
+### 13.2.1 \. Keep Interfaces Simple and Well-Documented
 
 Simple interfaces are easier to certify and integrate. For example:
 
@@ -401,7 +401,7 @@ package Complex_Utils is
 end Complex_Utils;
 ```
 
-### 6.2.2 \. Use Ada's Features to Simplify Integration
+### 13.2.2 \. Use Ada's Features to Simplify Integration
 
 Ada's strong typing and contracts make it easier to integrate with other languages:
 
@@ -414,7 +414,7 @@ function Calculate_Discount (Price : Float; Is_Premium : Boolean) return Float w
 
 These contracts provide clear expectations for integration points.
 
-### 6.2.3 \. Test Integrated Systems Thoroughly
+### 13.2.3 \. Test Integrated Systems Thoroughly
 
 When integrating different languages, test the entire system:
 
@@ -431,7 +431,7 @@ end Test_Integration;
 
 This ensures that the integrated system behaves correctly as a whole.
 
-### 6.2.4 \. Use Static Analysis Tools for Certification
+### 13.2.4 \. Use Static Analysis Tools for Certification
 
 Run static analysis tools on integrated systems:
 
@@ -442,18 +442,18 @@ gnatcheck -r -s -p project.gpr
 
 These tools help catch integration-specific issues before they become problems.
 
-## 7.1 Practical Exercise: Building an Integrated System
+## 13.1 Practical Exercise: Building an Integrated System
 
 Let's build a complete example of an integrated system that demonstrates certification and integration concepts.
 
-### 7.1.1 Exercise 1: Home Automation System with Ada and Python
+### 13.1.1 Exercise 1: Home Automation System with Ada and Python
 
 Create a home automation system where:
 - Ada handles sensor data processing
 - Python provides the user interface
 - Certification practices ensure reliability
 
-#### 7.1.1.1 Step 1: Create Ada Sensor Processing Library
+#### 13.1.1.1 Step 1: Create Ada Sensor Processing Library
 
 ```ada
 -- sensor_processing.ads
@@ -490,7 +490,7 @@ package body Sensor_Processing with SPARK_Mode is
 end Sensor_Processing;
 ```
 
-#### 7.1.1.2 Step 2: Compile Ada Library as Shared Object
+#### 13.1.1.2 Step 2: Compile Ada Library as Shared Object
 
 ```bash
 gnatmake -c -fPIC sensor_processing.adb
@@ -498,7 +498,7 @@ gnatbind sensor_processing
 gnatlink sensor_processing -shared -o libsensor_processing.so
 ```
 
-#### 7.1.1.3 Step 3: Create Python Interface
+#### 13.1.1.3 Step 3: Create Python Interface
 
 ```python
 # 8 sensor_interface.py

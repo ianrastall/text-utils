@@ -6,7 +6,7 @@ As autonomous systems, quantum-resistant cryptography, and artificial intelligen
 
 > "As AI and quantum computing evolve, the need for secure, predictable systems grows. Ada's ability to combine safety with modern tooling positions it as a critical language for the next generation of software." — Quantum Security Researcher
 
-## 1.1 Why Ada for Emerging Technologies?
+## 22.1 Why Ada for Emerging Technologies?
 
 Modern software development increasingly requires systems that handle complex, real-time data processing while maintaining security and reliability. Traditional languages like Python excel in rapid prototyping but struggle with performance-critical tasks due to the Global Interpreter Lock (GIL), while C++ requires meticulous manual memory management that introduces subtle bugs. Ada bridges these gaps with:
 
@@ -17,7 +17,7 @@ Modern software development increasingly requires systems that handle complex, r
 
 These features make Ada ideal for building consumer-grade autonomous systems (e.g., smart home devices), educational AI tools, and personal security applications where correctness matters but formal certification isn't required.
 
-### 1.1.1 Language Comparison for Modern Applications
+### 22.1.1 Language Comparison for Modern Applications
 
 | **Feature** | **Ada** | **Python** | **C++** | **Java** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -30,11 +30,11 @@ These features make Ada ideal for building consumer-grade autonomous systems (e.
 
 This table highlights Ada's competitive advantages. For example, when building a smart home system that processes sensor data in real-time, Ada's tasking model ensures responsive control without the GIL limitations of Python or the manual thread management complexity of C++. Similarly, when implementing quantum-resistant encryption for personal messaging apps, Ada's strong typing prevents subtle cryptographic errors that could compromise security.
 
-## 1.2 Autonomous Systems in Ada
+## 22.2 Autonomous Systems in Ada
 
 Autonomous systems—devices that operate independently without human intervention—are increasingly common in consumer technology. From robotic vacuum cleaners to smart thermostats, these systems require reliable real-time processing, sensor integration, and decision-making capabilities. While professional autonomous vehicles or medical robots demand rigorous safety certification, educational and hobbyist projects benefit immensely from Ada's safety features without requiring formal certification.
 
-### 1.2.1 Core Concepts for Autonomous Systems
+### 22.2.1 Core Concepts for Autonomous Systems
 
 Autonomous systems typically involve:
 - **Sensing**: Reading data from cameras, lidar, or environmental sensors
@@ -44,7 +44,7 @@ Autonomous systems typically involve:
 
 Ada excels in this domain through its tasking model, which allows safe, concurrent execution of these components without race conditions or deadlocks. Unlike Python's GIL-limited threading or C++'s complex thread management, Ada's tasks are built into the language with compile-time safety guarantees.
 
-### 1.2.2 Example: Smart Home Robot Simulator
+### 22.2.2 Example: Smart Home Robot Simulator
 
 Consider a simplified smart home robot that navigates a room, avoids obstacles, and responds to voice commands. This example uses Ada's tasking model to handle sensor input, movement control, and voice processing concurrently.
 
@@ -152,7 +152,7 @@ This example demonstrates several key Ada features:
 
 When executed, the robot simulates navigating a room, stopping when obstacles are detected and responding to voice commands. The `delay` statements simulate real-world timing constraints without requiring complex timing libraries.
 
-### 1.2.3 Real-World Applications
+### 22.2.3 Real-World Applications
 
 While this example is simplified, similar patterns apply to real consumer products:
 - **Smart thermostats**: Concurrent temperature sensing, climate control, and user interface management
@@ -161,11 +161,11 @@ While this example is simplified, similar patterns apply to real consumer produc
 
 Ada's strength lies in its ability to handle these concurrent processes safely. Unlike Python, where the GIL limits true parallelism for CPU-bound tasks, or C++, where manual thread management introduces subtle bugs, Ada's built-in concurrency model ensures predictable behavior.
 
-## 1.3 Quantum Security with Ada
+## 22.3 Quantum Security with Ada
 
 Quantum computing threatens current cryptographic standards, as quantum algorithms like Shor's algorithm could break widely-used encryption like RSA and ECC. Post-quantum cryptography (PQC) refers to cryptographic algorithms designed to be secure against both classical and quantum computers. While government and military applications require rigorous certification, personal and educational projects also benefit from quantum-resistant security—especially for long-term data protection.
 
-### 1.3.1 Core Concepts for Quantum Security
+### 22.3.1 Core Concepts for Quantum Security
 
 Key aspects of quantum security include:
 - **Post-quantum algorithms**: Lattice-based, hash-based, or code-based cryptography resistant to quantum attacks
@@ -175,7 +175,7 @@ Key aspects of quantum security include:
 
 Ada excels in implementing these concepts due to its strong typing, which prevents subtle cryptographic errors, and its clean C interoperability, allowing seamless use of existing PQC libraries like OpenQuantumSafe (OQS).
 
-### 1.3.2 Example: Quantum-Resistant Key Exchange
+### 22.3.2 Example: Quantum-Resistant Key Exchange
 
 Here's a simplified example using Ada to interface with the OpenQuantumSafe C library for Kyber key exchange—a leading PQC algorithm selected by NIST for standardization.
 
@@ -274,7 +274,7 @@ This example demonstrates:
 
 While this simplified example doesn't handle real-world networking, it illustrates how Ada can integrate with quantum-resistant cryptography libraries. For a complete implementation, you'd add network communication using Ada's networking libraries or Python bindings.
 
-### 1.3.3 Real-World Applications
+### 22.3.3 Real-World Applications
 
 Quantum-resistant cryptography is relevant for:
 - **Personal messaging apps**: Securing messages against future quantum attacks
@@ -283,11 +283,11 @@ Quantum-resistant cryptography is relevant for:
 
 Unlike Python, which lacks built-in cryptographic safety guarantees, Ada's strong typing prevents subtle errors in cryptographic implementations. For example, accidentally using the wrong buffer size for a key exchange could compromise security—Ada catches such errors at compile time.
 
-## 1.4 AI Integration in Ada
+## 22.4 AI Integration in Ada
 
 Artificial intelligence has moved beyond research labs into everyday applications—from recommendation systems to image recognition. While Python dominates AI development due to its rich ecosystem, Ada provides unique advantages for integrating AI into larger systems where reliability and performance matter.
 
-### 1.4.1 Core Concepts for AI Integration
+### 22.4.1 Core Concepts for AI Integration
 
 Key aspects of AI integration include:
 - **Model serving**: Deploying pre-trained machine learning models
@@ -297,7 +297,7 @@ Key aspects of AI integration include:
 
 Ada excels in this domain through GNATCOLL.Python, which provides seamless Python integration, and its strong typing, which ensures data consistency between Ada and Python components.
 
-### 1.4.2 Example: Image Classification with TensorFlow
+### 22.4.2 Example: Image Classification with TensorFlow
 
 This example demonstrates how Ada can use TensorFlow through Python bindings to classify images. While the AI model is implemented in Python, Ada handles the application logic and data processing.
 
@@ -364,7 +364,7 @@ While this example uses a simplified image dataset, real-world applications woul
 - Handle more complex preprocessing
 - Process multiple predictions in parallel
 
-### 1.4.3 Real-World Applications
+### 22.4.3 Real-World Applications
 
 AI integration with Ada is valuable for:
 - **Smart home assistants**: Combining voice recognition (Python) with Ada-controlled hardware
@@ -373,9 +373,9 @@ AI integration with Ada is valuable for:
 
 Unlike pure Python solutions, which can suffer from GIL limitations during CPU-intensive tasks, Ada handles the real-time control aspects while Python manages the AI model. This hybrid approach leverages the strengths of both languages.
 
-## 1.5 Case Studies: Practical Applications
+## 22.5 Case Studies: Practical Applications
 
-### 1.5.1 Case Study 1: Smart Home Automation System
+### 22.5.1 Case Study 1: Smart Home Automation System
 
 Consider a smart home system that:
 - Monitors temperature and humidity via sensors
@@ -491,7 +491,7 @@ This system demonstrates how Ada integrates multiple modern technologies:
 - **Quantum security**: Secure communication uses quantum-resistant encryption
 - **Safety**: Compile-time checks ensure all data types are consistent
 
-### 1.5.2 Case Study 2: Educational AI Assistant
+### 22.5.2 Case Study 2: Educational AI Assistant
 
 An educational tool that:
 - Uses natural language processing for student queries
@@ -542,9 +542,9 @@ This example shows how Ada can handle the application logic while Python manages
 - Processes them with a pre-trained NLP model
 - Returns answers through a safe, type-checked interface
 
-## 1.6 Best Practices for Modern Ada Development
+## 22.6 Best Practices for Modern Ada Development
 
-### 1.6.1 . Modular Design for Complex Systems
+### 22.6.1 Modular Design for Complex Systems
 
 Break systems into independent components using Ada packages:
 
@@ -568,7 +568,7 @@ This structure:
 - Enables independent development of components
 - Prevents accidental dependencies between subsystems
 
-### 1.6.2 . Safe Interoperability with Python
+### 22.6.2 Safe Interoperability with Python
 
 When using GNATCOLL.Python:
 - **Validate Python object types** before use
@@ -589,7 +589,7 @@ exception
 end;
 ```
 
-### 1.6.3 . Quantum Security Implementation Tips
+### 22.6.3 Quantum Security Implementation Tips
 
 - **Use established libraries**: OQS or liboqs instead of custom implementations
 - **Validate key sizes**: Ensure buffers match cryptographic requirements
@@ -602,7 +602,7 @@ if OQS_KEM_kyber_512_PUBLIC_KEY_BYTES /= 800 then
 end if;
 ```
 
-### 1.6.4 . Real-Time Performance Optimization
+### 22.6.4 Real-Time Performance Optimization
 
 - **Avoid dynamic memory allocation** in critical paths
 - **Use fixed-point arithmetic** for sensor readings
@@ -614,7 +614,7 @@ type Sensor_Buffer is array (1..100) of Float;
 Buffer : Sensor_Buffer;
 ```
 
-### 1.6.5 . Testing Strategies
+### 22.6.5 Testing Strategies
 
 - **Unit test Ada components** independently
 - **Mock Python dependencies** for testing
@@ -631,9 +631,9 @@ begin
 end Test_Sensor_Processing;
 ```
 
-## 1.7 Resources and Further Learning
+## 22.7 Resources and Further Learning
 
-### 1.7.1 Core Libraries and Tools
+### 22.7.1 Core Libraries and Tools
 
 | **Tool** | **Purpose** | **Documentation** |
 | :--- | :--- | :--- |
@@ -643,14 +643,14 @@ end Test_Sensor_Processing;
 | **GNAT Studio** | Ada IDE with debugging | [GNAT Studio Docs](https://docs.adacore.com/gnatstudio-docs/) |
 | **AdaStandard** | Core Ada libraries | [Ada Reference Manual](https://www.adaic.org/resources/add_content/standards/12rm/html/RM-TOC.html) |
 
-### 1.7.2 Books and Tutorials
+### 22.7.2 Books and Tutorials
 
 - **"Ada 2022: The Craft of Programming" by John Barnes**: Covers modern Ada features including concurrency and interoperability
 - **"Practical Quantum Computing for Developers" by Vladimir Silva**: Explains quantum-resistant cryptography concepts
 - **"AI for Everyone" by Andrew Ng**: Non-technical introduction to AI concepts for Ada developers
 - **AdaCore Learning Portal**: [https://learn.adacore.com](https://learn.adacore.com) with free tutorials on modern Ada development
 
-### 1.7.3 Online Communities
+### 22.7.3 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -659,7 +659,7 @@ end Test_Sensor_Processing;
 | **Reddit r/Ada** | [reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub OQS Repository** | [github.com/open-quantum-safe](https://github.com/open-quantum-safe) | Quantum cryptography implementations |
 
-### 1.7.4 Advanced Topics
+### 22.7.4 Advanced Topics
 
 - **Formal Methods for AI Safety**: Using SPARK to verify AI component behavior
 - **Hardware Acceleration**: Integrating Ada with FPGA-based AI accelerators
@@ -668,7 +668,7 @@ end Test_Sensor_Processing;
 
 > "Ada's unique combination of safety, performance, and interoperability makes it the ideal language for building next-generation systems that integrate AI, quantum security, and autonomous control—without the trade-offs of other languages." — Senior Software Architect, AdaCore
 
-## 1.8 Conclusion
+## 22.8 Conclusion
 
 Modern software development increasingly requires systems that integrate artificial intelligence, quantum-resistant security, and autonomous control capabilities. While these technologies are often associated with high-stakes environments, they also have significant applications in consumer products, educational tools, and personal projects. Ada provides a robust foundation for building such systems through its strong typing, concurrency model, and seamless interoperability with Python and C libraries.
 

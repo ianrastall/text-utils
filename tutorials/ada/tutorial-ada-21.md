@@ -6,7 +6,7 @@ Modern Integrated Development Environments (IDEs) are indispensable tools for so
 
 > "The right IDE can turn complex Ada projects from daunting tasks into manageable workflows, especially when leveraging built-in static analysis and code navigation features." — John Barnes, Author of *Ada 2022: The Craft of Programming*
 
-## 1.1 Why IDEs Matter for Ada Development
+## 21.1 Why IDEs Matter for Ada Development
 
 Ada's strong typing, modular design, and concurrency features require specialized tooling to maximize productivity. Unlike dynamically-typed languages where basic editors suffice, Ada's compile-time checks and complex project structures benefit immensely from IDEs that understand Ada's syntax and semantics. Modern IDEs for Ada provide:
 
@@ -18,7 +18,7 @@ Ada's strong typing, modular design, and concurrency features require specialize
 
 While text editors like Vim or Emacs can be configured for Ada, they lack the integrated toolchain that accelerates development for complex projects. This chapter focuses on IDEs that balance ease of use with professional-grade capabilities, avoiding specialized safety-critical tooling (covered in earlier chapters) in favor of general-purpose development environments.
 
-## 1.2 Overview of Popular Ada IDEs
+## 21.2 Overview of Popular Ada IDEs
 
 Four primary IDEs dominate modern Ada development: GNAT Studio (the official AdaCore offering), Eclipse with Ada Development Tools (ADT), Visual Studio Code with Ada extensions, and CLion with Ada plugins. Each has distinct strengths and trade-offs:
 
@@ -31,11 +31,11 @@ Four primary IDEs dominate modern Ada development: GNAT Studio (the official Ada
 
 This overview sets the stage for detailed exploration of each environment. We'll examine setup procedures, core features, and practical workflows for each IDE, with emphasis on real-world usability for beginning programmers.
 
-## 1.3 GNAT Studio: The Official Ada IDE
+## 21.3 GNAT Studio: The Official Ada IDE
 
 GNAT Studio (formerly GPS) is the flagship IDE developed by AdaCore, specifically designed for Ada and SPARK development. As the official toolchain for Ada, it offers unparalleled integration with the GNAT compiler and related tools. Its open-source nature and comprehensive feature set make it ideal for both academic and professional projects.
 
-### 1.3.1 Installation and Setup
+### 21.3.1 Installation and Setup
 
 GNAT Studio is available for Windows, macOS, and Linux. Installation is straightforward:
 
@@ -51,7 +51,7 @@ Upon first launch, GNAT Studio prompts to create a new project or open an existi
 - **Debug View**: For debugging sessions
 - **Output Window**: Shows build and runtime logs
 
-### 1.3.2 Creating Your First Project
+### 21.3.2 Creating Your First Project
 
 Creating a new Ada project in GNAT Studio is intuitive:
 
@@ -75,7 +75,7 @@ begin
 end Hello;
 ```
 
-### 1.3.3 Building and Running
+### 21.3.3 Building and Running
 
 GNAT Studio handles build processes seamlessly:
 1. Right-click the project in **Project Explorer**
@@ -88,7 +88,7 @@ For debugging:
 2. Select **Debug > Start Debugging**
 3. Use the **Debug View** to step through code, inspect variables, and evaluate expressions
 
-### 1.3.4 Key Features for Productivity
+### 21.3.4 Key Features for Productivity
 
 GNAT Studio excels in Ada-specific tooling:
 
@@ -98,7 +98,7 @@ GNAT Studio excels in Ada-specific tooling:
 - **Version Control**: Integrated Git support via **VCS > Git** menu
 - **Customization**: Configure keybindings via **Tools > Options > Key Bindings**
 
-### 1.3.5 Advanced Configuration
+### 21.3.5 Advanced Configuration
 
 For larger projects, customize GNAT Studio's behavior:
 1. **Compiler Flags**: In **Project Properties > Build > Compiler**, add flags like `-g` for debug symbols or `-O2` for optimization
@@ -107,11 +107,11 @@ For larger projects, customize GNAT Studio's behavior:
 
 > "GNAT Studio's deep integration with GNAT means you spend less time configuring toolchains and more time solving problems. Its error messages are tailored to Ada's unique semantics, which is invaluable for beginners." — AdaCore Technical Lead
 
-## 1.4 Eclipse with Ada Development Tools (ADT)
+## 21.4 Eclipse with Ada Development Tools (ADT)
 
 Eclipse is a versatile open-source IDE that supports multiple languages through plugins. The Ada Development Tools (ADT) plugin adds comprehensive Ada support, making Eclipse ideal for developers working in multi-language environments.
 
-### 1.4.1 Installation and Setup
+### 21.4.1 Installation and Setup
 
 Eclipse requires a few steps to configure for Ada:
 
@@ -124,7 +124,7 @@ Eclipse requires a few steps to configure for Ada:
 
 ADT requires a separate GNAT compiler installation. Ensure GNAT is in your system PATH before launching Eclipse.
 
-### 1.4.2 Creating a Project
+### 21.4.2 Creating a Project
 
 1. Go to **File > New > Project > Ada Project**
 2. Enter project name (e.g., "EclipseAda")
@@ -136,7 +136,7 @@ ADT requires a separate GNAT compiler installation. Ensure GNAT is in your syste
 
 Eclipse creates a `Makefile` and `src/main.adb` by default. Edit `main.adb` with the standard "Hello World" code.
 
-### 1.4.3 Building and Debugging
+### 21.4.3 Building and Debugging
 
 - **Build**: Right-click project > **Build Project**
 - **Run**: Right-click project > **Run As > Ada Application**
@@ -147,14 +147,14 @@ Eclipse's **Debug Perspective** provides:
 - **Breakpoints View**: Manages all breakpoints
 - **Console View**: Displays program output
 
-### 1.4.4 ADT-Specific Features
+### 21.4.4 ADT-Specific Features
 
 - **Code Templates**: Configure via **Window > Preferences > Ada > Editor > Templates**
 - **Code Formatting**: Use **Source > Format** to apply Ada-style formatting
 - **Project References**: Link multiple Ada projects via **Project Properties > Ada > Project References**
 - **GNATmake Integration**: Configure compiler flags in **Project Properties > Ada > Build**
 
-### 1.4.5 Troubleshooting Common Issues
+### 21.4.5 Troubleshooting Common Issues
 
 | **Issue** | **Solution** |
 | :--- | :--- |
@@ -165,11 +165,11 @@ Eclipse's **Debug Perspective** provides:
 
 > "Eclipse's strength lies in its extensibility. When working with mixed-language projects (e.g., Ada + C), ADT integrates seamlessly with C/C++ tools while maintaining Ada-specific features." — Eclipse ADT Maintainer
 
-## 1.5 Visual Studio Code: Lightweight Ada Development
+## 21.5 Visual Studio Code: Lightweight Ada Development
 
 VS Code has become the go-to editor for modern development due to its speed, extensibility, and cross-platform support. The Ada Language Support extension provides excellent Ada features without the overhead of full IDEs.
 
-### 1.5.1 Installation and Setup
+### 21.5.1 Installation and Setup
 
 1. **Install VS Code**: Download from [code.visualstudio.com](https://code.visualstudio.com)
 2. **Install Extension**: 
@@ -180,7 +180,7 @@ VS Code has become the go-to editor for modern development due to its speed, ext
 
 VS Code requires a separate GNAT compiler installation. Confirm GNAT is in your system PATH by running `gnatmake --version` in the terminal.
 
-### 1.5.2 Project Configuration
+### 21.5.2 Project Configuration
 
 VS Code uses a workspace-based approach:
 
@@ -198,7 +198,7 @@ project HelloWorld is
 end HelloWorld;
 ```
 
-### 1.5.3 Building and Debugging
+### 21.5.3 Building and Debugging
 
 VS Code uses tasks for build processes:
 
@@ -258,7 +258,7 @@ For debugging:
 2. Set breakpoints by clicking the left margin
 3. Press `F5` to start debugging
 
-### 1.5.4 VS Code Extensions for Enhanced Workflow
+### 21.5.4 VS Code Extensions for Enhanced Workflow
 
 - **Better Comments**: Adds color-coded comments for documentation
 - **GitLens**: Supercharges Git integration
@@ -267,11 +267,11 @@ For debugging:
 
 > "VS Code's strength is its balance between simplicity and power. For beginners, it offers a gentle learning curve while providing professional-grade features through extensions. The low resource usage makes it ideal for educational environments." — VS Code Extension Maintainer
 
-## 1.6 CLion with Ada Plugin
+## 21.6 CLion with Ada Plugin
 
 CLion is JetBrains' C/C++ IDE with community-driven Ada support. While less mature than other options, it excels for developers already in the JetBrains ecosystem who need cross-language support.
 
-### 1.6.1 Installation and Setup
+### 21.6.1 Installation and Setup
 
 1. **Install CLion**: Download from [jetbrains.com/clion](https://www.jetbrains.com/clion)
 2. **Install Ada Plugin**:
@@ -282,7 +282,7 @@ CLion is JetBrains' C/C++ IDE with community-driven Ada support. While less matu
    - Go to **Preferences > Languages & Frameworks > Ada**
    - Set **GNAT Compiler Path** to `gnatmake` executable
 
-### 1.6.2 Project Creation
+### 21.6.2 Project Creation
 
 CLion uses CMake for project configuration:
 
@@ -305,7 +305,7 @@ add_executable(AdaProject src/main.adb)
 
 4. **Sync Project**: Click **Sync Now** in the top-right corner
 
-### 2.0.1 Building and Debugging
+### 21.0.1 Building and Debugging
 
 - **Build**: Click **Build > Build Project**
 - **Run**: Click the green play button next to `main.adb`
@@ -316,7 +316,7 @@ CLion's debugging interface provides:
 - **Call Stack**: Displays function call hierarchy
 - **Watches**: Evaluate expressions during debugging
 
-### 2.0.2 Limitations and Workarounds
+### 21.0.2 Limitations and Workarounds
 
 | **Limitation** | **Workaround** |
 | :--- | :--- |
@@ -327,7 +327,7 @@ CLion's debugging interface provides:
 
 > "CLion shines for developers who need to work across multiple languages. While Ada support isn't perfect, the IDE's powerful cross-language navigation makes it valuable for mixed-language projects." — JetBrains Developer Advocate
 
-## 2.1 IDE Comparison: Feature Breakdown
+## 21.1 IDE Comparison: Feature Breakdown
 
 | **Feature** | **GNAT Studio** | **Eclipse + ADT** | **VS Code + Ada Extension** | **CLion + Ada Plugin** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -343,11 +343,11 @@ CLion's debugging interface provides:
 
 This comparison highlights key trade-offs. GNAT Studio offers the most complete Ada experience out-of-the-box, while VS Code provides flexibility for developers who prefer minimalism. Eclipse and CLion excel in multi-language environments but require additional configuration for Ada-specific features.
 
-## 2.2 Debugging Ada Programs: A Practical Guide
+## 21.2 Debugging Ada Programs: A Practical Guide
 
 Debugging is where IDEs truly shine, transforming complex runtime errors into manageable issues. We'll walk through debugging a simple Ada program with common pitfalls.
 
-### 2.2.1 Example Program: Divide-by-Zero Error
+### 21.2.1 Example Program: Divide-by-Zero Error
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -362,7 +362,7 @@ begin
 end Divide_Error;
 ```
 
-### 2.2.2 Debugging Workflow in GNAT Studio
+### 21.2.2 Debugging Workflow in GNAT Studio
 
 1. **Set Breakpoint**: Click left margin next to `Result := ...` line
 2. **Start Debugging**: **Debug > Start Debugging**
@@ -373,7 +373,7 @@ end Divide_Error;
    - **Exception Details**: "Constraint_Error: division by zero"
 6. **Fix**: Modify `Denominator` to non-zero value and re-run
 
-### 2.2.3 Debugging in VS Code
+### 21.2.3 Debugging in VS Code
 
 1. **Set Breakpoint**: Click left margin
 2. **Start Debugging**: Press `F5`
@@ -381,7 +381,7 @@ end Divide_Error;
 4. **Watch Expressions**: Right-click `Denominator` > **Add to Watch**
 5. **Error Handling**: VS Code shows exception details in **Debug Console**
 
-### 2.2.4 Common Debugging Pitfalls and Solutions
+### 21.2.4 Common Debugging Pitfalls and Solutions
 
 | **Issue** | **Cause** | **Solution** |
 | :--- | :--- | :--- |
@@ -393,11 +393,11 @@ end Divide_Error;
 
 > "The most powerful debugging tool isn't the IDE—it's the developer's understanding of the problem. A good IDE simply makes that understanding accessible through clear visualizations of program state." — Senior Software Engineer, AdaCore
 
-## 2.3 Customization and Productivity Tips
+## 21.3 Customization and Productivity Tips
 
 Maximizing IDE efficiency requires tailoring to your workflow. Here are actionable tips for each environment:
 
-### 2.3.1 GNAT Studio Customization
+### 21.3.1 GNAT Studio Customization
 
 - **Key Bindings**: Configure common actions via **Tools > Options > Key Bindings**
   - Example: Map `Ctrl+B` to "Build All"
@@ -407,14 +407,14 @@ Maximizing IDE efficiency requires tailoring to your workflow. Here are actionab
   - Create template for `with Ada.Text_IO;` with shortcut `withio`
 - **Project-Specific Settings**: Save settings per-project via **Project > Properties**
 
-### 2.3.2 Eclipse ADT Customization
+### 21.3.2 Eclipse ADT Customization
 
 - **Perspectives**: Switch between **Ada Perspective** and **Debug Perspective** via **Window > Perspective > Open Perspective**
 - **Code Templates**: Configure via **Window > Preferences > Ada > Editor > Templates**
 - **Build Automation**: Use **Project > Build Automatically** for continuous builds
 - **Mylyn Integration**: Track tasks with **Window > Show View > Tasks**
 
-### 2.3.3 VS Code Customization
+### 21.3.3 VS Code Customization
 
 - **Settings.json**: Customize via **File > Preferences > Settings > Open Settings (JSON)**
   - Add: `"ada.syntaxHighlighting": "true"`
@@ -425,13 +425,13 @@ Maximizing IDE efficiency requires tailoring to your workflow. Here are actionab
   - **Better Comments**: For color-coded documentation
 - **Workspace Settings**: Create `.vscode/settings.json` for project-specific configs
 
-### 2.3.4 CLion Customization
+### 21.3.4 CLion Customization
 
 - **Live Templates**: Configure via **Preferences > Editor > Live Templates**
 - **Color Schemes**: Change via **Preferences > Editor > Color Scheme**
 - **File Templates**: Modify for new Ada files via **Preferences > Editor > File and Code Templates**
 
-### 2.3.5 Universal Productivity Tips
+### 21.3.5 Universal Productivity Tips
 
 - **Keyboard Shortcuts**: Master IDE-specific shortcuts for navigation and build
 - **Split Views**: Work on multiple files simultaneously
@@ -441,11 +441,11 @@ Maximizing IDE efficiency requires tailoring to your workflow. Here are actionab
 
 > "The best IDEs don't just help you write code—they help you think. By reducing cognitive load through intelligent tooling, you can focus on solving problems rather than managing tools." — Ada Community Leader
 
-## 2.4 Version Control Integration
+## 21.4 Version Control Integration
 
 Modern IDEs streamline Git workflows, making version control accessible without command-line knowledge.
 
-### 2.4.1 Git in GNAT Studio
+### 21.4.1 Git in GNAT Studio
 
 1. **Initialize Repository**: Right-click project > **VCS > Git > Initialize Repository**
 2. **Commit Changes**: Right-click project > **VCS > Commit**
@@ -456,7 +456,7 @@ GNAT Studio shows:
 - **Modified Files**: In Project Explorer with color indicators
 - **Diff Viewer**: Right-click file > **Show Diff**
 
-### 2.4.2 Git in Eclipse
+### 21.4.2 Git in Eclipse
 
 1. **Git Perspective**: **Window > Perspective > Open Perspective > Git**
 2. **Staging Changes**: Drag files from **Unstaged Changes** to **Staged Changes**
@@ -465,7 +465,7 @@ GNAT Studio shows:
 
 Eclipse's **Synchronize View** shows local vs. remote changes side-by-side.
 
-### 2.4.3 Git in VS Code
+### 21.4.3 Git in VS Code
 
 1. **Source Control Icon**: Click left sidebar icon
 2. **Stage Changes**: Click `+` next to modified files
@@ -474,7 +474,7 @@ Eclipse's **Synchronize View** shows local vs. remote changes side-by-side.
 
 VS Code shows inline diff in editor and provides **GitLens** for advanced history tracking.
 
-### 2.4.4 Git in CLion
+### 21.4.4 Git in CLion
 
 1. **VCS Menu**: **VCS > Git > Commit**
 2. **Changes View**: Shows modified files with diff
@@ -483,7 +483,7 @@ VS Code shows inline diff in editor and provides **GitLens** for advanced histor
 
 CLion's **Log** view shows commit history with visual branches.
 
-### 2.4.5 Best Practices for Version Control
+### 21.4.5 Best Practices for Version Control
 
 - **Commit Small Changes**: Frequent, atomic commits
 - **Meaningful Messages**: Describe *why* changes were made
@@ -493,11 +493,11 @@ CLion's **Log** view shows commit history with visual branches.
 
 > "Version control is the safety net that allows developers to experiment freely. A well-integrated Git workflow in your IDE makes this safety net invisible—until you need it." — Open Source Maintainer
 
-## 2.5 Advanced Features: Static Analysis and Code Generation
+## 21.5 Advanced Features: Static Analysis and Code Generation
 
 Modern IDEs go beyond basic editing to provide proactive quality assurance and automation.
 
-### 2.5.1 Static Analysis in GNAT Studio
+### 21.5.1 Static Analysis in GNAT Studio
 
 GNAT Studio includes built-in static analysis tools:
 
@@ -516,7 +516,7 @@ Example output:
 src/main.adb:5:12: warning: variable 'X' is never used
 ```
 
-### 2.5.2 Static Analysis in VS Code
+### 21.5.2 Static Analysis in VS Code
 
 VS Code requires extensions for static analysis:
 
@@ -530,11 +530,11 @@ VS Code requires extensions for static analysis:
    ```
 3. **Run Analysis**: Right-click file > **Run AdaLint**
 
-### 2.5.3 Code Generation Templates
+### 21.5.3 Code Generation Templates
 
 Most IDEs support code templates for repetitive structures:
 
-#### 2.5.3.1 GNAT Studio Template for Task
+#### 21.5.3.1 GNAT Studio Template for Task
 
 1. **Tools > Options > Templates > Add**
 2. Name: `task_template`
@@ -555,7 +555,7 @@ Most IDEs support code templates for repetitive structures:
 
 Now typing `task` + `Tab` inserts the template.
 
-#### 2.5.3.2 VS Code Snippet for Protected Object
+#### 21.5.3.2 VS Code Snippet for Protected Object
 
 1. Open **Preferences > User Snippets**
 2. Select `ada.json`
@@ -580,7 +580,7 @@ Now typing `task` + `Tab` inserts the template.
 
 Typing `pro` + `Tab` generates a protected object template.
 
-### 2.5.4 Real-World Example: Generating Test Cases
+### 21.5.4 Real-World Example: Generating Test Cases
 
 For scientific computing projects, generate test cases automatically:
 
@@ -590,18 +590,18 @@ For scientific computing projects, generate test cases automatically:
 
 > "Static analysis isn't about catching errors—it's about preventing them from ever occurring. When your IDE flags potential issues as you type, you build higher-quality code from the start." — Senior QA Engineer
 
-## 2.6 Community Resources and Support
+## 21.6 Community Resources and Support
 
 Leveraging community resources accelerates learning and problem-solving.
 
-### 2.6.1 Official Documentation
+### 21.6.1 Official Documentation
 
 - **GNAT Studio**: [AdaCore Documentation](https://docs.adacore.com/gnatstudio-docs/)
 - **ADT**: [Eclipse ADT Wiki](https://wiki.eclipse.org/ADT)
 - **VS Code Ada**: [VS Code Marketplace Page](https://marketplace.visualstudio.com/items?itemName=AdaCore.ada)
 - **CLion Ada**: [JetBrains Plugin Page](https://plugins.jetbrains.com/plugin/15941-ada-support)
 
-### 2.6.2 Online Communities
+### 21.6.2 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -610,7 +610,7 @@ Leveraging community resources accelerates learning and problem-solving.
 | **Reddit r/Ada** | [reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub Issues** | [github.com/AdaCore/gnatstudio](https://github.com/AdaCore/gnatstudio/issues) | IDE bug reports and feature requests |
 
-### 2.6.3 Learning Resources
+### 21.6.3 Learning Resources
 
 - **Books**:
   - *Ada 2022: The Craft of Programming* by John Barnes
@@ -622,7 +622,7 @@ Leveraging community resources accelerates learning and problem-solving.
   - AdaCore Official Channel
   - Programming with Ada (community)
 
-### 2.6.4 Contributing to the Ecosystem
+### 21.6.4 Contributing to the Ecosystem
 
 - Report bugs in IDEs via GitHub
 - Contribute documentation improvements
@@ -631,7 +631,7 @@ Leveraging community resources accelerates learning and problem-solving.
 
 > "The Ada community thrives on collaboration. Whether you're filing a bug report or sharing a custom template, your contributions help make Ada development better for everyone." — AdaCore Community Manager
 
-## 2.7 Conclusion
+## 21.7 Conclusion
 
 Modern IDEs transform Ada development from a tedious task into an enjoyable workflow. Each IDE offers unique strengths: GNAT Studio provides the most comprehensive Ada-specific experience, Eclipse excels in multi-language projects, VS Code offers lightweight flexibility, and CLion integrates well with JetBrains ecosystems. The key is selecting the right tool for your workflow and project needs.
 
@@ -641,30 +641,30 @@ This chapter has covered practical setup procedures, debugging techniques, custo
 
 As you progress in your Ada journey, remember that tooling evolves rapidly. Stay engaged with community discussions, follow IDE release notes, and don't hesitate to experiment with new features. The Ada ecosystem is vibrant and welcoming—your contributions can help shape its future.
 
-## 2.8 Appendix: IDE Setup Checklist
+## 21.8 Appendix: IDE Setup Checklist
 
-### 2.8.1 GNAT Studio
+### 21.8.1 GNAT Studio
 - [ ] Install GNAT compiler
 - [ ] Download GNAT Studio from AdaCore
 - [ ] Verify installation via "Hello World" project
 - [ ] Configure keybindings for common actions
 - [ ] Set up Git integration
 
-### 2.8.2 Eclipse + ADT
+### 21.8.2 Eclipse + ADT
 - [ ] Install Eclipse C/C++ IDE
 - [ ] Add ADT update site
 - [ ] Install ADT plugin
 - [ ] Configure GNAT compiler path
 - [ ] Set up project templates
 
-### 2.8.3 VS Code
+### 21.8.3 VS Code
 - [ ] Install VS Code
 - [ ] Install "Ada Language Support" extension
 - [ ] Configure build tasks in tasks.json
 - [ ] Set up launch.json for debugging
 - [ ] Install recommended extensions (GitLens, Ada Snippets)
 
-### 2.8.4 CLion
+### 21.8.4 CLion
 - [ ] Install CLion
 - [ ] Install "Ada Support" plugin
 - [ ] Configure GNAT compiler path

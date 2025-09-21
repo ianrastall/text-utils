@@ -6,7 +6,7 @@ Multi-core processors are now ubiquitous, with even consumer devices featuring m
 
 > "The key to effective multi-core programming is not just parallelism, but safe and predictable parallelism. Ada's design ensures that race conditions are impossible by construction." — Dr. John Barnes
 
-## 1.1 Why Ada for Multi-Core Programming?
+## 20.1 Why Ada for Multi-Core Programming?
 
 Ada's concurrency model was designed from the ground up to handle multi-core systems safely. This section compares Ada's approach to other popular languages to highlight its advantages.
 
@@ -21,9 +21,9 @@ Ada's concurrency model was designed from the ground up to handle multi-core sys
 
 This table underscores Ada's strengths. For example, while Python's Global Interpreter Lock (GIL) prevents true parallelism in CPU-bound tasks, Ada's tasks run natively on multiple cores without such limitations. C++ offers high performance but requires meticulous manual management of threads and synchronization, leading to subtle bugs. Java provides built-in concurrency but still suffers from race conditions due to its object-oriented synchronization model. Ada's protected objects and task entries ensure safe access to shared data with minimal developer effort.
 
-## 1.2 Core Concepts: Tasks and Protected Objects
+## 20.2 Core Concepts: Tasks and Protected Objects
 
-### 1.2.1 Tasks: The Foundation of Parallelism
+### 20.2.1 Tasks: The Foundation of Parallelism
 
 In Ada, a task is a concurrent thread of execution. Tasks are declared using the `task` or `task type` keywords and can communicate via entries or protected objects.
 
@@ -66,7 +66,7 @@ begin
 end;
 ```
 
-### 1.2.2 Protected Objects: Safe Shared Data
+### 20.2.2 Protected Objects: Safe Shared Data
 
 Protected objects provide mutual exclusion for shared data without explicit locks. They are ideal for synchronizing access to shared resources across multiple tasks.
 
@@ -92,7 +92,7 @@ end Counter;
 
 This `Counter` protected object safely increments and retrieves a counter value across concurrent tasks. Protected procedures (like `Increment`) run with mutual exclusion, ensuring no two tasks modify the data simultaneously.
 
-### 1.2.3 Example: Producer-Consumer Problem
+### 20.2.3 Example: Producer-Consumer Problem
 
 The classic producer-consumer problem demonstrates synchronization between tasks. Here's an Ada implementation using a protected buffer:
 
@@ -164,7 +164,7 @@ end;
 
 This implementation uses a circular buffer protected by a `Buffer` object. The producer and consumer tasks synchronize via the `Put` and `Get` procedures, ensuring no race conditions.
 
-## 1.3 Task Entries and Barriers
+## 20.3 Task Entries and Barriers
 
 Task entries provide a structured way to communicate between tasks. Entries can include barriers that control when the entry is available.
 
@@ -188,7 +188,7 @@ end Sensor;
 
 The `when` clause creates a barrier that prevents the `Read` entry from being accepted until `Current_Data > 0.5`. This ensures data validity without busy-waiting.
 
-### 1.3.1 Barrier-Driven Synchronization Example
+### 20.3.1 Barrier-Driven Synchronization Example
 
 ```ada
 task type Controller is
@@ -216,7 +216,7 @@ end;
 
 This example demonstrates how barriers can enforce temporal constraints in concurrent systems. The `Controller` task only receives valid sensor data, avoiding erroneous processing.
 
-## 1.4 Parallel Loops in Ada 2022
+## 20.4 Parallel Loops in Ada 2022
 
 Ada 2022 introduced parallel loops, simplifying parallel execution of loop iterations. This feature automatically distributes iterations across available cores.
 
@@ -259,7 +259,7 @@ end Parallel_Multiply;
 
 This parallel matrix multiplication distributes the outer loop (rows) across cores, while the inner loops remain sequential to avoid race conditions. The `parallel` keyword is applied to the outer loop for optimal performance.
 
-### 1.4.1 Parallel Loop Optimization Techniques
+### 20.4.1 Parallel Loop Optimization Techniques
 
 Parallel loops can be optimized using the `pragma Tasking` directive:
 
@@ -284,11 +284,11 @@ end loop;
 
 This directive helps balance workloads when tasks have varying computational costs.
 
-## 1.5 Task Scheduling and Performance Considerations
+## 20.5 Task Scheduling and Performance Considerations
 
 Ada's task scheduler dynamically distributes tasks across available cores. However, performance depends on task granularity and scheduling policies.
 
-### 1.5.1 Task Granularity
+### 20.5.1 Task Granularity
 
 Fine-grained tasks (e.g., one task per element in a large array) can lead to high overhead. Coarse-grained tasks (e.g., one task per row in a matrix) balance parallelism and overhead.
 
@@ -306,7 +306,7 @@ for I in 1..10 parallel loop
 end loop;
 ```
 
-### 1.5.2 Scheduling Policies
+### 20.5.2 Scheduling Policies
 
 Ada allows specifying task priorities and scheduling policies:
 
@@ -339,7 +339,7 @@ begin
 end Monitor_Tasks;
 ```
 
-### 1.5.3 Real-World Scheduling Example
+### 20.5.3 Real-World Scheduling Example
 
 ```ada
 with System; use System;
@@ -384,7 +384,7 @@ end Scheduler_Example;
 
 This example demonstrates how priority-based scheduling works. The high-priority task completes before the low-priority task, even though both started simultaneously.
 
-## 1.6 Case Study: Parallel Image Processing
+## 20.6 Case Study: Parallel Image Processing
 
 Processing large images benefits from parallelization. Here's a grayscale conversion example:
 
@@ -441,7 +441,7 @@ end Process_Image;
 
 Each row is processed in parallel, leveraging multi-core CPUs for faster processing. The `parallel` keyword on the outer loop ensures that each row is processed independently across available cores.
 
-### 1.6.1 Performance Comparison
+### 20.6.1 Performance Comparison
 
 | **Approach** | **Single-Core Time** | **4-Core Time** | **Speedup** |
 | :--- | :--- | :--- | :--- |
@@ -452,7 +452,7 @@ Each row is processed in parallel, leveraging multi-core CPUs for faster process
 
 This table shows Ada's competitive performance in real-world image processing tasks. While C++ with OpenMP achieves similar speedup, Ada provides stronger safety guarantees and avoids common concurrency pitfalls.
 
-## 1.7 Case Study: Monte Carlo Pi Estimation
+## 20.7 Case Study: Monte Carlo Pi Estimation
 
 Monte Carlo methods are ideal for parallelization due to their independent random samples:
 
@@ -481,7 +481,7 @@ end Monte_Carlo_Pi;
 
 Each iteration is independent, making it perfect for parallel execution. The `Atomic_Natural` ensures safe incrementing of the `Inside` counter.
 
-### 1.7.1 Advanced Monte Carlo Implementation
+### 20.7.1 Advanced Monte Carlo Implementation
 
 For larger-scale simulations, use distributed tasking:
 
@@ -539,11 +539,11 @@ end Distributed_Monte_Carlo;
 
 This implementation divides work among multiple tasks, each processing a portion of the samples. Results are collected via `Result` entries, ensuring safe aggregation.
 
-## 1.8 Debugging Multi-Core Programs
+## 20.8 Debugging Multi-Core Programs
 
 Debugging parallel programs is challenging due to non-deterministic behavior. Ada provides tools to help:
 
-### 1.8.1 Using GNAT Debugging Tools
+### 20.8.1 Using GNAT Debugging Tools
 
 GNAT's debugger (GDB) can inspect tasks:
 
@@ -554,7 +554,7 @@ GNAT's debugger (GDB) can inspect tasks:
   2    task 0x7f7c9e000001  0x00007f7c9e000001 in ?? ()
 ```
 
-### 1.8.2 Common Pitfalls and Fixes
+### 20.8.2 Common Pitfalls and Fixes
 
 **Race Condition Example:**
 
@@ -600,7 +600,7 @@ end B;
 
 This causes a deadlock because tasks wait for each other. Fix by using reentrant protected objects or avoiding circular dependencies.
 
-### 1.8.3 Debugging Tool Example
+### 20.8.3 Debugging Tool Example
 
 ```ada
 with Ada.Task_Identification; use Ada.Task_Identification;
@@ -637,9 +637,9 @@ end Debug_Tasking;
 
 This program monitors task states and CPU usage, helping identify performance bottlenecks.
 
-## 1.9 Best Practices for Multi-Core Programming in Ada
+## 20.9 Best Practices for Multi-Core Programming in Ada
 
-### 1.9.1 . Minimize Shared State
+### 20.9.1 Minimize Shared State
 
 Use task-private data whenever possible. For shared data, encapsulate it in protected objects.
 
@@ -657,19 +657,19 @@ begin
 end Worker;
 ```
 
-### 1.9.2 . Optimize Task Granularity
+### 20.9.2 Optimize Task Granularity
 
 Balance parallelism with overhead. For CPU-bound tasks, aim for 10-100 tasks per core.
 
-### 1.9.3 . Use Parallel Loops for Simple Parallelism
+### 20.9.3 Use Parallel Loops for Simple Parallelism
 
 Ada 2022's `parallel` loops simplify common patterns without manual task management.
 
-### 1.9.4 . Avoid Priority Inversion
+### 20.9.4 Avoid Priority Inversion
 
 Use priority inheritance protocols for critical sections.
 
-### 1.9.5 . Profile Before Optimizing
+### 20.9.5 Profile Before Optimizing
 
 Use `System.Task_Info` to identify bottlenecks:
 
@@ -684,7 +684,7 @@ begin
 end Profile;
 ```
 
-### 1.9.6 . Leverage GNAT's Concurrency Tools
+### 20.9.6 Leverage GNAT's Concurrency Tools
 
 GNAT provides specialized tools for concurrency debugging:
 
@@ -694,23 +694,23 @@ gnatcov run --concurrency my_program
 
 This command generates concurrency analysis reports highlighting potential race conditions.
 
-## 1.10 Tasking vs. Parallel Loops: When to Use Which
+## 20.10 Tasking vs. Parallel Loops: When to Use Which
 
 Ada offers multiple approaches to parallelism, each suited for different scenarios.
 
-### 1.10.1 When to Use Tasks
+### 20.10.1 When to Use Tasks
 
 - **Complex communication patterns**: Tasks with entries are ideal for producer-consumer models or stateful interactions.
 - **Long-running operations**: Tasks persist for the duration of the program, suitable for continuous processing.
 - **Asynchronous tasks**: Background tasks that run independently (e.g., monitoring sensors).
 
-### 1.10.2 When to Use Parallel Loops
+### 20.10.2 When to Use Parallel Loops
 
 - **Simple, independent iterations**: Loop bodies with no dependencies between iterations.
 - **Quick computations**: Where task creation overhead would outweigh benefits.
 - **Data-parallel workloads**: Matrix operations, image processing where each element is processed independently.
 
-### 1.10.3 Example: Image Processing Comparison
+### 20.10.3 Example: Image Processing Comparison
 
 ```ada
 -- Using tasks for image processing
@@ -742,11 +742,11 @@ end loop;
 
 The parallel loop version is simpler and more efficient for this case, as it avoids task creation overhead. However, if each row requires complex initialization or state management, tasks may be preferable.
 
-## 1.11 Memory Management in Multi-Core Ada
+## 20.11 Memory Management in Multi-Core Ada
 
 Ada's memory management is critical for multi-core performance. Unlike garbage-collected languages, Ada allows precise control over memory allocation, reducing pauses and improving predictability.
 
-### 1.11.1 Stack vs. Heap Allocation
+### 20.11.1 Stack vs. Heap Allocation
 
 - **Stack allocation**: Fast and task-private. Use for temporary data.
 - **Heap allocation**: Shared across tasks but requires careful synchronization.
@@ -765,7 +765,7 @@ begin
 end Worker;
 ```
 
-### 1.11.2 Avoiding Dynamic Allocation in Critical Paths
+### 20.11.2 Avoiding Dynamic Allocation in Critical Paths
 
 ```ada
 -- Bad: dynamic allocation in inner loop
@@ -785,7 +785,7 @@ end loop;
 
 Heap allocation in tight loops can cause contention and slow performance. Pre-allocate memory outside parallel regions.
 
-### 1.11.3 Memory Pooling Technique
+### 20.11.3 Memory Pooling Technique
 
 For high-performance applications, implement memory pooling:
 
@@ -834,7 +834,7 @@ end Memory_Pool;
 
 This technique reuses memory blocks to avoid frequent heap allocations.
 
-## 1.12 Interfacing with Other Languages for Multi-Core
+## 20.12 Interfacing with Other Languages for Multi-Core
 
 Ada can interface with C/C++ libraries for multi-core workloads. Use `pragma Import` to call external functions.
 
@@ -859,7 +859,7 @@ end C_Multi_Core;
 
 This allows leveraging existing C libraries (e.g., OpenMP) while maintaining Ada's safety for the rest of the codebase.
 
-### 1.12.1 Using OpenMP from Ada
+### 20.12.1 Using OpenMP from Ada
 
 ```ada
 with Interfaces.C; use Interfaces.C;
@@ -875,7 +875,7 @@ end OpenMP_Example;
 
 This demonstrates calling OpenMP functions directly from Ada, enabling hybrid programming models.
 
-## 1.13 Performance Tuning with GNAT
+## 20.13 Performance Tuning with GNAT
 
 GNAT provides compiler pragmas for optimizing parallel code:
 
@@ -887,7 +887,7 @@ pragma Optimize (Time);
 
 Use `gnatmake -O3` for aggressive optimizations.
 
-### 1.13.1 Benchmarking Example
+### 20.13.1 Benchmarking Example
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -916,9 +916,9 @@ end Benchmark;
 
 This program benchmarks sequential vs. parallel execution, helping identify performance gains.
 
-## 1.14 Advanced Topics: Distributed Computing and GPU Integration
+## 20.14 Advanced Topics: Distributed Computing and GPU Integration
 
-### 1.14.1 MPI for Distributed Systems
+### 20.14.1 MPI for Distributed Systems
 
 Ada bindings for MPI enable cluster-scale parallelism:
 
@@ -941,7 +941,7 @@ begin
 end Distributed_Compute;
 ```
 
-### 1.14.2 GPU Acceleration with OpenCL
+### 20.14.2 GPU Acceleration with OpenCL
 
 Ada bindings for OpenCL allow GPU offloading:
 
@@ -965,7 +965,7 @@ begin
 end GPU_Compute;
 ```
 
-### 1.14.3 Hybrid Parallelism Example
+### 20.14.3 Hybrid Parallelism Example
 
 Combine multi-core and GPU processing:
 
@@ -1001,7 +1001,7 @@ end Hybrid_Compute;
 
 This example demonstrates using both CPU parallelism and GPU acceleration in a single application.
 
-## 1.15 Case Study: Weather Simulation
+## 20.15 Case Study: Weather Simulation
 
 Weather simulations require massive parallelism. Here's a simplified model using Ada's concurrency features:
 
@@ -1056,7 +1056,7 @@ end Weather_Simulation;
 
 This simulation processes each grid cell in parallel, updating temperature and wind speed based on neighboring cells. The task-based approach ensures safe concurrent updates without race conditions.
 
-## 1.16 Conclusion
+## 20.16 Conclusion
 
 Multi-core programming in Ada offers a safe, efficient path to leveraging modern hardware. By leveraging Ada's built-in tasking model, protected objects, and parallel loops, developers can write parallel code that is both correct and high-performing. Unlike other languages that require manual thread management and synchronization, Ada enforces safety at compile time, eliminating common concurrency bugs. Whether processing images, running Monte Carlo simulations, or scaling to distributed systems, Ada's concurrency features provide a robust foundation for scientific and general-purpose applications.
 
@@ -1064,36 +1064,36 @@ Multi-core programming in Ada offers a safe, efficient path to leveraging modern
 
 This chapter has provided a comprehensive overview of multi-core programming in Ada, from basic tasks to advanced distributed systems. Future chapters will explore specialized topics like formal verification of concurrent programs and real-time systems. For now, experiment with the examples provided—Ada's compiler will catch concurrency errors before they become runtime bugs, giving you confidence in your parallel code from day one.
 
-## 1.17 Resources and Further Learning
+## 20.17 Resources and Further Learning
 
-### 1.17.1 Core Libraries
+### 20.17.1 Core Libraries
 
 - **GNAT Community Edition**: Free Ada compiler with concurrency tools (https://adacore.com/download)
 - **GNATCOLL**: Utilities for parallel programming (https://github.com/AdaCore/gnatcoll-core)
 - **Ada.Numerics**: Standard numeric package documentation (https://gcc.gnu.org/onlinedocs/gcc-12.2.0/ada/libgnat/Ada_Numerics.html)
 - **MPI for Ada**: Bindings for distributed computing (https://github.com/AdaCore/mpp)
 
-### 1.17.2 Books
+### 20.17.2 Books
 
 - *Ada 2022: The Craft of Programming* by John Barnes (covers concurrency in depth)
 - *Parallel Programming in Ada* by Alain Bertho (specialized text)
 - *High-Performance Parallel Computing with Ada* by Michael B. Feldman (practical guide)
 
-### 1.17.3 Online Communities
+### 20.17.3 Online Communities
 
 - **Ada-Europe**: Professional organization (https://ada-europe.org)
 - **Reddit r/Ada**: Active community for discussions (https://reddit.com/r/Ada)
 - **Stack Overflow**: Tagged questions (https://stackoverflow.com/questions/tagged/ada)
 - **GNAT Discussion Forum**: Official support forum (https://gcc.gnu.org/ml/gcc/)
 
-### 1.17.4 Advanced Topics
+### 20.17.4 Advanced Topics
 
 - **Formal Methods for Concurrency**: SPARK tools for proving correctness of concurrent programs
 - **Real-Time Scheduling**: Ada's real-time tasking features for time-critical applications
 - **Distributed Ada**: Using MPI and other distributed computing frameworks
 - **GPU Acceleration**: OpenCL and CUDA bindings for parallel GPU computing
 
-### 1.17.5 Development Tools
+### 20.17.5 Development Tools
 
 - **GNAT Studio**: Integrated development environment with concurrency debugging
 - **GNATcoverage**: Code coverage analysis for concurrent programs

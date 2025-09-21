@@ -6,7 +6,7 @@ Refactoring is the process of restructuring existing code without changing its e
 
 > "Refactoring in Ada isn't just about code cleanliness—it's about preserving the integrity of the system's architecture while enabling future evolution. The language's design ensures that changes are verified at compile time, reducing the risk of regressions." — Senior Software Engineer
 
-## 1.1 Why Refactoring Matters for General-Purpose Applications
+## 23.1 Why Refactoring Matters for General-Purpose Applications
 
 Refactoring is often misunderstood as a task only for legacy systems or "clean-up" work. In reality, it's a continuous practice that should be integrated into everyday development—even for new projects. Consider these real-world scenarios where refactoring directly impacts non-safety-critical applications:
 
@@ -16,7 +16,7 @@ Refactoring is often misunderstood as a task only for legacy systems or "clean-u
 
 Unlike Python or JavaScript where refactoring can introduce subtle runtime errors due to dynamic typing, Ada's compile-time checks catch structural issues before they become bugs. Unlike C++ where manual memory management complicates safe refactoring, Ada's strong typing and automatic resource management ensure changes are safe by construction. This makes refactoring not just possible, but *safer* in Ada than in many other languages.
 
-### 1.1.1 Refactoring Benefits Across Development Lifecycles
+### 23.1.1 Refactoring Benefits Across Development Lifecycles
 
 | **Stage** | **Without Refactoring** | **With Ada Refactoring** |
 | :--- | :--- | :--- |
@@ -28,9 +28,9 @@ Unlike Python or JavaScript where refactoring can introduce subtle runtime error
 
 This table illustrates how Ada's language features directly support sustainable development practices. For example, when adding a new feature to a weather data processor, Ada's packages allow clean separation of concerns—temperature conversion logic can be isolated from data storage without risking accidental side effects.
 
-## 1.2 Core Refactoring Techniques in Ada
+## 23.2 Core Refactoring Techniques in Ada
 
-### 1.2.1 Extracting Procedures and Functions
+### 23.2.1 Extracting Procedures and Functions
 
 One of the most common refactoring techniques is extracting repeated code into reusable subprograms. Ada's strong typing ensures these extracted procedures maintain correctness:
 
@@ -74,7 +74,7 @@ end Process_Data;
 
 Ada's `out` parameters ensure correct data flow, while the compiler verifies parameter types. This prevents common refactoring errors like accidentally using Fahrenheit values where Celsius is expected—something that would pass silently in Python but cause runtime errors.
 
-### 1.2.2 Simplifying Complex Conditionals
+### 23.2.2 Simplifying Complex Conditionals
 
 Ada's structured conditionals make complex logic easier to refactor:
 
@@ -135,7 +135,7 @@ end case;
 
 This approach prevents logical errors that often occur when modifying nested conditionals in languages without strong type checking.
 
-### 1.2.3 Renaming for Clarity
+### 23.2.3 Renaming for Clarity
 
 Ada's strong typing and package structure make renaming safe and systematic:
 
@@ -162,7 +162,7 @@ end Calculate_Price;
 
 GNAT Studio automatically updates all references when renaming symbols, preventing the "find-and-replace" errors common in other languages. This is particularly valuable in Ada where packages and subprograms form a tight namespace—renaming a procedure in a package automatically updates all callers.
 
-### 1.2.4 Using Generics for Code Reuse
+### 23.2.4 Using Generics for Code Reuse
 
 Ada's generics enable safe, type-specific code reuse—unlike C++ templates or Python's duck typing:
 
@@ -196,7 +196,7 @@ package Float_Stack is new Generic_Stack (Float);
 
 Ada's compile-time checks ensure each instantiation is valid—no accidental use of incompatible types. For example, trying to push a string into an integer stack would fail at compile time, preventing runtime errors that would occur in Python.
 
-### 1.2.5 Removing Duplicate Code
+### 23.2.5 Removing Duplicate Code
 
 Ada's strong typing and package structure make duplicate code removal straightforward:
 
@@ -242,9 +242,9 @@ end Process_Sensor2;
 
 Ada's compiler verifies that `Process_Sensor` is called with correct parameter types—ensuring no accidental misuse when removing duplication.
 
-## 1.3 Tools for Code Quality Certification
+## 23.3 Tools for Code Quality Certification
 
-### 1.3.1 GNATcheck: Enforcing Best Practices
+### 23.3.1 GNATcheck: Enforcing Best Practices
 
 GNATcheck is AdaCore's static analysis tool that enforces coding standards and best practices. Unlike simple linters, GNATcheck understands Ada's semantics:
 
@@ -267,7 +267,7 @@ my_project.adb:22:3: warning: global variable 'Global_Flag' should be avoided
 
 These warnings help identify refactoring opportunities before they become problems. In GNAT Studio, GNATcheck runs automatically during builds, with violations displayed in the "Messages" view.
 
-### 1.3.2 AdaLint: Advanced Code Quality Analysis
+### 23.3.2 AdaLint: Advanced Code Quality Analysis
 
 AdaLint extends GNATcheck with more sophisticated analysis:
 
@@ -291,7 +291,7 @@ my_project.adb:67:10: warning: cyclomatic complexity of 15 exceeds threshold of 
 
 AdaLint integrates with IDEs like GNAT Studio and VS Code, providing real-time feedback as you code. Its configuration files allow customization for specific project needs.
 
-### 1.3.3 GNATtest: Unit Testing Framework
+### 23.3.3 GNATtest: Unit Testing Framework
 
 Unit testing is critical for safe refactoring. GNATtest is Ada's built-in testing framework:
 
@@ -325,7 +325,7 @@ Test case: Convert_F_to_C(32.0) = 0.0: PASSED
 
 This provides confidence when refactoring—changes that break existing functionality immediately fail tests. Unlike Python's `unittest` which requires manual test discovery, GNATtest integrates seamlessly with Ada's project structure.
 
-### 1.3.4 GNATprove: Formal Verification for Critical Paths
+### 23.3.4 GNATprove: Formal Verification for Critical Paths
 
 While formal verification is often associated with safety-critical systems, GNATprove can be used selectively for high-risk components in general applications:
 
@@ -353,7 +353,7 @@ Safe_Divide.adb:6:12: info: postcondition proved
 
 For non-critical code, this provides mathematical proof of correctness. For critical sections (e.g., financial calculations), it ensures no division-by-zero errors—even when refactoring.
 
-## 1.4 Case Study: Refactoring a Real-World Project
+## 23.4 Case Study: Refactoring a Real-World Project
 
 Consider a simple temperature monitoring system with the following issues:
 - Duplicate conversion logic
@@ -362,7 +362,7 @@ Consider a simple temperature monitoring system with the following issues:
 - No unit tests
 - Complex conditionals
 
-### 1.4.1 Before Refactoring
+### 23.4.1 Before Refactoring
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -398,9 +398,9 @@ This code has multiple issues:
 - No testing
 - Magic numbers (86.0)
 
-### 1.4.2 Step-by-Step Refactoring
+### 23.4.2 Step-by-Step Refactoring
 
-#### 1.4.2.1 Step 1: Extract Conversion Logic
+#### 23.4.2.1 Step 1: Extract Conversion Logic
 
 ```ada
 package Temperature_Conversion is
@@ -421,7 +421,7 @@ package body Temperature_Conversion is
 end Temperature_Conversion;
 ```
 
-#### 1.4.2.2 Step 2: Remove Global Variables
+#### 23.4.2.2 Step 2: Remove Global Variables
 
 ```ada
 package Configuration is
@@ -431,7 +431,7 @@ package Configuration is
 end Configuration;
 ```
 
-#### 1.4.2.3 Step 3: Simplify Conditionals
+#### 23.4.2.3 Step 3: Simplify Conditionals
 
 ```ada
 procedure Process_Temp (Temp : Float; Config : Configuration.Configuration) is
@@ -449,7 +449,7 @@ begin
 end Process_Temp;
 ```
 
-#### 1.4.2.4 Step 4: Add Unit Tests
+#### 23.4.2.4 Step 4: Add Unit Tests
 
 ```ada
 with GNATTEST; use GNATTEST;
@@ -468,7 +468,7 @@ begin
 end Test_Temperature;
 ```
 
-#### 1.4.2.5 Final Refactored Code
+#### 23.4.2.5 Final Refactored Code
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -500,7 +500,7 @@ begin
 end Temperature_Monitor;
 ```
 
-### 1.4.3 Verification and Certification
+### 23.4.3 Verification and Certification
 
 After refactoring, run tools to certify code quality:
 
@@ -531,9 +531,9 @@ This certification process confirms:
 - All functionality verified through tests
 - Safe for future refactoring
 
-## 4.1 Best Practices for Sustainable Refactoring
+## 23.1 Best Practices for Sustainable Refactoring
 
-### 4.1.1 Refactor Incrementally
+### 23.1.1 Refactor Incrementally
 
 Large-scale refactoring introduces risk. Instead:
 
@@ -552,7 +552,7 @@ Example workflow:
 
 This ensures the system always remains in a working state.
 
-### 4.1.2 Use Version Control Wisely
+### 23.1.2 Use Version Control Wisely
 
 - Create branches for refactoring work
 - Commit after each logical change
@@ -564,7 +564,7 @@ This ensures the system always remains in a working state.
 
 Git's `diff` and `blame` features make it easy to track changes during refactoring.
 
-### 4.1.3 Maintain Test Coverage
+### 23.1.3 Maintain Test Coverage
 
 Aim for 80-90% test coverage for critical paths. Use GNATtest to measure coverage:
 
@@ -582,7 +582,7 @@ Coverage: 87% (12/14 lines covered)
 
 This shows which parts of the code need more testing.
 
-### 4.1.4 Leverage Ada's Safety Features
+### 23.1.4 Leverage Ada's Safety Features
 
 - Use `pragma Assert` for internal invariants
 - Employ `out` parameters to enforce data flow
@@ -596,7 +596,7 @@ procedure Safe_Divide (A, B : Float; Result : out Float) with
 
 These contracts become part of your code's documentation and verification.
 
-### 4.1.5 Avoid Over-Engineering
+### 23.1.5 Avoid Over-Engineering
 
 Refactoring isn't about perfection—it's about *improvement*. For example:
 
@@ -606,7 +606,7 @@ Refactoring isn't about perfection—it's about *improvement*. For example:
 
 As John Barnes states: "The best refactoring is the one that solves the problem with the simplest solution that works."
 
-## 4.2 Language Comparison: Refactoring Safety
+## 23.2 Language Comparison: Refactoring Safety
 
 | **Refactoring Challenge** | **Ada** | **Python** | **C++** |
 | :--- | :--- | :--- | :--- |
@@ -618,9 +618,9 @@ As John Barnes states: "The best refactoring is the one that solves the problem 
 
 This table shows why Ada is uniquely suited for safe refactoring. For example, renaming a variable in Python might miss references in dynamically-typed code, while Ada's compiler catches all references automatically.
 
-## 4.3 Real-World Refactoring Scenarios
+## 23.3 Real-World Refactoring Scenarios
 
-### 4.3.1 Scenario 1: Web Application Backend
+### 23.3.1 Scenario 1: Web Application Backend
 
 A Python web app uses global state for user sessions:
 
@@ -647,7 +647,7 @@ end Session;
 
 Ada's package encapsulation prevents accidental modification of session state from other parts of the code.
 
-### 5.0.1 Scenario 2: Data Processing Pipeline
+### 23.0.1 Scenario 2: Data Processing Pipeline
 
 A C++ data processor has hardcoded thresholds:
 
@@ -677,7 +677,7 @@ end ProcessData;
 
 Ada's constant declarations make thresholds explicit and searchable, while the compiler enforces consistent usage.
 
-### 5.0.2 Scenario 3: Educational Software
+### 23.0.2 Scenario 3: Educational Software
 
 A JavaScript math tutor has tangled control flow:
 
@@ -710,9 +710,9 @@ end Calculate;
 
 Ada's `case` statements with discrete types prevent invalid operations and make the logic clearer.
 
-## 5.1 Advanced Refactoring Techniques
+## 23.1 Advanced Refactoring Techniques
 
-### 5.1.1 Refactoring with Generics
+### 23.1.1 Refactoring with Generics
 
 For complex data structures, generics provide type-safe reuse:
 
@@ -738,7 +738,7 @@ package Float_Sorter is new Generic_Sorter (Float);
 
 This avoids duplicate sorting code while ensuring type safety—unlike C++ templates where type errors are cryptic.
 
-### 5.1.2 Refactoring for Testability
+### 23.1.2 Refactoring for Testability
 
 Ada's strong typing makes code easier to test:
 
@@ -757,7 +757,7 @@ end Process_Data;
 
 By separating input reading from processing logic, the function becomes testable in isolation. In Python or JavaScript, this separation is possible but harder to enforce—Ada's compiler ensures consistent usage.
 
-### 5.1.3 Refactoring with Contracts
+### 23.1.3 Refactoring with Contracts
 
 GNATprove contracts document and verify behavior:
 
@@ -774,7 +774,7 @@ This contracts:
 
 Unlike Python's docstrings which can become outdated, Ada's contracts are machine-verifiable.
 
-## 5.2 Common Refactoring Pitfalls and Solutions
+## 23.2 Common Refactoring Pitfalls and Solutions
 
 | **Pitfall** | **Cause** | **Solution** |
 | :--- | :--- | :--- |
@@ -794,7 +794,7 @@ For example, a common pitfall is trying to refactor a large legacy system all at
 
 This approach minimizes risk while gradually improving code quality.
 
-## 5.3 Case Study: Refactoring a Weather Monitoring System
+## 23.3 Case Study: Refactoring a Weather Monitoring System
 
 Consider a weather monitoring system with the following issues:
 - Hardcoded sensor thresholds
@@ -803,7 +803,7 @@ Consider a weather monitoring system with the following issues:
 - No unit tests
 - Complex conditional logic
 
-### 5.3.1 Before Refactoring
+### 23.3.1 Before Refactoring
 
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
@@ -837,9 +837,9 @@ begin
 end Weather_Monitor;
 ```
 
-### 5.3.2 Refactoring Steps
+### 23.3.2 Refactoring Steps
 
-#### 5.3.2.1 Step 1: Create Configuration Package
+#### 23.3.2.1 Step 1: Create Configuration Package
 
 ```ada
 package Configuration is
@@ -849,7 +849,7 @@ package Configuration is
 end Configuration;
 ```
 
-#### 5.3.2.2 Step 2: Extract Conversion Logic
+#### 23.3.2.2 Step 2: Extract Conversion Logic
 
 ```ada
 package Temperature_Conversion is
@@ -870,7 +870,7 @@ package body Temperature_Conversion is
 end Temperature_Conversion;
 ```
 
-#### 5.3.2.3 Step 3: Simplify Processing Logic
+#### 23.3.2.3 Step 3: Simplify Processing Logic
 
 ```ada
 procedure Process_Temp (Temp : Float) is
@@ -888,7 +888,7 @@ begin
 end Process_Temp;
 ```
 
-#### 5.3.2.4 Step 4: Add Unit Tests
+#### 23.3.2.4 Step 4: Add Unit Tests
 
 ```ada
 with GNATTEST; use GNATTEST;
@@ -909,7 +909,7 @@ begin
 end Test_Weather;
 ```
 
-### 5.3.3 Verification
+### 23.3.3 Verification
 
 After refactoring, run certification tools:
 
@@ -936,9 +936,9 @@ This certification confirms:
 - All functionality verified through tests
 - Safe for future maintenance
 
-## 5.4 Best Practices for Maintaining Code Quality
+## 23.4 Best Practices for Maintaining Code Quality
 
-### 5.4.1 Continuous Refactoring
+### 23.4.1 Continuous Refactoring
 
 Refactoring shouldn't be a one-time task. Integrate it into daily development:
 
@@ -948,7 +948,7 @@ Refactoring shouldn't be a one-time task. Integrate it into daily development:
 
 This "boy scout rule" (leave the code cleaner than you found it) ensures sustained quality.
 
-### 5.4.2 Documentation as Code
+### 23.4.2 Documentation as Code
 
 Ada's strong typing and package structure make documentation part of the code:
 
@@ -975,7 +975,7 @@ This creates HTML documentation showing:
 
 Unlike Python docstrings which can become outdated, Ada's documentation is tied to the code structure.
 
-### 5.4.3 Code Reviews with Ada-Specific Focus
+### 23.4.3 Code Reviews with Ada-Specific Focus
 
 When reviewing Ada code, focus on:
 - Package encapsulation (are concerns properly separated?)
@@ -986,7 +986,7 @@ When reviewing Ada code, focus on:
 Example review comment:
 > "This procedure would benefit from a `Pre` contract to ensure division by zero is impossible. Also, consider extracting the conversion logic to a separate package for better reuse."
 
-### 5.4.4 Version Control for Refactoring History
+### 23.4.4 Version Control for Refactoring History
 
 Use Git to track refactoring progress:
 
@@ -999,7 +999,7 @@ commit 4: Simplify conditionals using discrete types
 
 This history shows the evolution of the code and makes it easy to revert changes if needed.
 
-## 5.5 Conclusion
+## 23.5 Conclusion
 
 Refactoring and code quality certification are essential practices for sustainable software development—even in non-safety-critical applications. Ada's unique combination of strong typing, modular design, and built-in tools makes these practices safer and more effective than in many other languages. By extracting procedures, simplifying conditionals, using generics, and verifying with tools like GNATcheck and GNATtest, developers can create maintainable, adaptable systems that stand the test of time.
 
@@ -1007,9 +1007,9 @@ Refactoring and code quality certification are essential practices for sustainab
 
 This chapter has provided practical techniques for refactoring Ada code and verifying quality through certification tools. Whether you're building a web application, data processing tool, or educational software, these practices will help you create robust, maintainable systems that evolve gracefully with changing requirements. Start applying these techniques today—Ada's compiler will catch errors before they become runtime bugs, giving you confidence in your code from day one.
 
-## 5.6 Resources and Further Learning
+## 23.6 Resources and Further Learning
 
-### 5.6.1 Core Tools
+### 23.6.1 Core Tools
 
 | **Tool** | **Purpose** | **Documentation** |
 | :--- | :--- | :--- |
@@ -1019,14 +1019,14 @@ This chapter has provided practical techniques for refactoring Ada code and veri
 | **GNATprove** | Formal verification | [AdaCore GNATprove Docs](https://docs.adacore.com/gnatprove-docs/) |
 | **GNATdoc** | Automatic documentation | [AdaCore GNATdoc Docs](https://docs.adacore.com/gnatdoc-docs/) |
 
-### 5.6.2 Books and Tutorials
+### 23.6.2 Books and Tutorials
 
 - **"Ada 2022: The Craft of Programming" by John Barnes**: Covers refactoring techniques and best practices
 - **"Refactoring: Improving the Design of Existing Code" by Martin Fowler**: General refactoring principles
 - **"Ada for C++ Programmers" by Stephen Michell**: Ada-specific refactoring strategies
 - **AdaCore Learning Portal**: [https://learn.adacore.com](https://learn.adacore.com) with free tutorials on code quality
 
-### 5.6.3 Online Communities
+### 23.6.3 Online Communities
 
 | **Platform** | **URL** | **Best For** |
 | :--- | :--- | :--- |
@@ -1035,7 +1035,7 @@ This chapter has provided practical techniques for refactoring Ada code and veri
 | **Reddit r/Ada** | [reddit.com/r/Ada](https://reddit.com/r/Ada) | Community discussions and news |
 | **GitHub Ada Projects** | [github.com/topics/ada](https://github.com/topics/ada) | Real-world Ada code examples |
 
-### 5.6.4 Advanced Topics
+### 23.6.4 Advanced Topics
 
 - **Refactoring for Performance**: Optimizing Ada code while maintaining correctness
 - **Legacy System Modernization**: Strategies for refactoring large Ada systems

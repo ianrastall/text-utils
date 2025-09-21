@@ -6,7 +6,7 @@ When you think of GUI development, you might imagine complex enterprise applicat
 
 This chapter explores how to create graphical user interfaces in Ada using GTKAda, the most popular GUI library for Ada. You'll learn to build practical applications like home automation controllers, personal finance trackers, and simple games—all while leveraging Ada's strengths in reliability and maintainability. Whether you're building a tool for yourself or for others, Ada's GUI capabilities will help you create professional-looking applications with confidence.
 
-## 1.1 Why GUI Development Matters for Everyday Applications
+## 17.1 Why GUI Development Matters for Everyday Applications
 
 GUI development is essential for making technology accessible to everyone. Consider these common scenarios:
 
@@ -25,7 +25,7 @@ Ada excels at GUI development for several reasons:
 
 Unlike many GUI frameworks that prioritize speed of development over reliability, Ada's approach ensures your applications are robust from the start. You won't need to worry about mysterious crashes or security vulnerabilities caused by common programming errors.
 
-### 1.1.1 GUI Libraries for Ada
+### 17.1.1 GUI Libraries for Ada
 
 | **Library** | **Description** | **Best For** |
 | :--- | :--- | :--- |
@@ -36,13 +36,13 @@ Unlike many GUI frameworks that prioritize speed of development over reliability
 
 GTKAda is the most widely used GUI library for Ada. It provides a modern, cross-platform toolkit that's perfect for everyday applications. The other libraries have specific use cases, but GTKAda is the best starting point for most developers.
 
-## 1.2 Setting Up Your GUI Development Environment
+## 17.2 Setting Up Your GUI Development Environment
 
 Before you can start building GUI applications, you need to set up your development environment. The process varies slightly depending on your operating system, but it's straightforward for all major platforms.
 
-### 1.2.1 Installing GTKAda
+### 17.2.1 Installing GTKAda
 
-#### 1.2.1.1 Windows
+#### 17.2.1.1 Windows
 
 1. Download the GNAT Community Edition from [AdaCore's website](https://www.adacore.com/download)
 2. During installation, select the "GTKAda" component
@@ -52,7 +52,7 @@ Before you can start building GUI applications, you need to set up your developm
    ```
    You should see GTKAda version information in the output.
 
-#### 1.2.1.2 macOS
+#### 17.2.1.2 macOS
 
 1. Install Homebrew if you haven't already:
    ```bash
@@ -67,7 +67,7 @@ Before you can start building GUI applications, you need to set up your developm
    gnatls --version
    ```
 
-#### 1.2.1.3 Linux (Ubuntu/Debian)
+#### 17.2.1.3 Linux (Ubuntu/Debian)
 
 1. Install GTKAda:
    ```bash
@@ -79,7 +79,7 @@ Before you can start building GUI applications, you need to set up your developm
    gnatls --version
    ```
 
-### 1.2.2 Creating Your First Project
+### 17.2.2 Creating Your First Project
 
 Now that GTKAda is installed, let's create a simple project structure:
 
@@ -113,7 +113,7 @@ This project file:
 - Defines the main program file
 - Configures compiler and linker options for GTKAda
 
-### 1.2.3 Testing Your Setup
+### 17.2.3 Testing Your Setup
 
 Create a simple "Hello World" program to verify your installation:
 
@@ -149,11 +149,11 @@ gnatmake -P gui_example.gpr
 
 You should see a window titled "Hello World" with the text "Welcome to GUI Development in Ada!" inside it. If you see this window, your environment is set up correctly!
 
-## 1.3 Building Your First GUI Application
+## 17.3 Building Your First GUI Application
 
 Now that your environment is ready, let's create a more interactive application. We'll build a simple calculator that performs basic arithmetic operations.
 
-### 1.3.1 Step 1: Create the Basic Window Structure
+### 17.3.1 Step 1: Create the Basic Window Structure
 
 First, we'll create the main window with a vertical box layout:
 
@@ -211,7 +211,7 @@ end Calculator;
 
 This code creates a window with a display area and number buttons arranged vertically. The `Display` widget is a text entry field that's not editable by the user—perfect for showing calculation results.
 
-### 1.3.2 Step 2: Add Event Handling
+### 17.3.2 Step 2: Add Event Handling
 
 Now let's add event handlers to make the calculator functional:
 
@@ -316,7 +316,7 @@ This code adds event handlers for each button:
 
 When you run this program, you'll have a functional calculator that can perform basic arithmetic operations.
 
-### 1.3.3 Understanding the Code
+### 17.3.3 Understanding the Code
 
 Let's break down the key elements:
 
@@ -330,11 +330,11 @@ Let's break down the key elements:
 
 This simple example demonstrates how GUI development in Ada combines familiar programming concepts with intuitive visual elements.
 
-## 1.4 Common GUI Components
+## 17.4 Common GUI Components
 
 Let's explore the most common GUI components you'll use in your applications, with practical examples for each.
 
-### 1.4.1 Buttons
+### 17.4.1 Buttons
 
 Buttons are the most fundamental GUI component—they trigger actions when clicked.
 
@@ -357,7 +357,7 @@ Set_On_Clicked (Button, (procedure (B : access Gtk_Button_Record'Class) is
 - Disable buttons when they're not applicable
 - Provide visual feedback when buttons are clicked
 
-### 1.4.2 Labels
+### 17.4.2 Labels
 
 Labels display static text information to users.
 
@@ -378,7 +378,7 @@ Set_Margin_Top (Label, 10);       -- Add top margin
 - Keep text concise and clear
 - Use appropriate font sizes and colors for readability
 
-### 1.4.3 Text Entries
+### 17.4.3 Text Entries
 
 Text entries allow users to input text.
 
@@ -405,11 +405,11 @@ Set_Editable (Entry, False);
 - Validate input before processing
 - Provide clear error messages for invalid input
 
-### 1.4.4 Layout Management
+### 17.4.4 Layout Management
 
 Layout management is crucial for creating professional-looking interfaces. GTKAda provides several layout containers:
 
-#### 1.4.4.1 Vertical Box
+#### 17.4.4.1 Vertical Box
 
 ```ada
 Box := Create (Vertical);
@@ -419,7 +419,7 @@ Add (Box, Widget2);
 
 Arranges widgets vertically from top to bottom.
 
-#### 1.4.4.2 Horizontal Box
+#### 17.4.4.2 Horizontal Box
 
 ```ada
 Box := Create (Horizontal);
@@ -429,7 +429,7 @@ Add (Box, Widget2);
 
 Arranges widgets horizontally from left to right.
 
-#### 1.4.4.3 Grid Layout
+#### 17.4.4.3 Grid Layout
 
 ```ada
 Grid := Create;
@@ -443,7 +443,7 @@ Attach (Grid, Widget3, 0, 1, 2, 1);  -- Column 0, Row 1, width 2, height 1
 
 Arranges widgets in a grid pattern with precise control over placement.
 
-### 1.4.5 Common GUI Components Reference Table
+### 17.4.5 Common GUI Components Reference Table
 
 | **Component** | **Purpose** | **Example Use Case** |
 | :--- | :--- | :--- |
@@ -456,11 +456,11 @@ Arranges widgets in a grid pattern with precise control over placement.
 | **Scrollable Area** | View large content in small space | Long text, image galleries |
 | **Progress Bar** | Show progress of long operations | File downloads, data processing |
 
-## 1.5 Advanced GUI Features
+## 17.5 Advanced GUI Features
 
 Once you're comfortable with basic components, you can explore more advanced features that make your applications more powerful and user-friendly.
 
-### 1.5.1 Dialog Boxes
+### 17.5.1 Dialog Boxes
 
 Dialog boxes are essential for interactions that require user input or confirmation.
 
@@ -501,7 +501,7 @@ end Open_File;
 
 This code creates a file open dialog that lets users select a file from their system. The `Run` procedure displays the dialog and waits for user input, then returns the selected filename.
 
-### 1.5.2 Custom Widgets
+### 17.5.2 Custom Widgets
 
 Sometimes you need widgets that don't exist in standard libraries. GTKAda allows you to create custom widgets:
 
@@ -529,7 +529,7 @@ end Custom_Widgets;
 
 This example creates a custom color picker widget that draws a red gradient background. You can extend this to create more complex widgets with user interaction.
 
-### 1.5.3 Theming and Styling
+### 17.5.3 Theming and Styling
 
 GTKAda supports theming to give your applications a professional look:
 
@@ -555,7 +555,7 @@ end Style_Window;
 
 This code styles a window with a light gray background, Arial font, and consistent padding. You can create more complex styles using CSS-like syntax.
 
-### 1.5.4 Advanced GUI Features Reference Table
+### 17.5.4 Advanced GUI Features Reference Table
 
 | **Feature** | **Purpose** | **Example Use Case** |
 | :--- | :--- | :--- |
@@ -566,11 +566,11 @@ This code styles a window with a light gray background, Arial font, and consiste
 | **Animations** | Add visual feedback | Progress indicators, interactive elements |
 | **Accessibility Features** | Support for users with disabilities | Screen readers, high-contrast modes |
 
-## 1.6 Best Practices for GUI Development
+## 17.6 Best Practices for GUI Development
 
 Following best practices will make your GUI applications more reliable, maintainable, and user-friendly.
 
-### 1.6.1 Separating UI and Logic
+### 17.6.1 Separating UI and Logic
 
 Keep your user interface code separate from your business logic. This makes your code easier to understand and maintain.
 
@@ -605,7 +605,7 @@ In this example:
 
 This separation makes it easy to change the UI without affecting business logic, and vice versa.
 
-### 1.6.2 Error Handling in GUIs
+### 17.6.2 Error Handling in GUIs
 
 GUI applications need special error handling to provide good user experiences.
 
@@ -631,9 +631,9 @@ Key error handling practices:
 - Validate input before processing
 - Use dialog boxes for important error messages
 
-### 1.6.3 Design Patterns for GUIs
+### 17.6.3 Design Patterns for GUIs
 
-#### 1.6.3.1 Model-View-Controller (MVC)
+#### 17.6.3.1 Model-View-Controller (MVC)
 
 MVC is a common pattern for organizing GUI applications:
 
@@ -669,7 +669,7 @@ In this pattern:
 
 This separation makes your code more modular and easier to test.
 
-### 1.6.4 Best Practices Reference Table
+### 17.6.4 Best Practices Reference Table
 
 | **Practice** | **Why It Matters** | **Example** |
 | :--- | :--- | :--- |
@@ -680,11 +680,11 @@ This separation makes your code more modular and easier to test.
 | **Accessibility Features** | Works for all users | Screen reader support, high-contrast modes |
 | **Consistent Styling** | Professional appearance | Uniform colors, fonts, and spacing throughout app |
 
-## 1.7 Real-World Examples
+## 17.7 Real-World Examples
 
 Let's look at practical examples of GUI applications built with Ada that solve real problems.
 
-### 1.7.1 Home Automation Controller
+### 17.7.1 Home Automation Controller
 
 A home automation controller lets you manage lights, temperature, and security from a single interface.
 
@@ -734,7 +734,7 @@ end Home_Automation;
 
 This simple example demonstrates how to create a home automation interface with switches for lights, labels for temperature, and status indicators for security systems. You could extend this to add more features like scheduling, remote control, and energy usage monitoring.
 
-### 1.7.2 Personal Finance Tracker
+### 17.7.2 Personal Finance Tracker
 
 A personal finance tracker helps users manage their money with a simple interface.
 
@@ -804,7 +804,7 @@ You could extend this to add features like:
 - Budget tracking with alerts
 - Data export to CSV or other formats
 
-### 1.7.3 Data Visualization Tool
+### 17.7.3 Data Visualization Tool
 
 A data visualization tool helps users understand complex data through charts and graphs.
 
@@ -868,11 +868,11 @@ This example creates a simple bar chart visualization. You could extend this to:
 - Add interactive elements (hover effects, tooltips)
 - Implement data loading from files or databases
 
-## 1.8 Exercises for Readers
+## 17.8 Exercises for Readers
 
 Now it's time to put your knowledge into practice with some hands-on exercises.
 
-### 1.8.1 Exercise 1: Simple Calculator
+### 17.8.1 Exercise 1: Simple Calculator
 
 Create a calculator application with:
 - A display area showing current input and results
@@ -883,7 +883,7 @@ Create a calculator application with:
 
 > **Challenge**: Add support for decimal numbers and more complex operations like square root.
 
-#### 1.8.1.1 Solution Guidance
+#### 17.8.1.1 Solution Guidance
 
 Start by creating the basic window structure with a vertical box layout. Add a text entry for the display area, then create buttons for numbers and operations. For the calculation logic:
 - Store the first number and operation when an operator is pressed
@@ -891,7 +891,7 @@ Start by creating the basic window structure with a vertical box layout. Add a t
 - Perform the calculation and display the result
 - Handle division by zero with an error message
 
-### 1.8.2 Exercise 2: Personal Contact Manager
+### 17.8.2 Exercise 2: Personal Contact Manager
 
 Create a contact management application with:
 - A form for adding new contacts (name, phone, email)
@@ -901,7 +901,7 @@ Create a contact management application with:
 
 > **Challenge**: Add search functionality and contact categorization.
 
-#### 1.8.2.1 Solution Guidance
+#### 17.8.2.1 Solution Guidance
 
 Create a form with text entries for name, phone, and email. Add a "Save" button that adds the contact to a list. For the list view:
 - Use a `Gtk_Tree_View` with columns for name, phone, and email
@@ -909,7 +909,7 @@ Create a form with text entries for name, phone, and email. Add a "Save" button 
 - Add buttons to edit and delete selected contacts
 - Implement file saving and loading using Ada's text file operations
 
-### 1.8.3 Exercise 3: Weather Data Viewer
+### 17.8.3 Exercise 3: Weather Data Viewer
 
 Create a weather data application that:
 - Displays current temperature and conditions
@@ -919,7 +919,7 @@ Create a weather data application that:
 
 > **Challenge**: Add weather alerts and historical data comparison.
 
-#### 1.8.3.1 Solution Guidance
+#### 17.8.3.1 Solution Guidance
 
 Start with a simple interface showing temperature and conditions. For the forecast chart:
 - Use a `Gtk_Drawing_Area` to draw bar charts for high/low temperatures
@@ -927,25 +927,25 @@ Start with a simple interface showing temperature and conditions. For the foreca
 - Add a text entry for location search
 - Implement error handling for network issues or invalid locations
 
-## 1.9 Next Steps for GUI Development in Ada
+## 17.9 Next Steps for GUI Development in Ada
 
 Now that you've learned the basics of GUI development in Ada, here's how to continue your journey.
 
-### 1.9.1 Explore Advanced GUI Features
+### 17.9.1 Explore Advanced GUI Features
 
 - **Drag and drop**: Allow users to move items between lists or windows
 - **Animations**: Add visual feedback for user interactions
 - **Custom widgets**: Create specialized UI elements for your needs
 - **Accessibility features**: Make your applications usable for everyone
 
-### 1.9.2 Integrate with Ada's Other Features
+### 17.9.2 Integrate with Ada's Other Features
 
 - **Concurrency**: Use tasks to keep your UI responsive during long operations
 - **Networking**: Build applications that communicate over networks
 - **Database access**: Store and retrieve data from databases
 - **File I/O**: Read and write files for data storage
 
-### 1.9.3 Join the Ada Community
+### 17.9.3 Join the Ada Community
 
 The Ada community is active and supportive. Join:
 - **AdaCore Forums**: For technical support and discussions
@@ -953,7 +953,7 @@ The Ada community is active and supportive. Join:
 - **Ada mailing lists**: For discussions and questions
 - **Ada conferences**: Events like Ada Europe
 
-### 1.9.4 Build Real-World Applications
+### 17.9.4 Build Real-World Applications
 
 Start with small projects and gradually build more complex applications:
 - A home automation controller
@@ -962,7 +962,7 @@ Start with small projects and gradually build more complex applications:
 - A simple game
 - A custom tool for your specific needs
 
-## 1.10 Conclusion: The Power of GUI Development in Ada
+## 17.10 Conclusion: The Power of GUI Development in Ada
 
 > "GUI development in Ada isn't just for aerospace engineers—it's about creating intuitive interfaces for everyday applications like home automation systems and personal finance tools. With Ada's strong typing and reliability features, you can build user-friendly applications that are both safe and maintainable."
 

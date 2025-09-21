@@ -622,7 +622,7 @@ Ada's library unit system provides a formal mechanism for organizing large syste
 
 ### 3.4.1 Library Unit Types and Dependencies
 
-#### 3.4.1.1 \. Standard Packages
+#### 3.4.1.1 Standard Packages
 
 Independent units with no special dependencies:
 
@@ -635,7 +635,7 @@ end Math_Utils;
 
 Can be compiled independently once dependencies are satisfied. These are perfect for general-purpose utilities that don't depend on other parts of your system.
 
-#### 3.4.1.2 \. Parent Packages
+#### 3.4.1.2 Parent Packages
 
 Define namespaces for child packages:
 
@@ -648,7 +648,7 @@ end Sensors;
 
 Must be compiled before child packages. Parent packages act as the foundation for hierarchical organization.
 
-#### 3.4.1.3 \. Child Packages
+#### 3.4.1.3 Child Packages
 
 Extend parent package functionality:
 
@@ -662,7 +662,7 @@ end Sensors.Temperature;
 
 Depend on parent package; siblings are independent. Child packages can access the parent's public items but not private items.
 
-#### 3.4.1.4 \. Subunits
+#### 3.4.1.4 Subunits
 
 Split large bodies into manageable pieces:
 
@@ -787,7 +787,7 @@ Ada provides controlled mechanisms for package initialization and finalizationâ€
 
 ### 3.5.1 Initialization Patterns
 
-#### 3.5.1.1 \. Implicit Initialization
+#### 3.5.1.1 Implicit Initialization
 
 Using variable declarations:
 
@@ -803,7 +803,7 @@ end Sensors;
 
 Simple but limited control over initialization order. This works well for simple cases but can lead to problems in complex systems.
 
-#### 3.5.1.2 \. Explicit Initialization Procedure
+#### 3.5.1.2 Explicit Initialization Procedure
 
 Using an initialization procedure:
 
@@ -928,7 +928,7 @@ This ensures that the main package is elaborated before any sensor operations, p
 
 Let's explore two practical examples of package design that demonstrate Ada's modular capabilities without focusing on safety-critical domains.
 
-### 3.6.1 \. Home Climate Control System
+### 3.6.1 Home Climate Control System
 
 A robust climate control package for home automation:
 
@@ -970,7 +970,7 @@ end Climate_Control;
 
 This pattern combines strong typing, contracts, and information hiding for maximum reliability. Clients can't set temperatures outside the valid range, and they can't access the system before it's initialized. The private implementation details are hidden, so clients only interact with the public interface.
 
-### 3.6.2 \. Smart Home Lighting Control
+### 3.6.2 Smart Home Lighting Control
 
 A lighting control system for home automation:
 
