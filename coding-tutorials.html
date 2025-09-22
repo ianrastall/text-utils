@@ -156,9 +156,9 @@ const resetBtn = document.getElementById('resetBtn');
 // Assumes files are named `tutorial-{language}-{number}.md`.
 async function discoverTutorialFiles(language) {
     const files = [];
-    // We'll check for up to 30 sequential files.
+    // We'll check for up to 100 sequential files.
     // The loop stops if a file is not found, so it doesn't make unnecessary requests.
-    for (let i = 1; i <= 30; i++) {
+    for (let i = 1; i <= 100; i++) {
         const fileNum = i.toString().padStart(2, '0'); // Formats numbers as 01, 02, etc.
         const fileName = `tutorial-${language}-${fileNum}.md`;
         
