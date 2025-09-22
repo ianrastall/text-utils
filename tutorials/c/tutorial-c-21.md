@@ -2609,3 +2609,4 @@ By following these recommendations, developers can make informed decisions about
 | **Performance-Critical**  | **C99**                  | restrict keyword, fixed-width integers               | Features with runtime overhead            | Selective C11/C17 features with testing |
 
 This decision guide provides practical recommendations for selecting the appropriate C standard based on project type. It identifies key features to leverage, features to avoid, and potential migration paths for future standard adoption.
+

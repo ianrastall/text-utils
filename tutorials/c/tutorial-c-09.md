@@ -3391,3 +3391,4 @@ As you progress, the concepts in this chapter form the essential foundation for 
 *   **Chapter 13 (Network Programming)** will extend these techniques to distributed systems
 
 > **"Concurrency is not merely a technical challenge but a fundamental shift in how we conceptualize computation. It forces us to move beyond the comforting linearity of sequential execution and embrace the complex, interconnected reality of modern computing. Those who master this paradigm don't just write faster code—they learn to think in parallel, transforming their approach to problem-solving at the most fundamental level."**
+

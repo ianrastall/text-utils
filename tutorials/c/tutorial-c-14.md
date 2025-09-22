@@ -6135,3 +6135,4 @@ As you continue to develop your database expertise, remember these key principle
 4.  **Start Simple**: Many applications can use existing database libraries effectively without needing custom implementations. Only build your own database when you have a specific need that existing solutions don't address.
 
 5.  **Performance Is Multifaceted**: Database performance isn't just about raw speed—it's about predictable latency, resource efficiency, and scalability under load.
+

@@ -5321,3 +5321,4 @@ As you continue to develop your skills, remember these key principles:
 4.  **Simplicity beats cleverness**: A simple, well-understood protocol is often more robust and maintainable than a clever but complex one.
 
 5.  **Test under realistic conditions**: Network behavior in the lab often differs from production. Test with real-world network conditions when possible.
+

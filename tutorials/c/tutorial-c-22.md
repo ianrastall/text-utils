@@ -2902,3 +2902,4 @@ By following these recommendations, developers can leverage the full power of bi
 | **Branchless Max**        | `diff = a - b; mask = diff >> (bits-1);`  | Computes maximum without branching           | Performance-critical code                 |
 
 This cheat sheet provides quick reference for common bitwise operations, their C implementations, and typical use cases. Keep it handy when working with bit manipulation code.
+

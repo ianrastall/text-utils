@@ -1267,3 +1267,4 @@ As you progress, the concepts in this chapter form the essential foundation for 
 The discipline required to handle arrays safely—mindful of bounds, vigilant about null terminators, and careful with memory—is precisely the discipline that separates novice C programmers from proficient ones. As you continue your journey, remember that the apparent simplicity of C's array and string model is deceptive; true mastery comes from understanding not just the syntax, but the underlying memory model and the contract between your code and the runtime environment.
 
 With this foundation firmly established, you're now prepared to explore the deeper aspects of C programming, where the explicit memory management and low-level control that make C powerful also demand careful attention to detail. The next chapter on pointers will unlock even greater capabilities, building directly on the concepts you've mastered here.
+

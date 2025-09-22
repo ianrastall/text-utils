@@ -5957,3 +5957,4 @@ As you apply these principles to your own projects, remember that the goal isn't
 > **The Optimization Mantra:** Measure, analyze, optimize, verify. Repeat.
 > 
 > Never optimize blindly. Always have a hypothesis about why an optimization will help, and always verify that it actually does. The most valuable skill in performance optimization isn't knowing every trick in the book—it's knowing which tricks are relevant to your specific problem, and having the discipline to measure their impact.
+

@@ -4336,3 +4336,4 @@ The most effective approach to FFI development balances several considerations:
 | **CGO (Go)**          | **Go ecosystem integration**          | **Medium**            | **Medium**            | **High**              |
 
 This comparison provides a quick reference for selecting the appropriate FFI technology based on project requirements. The right choice depends on the specific context, including performance needs, safety requirements, and development constraints.
+

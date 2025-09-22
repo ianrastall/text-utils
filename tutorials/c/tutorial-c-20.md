@@ -5576,3 +5576,4 @@ The practices and tools covered in this chapter provide a comprehensive framewor
 *   **Human Insight:** Combine automated tools with expert code review
 
 > **The Security Mindset:** Ultimately, security is not about tools or processes—it's about mindset. It's the commitment to craftsmanship, the discipline to do things right even when no one is watching, and the humility to recognize that there's always room for improvement. In the words of Bruce Schneier, "Security is a process, not a product." As a C developer, you have the power to make security decisions every time you write a line of code. By embracing the practices in this chapter, you transform from a coder who writes software into an engineer who builds secure systems. The journey to security excellence is ongoing, but each step you take makes your code—and your impact—more secure.
+

@@ -4011,3 +4011,4 @@ The most effective approach to C and assembly interoperability balances several 
 | **Alternative Options**   | **Intrinsics or library functions sufficient**   | **No suitable higher-level alternative**          | Always consider intrinsics first                |
 
 This decision guide provides a structured approach to determining when assembly integration is appropriate. It helps developers balance performance needs against development and maintenance costs, ensuring that assembly is used strategically rather than as a default approach.
+

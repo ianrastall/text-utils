@@ -1926,3 +1926,4 @@ As you progress, the concepts in this chapter form the essential foundation for 
 *   **Chapter 12 (Performance Optimization)** will deepen the performance analysis of memory usage
 
 > **"Memory management in C is not merely a technical challenge but a philosophical exercise in resource stewardship. It forces programmers to confront the physical reality of computation—where every byte matters and every allocation carries consequences. Mastering this discipline cultivates not just programming skill, but a deeper understanding of the fundamental constraints that shape all computational systems."**
+

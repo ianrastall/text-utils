@@ -2990,3 +2990,4 @@ As you progress, the concepts in this chapter form the essential foundation for 
 *   **Chapter 9 (Networking)** will extend these concepts to network-based data exchange
 
 The discipline required to handle file operations safely—mindful of resource management, vigilant about error conditions, and careful with data representation—is precisely the discipline that separates novice C programmers from proficient software engineers. As you continue your journey, remember that robust file handling is not merely a technical requirement but a fundamental aspect of creating software that persists beyond the immediate execution environment.
+
