@@ -1,4 +1,4 @@
-# 1\. Introduction to Assembly Language
+# 1. Introduction to Assembly Language
 
 ## 1.1 The Unseen Foundation: Why Assembly Language Matters
 
@@ -719,7 +719,7 @@ While few applications are written entirely in Assembly today, its relevance is 
 
 Assembly language is not a dead end; it is the bedrock. It empowers you to see beyond the abstractions, to diagnose problems at their source, and to wield the full power of the computational engine. This chapter has laid the conceptual groundwork—the CPU, registers, memory, instructions, and the assembly process. The subsequent chapters will delve deeper into practical programming: writing robust functions, interacting with the operating system, manipulating strings and data structures, and optimizing for performance. The journey into the heart of the machine begins here. Embrace the precision, respect the hardware, and unlock the true potential of computation.
 
-# 2\. Computer Architecture Fundamentals for Assembly Programmers
+# 2. Computer Architecture Fundamentals for Assembly Programmers
 
 ## 2.1 The Critical Connection: Why Architecture Matters in Assembly
 
@@ -2171,7 +2171,7 @@ As you proceed to write increasingly sophisticated Assembly code in subsequent c
 
 The next chapters will build upon this foundation, exploring practical techniques for writing robust, maintainable Assembly code—including interfacing with higher-level languages, implementing common algorithms, and debugging complex issues. But with the architectural understanding gained here, you now possess the conceptual tools to make those practical techniques meaningful and effective. The machine is no longer a black box; it is a comprehensible system that you can command with precision and purpose.
 
-# 3\. Digital Logic and Machine Language Foundations
+# 3. Digital Logic and Machine Language Foundations
 
 ## 3.1 The Physical Basis of Computation: Why Digital Logic Matters
 
@@ -3505,7 +3505,7 @@ These principles, implemented through increasingly sophisticated circuitry, enab
 
 As you proceed to write increasingly sophisticated Assembly code in subsequent chapters, continually refer back to these foundational concepts. Let them guide your decisions about register usage, memory access patterns, control flow organization, and optimization strategies. Remember that every instruction you write interacts with a complex, carefully engineered physical system; respecting that system's constraints and leveraging its capabilities is the essence of expert Assembly programming.
 
-# 4\. Assembly Language Syntax and Structure
+# 4. Assembly Language Syntax and Structure
 
 ## 4.1 The Syntax Imperative: Why Structure Matters in Assembly
 
@@ -5116,7 +5116,7 @@ The journey through Assembly syntax reveals a fundamental truth: all computation
 
 As you proceed to write increasingly sophisticated Assembly code, continually reflect on how syntax choices impact the underlying hardware. Let these choices be informed by an understanding of pipeline behavior, memory hierarchy, and instruction execution characteristics. Remember that every instruction you write interacts with a complex, carefully engineered physical system; respecting that system's constraints and leveraging its capabilities is the essence of expert Assembly programming.
 
-# 5\. Assembler Toolchains: MASM, NASM, and GAS Compared
+# 5. Assembler Toolchains: MASM, NASM, and GAS Compared
 
 ## 5.1 The Critical Role of Assembler Toolchains
 
@@ -7597,7 +7597,7 @@ For the beginning Assembly programmer, understanding these toolchains provides s
 
 The journey through these toolchains reveals a fundamental truth: Assembly programming is not just about writing instructions—it's about understanding the entire ecosystem that transforms those instructions into functional software. From the assembler that processes the source code to the linker that resolves symbols, from the loader that maps the executable into memory to the debugger that reveals runtime behavior, each component plays a critical role in the development process.
 
-# 6\. x64 Architecture Overview
+# 6. x64 Architecture Overview
 
 ## 6.1 The Critical Importance of Understanding x64 Architecture
 
