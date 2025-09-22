@@ -1026,3 +1026,4 @@ atomic_add:
 - Intel® 64 and IA-32 Architectures Software Developer’s Manual
 - “Computer Systems: A Programmer’s Perspective” by Bryant and O’Hallaron
 - Agner Fog’s Optimization Manuals (www.agner.org)
+

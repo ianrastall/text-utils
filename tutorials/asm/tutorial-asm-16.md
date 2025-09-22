@@ -855,3 +855,4 @@ void fast_memcpy(void *dest, const void *src, size_t len) {
 - Agner Fog’s “Optimizing Subroutines in Assembly Language” (www.agner.org)
 - “Computer Systems: A Programmer’s Perspective” by Bryant and O’Hallaron
 - LLVM Inline Assembly Guide (for Clang): https://llvm.org/docs/LangRef.html#inline-asm-expressions
+

@@ -1331,3 +1331,4 @@ The journey through digital logic reveals that all computation ultimately rests 
 These principles, implemented through increasingly sophisticated circuitry, enable the complex computational capabilities we harness through Assembly language. By understanding them, you gain not just programming skill, but a deeper appreciation for the remarkable engineering that transforms electrical signals into meaningful computation.
 
 As you proceed to write increasingly sophisticated Assembly code in subsequent chapters, continually refer back to these foundational concepts. Let them guide your decisions about register usage, memory access patterns, control flow organization, and optimization strategies. Remember that every instruction you write interacts with a complex, carefully engineered physical system; respecting that system's constraints and leveraging its capabilities is the essence of expert Assembly programming.
+

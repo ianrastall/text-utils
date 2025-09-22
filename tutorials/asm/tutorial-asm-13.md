@@ -789,3 +789,4 @@ worker_avx:
 - Linux `futex` man page and kernel documentation.
 - Agner Fog’s optimization manuals (www.agner.org).
 - “Is Parallel Programming Hard, And, If So, What Can You Do About It?” by Paul E. McKenney.
+

@@ -2201,3 +2201,4 @@ For the beginning Assembly programmer, mastering optimization provides several c
 3. **Effective Problem Solving:** When performance issues arise, understanding the underlying hardware mechanisms allows diagnosis of problems that might appear as inexplicable slowdowns at higher levels of abstraction.
 
 4. **Cross-Platform Proficiency:** Recognizing the underlying principles of processor architecture enables adaptation to different hardware while understanding the trade-offs involved.
+

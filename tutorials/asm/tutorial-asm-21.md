@@ -612,3 +612,4 @@ Certification requires investment — but delivers ROI in quality and trust.
 - Angr Documentation: https://docs.angr.io/
 - “Building Secure and Reliable Systems” by Google.
 - “The Clean Coder” by Robert C. Martin (for professional ethics in certification).
+

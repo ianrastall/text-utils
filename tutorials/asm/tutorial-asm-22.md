@@ -831,3 +831,4 @@ safe_wrapper_for_unsafe_function:
 - “Rust for Low-Level Programming” — adapting Rust safety to assembly.
 - “Building Secure and Reliable Systems” by Google.
 - CWE Top 25 (https://cwe.mitre.org/top25/) — common weakness enumeration.
+

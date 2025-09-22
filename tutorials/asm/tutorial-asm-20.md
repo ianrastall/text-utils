@@ -892,3 +892,4 @@ gdb ./your_program
 - Radare2 Book: https://radare.gitbooks.io/radare2book/
 - “Practical Binary Analysis” by Dennis Andriesse.
 - “The IDA Pro Book” by Chris Eagle.
+

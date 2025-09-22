@@ -621,3 +621,4 @@ Assembly thrives in open-source projects.
 - WebAssembly: https://webassembly.org/
 - “Computer Systems: A Programmer’s Perspective” by Bryant and O’Hallaron.
 - “Optimizing Software in C++” by Agner Fog (includes assembly optimization).
+

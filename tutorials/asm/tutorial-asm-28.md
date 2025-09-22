@@ -638,3 +638,4 @@ But mastery does not end here. Assembly is a living discipline — evolving with
 - Contribute to assembly — improve toolchains, write documentation, develop new libraries.
 
 The path of the assembly programmer is one of precision, performance, and profound understanding. You are now equipped to walk it with confidence.
+

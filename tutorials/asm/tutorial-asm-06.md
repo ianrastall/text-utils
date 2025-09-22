@@ -1265,3 +1265,4 @@ For the beginning Assembly programmer, mastering the x64 architecture provides s
 4. **Cross-Platform Proficiency:** Recognizing both the differences and underlying similarities between x64 implementations enables adaptation to different processor vendors and generations.
 
 The journey through the x64 architecture reveals a fundamental truth: all computation ultimately rests on a few simple principles expressed through increasingly sophisticated circuitry. Binary representation, Boolean operations, storage of state, and precise timing—these principles enable the complex computational capabilities we harness through Assembly language.
+

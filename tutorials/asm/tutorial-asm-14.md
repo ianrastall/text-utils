@@ -960,3 +960,4 @@ SEH uses `__try`/`__except` in C, but can be implemented manually in assembly vi
 - OSDev Wiki (https://wiki.osdev.org) — Interrupts, PIC, APIC, IDT.
 - Linux source code — `arch/x86/kernel/irq.c`, `entry_64.S`.
 - “Protected Mode Software Architecture” by Tom Shanley.
+

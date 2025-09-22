@@ -1637,3 +1637,4 @@ For the beginning Assembly programmer, mastering addressing modes provides sever
 4. **Cross-Architecture Proficiency:** Recognizing the underlying principles of addressing modes enables adaptation to different architectures while understanding the trade-offs involved.
 
 The journey through addressing modes reveals a fundamental truth: all memory access ultimately rests on a few simple principles expressed through increasingly sophisticated circuitry. Address calculation, virtual-to-physical translation, cache hierarchy traversal—these principles, implemented through complex hardware, enable the memory operations we harness through Assembly language.
+
