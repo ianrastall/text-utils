@@ -434,7 +434,7 @@ void init_tracing() {
         sdktrace::SimpleSpanProcessorFactory::Create(std::move(exporter)));
     
     auto resource = opentelemetry::sdk::resource::Resource::Create(
-        {{"service.name", "data-service"}});
+        {% raw %}{{"service.name", "data-service"}}{% endraw %});
     
     auto context = std::make_shared<trace::TracerContext>(std::move(processor), resource);
     trace::Provider::SetTracerProvider(
@@ -476,7 +476,7 @@ static int handle_request(void *cls, struct MHD_Connection *connection,
     auto tracer = trace::Provider::GetTracerProvider()->GetTracer("data-service");
     auto span = tracer->StartSpan(
         "handle_request",
-        {{"http.method", method}, {"http.url", url}},
+        {% raw %}{{"http.method", method}, {"http.url", url}}{% endraw %},
         trace::StartSpanOptions{parent_ctx});
     auto scope = tracer->WithActiveSpan(span);
     
@@ -2010,8 +2010,8 @@ void init_tracing() {
     
     // Create resource (service name, etc.)
     auto resource = resource::Resource::Create(
-        {{"service.name", "data-service"},
-         {"service.version", "1.0.0"}});
+        {% raw %}{{"service.name", "data-service"},
+         {"service.version", "1.0.0"}}{% endraw %});
     
     // Create tracer provider
     auto provider = sdktrace::TracerProviderFactory::Create(
