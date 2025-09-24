@@ -83,7 +83,7 @@ temperature = (int) pressure;
 
 This compiles without error, but it's clearly wrong—pressure values shouldn't be assigned to temperature variables. In C, this mistake might not be caught until runtime, or worse, it might cause subtle bugs that surface months later.
 
-Now consider the Ada equivalent:
+Now consider the Ada equivalent using subtypes:
 
 ```ada
 subtype Temperature is Integer range -50..100;
@@ -92,11 +92,31 @@ subtype Pressure is Integer range 500..1200;
 Temp : Temperature := 25;
 Pres : Pressure := 1013;
 
--- Attempting this would fail at compile time:
-Temp := Pres;  -- Error: type mismatch
+-- This assignment is type-compatible (both are Integer subtypes)
+-- but will raise a Constraint_Error at runtime because 1013 is
+-- outside the Temperature range of -50..100
+Temp := Pres;  -- Raises Constraint_Error at runtime
 ```
 
-Ada catches this error immediately during compilation. The `Temperature` and `Pressure` subtypes are distinct types—even though both are based on `Integer`—so assigning one to the other is a type error. This isn't just about preventing obvious mistakes; it's about creating a system where the compiler enforces your design decisions.
+While this catches the error, Ada provides an even stronger approach using
+derived types for truly distinct types:
+
+```ada
+type Celsius is new Integer range -50..100;
+type Pascal is new Integer range 500..1200;
+
+C_Temp : Celsius := 25;
+P_Pres : Pascal := 1013;
+
+-- Now this is a compile-time type mismatch error:
+-- C_Temp := P_Pres;  -- Error: incompatible types
+```
+
+With derived types, Ada catches this error immediately during compilation.
+The `Celsius` and `Pascal` types are completely distinct—even though both
+are based on `Integer`—so assigning one to the other requires explicit
+conversion. This creates a system where the compiler enforces your design
+decisions and prevents conceptual errors before they reach runtime.
 
 ### 1.2.2 Design-by-Contract Explained
 
@@ -181,15 +201,30 @@ Ada does not allow implicit conversions between types. For example:
 
 ```ada
 V : Integer := 10;
-F : Float := Float(V);  -- Explicit conversion is required for different types
-C : Temperature := V;  -- Allowed (Temperature is subtype of Integer)
-P : Pressure := V;  -- Allowed only if V is within Pressure range
+F : Float := Float(V);  -- Explicit conversion required for different types
+C : Temperature := V;   -- Allowed (Temperature is subtype of Integer)
+P : Pressure := V;      -- Allowed only if V is within Pressure range
 
--- This would fail:
-P := C;  -- Error: type mismatch
+-- This assignment is type-compatible but may raise Constraint_Error:
+P := C;  -- Runtime error if C's value is outside Pressure range
 ```
 
-Even though both `Temperature` and `Pressure` are based on `Integer`, they're distinct types. Assigning one to the other requires an explicit conversion, forcing the developer to acknowledge the potential meaning change.
+Even though both `Temperature` and `Pressure` are subtypes of `Integer`,
+they have different constraints. Assigning between them is type-compatible
+but requires the value to satisfy the target subtype's constraints.
+
+For true type safety, use derived types:
+
+```ada
+type Celsius_Type is new Integer range -50..100;
+type Pressure_Type is new Integer range 500..1200;
+
+C : Celsius_Type := 25;
+P : Pressure_Type := 1013;
+
+-- This would be a compile-time type mismatch:
+-- P := C;  -- Error: incompatible types, explicit conversion needed
+```
 
 This strictness might seem restrictive at first, but it prevents countless subtle bugs. Consider a financial application where you have `dollars` and `euros` as subtypes. With Ada's strong typing, you can't accidentally assign euros to dollars without explicitly converting them—preventing currency conversion errors that could cost millions.
 
@@ -315,11 +350,9 @@ protected body Buffer is
    entry Get(Item : out Integer) when Count > 0 is
    begin
       Item := Data(1);
-         for I in 1..Count - 1 loop
-            Data(I) := Data(I + 1);
-         end loop;
-         Count := Count - 1;
-      end if;
+      -- More efficient array slice assignment
+      Data(1 .. Count - 1) := Data(2 .. Count);
+      Count := Count - 1;
    end Get;
 end Buffer;
 
@@ -535,8 +568,8 @@ begin
    -- Convert current temperature to Fahrenheit
    Target_Temp := Celsius_to_Fahrenheit(Current_Temp);
    
-   Put_Line("Current temperature: " & Current_Temp'Image & "°C");
-   Put_Line("Equivalent in Fahrenheit: " & Target_Temp'Image & "°F");
+   Put_Line("Current temperature:" & Current_Temp'Image & " C");
+   Put_Line("Equivalent in Fahrenheit:" & Target_Temp'Image & " F");
    
    -- Next line would fail PRECONDITION CHECK at compile time:
    -- Current_Temp := -300.0;
@@ -552,8 +585,8 @@ end Home_Thermostat;
 When compiled and run, this program outputs:
 
 ```
-Current temperature:  2.25000E+01 °C
-Equivalent in Fahrenheit:  7.25000E+01 °F
+Current temperature: 2.25000E+01 C
+Equivalent in Fahrenheit: 7.25000E+01 F
 ```
 
 ### 1.4.1 Key Structural Elements Explained
@@ -696,11 +729,14 @@ GPS provides:
 To compile and run our temperature converter example:
 
 ```bash
-# 2 Compile with contract verification enabled
+# Compile with contract verification enabled
 gnatmake -gnata Home_Thermostat.adb
 
-# 3 Run the program
+# Run the program (Linux/macOS)
 ./home_thermostat
+
+# Run the program (Windows)
+home_thermostat.exe
 ```
 The `-gnata` flag enables contract checking. Without it, contracts would be ignored at runtime. For development, always use this flag to catch errors early.
 
@@ -826,23 +862,33 @@ This code has multiple potential issues:
 - Accounts might not have sufficient funds
 - Race conditions could occur in concurrent environments
 
-In Ada, you'd define proper types and contracts:
+In Ada, you'd define proper types and contracts using decimal types for
+financial calculations:
 
 ```ada
-subtype Positive_Amount is Float range 0.0..Float'Last;
+-- Use decimal type for exact financial arithmetic
+type Money is delta 0.01 digits 15;
+subtype Positive_Amount is Money range 0.01..Money'Last;
 
-procedure Transfer(From, To : Account; Amount : Positive_Amount) with
+type Account is record
+   Balance : Money;
+end record;
+
+procedure Transfer(From, To : in out Account; Amount : Positive_Amount) with
    Pre  => From.Balance >= Amount,
-   Post => From.Balance'Old - Amount = From.Balance and
-           To.Balance'Old + Amount = To.Balance;
+   Post => From.Balance = From.Balance'Old - Amount and
+           To.Balance = To.Balance'Old + Amount;
 ```
 
 Now:
 - Negative amounts are impossible (compile-time error)
 - Insufficient funds are checked at runtime
-- The postcondition ensures the transfer is mathematically correct
+- Decimal arithmetic is exact (no floating-point rounding errors)
+- The postcondition ensures mathematical correctness
 
-This might seem like more work initially, but it prevents costly bugs down the line. In banking, a single bug could lead to millions in losses. Ada's approach makes these errors impossible.
+This approach eliminates floating-point precision issues that could cause
+subtle errors in financial calculations. With decimal types, equality
+comparisons are safe and the arithmetic is exact to the specified precision.
 
 ## 1.7 Next Steps in Your Ada Journey
 
