@@ -1047,7 +1047,6 @@ only correct but _self-documenting_. This foundation will prepare you for
 modules on concurrency, generics, and contract-based programming in later
 chapters.
 
-
 > "Ada's type system is not a limitation—it is a superpower. It transforms what
 > would be a debugging nightmare in other languages into a compile-time
 > certainty."  

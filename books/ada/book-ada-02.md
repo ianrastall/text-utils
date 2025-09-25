@@ -53,8 +53,8 @@ systems where a single bug could cost lives."_
 
 Ada's approach to type safety has its roots in the 1970s "software crisis"
 when the U.S. Department of Defense recognized that inconsistent programming
-practices across military projects were causing costly failures. The High
-Order Language Working Group (HOLWG) was formed to address these systemic
+practices across military projects were causing costly failures. The High-Order
+Language Working Group (HOLWG) was formed to address these systemic
 issues, and Ada emerged as the solution—a language designed specifically for
 high-integrity systems where reliability is non-negotiable.
 
@@ -429,13 +429,14 @@ type Currency is delta 0.01 digits 15;
 Amount : Currency := 0.01 + 0.02;
 Put_Line (Currency'Image (Amount)); -- Outputs 0.03 exactly
 
+```
+
 This precision holds because the chosen `delta` (0.01) is exactly
 representable for a decimal fixed-point type. More broadly, Ada keeps
 fixed-point arithmetic exact when the `delta` matches the representation rules
 for the category—powers of ten for decimal fixed point or powers of two for
 ordinary fixed point. Otherwise, the language applies well-defined rounding
 rather than silently losing track of precision.
-```
 
 **Fixed-Point vs. Floating-Point**: Ada distinguishes between two types of
 numeric types:
@@ -792,23 +793,22 @@ Latitude := Longitude (45.0); -- Error: incompatible types
 This prevents the subtle error of mixing latitude and longitude values, which
 could cause navigation failures.
 
-**Advanced Derived Type Features**: Derived types can also override
-operations:
+**Advanced Derived Type Features**: Derived types can also introduce
+relationships between distinct units:
 
 ```ada
-type Special_Float is new Float with record
-   Precision : Natural;
-end record;
+type Meters  is new Float;
+type Seconds is new Float;
+type Meters_Per_Second is new Float;
 
-function "+" (Left, Right : Special_Float) return Special_Float is
+function "/" (Distance : Meters; Time : Seconds) return Meters_Per_Second is
 begin
-   return (Precision => Left.Precision,
-           Float'Image (Float (Left) + Float (Right)));
-end "+";
+   return Meters_Per_Second (Float (Distance) / Float (Time));
+end "/";
 ```
 
-This creates a new type that extends the functionality of `Float` while
-maintaining type safety.
+This allows you to define unit-aware operations that preserve type safety
+across calculations.
 
 ### 2.3.3 Private Types: The Power of Information Hiding
 
@@ -992,15 +992,14 @@ type Temperature is range -50..150;
 Temp : Temperature := 200; -- Compile-time error
 ```
 
-Even complex expressions can be verified:
+Even constant expressions built from literals are verified at compile time:
 
 ```ada
 type Sensor_Value is range 0..100;
-V1 : Sensor_Value := 90;
-V2 : Sensor_Value := 20;
+Valid_Value : Sensor_Value := 90;
 
--- This fails to compile:
-V1 := V1 + V2; -- 110 exceeds range
+-- This fails to compile because 90 + 20 is a constant expression that exceeds the range
+Invalid_Value : Sensor_Value := 90 + 20;
 ```
 
 **Off-by-One Errors**: Ada's array types with explicit bounds make off-by-one
@@ -1510,19 +1509,27 @@ benefits:
 - **Lower long-term costs**: Systems built with Ada require significantly less
   maintenance than equivalent systems in other languages
 
-A study by the European Space Agency found that Ada-based systems had 63%
-fewer concurrency-related bugs than equivalent C++ systems. Similarly, Boeing
-reports that their Ada-based 787 Dreamliner codebase requires 40% less
-maintenance time than comparable C-based systems.
+Public case studies from organizations such as the European Space Agency and
+Boeing have reported sizable reductions in concurrency bugs and maintenance
+costs when comparing Ada projects with C or C++ baselines. The specific
+percentages vary by program and measurement approach, but the recurring theme
+is that Ada's upfront rigor pays dividends over long-lived projects.
 
-**Industry Statistics**:
+**Industry Anecdotes** (self-reported figures from conference presentations
+and internal studies):
 
-- NASA's Mars Rovers: 10x fewer software defects than comparable C systems
-- Airbus A380: 90% fewer critical defects in Ada code compared to C code
-- U.S. Department of Defense: 75% reduction in software-related failures in
-  Ada systems
-- Medical device manufacturers: 85% reduction in critical safety issues with
-  Ada
+- NASA's Mars Rovers teams have described order-of-magnitude defect reductions
+   relative to comparable C implementations
+- Airbus A380 engineering retrospectives cite dramatic drops in critical
+   defects when using Ada compared to C
+- U.S. Department of Defense briefings point to substantial decreases in
+   software-related mission failures on Ada programs
+- Medical device manufacturers report notable reductions in critical safety
+   issues after migrating high-risk components to Ada
+
+These data points are best read as qualitative trends; consult the original
+presentations and reports for methodology and context before relying on the
+numbers in isolation.
 
 ### 2.6.3 Transitioning to a Type-Safe Mindset
 
