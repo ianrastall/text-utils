@@ -140,7 +140,9 @@ behavior. Consider array bounds:
 In C, out-of-bounds access might crash, corrupt memory, or appear to
 work—depending on the platform. In Ada, the error is guaranteed to be caught
 either at compile time (for constant indices) or at runtime with a clear
-exception.
+exception. When the index value is computed at runtime, Ada simply defers the
+check until execution, still raising `CONSTRAINT_ERROR` rather than allowing
+undefined behavior.
 
 **Historical Context**: The Heartbleed bug (2014) was caused by an unchecked
 buffer read in OpenSSL—a vulnerability that allowed attackers to steal
@@ -218,7 +220,7 @@ own class or value object—something Ada enforces with distinct types.
 
 > **Table 2.1: Type System Comparisons Across Languages**
 >
-> | Feature | C | Python | Java | Ada |
+> | Feature | C | Python | Java | **Ada** |
 > | --- | --- | --- | --- | --- |
 > | Implicit conversions | Allowed | Allowed | Limited | Prohibited |
 > | User-defined constraints | No | Via runtime checks | Via classes / validation* | Yes |
@@ -354,7 +356,8 @@ arithmetic operations:
 V1 : Sensor_Value := 90;
 V2 : Sensor_Value := 20;
 
-V1 := V1 + V2; -- Compiles? Yes! But raises CONSTRAINT_ERROR at runtime because 90+20=110 exceeds the range.
+V1 := V1 + V2; -- Compile-time error: static expression 90+20 yields 110
+               -- outside 0..100.
 ```
 
 **Runtime Checks**: If a value comes from user input or external systems, Ada
@@ -427,7 +430,7 @@ guarantee exact decimal representation:
 ```ada
 type Currency is delta 0.01 digits 15;
 Amount : Currency := 0.01 + 0.02;
-Put_Line (Currency'Image (Amount)); -- Outputs 0.03 exactly
+Put_Line (Ada.Strings.Fixed.Trim (Currency'Image (Amount), Ada.Strings.Both)); -- Outputs "0.03"
 ```
 
 This precision holds because the chosen `delta` (0.01) is exactly
@@ -494,7 +497,7 @@ enumeration types:
 
 ```ada
 type Traffic_Light is (Red, Yellow, Green) with
-   Size => 2; -- Specify the storage size
+   Size => 2; -- Encourages a 2-bit representation; actual storage may vary
 ```
 
 This specifies that the type should use exactly 2 bits of storage, which is
@@ -525,7 +528,7 @@ type Temperature_Array is array (1..24) of Float;
 
 ```ada
 type Day_Of_Week is array (Positive range <>) of Boolean;
--- Can be initialized with any size
+-- Can be initialized with any positive index range
 Weekdays : Day_Of_Week (1..5) := (True, True, True, True, True);
 Weekend : Day_Of_Week (6..7) := (False, False);
 ```
@@ -573,7 +576,7 @@ Record types allow you to create composite data structures with typed fields:
 ```ada
 type Person is record
    Name : String (1..50);
-   Age : Positive range 1..120;
+   Age : Integer range 1..120;
    Height : Float range 0.0..2.5;
    Is_Employee : Boolean;
 end record;
@@ -638,11 +641,17 @@ discriminant:
 type Device_Type (Kind : Device_Kind) is record
    case Kind is
       when Sensor =>
-         Sensor_Value : Float range 0.0..100.0;
+         record
+            Sensor_Value : Float range 0.0..100.0;
+         end record;
       when Actuator =>
-         Actuator_Position : Integer range 0..100;
+         record
+            Actuator_Position : Integer range 0..100;
+         end record;
       when Controller =>
-         Control_Setpoint : Float range 0.0..1.0;
+         record
+            Control_Setpoint : Float range 0.0..1.0;
+         end record;
    end case;
 end record;
 ```
@@ -657,12 +666,18 @@ value.
 type Machine_Component (Type : Component_Type) is record
    case Type is
       when Motor =>
-         Speed : Integer range 0..10000;
-         Torque : Float range 0.0..100.0;
+         record
+            Speed : Integer range 0..10000;
+            Torque : Float range 0.0..100.0;
+         end record;
       when Sensor =>
-         Reading : Float range 0.0..100.0;
+         record
+            Reading : Float range 0.0..100.0;
+         end record;
       when Controller =>
-         Control_Parameter : Float range 0.0..1.0;
+         record
+            Control_Parameter : Float range 0.0..1.0;
+         end record;
    end case;
 end record;
 ```
@@ -703,7 +718,7 @@ type Index is range 1..1000;
 subtype Valid_Index is Index range 1..500;
 
 -- This is valid:
-Valid_Index := Index (10); -- No conversion needed
+Valid_Index := 10; -- No conversion needed
 ```
 
 In a database system, you might define:
@@ -907,14 +922,14 @@ Consider these scenarios:
 
 | Scenario                                                                       | Subtype | Derived Type | Private Type |
 | ------------------------------------------------------------------------------ | ------- | ------------ | ------------ |
-| Validating a range of an existing type (e.g., page numbers 1-100)              | ✓       |              |              |
-| Preventing unit mix-ups (meters vs. feet)                                      |         | ✓            |              |
-| Creating an abstract data type (stack, queue)                                  |         |              | ✓            |
-| Representing physical quantities with distinct units                           |         | ✓            |              |
-| Creating a constrained view of an existing type without changing compatibility | ✓       |              |              |
-| Hiding implementation details while exposing operations                        |         |              | ✓            |
-| Building a type with a specific storage size                                   |         |              | ✓            |
-| Creating a type with custom operations                                         |         | ✓            | ✓            |
+| Validating a range of an existing type (e.g., page numbers 1-100)              | ✓       | &nbsp;       | &nbsp;       |
+| Preventing unit mix-ups (meters vs. feet)                                      | &nbsp;  | ✓            | &nbsp;       |
+| Creating an abstract data type (stack, queue)                                  | &nbsp;  | &nbsp;       | ✓            |
+| Representing physical quantities with distinct units                           | &nbsp;  | ✓            | &nbsp;       |
+| Creating a constrained view of an existing type without changing compatibility | ✓       | &nbsp;       | &nbsp;       |
+| Hiding implementation details while exposing operations                        | &nbsp;  | &nbsp;       | ✓            |
+| Building a type with a specific storage size                                   | &nbsp;  | &nbsp;       | ✓            |
+| Creating a type with custom operations                                         | &nbsp;  | ✓            | ✓            |
 
 **Real-World Example**: A flight control system might use all three mechanisms
 together:
@@ -1000,6 +1015,8 @@ type Sensor_Value is range 0..100;
 Valid_Value : Sensor_Value := 90;
 
 -- This fails to compile because 90 + 20 is a constant expression that exceeds the range
+-- This fails to compile because 90 + 20 is a constant expression
+-- that exceeds the range
 Invalid_Value : Sensor_Value := 90 + 20;
 ```
 
@@ -1245,7 +1262,7 @@ function Calculate_Reaction_Rate
     Temperature : Temperature_K) return Float
 is
 begin
-   -- Reaction rate calculation
+   -- Implementation omitted; plug in reaction-rate kinetics here
    return ...;
 end Calculate_Reaction_Rate;
 ```
