@@ -107,6 +107,18 @@ end if;
 is unambiguous because Ada requires explicit `end if` markers. BNF ensures
 this structure is precisely defined.
 
+```ebnf
+<if_statement> ::= if <condition> then <sequence_of_statements>
+                   {elsif <condition> then <sequence_of_statements>}
+                   [else <sequence_of_statements>] end if;
+```
+
+When a parser reduces an Ada `if` expression, each branch in the tree is
+anchored by the terminating `end if;`, so there is no place for a dangling
+`else`. Parsing tools such as `gnatpp` (the GNAT pretty-printer) rely on this
+grammar: they can safely reformat source because the syntax tree has only one
+legal shape for each construct.
+
 ### Real-World BNF Example: Array Declaration
 
 Let's examine a more complex example from the ARM:
@@ -218,58 +230,32 @@ and snake_case for variables and parameters.
 #### 4.2.1.1 Reserved Words
 
 Reserved words are keywords with special meaning in Ada. They cannot be used
-as identifiers. All reserved words are lowercase. Here are the complete
-reserved words in Ada 2022:
+as identifiers and are always written in lowercase in source code. The
+complete Ada 2022 list is shown below (alphabetical order):
 
 ```text
-abort   else    new     return  and     elsif   not     select
-array   entry   null    separate
-at      exit    or      subtype
-begin   for     out     then
-block   function  package  type
-body    goto    pragma  use
-case    if      private  when
-constant  is    procedure  while
-declare   loop    range    with
-default   access  limited  record
-do        mod     abstract
-delay     then    and
-delta     then    or
-digits    then    others
-do        then    rem
-downto    then    renames
-else      then    return
-end       then    reverse
-entry     then    select
-exception then    task
-for       then    terminate
-function  then    type
-if        then    use
-in        then    when
-interface then    while
-is        then    with
-loop      then    xor
-mod       then    null
-new       then    abstract
-not       then    access
-null      then    aliased
-of        then    all
-or        then    and
-others    then    array
-package   then    at
-pragma    then    body
-private   then    constant
-procedure then    declare
-protected then    delayed
-raise     then    digits
-record    then    rem
-reject    then    renames
-return    then    reverse
-select    then    task
-then      then    terminate
-type      then    use
-when      then    while
-with      then    xor
+abort      abs        abstract   accept     access     aliased     all         and
+array      at         begin      body       case       constant    declare     delay
+delta      digits     do         else       elsif      end         entry       exception
+exit       for        function   generic    goto       if          in          interface
+is         limited    loop       mod        new        not         null        of
+or         others     out        overriding package    parallel    pragma      private
+procedure  protected  raise      range      record     rem         renames     requeue
+return     reverse    select     separate   some       subtype     synchronized tagged
+task       terminate  then       type       until      use         when        while
+with       xor
+```
+
+> **Tip:** The Ada Reference Manual (ARM) maintains this authoritative list;
+> tools such as `gnatls` can also display the current reserved words for a
+> given compiler release.
+
+Correct code may use a reserved word inside a longer identifier, but the
+reserved word itself cannot be redeclared:
+
+```ada
+If_Value : Integer := 0;  -- legal: "if" appears inside a longer identifier
+if : Integer := 42;       -- illegal: plain "if" is a reserved word
 ```
 
 #### 4.2.1.2 Naming Conventions
@@ -293,6 +279,13 @@ max_speed : constant Vehicle_Speed := 300.0;
 
 Here, `Vehicle_Speed` is clearly a type, `current_speed` is a variable, and
 `max_speed` is a constant.
+
+Large, long-lived Ada programs often extend these conventions with lightweight
+prefixes that encode intent without sacrificing readability. For example,
+embedded teams may adopt a “systems Hungarian” style such as `In_Speed` or
+`Out_Voltage` to clarify data direction at call sites. The key is consistency:
+choose a scheme in your project standards and apply it everywhere so that
+maintainers decades later can infer semantics at a glance.
 
 #### 4.2.1.3 Real-World Example: Aerospace System
 
@@ -328,13 +321,17 @@ error: reserved word "for" cannot be used as identifier
 
 #### 4.2.1.5 Table 4.2: Reserved Words by Category
 
-| Category           | Reserved Words                                                                     |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| Control Structures | if, else, then, elsif, for, while, loop, exit, case, when, return, goto            |
-| Declarations       | type, constant, variable, function, procedure, package, task, protected, entry     |
-| Types              | integer, float, boolean, character, string, array, record, access, task, protected |
-| Operators          | and, or, not, xor, mod, rem, abs, not                                              |
-| Other              | null, new, access, aliased, abstract, limited, private, separate, use              |
+| Category                     | Reserved Words                                                                                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Control & Flow               | if, elsif, else, then, case, when, loop, while, for, exit, goto, reverse, select, until, return, do                                            |
+| Program Structure & Units    | begin, declare, end, package, procedure, function, separate, body, generic, private, protected, interface, is, renames                         |
+| Types & Data Definition      | type, subtype, range, array, record, access, limited, digits, delta, abstract, tagged, aliased, constant                                      |
+| Concurrency & Synchronization | accept, entry, task, synchronized, abort, delay, requeue, parallel, terminate                                                                   |
+| Operators & Logic            | and, or, xor, not, abs, mod, rem                                                                                                               |
+| Declarations & Visibility    | pragma, raise, others, some, use, with, null, new, all, out, in, of, overriding, at, exception                                                 |
+
+> The groups above are intended for study purposes only; every reserved word
+> retains equal grammatical status in the language regardless of category.
 
 ### 4.2.2 Delimiters and Separators
 
@@ -365,6 +362,16 @@ Parentheses can override precedence:
 
 ```ada
 X := (2 + 3) * 4;  -- X = 20
+```
+
+`mod` and `rem` frequently confuse newcomers. `mod` returns a non-negative
+result whose sign matches the divisor, while `rem` keeps the sign of the
+left-hand operand:
+
+```ada
+Put_Line(Integer'Image( 13 mod  5));  --  3
+Put_Line(Integer'Image(-13 mod  5));  --  2
+Put_Line(Integer'Image(-13 rem  5));  -- -3
 ```
 
 #### 4.2.2.2 Relational Operators
@@ -402,9 +409,19 @@ Ada uses several punctuation symbols:
 ;  Statement terminator
 :  Declaration separator or label prefix
 ( )  Grouping expressions or function parameters
-[ ]  Not used in standard Ada (reserved for future use)
-{ }  Not used in standard Ada (reserved for future use)
+[ ]  Array aggregates (Ada 2012+ shorthand)
+{ }  Not part of Ada syntax
 ```
+
+Ada 2012 introduced square brackets as an alternative notation for array
+aggregates, particularly when working with containers:
+
+```ada
+Numbers : constant array (Positive range <>) of Integer := [1, 2, 3, 4];
+```
+
+Curly braces remain outside the Ada grammar and are sometimes reserved for
+tooling or pseudo-code, but they never appear in compilable Ada source.
 
 The dot (`.`) has two primary uses:
 
@@ -564,6 +581,19 @@ New Ada programmers often make these mistakes:
    Point.1.0 := 2.0;  -- Invalid syntax
    ```
 
+### 4.2.3 Common Pitfalls
+
+- Reusing a reserved word for an identifier—`end`, `range`, or `task` might
+   look descriptive, but they trigger compile-time errors.
+- Mixing case inconsistently. The compiler accepts it, but humans (and code
+   reviews) struggle when `MotorSpeed`, `motor_speed`, and `Motorspeed` appear
+   side-by-side. Establish a convention and stick to it.
+- Forgetting that Ada is case-insensitive when integrating with foreign code.
+   An imported C symbol named `InitSensor` must be referenced exactly as exported;
+   adding or removing underscores in Ada will change the linker name.
+- Leaving out blank lines around code fences in documentation literals—tools
+   such as Markdownlint expect the spacing illustrated in this chapter.
+
 ## 4.3 Numeric Literals
 
 Numeric literals represent numbers in Ada code. They include integers, real
@@ -584,6 +614,10 @@ underscores for readability:
 Large_Number : constant Integer := 1_000_000_000;
 Binary_Value : constant Integer := 2#1010_1010#;
 ```
+
+Underscores carry no semantic meaning—they are removed by the compiler before
+evaluation—so `1_000_000` is precisely the same value as `1000000`. Use them
+liberally to prevent mistakes when scanning long literals.
 
 #### 4.3.1.1 Integer Range Constraints
 
@@ -793,6 +827,40 @@ Config_Value : constant Integer := 8#77#;
    X : Integer := 16#FF;  -- Error: missing closing #
    ```
 
+### 4.3.4 Enumeration Literals
+
+Enumeration literals represent a fixed set of named values. Character literals
+are written between apostrophes, while user-defined enumeration literals are
+bare identifiers:
+
+```ada
+type Compass_Direction is (North, East, South, West);
+type ASCII is (NUL, SOH, STX, ETX, ... , DEL);
+
+Heading : Compass_Direction := North;
+Newline : constant Character := '\n';
+```
+
+Enumeration literals participate in the lexical rules just like numeric
+literals: they are single tokens, cannot contain whitespace, and are
+case-insensitive. Later chapters cover advanced topics such as derived
+enumerations and `for` loops over enumeration ranges, but it is helpful to
+recognize them now as part of Ada's lexical vocabulary.
+
+### 4.3.5 Common Pitfalls
+
+- Dropping underscores when copying values from specifications. The compiler
+   treats `2#1010_1010#` and `2#10101010#` the same, but humans often misread
+   the latter.
+- Using `rem` when the algorithm depends on a non-negative remainder (or vice
+   versa). Always decide whether you need the sign of the divisor (`mod`) or
+   the dividend (`rem`).
+- Forgetting to close based literals with `#`. The compiler will happily read
+   `16#FF` as two tokens (`16#` and `FF`) and report a confusing syntax error.
+- Mixing enumeration and numeric literals in I/O without conversion; use
+   `'Image` attributes (`Direction'Image(Heading)`) to render enumeration values
+   safely.
+
 ## 4.4 Comments, Pragmas, and Aspects
 
 ### 4.4.1 Writing Effective Comments
@@ -965,6 +1033,14 @@ This should be used with extreme caution. The Ada Reference Manual states:
 > "The use of suppress pragmas is strongly discouraged in safety-critical
 > systems. They can lead to undefined behavior if used incorrectly."
 
+In mission- or safety-critical software you should suppress at most the
+specific check you have proved redundant—and even then only for the smallest
+possible scope. Suppressing `Range_Check`, `Overflow_Check`, or
+`Constraint_Error` around sensor data, for example, invites silent memory
+corruption and can render certification evidence invalid. Prefer targeted
+optimisations (better algorithms, representation clauses, or compiler switch
+tuning) before reaching for `Suppress`.
+
 #### 4.4.2.5 Restrictions Pragma
 
 The `Restrictions` pragma limits language features for safety-critical
@@ -1107,6 +1183,21 @@ procedure Adjust_Speed(New_Speed : Float)
   with Pre => New_Speed <= Max_Speed;
 ```
 
+The same modernisation applies to many older pragmas. What once required a
+separate directive can now be expressed inline with the declaration:
+
+```ada
+procedure Old_Way;
+pragma Inline(Old_Way);        -- pragma form
+
+procedure New_Way
+   with Inline;                 -- aspect form (Ada 2012+)
+```
+
+Using aspects keeps the metadata co-located with the declaration, which makes
+reviews easier and reduces the chance that a pragma drifts away from the code
+it is meant to influence.
+
 #### 4.4.3.7 Table 4.4: Common Aspect Specifications in Ada
 
 | Aspect            | Purpose                  | Example Usage                                |
@@ -1117,6 +1208,9 @@ procedure Adjust_Speed(New_Speed : Float)
 | Dynamic_Predicate | Dynamic type constraints | `with Dynamic_Predicate => Value in 30..250` |
 | Size              | Memory layout control    | `with Size => 32`                            |
 | Inline            | Subprogram inlining      | `with Inline`                                |
+| Volatile          | Prevents optimisation across external updates | `with Volatile`            |
+| Atomic            | Guarantees atomic read/write | `with Atomic`                           |
+| Address           | Places object at specific address | `with Address => System'To_Address(...)` |
 
 #### 4.4.3.8 Real-World Example: Financial Transaction System
 
@@ -1144,6 +1238,37 @@ added:
 
 These enhancements make Ada's contract-based programming more powerful and
 flexible.
+
+## 4.5 Lexical Quick Reference
+
+| Concept           | Key Rule                                               | Example                                  |
+| ----------------- | ------------------------------------------------------ | ---------------------------------------- |
+| Identifiers       | Start with a letter; case-insensitive                  | `Temperature_Sensor`, `current_speed`    |
+| Reserved Words    | 69 fixed keywords, always lowercase                    | `if`, `loop`, `pragma`, `synchronized`   |
+| Assignment        | Uses `:=` for updates, `=` for comparison              | `Count := Count + 1;`                    |
+| Comments          | Begin with `--` and extend to end of line              | `-- Safety check before firing thruster` |
+| Numeric Literals  | Optional underscores for readability                   | `1_000_000`, `2#1010_1010#`              |
+| Enumeration       | Named literals in a fixed set                          | `Heading : Direction := North;`          |
+| Delimiters        | Semicolon ends statements; square brackets form aggregates | `Vector := [1, 2, 3];`                |
+| Aspects           | Declarative metadata attached with `with Aspect`       | `procedure P with Inline;`               |
+
+## 4.6 Exercises
+
+1. Identify the invalid identifiers in this list and explain why: `2nd_Place`,
+   `end_loop`, `Altitude`, `range`, `Pressure_Sensor`.
+2. Write the decimal number 42 as both a binary and hexadecimal based literal.
+3. Add a `Pre` aspect to the following subprogram so that division by zero is
+   prevented:
+
+   ```ada
+   function Divide (Numerator, Denominator : Integer) return Integer is
+   begin
+      return Numerator / Denominator;
+   end Divide;
+   ```
+
+4. Given the pragma `pragma Suppress(Range_Check);`, describe a safer
+   alternative that keeps the check while still meeting a performance goal.
 
 > "Ada's aspect specifications transform what would be runtime checks in other
 > languages into compile-time verifications. This is the foundation of Ada's
