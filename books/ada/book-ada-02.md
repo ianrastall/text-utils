@@ -428,7 +428,6 @@ guarantee exact decimal representation:
 type Currency is delta 0.01 digits 15;
 Amount : Currency := 0.01 + 0.02;
 Put_Line (Currency'Image (Amount)); -- Outputs 0.03 exactly
-
 ```
 
 This precision holds because the chosen `delta` (0.01) is exactly
@@ -808,7 +807,9 @@ end "/";
 ```
 
 This allows you to define unit-aware operations that preserve type safety
-across calculations.
+across calculations. In practice, you'd usually place such operator
+definitions inside the package that declares the related types so callers can
+`with` a single package and gain access to the complete unit toolkit.
 
 ### 2.3.3 Private Types: The Power of Information Hiding
 
@@ -1029,8 +1030,9 @@ V2 : Sensor_Value := 10;
 V1 := V1 + V2;
 ```
 
-The compiler can determine that this operation is safe, avoiding unnecessary
-runtime checks.
+Even though the operands are variables, the compiler's static analysis can
+prove this specific addition stays within bounds, allowing it to avoid an
+otherwise necessary runtime check.
 
 **Real-World Example**: In an industrial control system:
 
@@ -1510,7 +1512,7 @@ benefits:
   maintenance than equivalent systems in other languages
 
 Public case studies from organizations such as the European Space Agency and
-Boeing have reported sizable reductions in concurrency bugs and maintenance
+Boeing have reported notable reductions in concurrency bugs and maintenance
 costs when comparing Ada projects with C or C++ baselines. The specific
 percentages vary by program and measurement approach, but the recurring theme
 is that Ada's upfront rigor pays dividends over long-lived projects.
