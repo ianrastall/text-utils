@@ -146,6 +146,14 @@
         "order": 12
     },
     {
+        "slug": "prettier-markdown",
+        "name": "Prettier Markdown",
+        "icon": "auto_fix_high",
+        "description": "Format Markdown instantly using the Prettier formatter.",
+        "category": "Text",
+        "order": 18
+    },
+    {
         "slug": "css-gradient",
         "name": "CSS Gradient Generator",
         "icon": "palette",

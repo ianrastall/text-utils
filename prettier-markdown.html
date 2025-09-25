@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prettier Markdown – Text Utilities</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        #prettier-markdown-tool #markdownEditor {
+            min-height: 320px;
+            resize: vertical;
+        }
+        #prettier-markdown-tool .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+    </style>
+</head>
+<body class="bg-dark text-light">
+    <div id="header-placeholder"></div>
+    <noscript>
+        <div class="bg-dark text-light p-3 border-bottom border-secondary">Text Utils <span class="text-muted">(static header fallback)</span></div>
+    </noscript>
+    <div id="prettier-markdown-tool" class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="material-icons me-3" aria-hidden="true" style="font-size: 36px;">auto_fix_high</span>
+                            <h2 class="m-0">Prettier Markdown</h2>
+                        </div>
+                        <p class="text-white-50 mb-4">Format Markdown content in place using the Prettier formatter.</p>
+                        <form id="prettierForm" autocomplete="off" novalidate>
+                            <div class="mb-3">
+                                <label for="markdownEditor" class="form-label">Markdown</label>
+                                <textarea id="markdownEditor" class="form-control font-monospace" placeholder="Paste Markdown here, then click Format."></textarea>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" id="formatBtn" class="btn btn-task btn-icon"><span class="material-icons" aria-hidden="true">auto_fix_normal</span>Format</button>
+                                <button type="button" id="copyBtn" class="btn btn-secondary btn-icon"><span class="material-icons" aria-hidden="true">content_copy</span>Copy All</button>
+                                <button type="button" id="pasteBtn" class="btn btn-secondary btn-icon"><span class="material-icons" aria-hidden="true">content_paste_go</span>Paste</button>
+                                <button type="button" id="clearBtn" class="btn btn-outline-light btn-icon"><span class="material-icons" aria-hidden="true">delete_sweep</span>Clear</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar"></nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div id="footer-placeholder"></div>
+    <noscript>
+        <div class="bg-dark text-light p-3 border-top border-secondary text-center">Text Utils <span class="text-muted">(static footer fallback)</span></div>
+    </noscript>
+    <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script>
+        (function initThemeAndSidebar() {
+            const themes = ['burlywood','cadetblue','cornflowerblue','dodgerblue','lightcoral','lightgreen','plum','thistle','tomato','violet','goldenyellow','mutedcoral','softpink','lightcyan','lightgray','neongreen','brightyellow'];
+            const htmlElement = document.documentElement;
+            const dropdown = document.getElementById('accentColorDropdownMenu');
+            function applyTheme(theme) {
+                htmlElement.className = '';
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+            document.addEventListener('DOMContentLoaded', async () => {
+                await ComponentLoader.loadAll();
+                if (dropdown && dropdown.childElementCount === 0) {
+                    themes.forEach(theme => {
+                        const li = document.createElement('li');
+                        const button = document.createElement('button');
+                        button.className = 'dropdown-item';
+                        button.type = 'button';
+                        button.textContent = theme;
+                        button.addEventListener('click', () => applyTheme(theme));
+                        li.appendChild(button);
+                        dropdown.appendChild(li);
+                    });
+                }
+                applyTheme(localStorage.getItem('accentTheme') || 'burlywood');
+                try {
+                    const response = await fetch('config/tools.json');
+                    if (!response.ok) throw new Error('Failed to load tools.json');
+                    const tools = await response.json();
+                    tools.sort((a, b) => a.name.localeCompare(b.name));
+                    const sidebarHtml = tools.map(tool => {
+                        const isActive = tool.slug === 'prettier-markdown';
+                        const activeClass = isActive ? ' active' : '';
+                        const iconHtml = tool.icon ?
+                            (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                                `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                                `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                            `<span class="me-2" style="width: 24px;"></span>`;
+                        return `
+                            <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                                ${iconHtml}
+                                <span>${tool.name}</span>
+                            </a>
+                        `;
+                    }).join('');
+                    document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+                } catch (err) {
+                    document.getElementById('dynamic-sidebar').innerHTML = '<div class="alert alert-danger m-3">Failed to load tools.</div>';
+                }
+            });
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prettier@3.2.5/standalone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prettier@3.2.5/plugins/markdown.js"></script>
+    <script src="js/prettier-markdown.js"></script>
+</body>
+</html>
