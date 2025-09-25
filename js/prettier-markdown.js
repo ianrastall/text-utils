@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
         formatBtn: document.getElementById('formatBtn'),
         copyBtn: document.getElementById('copyBtn'),
         pasteBtn: document.getElementById('pasteBtn'),
-        clearBtn: document.getElementById('clearBtn'),
-        announcer: document.getElementById('sr-announcer')
+    clearBtn: document.getElementById('clearBtn'),
+    hardWrapToggle: document.getElementById('hardWrapToggle'),
+    wrapColumn: document.getElementById('wrapColumn'),
+    announcer: document.getElementById('sr-announcer')
     };
 
     if (!dom.editor || !dom.formatBtn) {
@@ -71,17 +73,31 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Nothing to format yet.', 'info');
             return;
         }
+        let hardWrap = false;
+        let wrapColumn = 80;
+        if (dom.hardWrapToggle) {
+            hardWrap = dom.hardWrapToggle.checked;
+        }
+        if (dom.wrapColumn) {
+            const candidate = parseInt(dom.wrapColumn.value, 10);
+            if (!Number.isNaN(candidate)) wrapColumn = Math.min(Math.max(candidate, 20), 200);
+            if (hardWrap && Number.isNaN(candidate)) {
+                showToast('Enter a valid wrap column (20-200).', 'warning');
+                dom.wrapColumn.focus();
+                return;
+            }
+        }
         dom.formatBtn.disabled = true;
         dom.formatBtn.classList.add('disabled');
         try {
             const formatted = await prettier.format(source, {
                 parser: 'markdown',
                 plugins: [markdownPlugin],
-                proseWrap: 'preserve',
+                proseWrap: hardWrap ? 'always' : 'preserve',
+                printWidth: wrapColumn,
                 tabWidth: 2,
                 useTabs: false,
-                singleQuote: false,
-                printWidth: 80
+                singleQuote: false
             });
             dom.editor.value = formatted;
             showToast('Markdown formatted.', 'success');
@@ -144,6 +160,21 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.copyBtn?.addEventListener('click', copyAll);
     dom.pasteBtn?.addEventListener('click', pasteClipboard);
     dom.clearBtn?.addEventListener('click', clearEditor);
+
+    function syncWrapInput() {
+        if (!dom.wrapColumn) return;
+        const enabled = !!dom.hardWrapToggle?.checked;
+        dom.wrapColumn.disabled = !enabled;
+        if (!enabled) dom.wrapColumn.classList.remove('highlight-input');
+    }
+
+    dom.hardWrapToggle?.addEventListener('change', () => {
+        syncWrapInput();
+        if (dom.hardWrapToggle.checked && dom.wrapColumn) {
+            dom.wrapColumn.focus();
+        }
+    });
+    syncWrapInput();
 
     dom.editor.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key.toLowerCase() === 'enter') {

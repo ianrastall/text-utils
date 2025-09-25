@@ -43,6 +43,17 @@
                                 <label for="markdownEditor" class="form-label">Markdown</label>
                                 <textarea id="markdownEditor" class="form-control font-monospace" placeholder="Paste Markdown here, then click Format."></textarea>
                             </div>
+                            <div class="d-flex flex-wrap align-items-end gap-3 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="hardWrapToggle">
+                                    <label class="form-check-label" for="hardWrapToggle">Hard wrap output</label>
+                                </div>
+                                <div>
+                                    <label for="wrapColumn" class="form-label mb-1">Wrap column</label>
+                                    <input type="number" class="form-control" id="wrapColumn" min="20" max="200" step="1" value="80">
+                                    <div class="form-text text-white-50">Used when hard wrap is enabled.</div>
+                                </div>
+                            </div>
                             <div class="d-flex flex-wrap gap-2">
                                 <button type="button" id="formatBtn" class="btn btn-task btn-icon"><span class="material-icons" aria-hidden="true">auto_fix_normal</span>Format</button>
                                 <button type="button" id="copyBtn" class="btn btn-secondary btn-icon"><span class="material-icons" aria-hidden="true">content_copy</span>Copy All</button>
