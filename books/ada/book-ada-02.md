@@ -1,7 +1,7 @@
 # Chapter 2: Ada's Strong Typing System
 
-Airbus Defence and Space engineers have described Ada's type system as a "first
-line of defense" that turns potential debugging nightmares into compile-time
+Airbus Defence and Space engineers describe Ada's type system as a first line
+of defense that turns potential debugging nightmares into compile-time
 feedback. This chapter explores how that philosophy plays out in practice.
 
 ## 2.1 The Philosophy of Ada's Type System
@@ -45,10 +45,10 @@ Distance := Distance + Height; -- Error: incompatible types for "+" operator
 ```
 
 The Ada compiler rejects this immediately, forcing the developer to explicitly
-convert units. This is not a limitation—it's a safety feature. As Jean
-Ichbiah, Ada's chief designer, noted: _"Ada 83 was designed to catch errors at
-compile time rather than runtime. This was not a luxury—it was a necessity for
-systems where a single bug could cost lives."_
+convert units. This is not a limitation—it's a safety feature. Jean Ichbiah,
+Ada's chief designer, emphasized from the outset that Ada 83 was meant to catch
+errors at compile time rather than at runtime—a necessity for systems where a
+single bug could cost lives.
 
 Ada's approach to type safety has its roots in the 1970s "software crisis"
 when the U.S. Department of Defense recognized that inconsistent programming
@@ -64,9 +64,9 @@ can lead to subtle bugs that are difficult to detect. Catastrophes such as the
 Therac-25 radiation therapy overdoses (1985-1987)—implemented largely in
 assembly with minimal safeguards—showed how missing validation layers, weak
 process control, and insufficient tooling can combine to deadly effect. Ada's
-designers did not claim that types alone would prevent such failures, but they
-argued that strong compile-time guarantees form an essential foundation for
-building safer, auditable systems.
+designers did not claim that types alone would prevent such failures; rather,
+they argued that strong compile-time guarantees provide one of several
+reinforcing mechanisms required for building safer, auditable systems.
 
 **Modern Relevance**: In today's world of autonomous vehicles, medical
 devices, and aerospace systems, the stakes are higher than ever. A single
@@ -139,12 +139,13 @@ behavior. Consider array bounds:
 
 In C, out-of-bounds access might crash, corrupt memory, or appear to
 work—depending on the platform. In Ada, the error is guaranteed to be caught
-either at compile time (when the compiler can prove the index is outside the
-declared range) or at runtime with a clear exception. The `Arr(15)` assignment
-above illustrates the latter: the program compiles, but the generated code
-emits a bounds check that raises `CONSTRAINT_ERROR` as soon as the statement is
-executed. When the index value is computed at runtime, Ada still performs this
-check, preferring a defined failure mode to undefined behavior.
+either at compile time (for obviously invalid constant indices such as
+`Arr(11)` in the declaration above) or at runtime with a clear exception. The
+`Arr(15)` assignment illustrates the latter: the program compiles, but the
+generated code emits a bounds check that raises `CONSTRAINT_ERROR` as soon as
+the statement is executed. When the index value is computed dynamically, Ada
+still performs this check, preferring a defined failure mode to undefined
+behavior.
 
 **Historical Context**: The Heartbleed bug (2014) was caused by an unchecked
 buffer read in OpenSSL—a vulnerability that allowed attackers to steal
@@ -186,10 +187,10 @@ systems-engineering lapses, yet the absence of type-level unit distinctions
 made the defect easier to introduce and harder to detect before launch. Ada's
 approach—forcing developers to create distinct types for different units—would
 have required an explicit conversion and provided another opportunity to catch
-the mismatch. Dynamic languages like Python can now be augmented with optional
-static analysis tools (e.g., `mypy` or `pydantic`) to catch similar
-inconsistencies, but that safety net depends on discipline, whereas Ada bakes
-it into the core language model:
+the mismatch, assuming the project adopted those types consistently. Dynamic
+languages like Python can now be augmented with optional static analysis tools
+(e.g., `mypy` or `pydantic`) to catch similar inconsistencies, but that safety
+net depends on discipline, whereas Ada bakes it into the core language model:
 
 ```ada
 type Metric_Force is new Float;
@@ -457,11 +458,13 @@ for the category—powers of ten for decimal fixed point or powers of two for
 ordinary fixed point. Otherwise, the language applies well-defined rounding
 rather than silently losing track of precision.
 
-Designers still need to budget for scaling limits and potential overflow.
-Choosing an aggressive `delta` increases storage requirements, and cumulative
-operations can trigger rounding at the declared precision. Production code
-often supplements the type declaration with explicit range checks,
-intermediate widening, or rational arithmetic when results must remain exact.
+Designers still need to budget for scaling limits, intermediate rounding, and
+overflow. Choosing an aggressive `delta` increases storage requirements, and
+cumulative operations can trigger rounding at the declared precision or even
+raise `Constraint_Error` if an intermediate result exceeds the subtype range.
+Production code often supplements the type declaration with explicit range
+checks, widened accumulator types for multi-step calculations, or rational
+arithmetic when results must remain exact.
 
 **Fixed-Point vs. Floating-Point**: Ada distinguishes between two types of
 numeric types:
@@ -623,7 +626,7 @@ type Flight_Data is record
    Altitude : Altitude_Feet;
    Airspeed : Airspeed_Knots;
    Engine_RPM : Positive range 1000..15000;
-   Fuel_Level : Fuel_Level;
+   Fuel_Remaining : Float range 0.0..1.0;
 end record;
 ```
 
@@ -872,8 +875,9 @@ Rocket_Mass := Equivalent_Mass (Applied_Force);
 This discipline is critical for engineering systems. Consider the Mars Climate
 Orbiter mishap, where a spacecraft was lost because one team used imperial
 units (pounds-force seconds) while another used metric (newton-seconds). The
-failure chain involved organizational and process breakdowns, yet distinct
-types would have demanded an explicit, audited conversion:
+failure chain involved organizational and process breakdowns; distinct types
+would not have guaranteed success, but they would have demanded an explicit,
+audited conversion that might have exposed the inconsistency earlier:
 
 ```ada
 type Imperial_Force is new Float;
@@ -968,6 +972,7 @@ discriminants:
 
 ```ada
 package Sensor_Data is
+   type Sensor_Type is (Temperature, Pressure, Humidity);
    type Sensor_Data_Type (Kind : Sensor_Type) is private;
 
    procedure Read_Sensor (Data : in out Sensor_Data_Type);
@@ -1041,7 +1046,7 @@ package Navigation_System is
    type Waypoint is private;
 
    procedure Add_Waypoint (W : in out Waypoint; Lat : Float; Lon : Float);
-   procedure Calculate_Route (Start, End : Waypoint; Route : out Route_Array);
+   procedure Calculate_Route (Start, Finish : Waypoint);
 private
    type Waypoint is record
       Latitude : Latitude;
@@ -1129,21 +1134,25 @@ Data(11) := 1.0; -- Index out of bounds
 In C, these would be undefined behavior, potentially causing crashes or
 security vulnerabilities. In Ada, they're caught immediately.
 
-**Advanced Compile-Time Checks**: Ada's compiler can perform sophisticated
-static analysis:
+**Advanced Compile-Time Checks**: Ada's guarantees come from a combination of
+simple static rules and mandatory runtime checks. When every operand is a
+static expression, the compiler can reject the statement (as with
+`Invalid_Value` above) or prove that no check is needed. In the general case,
+however, the compiler emits a bounds check and lets the runtime enforce it:
 
 ```ada
 type Sensor_Value is range 0..100;
 V1 : Sensor_Value := 90;
 V2 : Sensor_Value := 10;
 
--- This compiles because 90+10=100 is within range
+-- This compiles, and the runtime range check succeeds because 90+10 = 100.
 V1 := V1 + V2;
 ```
 
-Even though the operands are variables, the compiler's static analysis can
-prove this specific addition stays within bounds, allowing it to avoid an
-otherwise necessary runtime check.
+Some implementations may recognize that the operands never change and elide
+the redundant check, but Ada's portability model simply promises that a check
+will be performed unless the compiler can prove at compile time that it is
+unnecessary.
 
 **Real-World Example**: In an industrial control system:
 
