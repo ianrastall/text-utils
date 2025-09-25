@@ -1,9 +1,8 @@
 # Chapter 2: Ada's Strong Typing System
 
-> "In Ada, the type system is not a constraint—it is your first line of
-> defense against errors. It transforms what would be a debugging nightmare in
-> other languages into a compile-time certainty."  
-> — Principal Engineer, Airbus Defense and Space
+Airbus Defence and Space engineers have described Ada's type system as a "first
+line of defense" that turns potential debugging nightmares into compile-time
+feedback. This chapter explores how that philosophy plays out in practice.
 
 ## 2.1 The Philosophy of Ada's Type System
 
@@ -61,12 +60,13 @@ high-integrity systems where reliability is non-negotiable.
 **The Historical Context of Strong Typing**: Before Ada, most programming
 languages treated types as flexible containers where data could be freely
 manipulated. C, for example, allows implicit conversions between types, which
-can lead to subtle bugs that are difficult to detect. The Therac-25 radiation
-therapy machine disasters (1985-1987) demonstrated the catastrophic
-consequences of insufficient software reliability measures—race conditions,
-missing interlocks, and inadequate fault detection combined to produce fatal
-overdoses. These incidents reinforced the prescience of Ada's emphasis on
-compile-time safety checks.
+can lead to subtle bugs that are difficult to detect. Catastrophes such as the
+Therac-25 radiation therapy overdoses (1985-1987)—implemented largely in
+assembly with minimal safeguards—showed how missing validation layers, weak
+process control, and insufficient tooling can combine to deadly effect. Ada's
+designers did not claim that types alone would prevent such failures, but they
+argued that strong compile-time guarantees form an essential foundation for
+building safer, auditable systems.
 
 **Modern Relevance**: In today's world of autonomous vehicles, medical
 devices, and aerospace systems, the stakes are higher than ever. A single
@@ -112,9 +112,9 @@ type Heart_Rate is range 20..250;
 Current_Heart_Rate : Heart_Rate := 6000; -- Compile-time error
 ```
 
-This level of safety is critical in systems where a single error could have
-catastrophic consequences. Unlike languages that rely on runtime checks, Ada
-catches these errors at the earliest possible stage—during compilation.
+This level of safety keeps domain assumptions explicit and reviewable. By
+expressing real-world limits in the type system, Ada surfaces mistakes during
+development instead of relying solely on runtime testing to discover them.
 
 **The Evolution of Strong Typing**: While modern languages like Rust and
 TypeScript have adopted some strong typing concepts, Ada pioneered many of
@@ -139,10 +139,12 @@ behavior. Consider array bounds:
 
 In C, out-of-bounds access might crash, corrupt memory, or appear to
 work—depending on the platform. In Ada, the error is guaranteed to be caught
-either at compile time (for constant indices) or at runtime with a clear
-exception. When the index value is computed at runtime, Ada simply defers the
-check until execution, still raising `CONSTRAINT_ERROR` rather than allowing
-undefined behavior.
+either at compile time (when the compiler can prove the index is outside the
+declared range) or at runtime with a clear exception. The `Arr(15)` assignment
+above illustrates the latter: the program compiles, but the generated code
+emits a bounds check that raises `CONSTRAINT_ERROR` as soon as the statement is
+executed. When the index value is computed at runtime, Ada still performs this
+check, preferring a defined failure mode to undefined behavior.
 
 **Historical Context**: The Heartbleed bug (2014) was caused by an unchecked
 buffer read in OpenSSL—a vulnerability that allowed attackers to steal
@@ -178,14 +180,16 @@ Result := Calculate_Speed ("100", 5.0); -- Compile-time error: string not conver
 ```
 
 **Real-World Impact**: NASA's Mars Climate Orbiter mission failure (1999) was
-caused by a unit conversion error between metric and imperial units in a
-ground-control component written in C/C++. Without distinct unit types, the
-bug went undetected until after integration. Ada's approach—forcing developers
-to create distinct types for different units—would have required an explicit
-conversion and flagged the mismatch early. Dynamic languages like Python can
-now be augmented with optional static analysis tools (e.g., `mypy` or
-`pydantic`) to catch similar inconsistencies, but that safety net depends on
-discipline, whereas Ada bakes it into the core language model:
+traced to a unit conversion mismatch between metric and imperial forces in a
+ground-control component written in C/C++. The root cause involved a chain of
+systems-engineering lapses, yet the absence of type-level unit distinctions
+made the defect easier to introduce and harder to detect before launch. Ada's
+approach—forcing developers to create distinct types for different units—would
+have required an explicit conversion and provided another opportunity to catch
+the mismatch. Dynamic languages like Python can now be augmented with optional
+static analysis tools (e.g., `mypy` or `pydantic`) to catch similar
+inconsistencies, but that safety net depends on discipline, whereas Ada bakes
+it into the core language model:
 
 ```ada
 type Metric_Force is new Float;
@@ -226,7 +230,7 @@ own class or value object—something Ada enforces with distinct types.
 > | User-defined constraints | No | Via runtime checks | Via classes / validation* | Yes |
 > | Unit safety | No | No (without libraries) | Via classes* | Yes |
 > | Array bounds checking | None (undefined behavior) | Runtime check | Runtime check | Compile-time or runtime check |
-> | Compile-time error detection | Minimal | None (static analysis optional) | Moderate | Comprehensive |
+> | Static error detection | Minimal | None (static analysis optional) | Moderate | Extensive + mandatory runtime checks |
 > | Memory safety | No | Yes | Yes | Yes |
 > | Range checking | No | No (manual) | Manual (via classes)* | Yes |
 > | Type inheritance | Yes | Yes | Yes | Yes |
@@ -316,12 +320,24 @@ catastrophic.
 type Meters is new Float;
 type Kilometers is new Float;
 
--- This fails to compile:
-Meters := Kilometers (1.0); -- Error: incompatible types
+Distance : Meters := 0.0;
+Span     : Kilometers := 1.0;
+
+-- This direct assignment fails to compile:
+Distance := Span; -- Error: incompatible types
+
+-- You must perform an explicit, intentional conversion:
+function To_Meters (Value : Kilometers) return Meters is
+begin
+   return Meters (Float (Value) * 1000.0);
+end To_Meters;
+
+Distance := To_Meters (Span);
 ```
 
-This strict type identity ensures that developers must explicitly convert
-between units, preventing subtle errors that might otherwise go undetected.
+This strict type identity ensures that developers must introduce deliberate
+conversion routines—often including unit scaling—before mixing values. That
+extra ceremony prevents subtle errors that might otherwise go undetected.
 
 **Real-World Example**: In a satellite navigation system, you might define:
 
@@ -348,16 +364,17 @@ type Temperature_Celsius is range -50..150;
 type Page_Number is range 1..1000;
 ```
 
-**Compiler Enforcement**: The compiler ensures that any variable of type
-`Sensor_Value` can never hold a value outside the 0..100 range, even through
-arithmetic operations:
+**Compiler Enforcement**: The combination of static analysis and automatic
+runtime checks ensures that any variable of type `Sensor_Value` can never hold
+values outside 0..100. Static violations are rejected during compilation, and
+dynamic calculations are guarded by generated range checks:
 
 ```ada
 V1 : Sensor_Value := 90;
 V2 : Sensor_Value := 20;
 
-V1 := V1 + V2; -- Compile-time error: 90+20 yields 110
-               -- which is outside 0..100.
+V1 := V1 + V2; -- Raises Constraint_Error at runtime because 110
+               -- lies outside 0..100 once the addition is evaluated.
 ```
 
 **Runtime Checks**: If a value comes from user input or external systems, Ada
@@ -439,6 +456,12 @@ fixed-point arithmetic exact when the `delta` matches the representation rules
 for the category—powers of ten for decimal fixed point or powers of two for
 ordinary fixed point. Otherwise, the language applies well-defined rounding
 rather than silently losing track of precision.
+
+Designers still need to budget for scaling limits and potential overflow.
+Choosing an aggressive `delta` increases storage requirements, and cumulative
+operations can trigger rounding at the declared precision. Production code
+often supplements the type declaration with explicit range checks,
+intermediate widening, or rational arithmetic when results must remain exact.
 
 **Fixed-Point vs. Floating-Point**: Ada distinguishes between two types of
 numeric types:
@@ -687,6 +710,60 @@ end record;
 This ensures that each component type has only the relevant fields, preventing
 invalid combinations of data.
 
+### 2.2.8 Try It: Range-Checked Sensor Monitor
+
+To see these ideas in action, compile and run the following short program.
+It combines range-constrained types, array indexing, and discriminated
+records to simulate a tiny monitoring loop:
+
+```ada
+with Ada.Text_IO;         use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+
+procedure Sensor_Monitor is
+   type Sensor_Kind is (Voltage, Temperature);
+   type Reading_Value is range 0 .. 10;
+
+   type Reading (Kind : Sensor_Kind) is record
+      case Kind is
+         when Voltage =>
+            Millivolts : Reading_Value;
+         when Temperature =>
+            Celsius : Reading_Value;
+      end case;
+   end record;
+
+   type Reading_Array is array (Positive range <>) of Reading;
+
+   Samples : Reading_Array := (
+      1 => (Kind => Voltage,     Millivolts => 5),
+      2 => (Kind => Temperature, Celsius    => 8),
+   3 => (Kind => Voltage,     Millivolts => 7)
+   );
+begin
+   for Index in Samples'Range loop
+      declare
+         Sample : constant Reading := Samples (Index);
+      begin
+         case Sample.Kind is
+            when Voltage =>
+               Put_Line ("Voltage sample: " & Integer'Image (Sample.Millivolts));
+            when Temperature =>
+               Put_Line ("Temperature sample: " & Integer'Image (Sample.Celsius));
+         end case;
+      end;
+   end loop;
+exception
+   when Constraint_Error =>
+      Put_Line ("Sampling halted: value exceeded declared range.");
+end Sensor_Monitor;
+```
+
+Try changing the third sample to `Millivolts => 15` and re-run the program.
+The compiler accepts the code, but the runtime immediately raises
+`Constraint_Error`, reinforcing that range checks remain active even when data
+arrives from dynamic sources.
+
 ## 2.3 The Pillars of Abstraction: Subtypes, Derived Types, and Private Types
 
 Ada provides three powerful mechanisms for abstracting types—each serving
@@ -774,20 +851,29 @@ type Seconds is new Float;
 **Quintessential Example**: Preventing unit mix-ups:
 
 ```ada
-type Mass is new Float;
+type Mass  is new Float;
 type Force is new Float;
 
--- This fails to compile:
-Mass := Force; -- Error: incompatible types
+Rocket_Mass : Mass  := 0.0;
+Applied_Force : Force := 10.0;
 
--- Must explicitly convert:
-Mass := Mass (Force); -- Clear indication of unit conversion
+-- This direct assignment fails to compile:
+Rocket_Mass := Applied_Force; -- Error: incompatible types
+
+-- You must provide an explicit conversion routine:
+function Equivalent_Mass (Value : Force) return Mass is
+begin
+   return Mass (Float (Value) / 9.81); -- Placeholder physics
+end Equivalent_Mass;
+
+Rocket_Mass := Equivalent_Mass (Applied_Force);
 ```
 
-This is critical for engineering systems. Consider the Mars Climate Orbiter
-disaster, where a spacecraft was lost because one team used imperial units
-(pounds-force seconds) while another used metric (newton-seconds). In Ada,
-these would be distinct types:
+This discipline is critical for engineering systems. Consider the Mars Climate
+Orbiter mishap, where a spacecraft was lost because one team used imperial
+units (pounds-force seconds) while another used metric (newton-seconds). The
+failure chain involved organizational and process breakdowns, yet distinct
+types would have demanded an explicit, audited conversion:
 
 ```ada
 type Imperial_Force is new Float;
@@ -1508,6 +1594,18 @@ deployment.
 critical error where a valve is opened beyond safe limits, causing a dangerous
 pressure buildup that could lead to an explosion.
 
+### 2.5.6 Practice Exercises
+
+1. Write a small Ada program that models a pressure sensor with a
+   discriminated record for metric vs. imperial readings. Ensure the program
+   rejects values outside the physical range and logs a friendly message when
+   `Constraint_Error` is raised.
+2. Extend `Sensor_Monitor` so it computes an average from the valid samples.
+   What happens if you omit the range constraint on `Reading_Value`?
+3. Create a package that exposes a `Convert` function between
+   `Meters_Per_Second` and `Knots`. Use derived types for each unit and add a
+   precondition that rejects negative speeds.
+
 ## 2.6 Summary and Conclusion
 
 ### 2.6.1 Review of Key Concepts
@@ -1529,7 +1627,7 @@ pressure buildup that could lead to an explosion.
 The upfront investment in Ada's type system delivers significant long-term
 benefits:
 
-- **Reduced debugging time**: 80% of bugs are caught at compile time[^compile-stat]
+- **Reduced debugging time**: Teams report catching up to ~80% of bugs at compile time[^compile-stat]
 - **Improved maintainability**: Code is self-documenting through meaningful
   types
 - **Enhanced safety**: Prevents unit mix-ups, range errors, and invalid states
@@ -1575,9 +1673,10 @@ Adopting Ada's type system requires a mindset shift:
 5. **Use contracts proactively**: Define preconditions, postconditions, and
    type invariants to verify correctness
 
-As one senior engineer at Airbus noted: _"In Ada, the type system is not a
-limitation—it is a superpower. It transforms what would be a debugging
-nightmare in other languages into a compile-time certainty."_
+Senior engineers at Airbus describe Ada's type system as a practical
+superpower: it encourages developers to reason about intent first and lets the
+compiler enforce many of the rules that would otherwise become late-stage
+defects.
 
 By mastering Ada's type system, you'll write code that is not only correct but
 provably safe—ensuring your software is reliable from the very first line. In
