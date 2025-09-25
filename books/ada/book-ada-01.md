@@ -39,8 +39,8 @@ with its own compiler, debugging tools, and coding standards. This fragmentation
 caused immense challenges: code written for one system could not be reused for
 another, maintenance costs skyrocketed, and software reliability remained
 inconsistent. A notorious example was the U.S. Navy's _Aegis_ combat system,
-which required over 200,000 lines of code written in multiple languages, leading
-to integration nightmares and schedule overruns.
+which required over 200_000 lines of code written in multiple languages,
+leading to integration nightmares and schedule overruns.
 
 The DoD responded by initiating the _High Order Language Working Group_ (HOLWG)
 in 1975. Their mandate was clear: develop a single, standardized language for
@@ -70,12 +70,11 @@ its time:
   to eliminate ambiguity
 
 These features were not merely theoretical—they were directly inspired by
-real-world failures. For example, the _Therac-25_ radiation therapy machine
-disaster (1985-1987), where a software bug caused fatal overdoses, would later
-highlight the dangers of weak typing and inadequate error handling. While Ada
-83's standard was frozen in 1983, its emphasis on range checks and exception
-handling anticipates the failure modes later revealed by the Therac-25
-investigations.
+real-world failures. The Therac-25 radiation therapy machine disasters
+(1985-1987), where software bugs caused fatal overdoses, later underscored the
+value of Ada 83's already-mandatory range checks and exception handling. While
+the Therac-25 incidents occurred after Ada 83's standardization, they validated
+the prescience of Ada's emphasis on compile-time safety checks.
 
 > "Ada 83 was designed to catch errors at compile time rather than runtime. This
 > was not a luxury—it was a necessity for systems where a single bug could cost
@@ -92,9 +91,10 @@ ensures every reader understands the intent."
 ### 1.1.2. The Evolution to Ada 95, 2005, and 2012
 
 Ada's evolution has been driven by real-world feedback and emerging software
-engineering challenges. The language has undergone three major revisions (Ada
-95, Ada 2005, Ada 2012), each refining its capabilities while maintaining
-backward compatibility—a testament to its stability and long-term design vision.
+engineering challenges. The language has undergone four major revisions (Ada
+95, Ada 2005, Ada 2012, Ada 2022), each refining its capabilities while
+maintaining backward compatibility—a testament to its stability and long-term
+design vision.
 
 #### Ada 95: The First ISO-Standardized Object-Oriented Language
 
@@ -148,8 +148,8 @@ The language also introduced:
 These changes addressed growing demands for distributed systems and
 complex data processing—while maintaining Ada's "fail-safe" ethos. For
 example, a 2007 study by the European Space Agency (ESA) showed that Ada
-2005 reduced
-concurrency-related bugs by 63% compared to C++ in satellite control systems.
+2005 reduced concurrency-related bugs by 63% compared to C++ in satellite
+control systems.
 
 #### Ada 2012: Contract-Based Programming
 
@@ -230,7 +230,7 @@ construction**. Unlike languages that prioritize developer productivity through
 flexibility (e.g., Python or JavaScript), Ada prioritizes _preventing errors
 before they occur_. This section explores how Ada achieves this through strong
 typing, explicit syntax, and rigorous engineering principles—making it uniquely
-suited for high-intetegrity systems.
+suited for high-integrity systems.
 
 ### 1.2.1. Core Principles: Reliability, Safety, and Security
 
@@ -261,21 +261,20 @@ type Altitude is new Float range 0.0 .. 50_000.0;
 
 Safety ensures software does not cause physical harm. Ada achieves this through:
 
-- **No Unbounded Undefined Behavior**: Unlike C/C++ with issues like integer
-  overflow or use-after-free, Ada has bounded error situations with defined
-  outcomes
+- **No Unbounded Undefined Behavior**: Ada has bounded error situations with
+  defined outcomes (ARM 1.1.5), unlike C/C++ where undefined behavior can
+  propagate unpredictably
 - **Memory Safety**: No dangling pointers or buffer overflows (via strict array
   bounds checking)
 - **Predictable Resource Management**: Controlled access to hardware and system
   resources
 
-A real-world example that demonstrates the importance of these principles is the
-_Ariane 5 rocket failure_ (1996). While the original software was written in
-Ada, the failure occurred due to an unhandled exception when converting a 64-bit
-floating-point value to a 16-bit integer. This incident actually reinforced
-Ada's safety philosophy—it showed that even Ada requires proper error handling,
-and modern Ada versions have since strengthened exception handling and range
-constraint features to prevent similar issues.
+The Ariane 5 rocket failure (1996) demonstrates the importance of these
+principles. The failure occurred because a legacy Ada module—compiled without
+range checks—raised an exception that was intentionally left unhandled, causing
+the guidance system to crash. This incident reinforced Ada's safety philosophy:
+even Ada requires proper error handling, and modern Ada versions have since
+strengthened exception handling and range constraint features.
 
 #### Security
 
@@ -319,7 +318,7 @@ codebases where developers may spend weeks debugging a single module.
 Ada also enforces consistent naming conventions:
 
 - **PascalCase for Types**: `Temperature_Sensor`
-- **snake_case for Variables**: `current_temperature`
+- **Snake_case for Variables**: `current_temperature`
 - **Uppercase for Constants**: `MAX_SPEED`
 
 This uniformity reduces cognitive load when navigating unfamiliar code. Studies
@@ -329,7 +328,7 @@ and stronger compile-time checking.
 
 #### Real-World Impact: The Boeing 787 Dreamliner
 
-The Boeing 787's flight control system contains over 2 million lines of Ada
+The Boeing 787's flight control system contains over 2_000_000 lines of Ada
 code. Engineers report that new team members become productive within days—not
 weeks—because the code is self-documenting. As one lead developer stated: "In
 Ada, the code _is_ the documentation. You don't need to guess what a function
@@ -586,9 +585,9 @@ learning the language, not wrestling with dependencies.
 
 ### 1.4.1. The GNAT Compiler
 
-GNAT (GNU Ada Translator) is the reference implementation for Ada. It is part of
-the GNU Compiler Collection (GCC), which also compiles C, C++, and Fortran. Key
-advantages include:
+GNAT (the GNU Ada compiler, colloquially known as "GNU Ada Translator") is the
+reference implementation for Ada. It is part of the GNU Compiler Collection
+(GCC), which also compiles C, C++, and Fortran. Key advantages include:
 
 - **Open Source**: Free for commercial and academic use
 - **Cross-Platform**: Compiles for Windows, macOS, Linux, and embedded targets
@@ -622,14 +621,17 @@ configurations for specific hardware targets.
 
 | OS                    | Installation Command                       |
 | --------------------- | ------------------------------------------ |
-| Windows               | `choco install alire`\*                    |
-| macOS                 | `brew install alire`\*                     |
+| Windows               | `choco install alire`*                     |
+| macOS                 | `brew install alire`*                      |
 | Linux (Debian/Ubuntu) | `sudo apt install alire`                   |
 | Linux (Generic)       | `curl https://alire.ada.dev/install \| sh` |
 
 > **⚠️ Important**: Verify you have Alire version 2.0 or later with
 > `alire --version`. If you get an older version, download the latest standalone
 > installer directly from [alire.ada.dev](https://alire.ada.dev).
+>
+> **Docker Alternative**: For readers who prefer containerized environments:
+> `docker run -it alire/alire:stable alr --version`
 
 <!-- markdownlint-enable MD013 -->
 
@@ -699,12 +701,15 @@ Alire simplifies project creation:
 ```bash
 alire init --bin hello_world
 cd hello_world
-alire build
+alr build
 ```
 
-This generates a skeleton project with a `main.adb` file. The `alire build`
+This generates a skeleton project with a `main.adb` file. The `alr build`
 command compiles the code using GNAT—without requiring manual compiler flags or
 Makefiles.
+
+> **Note**: Alire's template uses `GNAT.IO` for simplicity. In this book, we
+> will switch to `Ada.Text_IO` for portability across different Ada compilers.
 
 ### 1.4.3. Choosing a Code Editor / IDE
 
@@ -805,7 +810,7 @@ This is the minimal working program. Let's break it down line by line.
 
 ### 1.5.3. How to Compile and Run
 
-Using the command line:
+Using Alire (recommended):
 
 1. Navigate to your project directory:
 
@@ -813,19 +818,16 @@ Using the command line:
    cd hello_world
    ```
 
-2. Compile with `gprbuild` (the GNAT project builder):
+2. Build with `alr build`:
 
    ```bash
-   gprbuild hello.adb
+   alr build
    ```
-
-   This generates an executable named `hello` (Linux/macOS) or `hello.exe`
-   (Windows).
 
 3. Run the program:
 
    ```bash
-   ./hello
+   alr exec hello_world
    ```
 
   Output:
@@ -840,12 +842,12 @@ In Visual Studio Code:
 2. Press `F5` to run (requires the Ada extension)
 3. The output appears in the integrated terminal
 
-**Why `gprbuild` instead of `gnatmake`?**  
-`gprbuild` is the modern project builder for Ada. It handles dependencies,
-compiler flags, and multi-file projects automatically—unlike older tools like
-`gnatmake`. For example, if your project has 20 source files, `gprbuild`
-compiles only changed files and links them correctly—saving hours of manual
-build configuration.
+**Why `alr build` instead of `gnatmake`?**  
+`alr build` is Alire's wrapper around modern Ada build tools. It handles
+dependencies, compiler flags, and multi-file projects automatically—unlike older
+tools like `gnatmake`. For example, if your project has 20 source files, `alr
+build` compiles only changed files and links them correctly—saving hours of
+manual build configuration.
 
 ## 1.6. Basic Structure of an Ada Program
 
@@ -942,10 +944,11 @@ end;
 This strict requirement eliminates ambiguity. In C, missing semicolons cause
 silent errors; in Ada, the compiler immediately flags the issue.
 
-### 1.6.4. Comments (Single line)
+### 1.6.4. Comments
 
-Ada supports single-line comments that start with `--`. Ada does not use C-style
-`/* ... */` block comments.
+Classic Ada source uses single-line comments that start with `--`. The new
+`/* ... */` syntax is reserved for configuration control and is _not_ for
+ordinary comments.
 
 **Example**:
 
@@ -977,7 +980,8 @@ exists), as they form part of the code's "self-documenting" nature.
 
 For quick reference, here are the acronyms used in this chapter:
 
-- **ATC**: Air Traffic Control
+- **ARM**: Ada Reference Manual
+- **ATC**: Asynchronous Transfer of Control
 - **DO-178C**: Software Considerations in Airborne Systems and Equipment
   Certification
 - **DoD**: Department of Defense (U.S.)
@@ -988,6 +992,7 @@ For quick reference, here are the acronyms used in this chapter:
 - **ISO**: International Organization for Standardization
 - **MTBF**: Mean Time Between Failures
 - **RM**: Reference Manual
+- **SPARK**: A formal verification subset of Ada
 
 ## 1.8. Chapter Summary and What's Next
 
