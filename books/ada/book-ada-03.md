@@ -57,10 +57,11 @@ This simple program demonstrates Ada's distinctive structural elements:
 
 - **`Ada.Text_IO.Put_Line("Hello, World!");`**  
   The fully qualified call to `Put_Line` demonstrates Ada's namespace
-  protection. Unlike languages that allow implicit imports of entire
-  namespaces, Ada requires explicit qualification unless `use` clauses are
-  applied. This prevents naming collisions—critical in large projects where
-  multiple libraries might define similar functions.
+   protection. Unlike languages that allow implicit imports of entire
+   namespaces, Ada requires explicit qualification unless `use` clauses or
+   other visibility mechanisms (like `use type` or renames) are employed. This
+   prevents naming collisions—critical in large projects where multiple
+   libraries might define similar functions.
 
 Ada's structure is intentionally verbose to prioritize readability over
 brevity. As one NASA engineer noted: "Code is read 10 times more often than it
@@ -69,12 +70,14 @@ is written. Ada ensures every reader understands the intent."
 #### 3.1.1.1 Why Ada Requires Explicit Procedure Declarations
 
 Unlike C or C++ where `main()` is a special function with implicit semantics,
-Ada requires all programs to be declared as procedures with explicit syntax.
-This design choice serves several critical purposes:
+Ada requires the main subprogram to be declared explicitly. Most programs use
+an entry procedure, but a function returning an `Integer` result is equally
+legal. This design choice serves several critical purposes:
 
-1. **Clarity of Intent**: Every program must be explicitly declared as a
-   procedure, making it immediately clear that this is an executable unit. In
-   C, `main()` is a special case that requires memorization of its special
+1. **Clarity of Intent**: Every program must explicitly declare its main
+   subprogram—typically a procedure, though a function returning `Integer` is
+   also allowed—making it immediately clear that this is an executable unit.
+   In C, `main()` is a special case that requires memorization of its special
    status.
 
 2. **Consistency with Other Units**: All Ada units (procedures, functions,
@@ -109,6 +112,10 @@ Ada's structure stands out for its explicitness. While other languages
 prioritize brevity, Ada prioritizes clarity and safety. This is particularly
 important in safety-critical systems where code must remain understandable for
 decades.
+
+*Note: Recent C and C++ revisions permit brace-less `if`/`else` statements like
+the example above; Ada's explicit terminators keep control flow unambiguous
+regardless of formatting style.*
 
 #### 3.1.1.3 Real-World Example: Aeronautics Industry
 
@@ -269,7 +276,7 @@ readability while maintaining safety:
 with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Aliased_IO is
-   procedure Put_Line is Ada.Text_IO.Put_Line;
+   procedure Put_Line renames Ada.Text_IO.Put_Line;
 begin
    Put_Line("This is aliased");  -- No qualification needed
 end Aliased_IO;
@@ -598,11 +605,10 @@ library** that manages dependencies between units. This is crucial for Ada's
 safety guarantees.
 
 - **Library Units**:  
-  Ada programs are organized into library units—packages, subprograms, or
-  generic units. Each library unit has:
-
-  - A _specification_ (`.ads` file) defining the public interface
-  - A _body_ (`.adb` file) containing the implementation
+   Ada programs are organized into library units—packages, subprograms, or
+   generic units. Each library unit has a *specification* (`.ads` file)
+   defining the public interface and a *body* (`.adb` file) containing the
+   implementation.
 
 - **Dependency Management**:  
   When you `with` a package, the compiler checks the library to verify:
@@ -628,14 +634,14 @@ Let's compare Ada's compilation model to C's:
 
 | Feature               | C                                     | Ada                                 |
 | --------------------- | ------------------------------------- | ----------------------------------- |
-| Dependency Management | `#include` copies header contents     | `with` references package interface |
+| Dependency Management | `#include` textually includes header contents | `with` references package interface |
 | Compilation Order     | Manual or tool-assisted               | Automatic based on dependencies     |
 | Header Files          | Separate `.h` files with declarations | `.ads` files with specifications    |
 | Implementation Files  | `.c` files with code                  | `.adb` files with bodies            |
 | Recompilation         | Full rebuild often needed             | Incremental recompilation           |
 | Error Checking        | Limited to individual files           | Cross-unit verification             |
 
-In C, the `#include` directive copies header contents into source files, which
+In C, the `#include` directive textually inserts header contents into source files, which
 can lead to inconsistent definitions if headers change. In Ada, the `with`
 clause references the package interface, ensuring consistency across the
 system.
@@ -1051,8 +1057,9 @@ It provides:
 - File handling capabilities
 
 Unlike C's `stdio.h` or Python's `print()`, `Ada.Text_IO` is a full package
-with strong typing and safety guarantees. Every operation is checked for
-correctness at compile time.
+with strong typing and safety guarantees. Many conditions are enforced at
+compile time, and any remaining I/O failures raise predefined exceptions such
+as `Data_Error`, `End_Error`, or `Device_Error`.
 
 Key features:
 
@@ -1361,8 +1368,8 @@ end;
 
 #### 3.3.2.4 Key Safety Features of Ada.Text_IO
 
-- **Buffer overflow protection**: `Get_Line` automatically tracks the actual
-  length
+- **Buffer overflow protection**: `Get_Line` stores the actual length in the
+   `Last` out parameter, preventing buffer over-read
 - **Explicit error handling**: All I/O operations can raise exceptions (e.g.,
   `Name_Error`, `Status_Error`)
 - **Type safety**: No implicit conversions between strings and numbers
@@ -1582,6 +1589,11 @@ This creates a project structure with:
 
 The generated `main.adb` contains:
 
+> Older templates may rely on `GNAT.IO`, but we standardize on `Ada.Text_IO`
+> throughout this book because it is portable across every Ada compiler. If
+> your template still uses `GNAT.IO`, replace it with the combination below to
+> keep your examples consistent.
+
 ```ada
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -1590,11 +1602,6 @@ begin
    Put_Line("Hello, World!");
 end Main;
 ```
-
-Older templates may rely on `GNAT.IO`, but we standardize on
-`Ada.Text_IO` throughout this book because it is portable across every Ada
-compiler. If your template still uses `GNAT.IO`, replace it with the
-combination above to keep your examples consistent.
 
 #### 3.4.1.1 Detailed Project Structure
 
@@ -1795,7 +1802,8 @@ GNAT will automatically:
 1. Compile `main.adb`
 2. Check dependencies
 3. Link the program
-4. Generate an executable named `main`
+4. Generate an executable whose name matches the main source unit (for
+   example, `main.adb` builds `./main`)
 
 #### 3.4.2.1 Detailed GNAT Compilation Process
 
@@ -2203,17 +2211,16 @@ declare
    File : File_Type;
 begin
    Open(File, In_File, "data.txt");
-   begin
-      -- Process file
-      Close(File);
-   exception
-      when others =>
-         Close(File);
-         raise;
-   end;
+   -- Process file
+   Close(File);
 exception
    when Name_Error =>
       Put_Line("File not found");
+   when others =>
+      if Ada.Text_IO.Is_Open(File) then
+         Close(File);
+      end if;
+      raise;
 end;
 ```
 
@@ -2223,8 +2230,9 @@ handling.
 #### 3.4.4.11 Detailed Explanation
 
 File operations must be enclosed in a `declare` block with proper exception
-handling. Wrapping the processing logic in a nested block guarantees the file
-is closed even when an exception propagates.
+handling. A single block that closes the file inside its exception handler
+keeps the code readable while guaranteeing cleanup when an exception
+propagates.
 
 For example, consider this code:
 
@@ -2233,17 +2241,16 @@ declare
    File : File_Type;
 begin
    Open(File, In_File, "data.txt");
-   begin
-      -- Process file
-      Close(File);
-   exception
-      when others =>
-         Close(File);
-         raise;
-   end;
+   -- Process file
+   Close(File);
 exception
    when Name_Error =>
       Put_Line("File not found");
+   when others =>
+      if Ada.Text_IO.Is_Open(File) then
+         Close(File);
+      end if;
+      raise;
 end;
 ```
 
@@ -2350,6 +2357,10 @@ type Array_Type is array (1..10) of Integer;
 Arr : Array_Type;
 Arr(10) := 5;
 ```
+
+> **Note:** When the index expression is a static value, modern compilers like
+> GNAT reject the code during compilation. When the index is computed at
+> runtime, the same out-of-range access raises `Constraint_Error`.
 
 Ada performs bounds checking on all array accesses. When an index is
 provably out of range, modern compilers flag the problem during compilation;
@@ -2644,6 +2655,10 @@ Create a program that:
 - Validates input ranges
 - Handles conversion errors
 
+*Hint:* Define constrained temperature types (for example `type Celsius is
+range -273 .. 5000;` and `type Fahrenheit is range -459 .. 9000;`) so Ada's
+range checks enforce valid conversions.
+
 #### 3.5.5.4 Exercise 4: Flight Data Logger
 
 Create a program that:
@@ -2679,7 +2694,7 @@ history of Ada's evolution:
   and enhanced container libraries
 - **Ada 2012**: Added contract-based programming, expression functions, and
   improved concurrency
-- **Ada 2022**: Refined the asynchronous transfer of control model first
+- **Ada 2023**: Refined the asynchronous transfer of control model first
    standardized in Ada 95, added richer contracts, new attributes, and enhanced
    array handling
 
