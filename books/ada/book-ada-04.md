@@ -1,0 +1,1151 @@
+# Chapter 4: Lexical Style and Basic Syntax
+
+> "Ada's syntax is designed to be explicit and readable. Every keyword and
+> symbol has a clear purpose, ensuring that code remains maintainable over
+> decades. This precision is critical in safety-critical systems where
+> ambiguity can lead to catastrophic failures."  
+> — Senior Architect, NASA Jet Propulsion Laboratory
+
+## 4.1 Syntax Notation (BNF)
+
+Ada's syntax is formally defined using Backus-Naur Form (BNF), a mathematical
+notation for describing context-free grammars. This formal definition ensures
+precise language specifications, eliminating ambiguity in language
+interpretation. The Ada Reference Manual (ARM) uses BNF to precisely define
+every syntactic construct, enabling consistent compiler implementations across
+platforms.
+
+BNF consists of production rules where non-terminal symbols (enclosed in angle
+brackets) are defined in terms of terminal symbols and other non-terminals.
+For example:
+
+```ebnf
+<if_statement> ::= if <condition> then
+                    <sequence_of_statements>
+                 [else
+                    <sequence_of_statements>]
+                 end if;
+```
+
+Here, `if`, `then`, `else`, and `end if` are terminal symbols (keywords),
+while `<condition>` and `<sequence_of_statements>` are non-terminals that can
+be further defined. The square brackets indicate optional elements.
+
+Ada's BNF rules are context-free, meaning they don't consider surrounding
+context when parsing. However, semantic checks (like type checking) are
+handled separately during compilation. This separation allows the BNF to focus
+purely on structure while the compiler handles meaning.
+
+### BNF in the Ada Reference Manual
+
+The ARM organizes syntax definitions by chapter. For example, Chapter 2
+defines lexical elements, Chapter 3 defines declarations, and Chapter 5
+defines statements. Each section uses BNF to precisely specify syntax rules.
+Consider this example from the ARM for loop statements:
+
+```ebnf
+<for_loop> ::= [for <loop_parameter_specification>]
+                loop
+                   <sequence_of_statements>
+                end loop [loop_label];
+```
+
+This rule specifies that a for-loop must start with `for`, followed by a
+parameter specification, then `loop`, then statements, and finally `end loop`
+with an optional label.
+
+### BNF vs. Other Notations
+
+While BNF is the standard for language definition, other notations exist:
+
+- Extended BNF (EBNF): Adds repetition operators like `*` (zero or more) and
+  `+` (one or more)
+- Syntax Diagrams: Visual representations of syntax rules
+- Parsing Expression Grammars (PEG): A newer alternative with different
+  parsing semantics
+
+Ada's ARM primarily uses BNF, but some modern versions incorporate EBNF
+extensions for readability. For example, the ARM might write:
+
+```ebnf
+<real_literal> ::= <digit_sequence> . <digit_sequence> [exponent]
+                 | . <digit_sequence> [exponent]
+                 | <digit_sequence> exponent
+```
+
+Where `[exponent]` indicates optional exponent part.
+
+### Why BNF Matters for Safety
+
+Formal syntax definitions are critical for safety-critical systems. When the
+ARM specifies syntax precisely, compiler vendors can implement consistent
+behavior. This eliminates "undefined behavior" common in languages like C/C++
+where syntax ambiguities lead to unpredictable results.
+
+For example, consider this C code snippet:
+
+```c
+if (a == b)
+   if (c == d)
+      do_something();
+else
+   do_something_else();
+```
+
+This has ambiguous structure due to missing braces. In Ada, the equivalent:
+
+```ada
+if A = B then
+   if C = D then
+      Do_Something;
+   end if;
+else
+   Do_Something_Else;
+end if;
+```
+
+is unambiguous because Ada requires explicit `end if` markers. BNF ensures
+this structure is precisely defined.
+
+### Real-World BNF Example: Array Declaration
+
+Let's examine a more complex example from the ARM:
+
+```ebnf
+<array_type_definition> ::= <array_definition> | <array_subtype_definition>
+
+<array_definition> ::= <index_constraint> [of <element_subtype_indication>]
+
+<index_constraint> ::= ( <index_constraint_element> {, <index_constraint_element>} )
+
+<index_constraint_element> ::= <discrete_subtype_definition>
+                            | <range>
+
+<range> ::= <simple_expression> .. <simple_expression>
+```
+
+This BNF rule defines how array types are declared in Ada. It shows that an
+array definition consists of an index constraint followed by an optional
+element subtype indication. The index constraint can have multiple elements
+separated by commas, where each element is either a discrete subtype
+definition or a range.
+
+This precise definition ensures consistent interpretation across compilers.
+For example, the following array declaration:
+
+```ada
+type My_Array is array (1..10, Positive range <>) of Integer;
+```
+
+is parsed correctly because the BNF rules define exactly how indices and
+ranges work.
+
+### Table 4.1: Common BNF Constructs in Ada
+
+| BNF Construct    | Meaning                  | Example Usage                           |
+| ---------------- | ------------------------ | --------------------------------------- |
+| `<non_terminal>` | Non-terminal symbol      | `<if_statement>`                        |
+| `"terminal"`     | Terminal symbol (literal) | `"if"`                                  |
+| Vertical bar (pipe) | Alternative              | Use the vertical bar character to separate alternatives |
+| `[ ]`            | Optional                 | `[else <statements>]`                   |
+| `{ }`            | Zero or more repetitions | `{, <parameter>}`                       |
+| `...`            | Omitted details          | `<complex_construct> ::= ...`           |
+
+### The Role of BNF in Compiler Development
+
+Compiler developers use BNF to build parsers that translate source code into
+abstract syntax trees. This process involves:
+
+1. **Lexical Analysis**: Breaking input into tokens (identifiers, keywords,
+   etc.)
+2. **Syntax Analysis**: Using BNF rules to check token sequences
+3. **Semantic Analysis**: Verifying type correctness and other rules
+
+The BNF definition ensures that all Ada compilers handle syntax consistently.
+For example, when parsing a `for` loop:
+
+```ada
+for I in 1..10 loop
+   Put_Line(Integer'Image(I));
+end loop;
+```
+
+The parser uses BNF rules to recognize:
+
+- `for` as keyword
+- `I` as identifier
+- `in` as keyword
+- `1..10` as range
+- `loop` as keyword
+- Statements between `loop` and `end loop`
+
+This consistency is critical for safety-critical systems where different
+compilers must behave identically.
+
+### BNF and Language Evolution
+
+Ada's BNF evolves with each standard. For example, Ada 2012 introduced aspect
+specifications:
+
+```
+<aspect_specification> ::= with <aspect_identifier> => <expression>
+```
+
+This rule defines how aspects like `Pre` and `Post` are written in contracts.
+The BNF ensures consistent implementation across compilers, allowing
+developers to rely on the same syntax features regardless of toolchain.
+
+## 4.2 Lexical Elements
+
+Lexical elements are the smallest units of meaning in Ada code. These include
+identifiers, reserved words, delimiters, and numeric literals. Proper
+understanding of lexical elements is essential for writing correct Ada code.
+
+### 4.2.1 Identifiers and Reserved Words
+
+Identifiers are names given to program entities like variables, types, and
+subprograms. Ada identifiers follow specific rules:
+
+- Must start with a letter (A-Z or a-z)
+- May contain letters, digits (0-9), and underscores (\_)
+- Cannot contain spaces or special characters
+- Are case-insensitive (e.g., `Temperature` and `temperature` are identical)
+
+Ada's case-insensitivity simplifies writing but requires disciplined naming
+conventions. The community standard uses PascalCase for types and subprograms,
+and snake_case for variables and parameters.
+
+#### 4.2.1.1 Reserved Words
+
+Reserved words are keywords with special meaning in Ada. They cannot be used
+as identifiers. All reserved words are lowercase. Here are the complete
+reserved words in Ada 2022:
+
+```text
+abort   else    new     return  and     elsif   not     select
+array   entry   null    separate
+at      exit    or      subtype
+begin   for     out     then
+block   function  package  type
+body    goto    pragma  use
+case    if      private  when
+constant  is    procedure  while
+declare   loop    range    with
+default   access  limited  record
+do        mod     abstract
+delay     then    and
+delta     then    or
+digits    then    others
+do        then    rem
+downto    then    renames
+else      then    return
+end       then    reverse
+entry     then    select
+exception then    task
+for       then    terminate
+function  then    type
+if        then    use
+in        then    when
+interface then    while
+is        then    with
+loop      then    xor
+mod       then    null
+new       then    abstract
+not       then    access
+null      then    aliased
+of        then    all
+or        then    and
+others    then    array
+package   then    at
+pragma    then    body
+private   then    constant
+procedure then    declare
+protected then    delayed
+raise     then    digits
+record    then    rem
+reject    then    renames
+return    then    reverse
+select    then    task
+then      then    terminate
+type      then    use
+when      then    while
+with      then    xor
+```
+
+#### 4.2.1.2 Naming Conventions
+
+Ada's case-insensitivity requires disciplined naming conventions to ensure
+readability:
+
+- **PascalCase for Types and Subprograms**: `Temperature_Sensor`,
+  `Calculate_Distance`
+- **snake_case for Variables and Parameters**: `current_temperature`,
+  `total_count`
+- **UPPERCASE for Constants**: `MAX_SPEED`, `PI`
+
+These conventions make code self-documenting. For example:
+
+```ada
+type Vehicle_Speed is new Float range 0.0 .. 350.0;
+current_speed : Vehicle_Speed := 0.0;
+max_speed : constant Vehicle_Speed := 300.0;
+```
+
+Here, `Vehicle_Speed` is clearly a type, `current_speed` is a variable, and
+`max_speed` is a constant.
+
+#### 4.2.1.3 Real-World Example: Aerospace System
+
+In an aircraft navigation system:
+
+```ada
+type Latitude is new Float range -90.0 .. 90.0;
+type Longitude is new Float range -180.0 .. 180.0;
+
+current_latitude : Latitude := 40.7128;
+current_longitude : Longitude := -74.0060;
+```
+
+The naming conventions clearly indicate the type of each variable. This
+prevents accidental mixing of latitude and longitude values—a critical safety
+feature in navigation systems.
+
+#### 4.2.1.4 Invalid Identifiers
+
+Some identifiers are invalid due to Ada's rules:
+
+- `123var` — starts with a digit
+- `my-var` — contains hyphen
+- `@name` — contains special character
+- `for` — reserved word
+
+Using invalid identifiers causes immediate compile-time errors:
+
+```text
+error: invalid identifier "123var"
+error: reserved word "for" cannot be used as identifier
+```
+
+#### 4.2.1.5 Table 4.2: Reserved Words by Category
+
+| Category           | Reserved Words                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| Control Structures | if, else, then, elsif, for, while, loop, exit, case, when, return, goto            |
+| Declarations       | type, constant, variable, function, procedure, package, task, protected, entry     |
+| Types              | integer, float, boolean, character, string, array, record, access, task, protected |
+| Operators          | and, or, not, xor, mod, rem, abs, not                                              |
+| Other              | null, new, access, aliased, abstract, limited, private, separate, use              |
+
+### 4.2.2 Delimiters and Separators
+
+Delimiters and separators are symbols that define structure in Ada code. They
+include arithmetic operators, relational operators, punctuation marks, and
+grouping symbols.
+
+#### 4.2.2.1 Arithmetic Operators
+
+Ada supports standard arithmetic operators:
+
+```text
++  Addition
+-  Subtraction or unary negation
+*  Multiplication
+/  Division
+** Exponentiation
+```
+
+These operators follow standard precedence rules. For example, multiplication
+has higher precedence than addition:
+
+```ada
+X := 2 + 3 * 4;  -- X = 14, not 20
+```
+
+Parentheses can override precedence:
+
+```ada
+X := (2 + 3) * 4;  -- X = 20
+```
+
+#### 4.2.2.2 Relational Operators
+
+Relational operators compare values:
+
+```text
+=  Equality
+/= Not equal
+<  Less than
+>  Greater than
+<= Less than or equal
+>= Greater than or equal
+```
+
+These operators work with numeric types, characters, and strings:
+
+```ada
+if Temperature < 0.0 then
+   Freeze_Detected;
+end if;
+
+if Name = "John" then
+   Greet_John;
+end if;
+```
+
+#### 4.2.2.3 Punctuation and Grouping Symbols
+
+Ada uses several punctuation symbols:
+
+```text
+.  Decimal point or record field access
+,  Parameter separator or array index separator
+;  Statement terminator
+:  Declaration separator or label prefix
+( )  Grouping expressions or function parameters
+[ ]  Not used in standard Ada (reserved for future use)
+{ }  Not used in standard Ada (reserved for future use)
+```
+
+The dot (`.`) has two primary uses:
+
+1. **Decimal point in real literals**:
+
+   ```ada
+   Pi : constant Float := 3.14159;
+   ```
+
+2. **Record field access**:
+
+   ```ada
+   type Point is record
+      X : Float;
+      Y : Float;
+   end record;
+
+   P : Point := (X => 1.0, Y => 2.0);
+   X_Value : Float := P.X;
+   ```
+
+The colon (`:`) is used for:
+
+1. **Variable declarations**:
+
+   ```ada
+   X : Integer := 10;
+   ```
+
+2. **Labels**:
+
+   ```ada
+   Outer_Loop: for I in 1..10 loop
+      Inner_Loop: for J in 1..10 loop
+         if I = J then
+            exit Outer_Loop;
+         end if;
+      end loop Inner_Loop;
+   end loop Outer_Loop;
+   ```
+
+The semicolon (`;`) terminates statements:
+
+```ada
+X := 10;  -- Terminates assignment statement
+Y := 20;  -- Terminates assignment statement
+```
+
+#### 4.2.2.4 Special Delimiters
+
+Ada includes special delimiters for specific purposes:
+
+```text
+=>  Association symbol (used in record aggregates, function calls)
+..  Range operator (1..10)
+```
+
+The association symbol (`=>`) is used in:
+
+1. **Record aggregates**:
+
+   ```ada
+   P : Point := (X => 1.0, Y => 2.0);
+   ```
+
+2. **Named parameter passing**:
+
+   ```ada
+   Calculate_Distance(Lat1 => 40.7128, Lon1 => -74.0060);
+   ```
+
+The range operator (`..`) defines ranges:
+
+```ada
+for I in 1..10 loop
+   -- Executes 10 times
+end loop;
+```
+
+#### 4.2.2.5 Table 4.3: Common Delimiters and Their Usage
+
+| Delimiter | Usage                                 | Example                                |
+| --------- | ------------------------------------- | -------------------------------------- |
+| +         | Addition                              | X := A + B                             |
+| -         | Subtraction or unary negation         | X := -Y                                |
+| \*        | Multiplication                        | Area := Width \* Height                |
+| /         | Division                              | Average := Sum / Count                 |
+| \*\*      | Exponentiation                        | Square := X \*\* 2                     |
+| =         | Equality                              | if A = B then                          |
+| /=        | Not equal                             | if A /= B then                         |
+| <         | Less than                             | if Temp < 100.0 then                   |
+| >         | Greater than                          | if Speed > Max_Speed then              |
+| <=        | Less than or equal                    | if Count <= Max_Count then             |
+| >=        | Greater than or equal                 | if Pressure >= Min_Pressure then       |
+| .         | Decimal point or record field access  | Pi := 3.14159; X := Point.X            |
+| ,         | Parameter separator                   | Add(A, B, C)                           |
+| ;         | Statement terminator                  | X := 10; Y := 20;                      |
+| :         | Declaration separator or label prefix | X : Integer := 10; Outer_Loop: for ... |
+| =>        | Association symbol                    | (X => 1.0, Y => 2.0)                   |
+| ..        | Range operator                        | for I in 1..10 loop                    |
+
+#### 4.2.2.6 Real-World Example: Medical Device System
+
+In a medical device that monitors patient vital signs:
+
+```ada
+type Heart_Rate is new Integer range 20..250;
+type Blood_Pressure is record
+   Systolic : Integer range 40..250;
+   Diastolic : Integer range 20..150;
+end record;
+
+current_heart_rate : Heart_Rate := 72;
+current_blood_pressure : Blood_Pressure :=
+   (Systolic => 120, Diastolic => 80);
+
+if current_heart_rate > 100 then
+   Alert_System.Activate;
+end if;
+```
+
+Here, the delimiters define structure clearly:
+
+- `:` in declarations
+- `=>` in record aggregates
+- `.` for record field access
+- `>` for comparison
+- `;` to terminate statements
+
+This precise use of delimiters prevents ambiguity in safety-critical code.
+
+#### 4.2.2.7 Common Mistakes with Delimiters
+
+New Ada programmers often make these mistakes:
+
+1. **Missing semicolons**:
+
+   ```ada
+   X := 10  -- Missing semicolon
+   Y := 20;
+   ```
+
+   This causes a compile error: "missing semicolon"
+
+2. **Incorrect use of `=` vs `:=`**:
+
+   ```ada
+   X = 10;  -- Should be X := 10;
+   ```
+
+   `=` is for comparison, `:=` for assignment
+
+3. **Confusing `.` for decimal point vs record access**:
+
+   ```ada
+   Point.X := 1.0;  -- Correct
+   Point.1.0 := 2.0;  -- Invalid syntax
+   ```
+
+## 4.3 Numeric Literals
+
+Numeric literals represent numbers in Ada code. They include integers, real
+numbers, and based literals (numbers in different bases).
+
+### 4.3.1 Integer Literals
+
+Integer literals represent whole numbers. They can be:
+
+- Decimal: `42`, `1234567890`
+- Based: `16#FF#`, `2#1010#`, `8#777#`
+- Based with exponent: `16#FF#E-2` (255 × 10^-2)
+
+Integer literals cannot contain decimal points or exponents. They can include
+underscores for readability:
+
+```ada
+Large_Number : constant Integer := 1_000_000_000;
+Binary_Value : constant Integer := 2#1010_1010#;
+```
+
+#### 4.3.1.1 Integer Range Constraints
+
+Ada integers have implementation-defined ranges, but must support at least:
+
+- Standard Integer: -2^31 to 2^31-1 (32-bit)
+- Long_Integer: -2^63 to 2^63-1 (64-bit)
+
+For safety-critical systems, programmers often define precise integer ranges:
+
+```ada
+type Sensor_Value is range 0..100;
+type Temperature is range -50..150;
+```
+
+These ranges ensure values stay within physical limits. Attempting to assign
+an out-of-range value causes a constraint error:
+
+```ada
+Value : Sensor_Value := 101;  -- Raises CONSTRAINT_ERROR
+```
+
+#### 4.3.1.2 Real-World Example: Aerospace System
+
+In an aircraft altitude system:
+
+```ada
+type Altitude_Feet is new Integer range 0..50000;
+current_altitude : Altitude_Feet := 35000;
+```
+
+This ensures altitude values never exceed 50,000 feet—a critical safety
+constraint.
+
+#### 4.3.1.3 Common Integer Literal Mistakes
+
+1. **Using decimal point in integer literals**:
+
+   ```ada
+   X : Integer := 10.0;  -- Error: real literal cannot be assigned to integer
+   ```
+
+2. **Invalid based literal syntax**:
+
+   ```ada
+   X : Integer := 16#FF;  -- Error: missing closing #
+   ```
+
+3. **Using invalid characters in based literals**:
+
+   ```ada
+   X : Integer := 2#123#;  -- Error: binary digits must be 0 or 1
+   ```
+
+### 4.3.2 Real Literals
+
+Real literals represent floating-point numbers. They can be:
+
+- Decimal: `3.14`, `0.001`, `1.0E-5`
+- Scientific notation: `6.022E23`, `1.602e-19`
+- Based: `16#FF#E-2`, `2#1.01#E1`
+
+Real literals must contain a decimal point or exponent. They can include
+underscores for readability:
+
+```ada
+Pi : constant Float := 3.1415926535_89793;
+Avogadro : constant Float := 6.022_140_76E23;
+```
+
+#### 4.3.2.1 Real Literal Precision
+
+Ada defines two standard floating-point types:
+
+- `Float`: Minimum precision of 6 decimal digits
+- `Long_Float`: Minimum precision of 12 decimal digits
+
+Programmers can define custom floating-point types with precise precision:
+
+```ada
+type Voltage is digits 6 range 0.0..12.0;
+type Pressure is digits 8 range 0.0..1000.0;
+```
+
+Here, `digits 6` specifies at least 6 significant decimal digits of precision.
+
+#### 4.3.2.2 Real-World Example: Scientific Calculation
+
+In a physics simulation:
+
+```ada
+type Acceleration is digits 10 range -100.0..100.0;
+gravity : constant Acceleration := 9.80665;
+speed : Acceleration := 0.0;
+time : Float := 10.0;
+
+speed := gravity * time;  -- 98.0665
+```
+
+This ensures precise calculation of acceleration values.
+
+#### 4.3.2.3 Common Real Literal Mistakes
+
+1. **Missing decimal point**:
+
+   ```ada
+   X : Float := 10;  -- Valid but not ideal; better to use 10.0
+   ```
+
+2. **Invalid exponent format**:
+
+   ```ada
+   X : Float := 1.0E-2.0;  -- Error: exponent must be integer
+   ```
+
+3. **Using commas as decimal separators**:
+
+   ```ada
+   X : Float := 3,14;  -- Error: comma is not allowed
+   ```
+
+### 4.3.3 Based Literals
+
+Based literals represent numbers in different bases. They use the format:
+
+```text
+base#digits#
+```
+
+Where:
+
+- `base` is an integer between 2 and 16
+- `digits` are valid for the base (0-9 for base 10, 0-9 and A-F for base 16)
+
+Based literals can include underscores for readability:
+
+```ada
+Binary_Value : constant Integer := 2#1010_1010#;
+Hex_Value : constant Integer := 16#FF_FF#;
+Octal_Value : constant Integer := 8#777#;
+```
+
+#### 4.3.3.1 Based Literals with Exponents
+
+Based literals can include exponents:
+
+```text
+base#digits#Eexponent
+```
+
+For example:
+
+```ada
+Hex_With_Exponent : constant Float := 16#FF#E-2;  -- 255 × 10^-2 = 2.55
+Binary_With_Exponent : constant Float := 2#1.01#E1;  -- 1.25 × 10^1 = 12.5
+```
+
+#### 4.3.3.2 Base Conversion Examples
+
+Here are common base conversions:
+
+| Base                  | Example   | Decimal Equivalent |
+| --------------------- | --------- | ------------------ |
+| Binary                | 2#1010#   | 10                 |
+| Hexadecimal           | 16#FF#    | 255                |
+| Octal                 | 8#777#    | 511                |
+| Base 10               | 10#123#   | 123                |
+| Base 16 with exponent | 16#FF#E-2 | 2.55               |
+| Base 2 with exponent  | 2#1.01#E1 | 12.5               |
+
+#### 4.3.3.3 Real-World Example: Embedded Systems
+
+In embedded systems, based literals are commonly used for:
+
+- Memory addresses (hexadecimal)
+- Bit masks (binary)
+- Configuration values (various bases)
+
+```ada
+-- Memory address in hex
+Memory_Address : constant Integer := 16#FFFF#;
+
+-- Bit mask for flags
+Flag_Bit_Mask : constant Integer := 2#0000_1000#;
+
+-- Configuration value in octal
+Config_Value : constant Integer := 8#77#;
+```
+
+#### 4.3.3.4 Common Based Literal Mistakes
+
+1. **Invalid base**:
+
+   ```ada
+   X : Integer := 1#1#;  -- Error: base must be between 2 and 16
+   ```
+
+2. **Invalid digits for base**:
+
+   ```ada
+   X : Integer := 2#2#;  -- Error: binary digits must be 0 or 1
+   ```
+
+3. **Missing # symbols**:
+
+   ```ada
+   X : Integer := 16#FF;  -- Error: missing closing #
+   ```
+
+## 4.4 Comments, Pragmas, and Aspects
+
+### 4.4.1 Writing Effective Comments
+
+Comments in Ada start with `--` and continue to the end of the line. They are
+ignored by the compiler but critical for documentation.
+
+#### 4.4.1.1 Comment Best Practices
+
+1. **Explain why, not what**: Comments should describe the reasoning behind
+   code, not just repeat what the code does.
+
+   ```ada
+   -- Calculate Haversine distance for great circle navigation
+   -- This formula accounts for Earth's curvature and is accurate
+   -- for distances up to 20,000 kilometers.
+   Distance := Calculate_Haversine(Lat1, Lon1, Lat2, Lon2);
+   ```
+
+2. **Document contracts**: Use comments to explain preconditions,
+   postconditions, and invariants.
+
+   ```ada
+   -- Pre: B must not be zero to avoid division by zero
+   -- Post: Result * B = A
+   function Divide(A, B : Integer) return Integer is
+   begin
+      return A / B;
+   end Divide;
+   ```
+
+3. **Comment complex algorithms**: Explain non-obvious logic.
+
+   ```ada
+   -- This algorithm uses Newton-Raphson iteration to find
+   -- square roots with high precision. It converges quickly
+   -- for most inputs but may diverge for negative numbers.
+   ```
+
+4. **Comment configuration values**: Explain why specific values are chosen.
+
+   ```ada
+   -- Maximum altitude for commercial aircraft: 50,000 feet
+   Max_Altitude : constant Float := 50_000.0;
+   ```
+
+5. **Comment safety-critical sections**: Highlight code where errors could
+   cause physical harm.
+
+   ```ada
+   -- Safety-critical section: validate sensor readings before use
+   if Sensor_Value < 0.0 or Sensor_Value > 100.0 then
+      raise Invalid_Sensor_Value;
+   end if;
+   ```
+
+#### 4.4.1.2 Comment Formatting
+
+Ada comments should follow these formatting rules:
+
+- Start with `--` followed by a space
+- Keep lines under 80 characters
+- Use consistent indentation
+- Place comments above the code they describe
+
+```ada
+-- Calculate distance using Haversine formula
+-- This formula accounts for Earth's curvature and is accurate
+-- for distances up to 20,000 kilometers. The formula is:
+-- a = sin²(Δφ/2) + cos(φ1) * cos(φ2) * sin²(Δλ/2)
+-- c = 2 * atan2(√a, √(1−a))
+-- d = R * c
+-- Where φ is latitude, λ is longitude, R is Earth's radius
+function Calculate_Haversine(Lat1, Lon1, Lat2, Lon2 : Float) return Float is
+   -- Implementation details
+end Calculate_Haversine;
+```
+
+#### 4.4.1.3 Real-World Example: Medical Device System
+
+In a medical device that monitors patient vital signs:
+
+```ada
+-- Heart rate must be between 20 and 250 beats per minute
+-- Values outside this range indicate sensor error or patient emergency
+type Heart_Rate is range 20..250;
+
+-- Blood pressure readings must be within physiological limits
+-- Systolic: 40-250 mmHg, Diastolic: 20-150 mmHg
+type Blood_Pressure is record
+   Systolic : Integer range 40..250;
+   Diastolic : Integer range 20..150;
+end record;
+
+-- Safety-critical check: validate vital signs before processing
+if Current_Heart_Rate < 20 or Current_Heart_Rate > 250 then
+   -- This indicates sensor failure or medical emergency
+   Trigger_Emergency_Alert;
+end if;
+```
+
+#### 4.4.1.4 Note Box: The Importance of Comments in Safety-Critical Systems
+
+> "In Ada, comments are not optional—they are the glue that holds complex
+> systems together. A well-commented Ada program is a living specification.
+> When a system has a 30-year lifecycle, the original developers may no longer
+> be available. Comments ensure that new engineers can understand the code's
+> intent and constraints without guessing."
+>
+> — Senior Architect, NASA Jet Propulsion Laboratory
+
+### 4.4.2 Introduction to Pragmas
+
+Pragmas are compiler directives that provide special instructions to the
+compiler. They are not part of the language semantics but affect compilation
+behavior.
+
+#### 4.4.2.1 Common Pragmas
+
+Ada includes several standard pragmas:
+
+- **Inline**: Requests the compiler to inline a subprogram
+- **Assert**: Checks a condition at runtime
+- **Suppress**: Disables certain checks for performance
+- **Restrictions**: Sets language restrictions for safety-critical systems
+- **Import**: Links external code (e.g., C functions)
+
+#### 4.4.2.2 Inline Pragma
+
+The `Inline` pragma requests the compiler to replace a function call with its
+body:
+
+```ada
+pragma Inline(Calculate_Distance);
+
+function Calculate_Distance(Lat1, Lon1, Lat2, Lon2 : Float) return Float is
+   -- Implementation
+end Calculate_Distance;
+```
+
+This can improve performance for small, frequently called functions. However,
+overuse can increase code size.
+
+#### 4.4.2.3 Assert Pragma
+
+The `Assert` pragma checks a condition at runtime:
+
+```ada
+pragma Assert(Speed <= Max_Speed);
+
+if Speed > Max_Speed then
+   raise Speed_Exceeded;
+end if;
+```
+
+This provides runtime verification of critical conditions. In safety-critical
+systems, assertions are often enabled in testing but disabled in production.
+
+#### 4.4.2.4 Suppress Pragma
+
+The `Suppress` pragma disables certain checks for performance:
+
+```ada
+pragma Suppress(All_Checks);
+-- Safety-critical section: must be manually verified
+```
+
+This should be used with extreme caution. The Ada Reference Manual states:
+
+> "The use of suppress pragmas is strongly discouraged in safety-critical
+> systems. They can lead to undefined behavior if used incorrectly."
+
+#### 4.4.2.5 Restrictions Pragma
+
+The `Restrictions` pragma limits language features for safety-critical
+systems:
+
+```ada
+pragma Restrictions(No_Exception_Propagation);
+pragma Restrictions(No_Task_Termination);
+```
+
+This is commonly used in Ravenscar profile for real-time systems.
+
+#### 4.4.2.6 Real-World Example: Aerospace System
+
+In an aircraft control system:
+
+```ada
+-- Safety-critical function: must be inlined for performance
+pragma Inline(Calculate_Altitude);
+
+function Calculate_Altitude(Pressure : Float) return Float is
+   -- Implementation
+end Calculate_Altitude;
+
+-- Safety check: ensure altitude is within limits
+pragma Assert(Altitude >= 0.0 and Altitude <= 50_000.0);
+```
+
+#### 4.4.2.7 Note Box: Pragmas in Safety-Critical Systems
+
+> "Pragmas in Ada are a double-edged sword: they provide powerful control but
+> must be used with caution. In safety-critical systems, the use of pragmas is
+> strictly governed by coding standards to prevent unintended consequences.
+> For example, the DO-178C standard requires all pragma usage to be documented
+> and justified in the software development plan."
+>
+> — Principal Engineer, Airbus Defense and Space
+
+### 4.4.3 Introduction to Aspect Specifications
+
+Aspect specifications are a modern Ada feature (introduced in Ada 2012) that
+provide declarative annotations for code. They are similar to pragmas but more
+integrated with the language syntax.
+
+#### 4.4.3.1 Aspect Syntax
+
+Aspects use the `with` keyword followed by the aspect name and value:
+
+```ada
+function Divide(A, B : Integer) return Integer
+  with Pre => B /= 0,
+       Post => Divide'Result * B = A
+is
+begin
+   return A / B;
+end Divide;
+```
+
+Here, `Pre` and `Post` are aspect specifications for preconditions and
+postconditions.
+
+#### 4.4.3.2 Common Aspects
+
+Ada includes several standard aspects:
+
+- **Pre**: Specifies a precondition (must be true before the subprogram
+  executes)
+- **Post**: Specifies a postcondition (must be true after the subprogram
+  executes)
+- **Type_Invariant**: Specifies constraints on a type's state
+- **Size**: Specifies memory layout for records
+- **Inline**: Similar to pragma but more integrated
+
+#### 4.4.3.3 Contract-Based Programming
+
+Aspects enable contract-based programming where correctness is formally
+specified:
+
+```ada
+function Withdraw(Account : in out Account_Type; Amount : Money) return Money
+  with Pre => Amount > 0.0 and Amount <= Account.Balance,
+       Post => Withdraw'Result = Account.Balance'Old - Amount
+is
+begin
+   Account.Balance := Account.Balance - Amount;
+   return Account.Balance;
+end Withdraw;
+```
+
+If a caller violates these contracts, the compiler raises an error—preventing
+runtime failures.
+
+#### 4.4.3.4 Type Invariants
+
+Type invariants specify constraints on a type's state:
+
+```ada
+type Valid_Heart_Rate is Heart_Rate
+  with Dynamic_Predicate => Valid_Heart_Rate in 30..250;
+```
+
+This ensures any variable of type `Valid_Heart_Rate` stays within
+physiological ranges.
+
+#### 4.4.3.5 Real-World Example: Medical Device System
+
+In a medical device that monitors patient vital signs:
+
+```ada
+type Heart_Rate is range 20..250
+  with Dynamic_Predicate => Heart_Rate in 30..250;
+
+procedure Update_Heart_Rate(Rate : in Heart_Rate)
+  with Pre => Rate in 30..250,
+       Post => Current_Heart_Rate = Rate;
+```
+
+This ensures heart rate values stay within physiological limits and provides
+formal verification of the update operation.
+
+#### 4.4.3.6 Aspect vs. Pragma
+
+Aspects are generally preferred over pragmas because:
+
+- They are part of the language syntax
+- They can be checked at compile time
+- They integrate better with static analysis tools
+- They are more readable and self-documenting
+
+For example, this pragma:
+
+```ada
+pragma Assert(Speed <= Max_Speed);
+```
+
+Is better written as an aspect:
+
+```ada
+procedure Adjust_Speed(New_Speed : Float)
+  with Pre => New_Speed <= Max_Speed;
+```
+
+#### 4.4.3.7 Table 4.4: Common Aspect Specifications in Ada
+
+| Aspect            | Purpose                  | Example Usage                                |
+| ----------------- | ------------------------ | -------------------------------------------- |
+| Pre               | Precondition             | `with Pre => B /= 0`                         |
+| Post              | Postcondition            | `with Post => Result * B = A`                |
+| Type_Invariant    | Type constraints         | `with Type_Invariant => X in 0..100`         |
+| Dynamic_Predicate | Dynamic type constraints | `with Dynamic_Predicate => Value in 30..250` |
+| Size              | Memory layout control    | `with Size => 32`                            |
+| Inline            | Subprogram inlining      | `with Inline`                                |
+
+#### 4.4.3.8 Real-World Example: Financial Transaction System
+
+In a financial transaction system:
+
+```ada
+type Currency is delta 0.01 digits 15;
+
+function Process_Transaction(Amount : Currency) return Boolean
+  with Pre => Amount > 0.0,
+       Post => Process_Transaction'Result = (Transaction_Amount = Amount);
+```
+
+This ensures transactions are always positive and provides formal verification
+of the transaction process.
+
+#### 4.4.3.9 The Future of Aspect Specifications
+
+Ada continues to enhance aspect specifications in each standard. Ada 2022
+added:
+
+- Support for aspects on anonymous types
+- Enhanced contract support in generic units
+- New aspects for parallelism and concurrency
+
+These enhancements make Ada's contract-based programming more powerful and
+flexible.
+
+> "Ada's aspect specifications transform what would be runtime checks in other
+> languages into compile-time verifications. This is the foundation of Ada's
+> reliability in safety-critical systems."  
+> — Senior Software Engineer, NASA Jet Propulsion Laboratory
