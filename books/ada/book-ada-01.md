@@ -334,68 +334,24 @@ does—you read its contract and scope."
 
 ### 1.2.3. Strong Typing as a Foundation
 
-Strong typing in Ada means _no implicit conversions between unrelated types_.
-This prevents subtle errors that plague weaker-typed languages. Consider a
-common mistake in C:
+Ada's reputation for reliability begins with its type system. Every value must
+declare not only its representation but also its intent, preventing mix-ups like
+adding meters to feet or accepting sensor readings outside physical limits.
+Rather than walk through the full code in this introductory chapter, keep the
+following big ideas in mind:
 
-```c
-// C code: accidentally adding meters to feet
-int meters = 10;
-int feet = 32;
-int total = meters + feet; // Compiles, but is physically incorrect
-```
+- Strong typing blocks implicit conversions between unrelated units.
+- Subtypes and derived types let you tighten valid ranges without duplicating
+  logic.
+- Enumeration and private types encode domain rules directly in the code.
 
-In Ada, this would be impossible because meters and feet are distinct types:
-
-```ada
-type Meters is new Integer;
-type Feet is new Integer;
-
-Distance : Meters := 10;
-Height : Feet := 32;
-
--- This line fails to compile:
-Distance := Distance + Height; -- Error: incompatible types for "+" operator
-```
-
-Ada's strong typing extends to:
-
-- **Subtypes**: Restricting values to specific ranges
-- **Enumerated Types**: Preventing invalid states (e.g.,
-  `type Color is (Red, Green, Blue);`)
-- **Derived Types**: Creating new types with inherited behavior but distinct
-  identity
-
-#### Practical Example: Aircraft Fuel System
-
-Consider a fuel management system where `Fuel_Level` must be between 0 and 100
-liters:
-
-```ada
-type Fuel_Level is new Float range 0.0 .. 100.0;
-Current_Fuel : Fuel_Level := 50.0; -- Always initialize variables
-
--- Attempting to assign 150.0 would cause a constraint error
-Current_Fuel := 150.0; -- Raises CONSTRAINT_ERROR at runtime
-```
-
-This prevents runtime crashes caused by invalid fuel readings—a critical safety
-feature. The constraint checking occurs at runtime, but the strong typing
-ensures that values cannot be accidentally assigned from incompatible types.
-
-Table 2. Strong Typing Examples in Ada vs. C
-
-| Scenario               | C Code                                            | Ada Code                                                                                                         |
-| ---------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Invalid Array Index    | `int arr[10]; arr[15] = 5;` (undefined behavior)  | `type Int_Array is array (1..10) of Integer; Arr : Int_Array; Arr(15) := 5;` (raises CONSTRAINT_ERROR)           |
-| Uninitialized Variable | `int x; printf("%d", x);` (undefined value)       | `X : Integer; Put_Line (Integer'Image (X));` (GNAT warns: "X may be referenced before it has a value")       |
-| Type Mismatch          | `float f = 5.0; int i = f;` (implicit conversion) | `F : Float := 5.0; I : Integer := F;` (compile-time error: no implicit conversion)                               |
-
-Strong typing is not just about preventing errors—it also makes code
-self-documenting. When a function parameter is declared as `Temperature_Sensor`,
-developers immediately understand its purpose without reading external
-documentation. This reduces miscommunication in large teams and accelerates
-onboarding for new engineers.
+Chapter 2, "Ada's Strong Typing System," expands each of these points with
+complete examples, historical case studies, and hands-on exercises. There you'll
+see the detailed meter-versus-foot walkthrough, how constraint checks guard a
+fuel management system, and why real projects like the Mars Climate Orbiter are
+still cited as cautionary tales. For now, remember that Ada treats types as
+contracts: once you define the meaning of a value, the compiler enforces it all
+the way to production.
 
 ## 1.3. Key Language Features at a Glance
 

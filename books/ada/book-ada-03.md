@@ -113,9 +113,9 @@ prioritize brevity, Ada prioritizes clarity and safety. This is particularly
 important in safety-critical systems where code must remain understandable for
 decades.
 
-*Note: Recent C and C++ revisions permit brace-less `if`/`else` statements like
-the example above; Ada's explicit terminators keep control flow unambiguous
-regardless of formatting style.*
+*Note: Recent C and C++ revisions permit brace-less `if`/`else` statements;
+Ada's explicit `end if` keeps control flow unambiguous even when other
+languages rely on indentation or style guidelines to imply scope.*
 
 #### 3.1.1.3 Real-World Example: Aeronautics Industry
 

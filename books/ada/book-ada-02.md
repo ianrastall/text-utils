@@ -4,6 +4,12 @@ Airbus Defence and Space engineers describe Ada's type system as a first line
 of defense that turns potential debugging nightmares into compile-time
 feedback. This chapter explores how that philosophy plays out in practice.
 
+Chapter 1 skimmed the surface—highlighting Ada's insistence on meaningful types
+without diving into the mechanics. Here we slow down, rebuild those anecdotes in
+full code, and layer on the abstractions (subtypes, derived types, private
+types) that make Ada's model so distinctive. Treat this chapter as the hands-on
+companion to the earlier overview.
+
 ## 2.1 The Philosophy of Ada's Type System
 
 Ada's type system is fundamentally different from most programming languages.
