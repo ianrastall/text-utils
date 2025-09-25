@@ -61,12 +61,13 @@ high-integrity systems where reliability is non-negotiable.
 languages treated types as flexible containers where data could be freely
 manipulated. C, for example, allows implicit conversions between types, which
 can lead to subtle bugs that are difficult to detect. Catastrophes such as the
-Therac-25 radiation therapy overdoses (1985-1987)—implemented largely in
-assembly with minimal safeguards—showed how missing validation layers, weak
-process control, and insufficient tooling can combine to deadly effect. Ada's
-designers did not claim that types alone would prevent such failures; rather,
-they argued that strong compile-time guarantees provide one of several
-reinforcing mechanisms required for building safer, auditable systems.
+Therac-25 radiation therapy overdoses (1985-1987) offer a sobering reminder.
+That system was implemented largely in assembly, and the tragedies stemmed
+primarily from race conditions, inadequate safety interlocks, and weak process
+controls. Ada's designers never suggested that a type system could
+single-handedly prevent such failures; instead, they argued that strong
+compile-time guarantees can complement disciplined engineering, independent
+verification, and hardware interlocks as part of a broader safety strategy.
 
 **Modern Relevance**: In today's world of autonomous vehicles, medical
 devices, and aerospace systems, the stakes are higher than ever. A single
@@ -182,15 +183,16 @@ Result := Calculate_Speed ("100", 5.0); -- Compile-time error: string not conver
 
 **Real-World Impact**: NASA's Mars Climate Orbiter mission failure (1999) was
 traced to a unit conversion mismatch between metric and imperial forces in a
-ground-control component written in C/C++. The root cause involved a chain of
-systems-engineering lapses, yet the absence of type-level unit distinctions
-made the defect easier to introduce and harder to detect before launch. Ada's
-approach—forcing developers to create distinct types for different units—would
-have required an explicit conversion and provided another opportunity to catch
-the mismatch, assuming the project adopted those types consistently. Dynamic
-languages like Python can now be augmented with optional static analysis tools
-(e.g., `mypy` or `pydantic`) to catch similar inconsistencies, but that safety
-net depends on discipline, whereas Ada bakes it into the core language model:
+ground-control component written in C/C++. Subsequent reviews highlighted
+broader systems-engineering oversights—testing gaps, interface documentation
+issues, and process breakdowns—that allowed the defect to persist. A language
+like Ada cannot overcome weak systems engineering, yet its insistence on
+distinct types for different units would have forced an explicit conversion and
+provided another opportunity to catch the mismatch _had the project chosen to
+encode the units that way_. Dynamic languages such as Python can be augmented
+with tools (`mypy`, `pydantic`) to obtain similar benefits, but those safeguards
+depend on consistent adoption, whereas Ada bakes the checks into everyday
+compilation:
 
 ```ada
 type Metric_Force is new Float;
@@ -458,13 +460,36 @@ for the category—powers of ten for decimal fixed point or powers of two for
 ordinary fixed point. Otherwise, the language applies well-defined rounding
 rather than silently losing track of precision.
 
-Designers still need to budget for scaling limits, intermediate rounding, and
-overflow. Choosing an aggressive `delta` increases storage requirements, and
-cumulative operations can trigger rounding at the declared precision or even
-raise `Constraint_Error` if an intermediate result exceeds the subtype range.
-Production code often supplements the type declaration with explicit range
-checks, widened accumulator types for multi-step calculations, or rational
-arithmetic when results must remain exact.
+The flip side is that designers must budget explicitly for scaling limits,
+rounding modes, and overflow. Choosing a very small `delta` increases storage
+requirements and narrows the safe range. Operations that momentarily leave the
+declared range—such as adding many large values, multiplying, or dividing—can
+trigger `Constraint_Error` even if the final, rounded result would fall back
+into range. The Ada Reference Manual defines two rounding modes
+(`Machine_Rounding` and `Machine_Truncation`), and the compiler picks one based
+on the declaration; either way, values are rounded to the nearest representable
+quantum, which may not match business rules without additional logic. Serious
+financial systems often pair fixed-point declarations with widened accumulator
+types, guard rails that detect saturation, or even rational/integer
+representations for audit trails.
+
+```ada
+declare
+   subtype Daily_Total is Currency range 0.00 .. 10_000.00;
+   Accumulator : Daily_Total := 9_999.99;
+begin
+   -- Raises Constraint_Error because the intermediate sum exceeds the subtype
+   Accumulator := Accumulator + 0.02;
+exception
+   when Constraint_Error =>
+      Put_Line ("Daily total exceeded");
+end;
+```
+
+Even though the final, mathematically rounded amount would be 10_000.01, the
+assignment fails before rounding because the value strays outside the subtype.
+Planning for those edge cases is just as important as selecting the right
+`delta`.
 
 **Fixed-Point vs. Floating-Point**: Ada distinguishes between two types of
 numeric types:
@@ -666,6 +691,12 @@ Ada allows for record types where the structure can vary based on a
 discriminant:
 
 ```ada
+type Device_Kind is (Sensor, Actuator, Controller);
+```
+
+With that discriminant type in place, you can define a record whose layout adapts to the `Kind` value:
+
+```ada
 type Device_Type (Kind : Device_Kind) is record
    case Kind is
       when Sensor =>
@@ -688,7 +719,13 @@ This creates a single record type that can represent different kinds of
 devices, with only the relevant fields present based on the discriminant
 value.
 
-**Real-World Example**: In an industrial automation system:
+**Real-World Example**: In an industrial automation system you might introduce a second discriminant type:
+
+```ada
+type Component_Type is (Motor, Sensor, Controller);
+```
+
+You can then describe the machine components succinctly:
 
 ```ada
 type Machine_Component (Type : Component_Type) is record
@@ -1037,7 +1074,11 @@ together:
 -- Subtype for validated altitude
 subtype Altitude_Feet is Float range 0.0 .. 50_000.0;
 
--- Derived type for distinct units
+-- Derived types for geospatial units
+type Latitude_Degrees is new Float range -90.0 .. 90.0;
+type Longitude_Degrees is new Float range -180.0 .. 180.0;
+
+-- Derived type for distinct speed units
 type Airspeed_Knots is new Float range 0.0 .. 1000.0;
 type Mach_Number is new Float range 0.0 .. 3.0;
 
@@ -1045,13 +1086,16 @@ type Mach_Number is new Float range 0.0 .. 3.0;
 package Navigation_System is
    type Waypoint is private;
 
-   procedure Add_Waypoint (W : in out Waypoint; Lat : Float; Lon : Float);
+   procedure Add_Waypoint
+     (W   : in out Waypoint;
+      Lat : Latitude_Degrees;
+      Lon : Longitude_Degrees);
    procedure Calculate_Route (Start, Finish : Waypoint);
 private
    type Waypoint is record
-      Latitude : Latitude;
-      Longitude : Longitude;
-      Altitude : Altitude_Feet;
+      Latitude  : Latitude_Degrees;
+      Longitude : Longitude_Degrees;
+      Altitude  : Altitude_Feet;
    end record;
 end Navigation_System;
 ```
@@ -1099,8 +1143,10 @@ as a vigilant guardian, preventing entire classes of bugs at compile time.
 
 ### 2.4.1 Eliminating Range Errors
 
-Ada's compiler can often detect range violations at compile time, eliminating
-unnecessary runtime checks:
+Ada's compiler can often detect range violations at compile time when every
+value involved is known statically. When it cannot prove safety, the language
+still mandates a runtime check so you get a defined failure instead of
+undefined behavior:
 
 ```ada
 type Temperature is range -50..150;
@@ -1120,7 +1166,9 @@ Invalid_Value : Sensor_Value := 90 + 20;
 ```
 
 **Off-by-One Errors**: Ada's array types with explicit bounds make off-by-one
-errors nearly impossible:
+errors nearly impossible. Any index expression the compiler can evaluate
+statically is rejected during compilation; everything else is guarded by a
+runtime check:
 
 ```ada
 type Data_Array is array (1..10) of Float;
@@ -1161,12 +1209,13 @@ type Valve_Position is range 0..100;
 Current_Position : Valve_Position := 50;
 Target_Position : Valve_Position := 70;
 
--- This compiles because 50+20=70 is within range
+-- This compiles; the runtime bounds check succeeds because 50+20=70
 Current_Position := Current_Position + 20;
 ```
 
-The compiler verifies that this operation stays within valid bounds,
-preventing potential equipment damage.
+If the computation ever produced an out-of-range value, the same assignment
+would raise `Constraint_Error`, halting the adjustment before the valve could
+enter an unsafe state.
 
 ### 2.4.2 Preventing Accidental Unit Mix-ups
 
@@ -1282,6 +1331,7 @@ interface, preventing invalid states that could compromise patient safety.
 ```ada
 package Heart_Rate_Monitor is
    type Heart_Rate_Data is private;
+   type Validation_Status_Type is (Unvalidated, Valid, Invalid);
 
    procedure Read_Data (Data : in out Heart_Rate_Data);
    function Get_Heart_Rate (Data : Heart_Rate_Data) return Heart_Rate;
@@ -1297,10 +1347,12 @@ end Heart_Rate_Monitor;
 This ensures that heart rate data is always validated and cannot be directly
 manipulated, preventing errors that could lead to incorrect medical decisions.
 
-### 2.4.4 Compile-Time Contract Verification
+### 2.4.4 Contract Checking: Static Intent, Runtime Enforcement
 
-Ada 2012 introduced contract-based programming, which allows the compiler to
-verify correctness properties at compile time:
+Ada 2012 introduced contract-based programming, giving you a way to describe
+the intent of a subprogram by attaching preconditions, postconditions, and
+type invariants. These contracts live alongside the type system and, by
+default, are enforced at runtime:
 
 ```ada
 function Divide (A : Integer; B : Integer) return Integer
@@ -1312,14 +1364,31 @@ begin
 end Divide;
 ```
 
-Here, the `Pre` clause ensures the divisor is never zero, and the `Post`
-clause guarantees the result satisfies mathematical correctness. If a caller
-violates these contracts (e.g., passing `B = 0`), the compiler raises an
-error—preventing runtime failures.
+Here, the `Pre` clause requires the divisor to be non-zero and the `Post`
+clause restates a simple algebraic property. The compiler records these
+conditions and inserts runtime checks: if a caller violates the precondition
+by passing `B = 0`, the program raises `Assertion_Error` when the call is
+executed. When the compiler can prove that the call site always satisfies the
+precondition—typically for trivial cases involving constants—it may elide the
+check, but Ada's portability rules only guarantee runtime enforcement.
 
-**Real-World Example**: In a financial system:
+Static verification is still possible. Tools such as SPARK Ada or GNATprove
+can analyze the same contracts and discharge many of them at compile time (or
+during a dedicated proof step) without running the program. The key takeaway
+is that contracts extend Ada's specification power and always provide a
+runtime backstop, with optional static analysis delivering an additional layer
+of assurance when projects invest in those toolchains.
+
+**Real-World Example**: In a financial system you might declare a small
+account abstraction and annotate its operations:
 
 ```ada
+subtype Money is Currency;
+
+type Account_Type is record
+   Balance : Money := 0.0;
+end record;
+
 function Withdraw (Account : in out Account_Type; Amount : Money) return Money
   with Pre => Amount > 0.0 and Amount <= Account.Balance,
        Post => Withdraw'Result = Account.Balance'Old - Amount
@@ -1534,6 +1603,7 @@ package Patient_Monitoring is
    type Blood_Pressure is range 40..250;
    type Oxygen_Saturation is range 0..100;
    type Temperature_Celsius is range 30..45;
+   type Alert_Level is (Normal, Advisory, Warning, Critical);
 
    type Vital_Signs is record
       Heart_Rate : Heart_Rate;
@@ -1542,7 +1612,7 @@ package Patient_Monitoring is
       Temperature : Temperature_Celsius;
    end record;
 
-   procedure Check_Vitals (Vitals : Vital_Signs; Alert : out Alert_Type)
+   procedure Check_Vitals (Vitals : Vital_Signs; Alert : out Alert_Level)
      with Pre => Vitals.Heart_Rate in 20..250,
           Pre => Vitals.Blood_Pressure in 40..250,
           Pre => Vitals.Oxygen_Saturation in 0..100,
@@ -1605,15 +1675,30 @@ pressure buildup that could lead to an explosion.
 
 ### 2.5.6 Practice Exercises
 
-1. Write a small Ada program that models a pressure sensor with a
-   discriminated record for metric vs. imperial readings. Ensure the program
-   rejects values outside the physical range and logs a friendly message when
+1. Using the discriminated-record patterns from Section 2.2.7, model a unit-aware
+   pressure sensor. Start with:
+
+   ```ada
+   type Pressure_Unit is (Metric_KPa, Imperial_Psi);
+   type Pressure_Reading (Unit : Pressure_Unit) is record
+      case Unit is
+         when Metric_KPa   => Value : Float range 0.0 .. 1_000.0;
+         when Imperial_Psi => Value : Float range 0.0 ..   145.0;
+      end case;
+   end record;
+   ```
+
+   Write a short procedure that accepts `Pressure_Reading`, enforces the range
+   with a conversion to a subtype, and logs a friendly message when
    `Constraint_Error` is raised.
-2. Extend `Sensor_Monitor` so it computes an average from the valid samples.
-   What happens if you omit the range constraint on `Reading_Value`?
+2. Extend the `Sensor_Monitor` program from Section 2.2.8 so it computes an
+   average from the valid samples. What happens if you omit the range constraint
+   on `Reading_Value`, and how would you guard against overflow when summing the
+   readings?
 3. Create a package that exposes a `Convert` function between
-   `Meters_Per_Second` and `Knots`. Use derived types for each unit and add a
-   precondition that rejects negative speeds.
+   `Meters_Per_Second` and `Knots`. Declare the units as derived types
+   (e.g., `type Meters_Per_Second is new Float;`) and add a precondition that
+   rejects negative speeds before performing the conversion.
 
 ## 2.6 Summary and Conclusion
 
@@ -1626,10 +1711,12 @@ pressure buildup that could lead to an explosion.
 - **Derived types** create distinct types for physical units and other
   distinct concepts
 - **Private types** enable information hiding and controlled access to data
-- Ada's compiler enforces type constraints at compile time, eliminating entire
-  classes of runtime errors
-- Contract-based programming allows the compiler to verify correctness
-  properties at compile time
+- Ada's compiler enforces type constraints at compile time when it can prove
+   correctness, and otherwise emits runtime checks to prevent undefined
+   behavior
+- Contract-based programming adds explicit preconditions and postconditions;
+   they are enforced at runtime by default and can be proven statically with
+   tools such as SPARK
 
 ### 2.6.2 The Long-Term Benefits of Ada's Type System
 
@@ -1710,8 +1797,3 @@ robotics—Ada's type system will remain the gold standard for building
 reliable, safe software. By mastering Ada's type system today, you're
 investing in skills that will be increasingly valuable in tomorrow's
 technology landscape.
-
-"Ada's type system is not just about preventing errors—it's about building
-trust in software. When you know your code is type-safe, you can focus on
-solving real problems rather than chasing bugs."  
-— Senior Software Engineer, NASA Jet Propulsion Laboratory
