@@ -39,7 +39,7 @@ with its own compiler, debugging tools, and coding standards. This fragmentation
 caused immense challenges: code written for one system could not be reused for
 another, maintenance costs skyrocketed, and software reliability remained
 inconsistent. A notorious example was the U.S. Navy's _Aegis_ combat system,
-which required over 200_000 lines of code written in multiple languages,
+which required over 200,000 lines of code written in multiple languages,
 leading to integration nightmares and schedule overruns.
 
 The DoD responded by initiating the _High Order Language Working Group_ (HOLWG)
@@ -71,10 +71,11 @@ its time:
 
 These features were not merely theoretical—they were directly inspired by
 real-world failures. The Therac-25 radiation therapy machine disasters
-(1985-1987), where software bugs caused fatal overdoses, later underscored the
-value of Ada 83's already-mandatory range checks and exception handling. While
-the Therac-25 incidents occurred after Ada 83's standardization, they validated
-the prescience of Ada's emphasis on compile-time safety checks.
+(1985-1987), where software bugs caused fatal overdoses, later underscored how
+critical Ada 83's already-mandatory range checks and exception handling would be
+for safety-critical development. Although the incidents took place after the
+standard was published and did not involve Ada code, they reinforced the
+prescience of Ada's emphasis on compile-time safety checks.
 
 > "Ada 83 was designed to catch errors at compile time rather than runtime. This
 > was not a luxury—it was a necessity for systems where a single bug could cost
@@ -112,20 +113,15 @@ manage large codebases. For example, the `Ada.Containers` package provided
 type-safe data structures (vectors, maps, etc.) with built-in bounds
 checking—preventing common errors like buffer overflows.
 
-#### Table 1: Ada Language Versions and Key Features
+Table 1. Ada Language Versions and Key Features
 
-| Version  | Year | Key Features                                              |
-| -------- | ---- | --------------------------------------------------------- |
-| Ada 83   | 1983 | Strong typing, packages, tasking, exception handling,    |
-|          |      | explicit scope termination                               |
-| Ada 95   | 1995 | Object-oriented programming, protected objects,          |
-|          |      | hierarchical libraries, standardized containers          |
-| Ada 2005 | 2005 | Improved interfaces (Java-like), Ravenscar profile for   |
-|          |      | real-time systems, enhanced container libraries          |
-| Ada 2012 | 2012 | Contract-based programming (pre/post-conditions),        |
-|          |      | expression functions, improved concurrency               |
-| Ada 2022 | 2023 | Enhanced parallelism, refined contracts, new attributes  |
-|          |      | (e.g., `'Size`), improved array handling                 |
+| Version  | Year | Key Features |
+| -------- | ---- | ------------ |
+| Ada 83   | 1983 | Strong typing; packages; tasking; exception handling; explicit scope termination |
+| Ada 95   | 1995 | Object-oriented programming; protected objects; hierarchical libraries; standardized containers |
+| Ada 2005 | 2005 | Improved interfaces (Java-like); Ravenscar profile for real-time systems; enhanced container libraries |
+| Ada 2012 | 2012 | Contract-based programming (pre/post-conditions); expression functions; improved concurrency |
+| Ada 2022 | 2023 | Enhanced parallelism; refined contracts; new attributes (e.g., `'Size`); improved array handling |
 
 #### Ada 2005: Modernizing Concurrency and Libraries
 
@@ -187,7 +183,7 @@ tested.
 
 ### 1.1.3. Modern Ada: Ada 2022
 
-Ada 2022 (officially published as ISO/IEC 8652:2023) addresses contemporary
+Ada 2022 (ISO/IEC 8652:2023) addresses contemporary
 challenges in parallelism, security, and modern development workflows. Key
 enhancements include:
 
@@ -271,10 +267,12 @@ Safety ensures software does not cause physical harm. Ada achieves this through:
 
 The Ariane 5 rocket failure (1996) demonstrates the importance of these
 principles. The failure occurred because a legacy Ada module—compiled without
-range checks—raised an exception that was intentionally left unhandled, causing
-the guidance system to crash. This incident reinforced Ada's safety philosophy:
-even Ada requires proper error handling, and modern Ada versions have since
-strengthened exception handling and range constraint features.
+range checks as a performance optimization for a previous mission—raised an
+exception. This exception propagated to the top level, causing a critical system
+shutdown because the error-handling policy was to halt on any unhandled
+exception. This incident reinforced Ada's safety philosophy: even Ada requires
+proper error handling, and modern Ada versions have since strengthened exception
+handling and range constraint features.
 
 #### Security
 
@@ -375,7 +373,7 @@ liters:
 
 ```ada
 type Fuel_Level is new Float range 0.0 .. 100.0;
-Current_Fuel : Fuel_Level;
+Current_Fuel : Fuel_Level := 50.0; -- Always initialize variables
 
 -- Attempting to assign 150.0 would cause a constraint error
 Current_Fuel := 150.0; -- Raises CONSTRAINT_ERROR at runtime
@@ -385,16 +383,13 @@ This prevents runtime crashes caused by invalid fuel readings—a critical safet
 feature. The constraint checking occurs at runtime, but the strong typing
 ensures that values cannot be accidentally assigned from incompatible types.
 
-<!-- markdownlint-disable MD013 -->
-#### Table 2: Strong Typing Examples in Ada vs. C
+Table 2. Strong Typing Examples in Ada vs. C
 
 | Scenario               | C Code                                            | Ada Code                                                                                                         |
 | ---------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Invalid Array Index    | `int arr[10]; arr[15] = 5;` (undefined behavior)  | `type Int_Array is array (1..10) of Integer; Arr : Int_Array; Arr(15) := 5;` (raises CONSTRAINT_ERROR)           |
-| Uninitialized Variable | `int x; printf("%d", x);` (undefined value)       | `X : Integer; Put_Line(Integer'Image(X));` (may raise warning, but compiles; Ada doesn't require initialization) |
+| Uninitialized Variable | `int x; printf("%d", x);` (undefined value)       | `X : Integer; Put_Line (Integer'Image (X));` (GNAT warns: "X may be referenced before it has a value")       |
 | Type Mismatch          | `float f = 5.0; int i = f;` (implicit conversion) | `F : Float := 5.0; I : Integer := F;` (compile-time error: no implicit conversion)                               |
-
-<!-- markdownlint-enable MD013 -->
 
 Strong typing is not just about preventing errors—it also makes code
 self-documenting. When a function parameter is declared as `Temperature_Sensor`,
@@ -408,7 +403,13 @@ Ada's unique capabilities stem from its integrated feature set—each designed t
 work synergistically for high-integrity systems. This section provides a
 high-level overview of the core features you will explore in depth throughout
 this book. Unlike languages where features are added as "optional extras," Ada's
-features are foundational to its design philosophy.
+features are foundational to its design philosophy. Chapters 4–7 revisit each
+capability with full projects and case studies.
+
+> 📌 **Visual roadmap**: The companion visual guide (see Appendix A) includes
+> diagrams for package layering, task communication, generic instantiation
+> flows, and contract enforcement lifecycles. Keep those figures handy while you
+> read Sections 1.3.1–1.3.4.
 
 ### 1.3.1. Packages: The Core of Modularity
 
@@ -454,41 +455,41 @@ Ada provides built-in concurrency primitives that are safer and more predictable
 than thread libraries in C/C++ or Java. Key components include:
 
 - **Tasks**: Independent units of execution with their own stack
-- **Protected Objects**: Synchronized access to shared data (replacing mutexes)
+- **Protected Objects**: Synchronized access to shared data (replacing mutexes—mutual-exclusion locks)
 - **Entry Queues**: Prioritized task communication
 
-Example of a task-based sensor monitor:
+Example of a simple task that monitors sensor data:
 
 ```ada
-task type Sensor_Monitor is
-   entry Start;
-   entry Stop;
+task Sensor_Monitor is
+   entry Read_Value;
 end Sensor_Monitor;
 
 task body Sensor_Monitor is
-   Running : Boolean := False;
+   Current_Reading : Integer := 0;
 begin
    loop
-      select
-         when not Running =>
-            accept Start do
-               Running := True;
-            end Start;
-         or
-         when Running =>
-            accept Stop do
-               Running := False;
-            end Stop;
-         or
-         terminate;
-      end select;
+      -- Simulate reading sensor data
+      Current_Reading := Get_Sensor_Data;
+      delay 1.0; -- Wait 1 second between readings
    end loop;
 end Sensor_Monitor;
 ```
 
-This code safely manages sensor state transitions without race conditions.
-Protected objects ensure that shared data (e.g., sensor readings) are accessed
-atomically—preventing corruption from concurrent writes.
+Break the task into the following mental model (glossary entries for **task**
+and **entry** appear near the end of this chapter):
+
+- The task specification (`task Sensor_Monitor`) declares an entry point that
+  other components can call to interact with the task.
+- The task body defines its private state and an infinite loop that continuously
+  refreshes sensor data.
+- The `delay` statement yields control, guaranteeing cooperative scheduling in
+  the absence of preemption.
+
+This example illustrates the basic task structure; we'll unpack each element in
+Chapter 5, "Tasking and Concurrency."
+Ada's task system ensures that concurrent operations are safe by design, without
+the race conditions and deadlocks that plague manual thread management.
 
 ### 1.3.3. Generics: Reusable, Type-Safe Code
 
@@ -515,12 +516,13 @@ end Generic_Stack;
 This stack can be instantiated for any type (e.g., `Integer`, `String`, or
 custom records), with compile-time checks ensuring all operations are valid. The
 generic mechanism provides reusability while maintaining Ada's strong typing
-guarantees.
+guarantees. You'll build a reusable generic library from scratch in Chapter 6,
+"Generics and Reuse."
 
 ### 1.3.4. Contracts: Pre- and Post-conditions
 
-Contracts formalize a component's behavior through assertions that the compiler
-can verify. This includes:
+Contracts (often called design by contract) formalize a component's behavior
+through assertions that the compiler can verify. This includes:
 
 - **Preconditions**: Requirements before a function executes
 - **Postconditions**: Guarantees after execution
@@ -541,7 +543,8 @@ end Withdraw;
 
 If a caller attempts to withdraw more than the balance, the precondition fails.
 This eliminates entire classes of financial errors that would otherwise require
-extensive runtime testing.
+extensive runtime testing. Chapter 7, "Contracts and Formal Methods," expands
+on these patterns and introduces SPARK tooling for machine-checked proofs.
 
 ### 1.3.5. Exception Handling
 
@@ -616,24 +619,26 @@ Alire is designed for both beginners and experts. New users can install
 everything with a single command, while advanced users can fine-tune
 configurations for specific hardware targets.
 
-<!-- markdownlint-disable MD013 -->
-#### Table 3: Alire Installation Commands by Operating System
+Table 3. Alire Installation Commands by Operating System
 
 | OS                    | Installation Command                       |
 | --------------------- | ------------------------------------------ |
 | Windows               | `choco install alire`*                     |
 | macOS                 | `brew install alire`*                      |
-| Linux (Debian/Ubuntu) | `sudo apt install alire`                   |
+| Linux (Debian/Ubuntu) | `curl https://alire.ada.dev/install \| sh`† |
 | Linux (Generic)       | `curl https://alire.ada.dev/install \| sh` |
 
 > **⚠️ Important**: Verify you have Alire version 2.0 or later with
 > `alire --version`. If you get an older version, download the latest standalone
 > installer directly from [alire.ada.dev](https://alire.ada.dev).
 >
+> † Official Debian/Ubuntu packages are available through AdaCore's APT
+> repository, but they may lag behind the latest release. The curl installer
+> ensures you receive the most recent toolchain without additional repository
+> configuration.
+>
 > **Docker Alternative**: For readers who prefer containerized environments:
 > `docker run -it alire/alire:stable alr --version`
-
-<!-- markdownlint-enable MD013 -->
 
 #### Step-by-Step Installation Guide
 
@@ -672,18 +677,15 @@ configurations for specific hardware targets.
 
 3. **Linux**:
 
-   - For Debian/Ubuntu:
-
-     ```bash
-     sudo apt update
-     sudo apt install alire
-     ```
-
-   - For other distributions:
+   - Recommended for all distributions:
 
      ```bash
      curl https://alire.ada.dev/install | sh
      ```
+
+   - Debian/Ubuntu users who prefer packages can add AdaCore's APT repository
+     (see the Alire documentation) before running `sudo apt install alire`,
+     though this channel may lag behind the latest release.
 
    - Note: You may need to add Alire to your PATH by sourcing the appropriate
      script in your shell configuration file.
@@ -696,17 +698,21 @@ alire --version
 
 #### Creating Your First Project
 
-Alire simplifies project creation:
+To ensure consistency between project name, source files, and executable, we'll
+create a project named `hello` that contains our `Hello` procedure:
 
 ```bash
-alire init --bin hello_world
-cd hello_world
+alire init --bin hello
+cd hello
 alr build
 ```
 
-This generates a skeleton project with a `main.adb` file. The `alr build`
-command compiles the code using GNAT—without requiring manual compiler flags or
-Makefiles.
+This generates a skeleton project with `src/main.adb` as the starting point.
+The relationship between these components is:
+
+- **Project name**: `hello` (defined in `alire.toml`)
+- **Main source file**: `src/main.adb` (generated by the template)
+- **Executable name**: `hello` (matches the project name)
 
 > **Note**: Alire's template uses `GNAT.IO` for simplicity. In this book, we
 > will switch to `Ada.Text_IO` for portability across different Ada compilers.
@@ -766,10 +772,10 @@ throughout your Ada journey.
 
 ### 1.5.1. The Code
 
-Create a file named `hello.adb` with the following content:
+In your project directory, open `src/main.adb` and replace its content with the
+following:
 
 ```ada
--- standalone executable
 with Ada.Text_IO;
 procedure Hello is
 begin
@@ -815,7 +821,7 @@ Using Alire (recommended):
 1. Navigate to your project directory:
 
    ```bash
-   cd hello_world
+   cd hello
    ```
 
 2. Build with `alr build`:
@@ -827,7 +833,7 @@ Using Alire (recommended):
 3. Run the program:
 
    ```bash
-   alr exec hello_world
+   alr exec hello
    ```
 
   Output:
@@ -919,17 +925,18 @@ use—preventing "magic variable" errors common in dynamic languages.
 
 ### 1.6.3. The Importance of Semicolons
 
-Ada uses semicolons (`;`) to terminate statements—similar to C or Java. However,
-unlike C, semicolons are required after _every_ statement, including the last
-one in a block.
+Ada uses semicolons (`;`) to terminate individual statements within a block.
+The `end` keyword that closes a block (e.g., `end if;`, `end loop;`, `end Hello;`)
+is followed by a semicolon, but the semicolon is part of the terminating
+construct, not a separate statement terminator.
 
 **Correct**:
 
 ```ada
 begin
-   Put_Line("Hello");  -- Semicolon here
-   Put_Line("World");  -- Semicolon here
-end;
+   Put_Line("Hello");  -- Semicolon terminates this statement
+   Put_Line("World");  -- Semicolon terminates this statement
+end Hello;             -- Semicolon is part of the procedure termination
 ```
 
 **Incorrect**:
@@ -938,11 +945,12 @@ end;
 begin
    Put_Line("Hello")   -- Missing semicolon → compile error
    Put_Line("World");
-end;
+end Hello;
 ```
 
-This strict requirement eliminates ambiguity. In C, missing semicolons cause
-silent errors; in Ada, the compiler immediately flags the issue.
+This strict requirement eliminates ambiguity. In C, missing semicolons can cause
+silent errors or confusing error messages; in Ada, the compiler immediately
+flags the issue with a clear diagnostic.
 
 ### 1.6.4. Comments
 
@@ -967,10 +975,12 @@ Comments are ignored by the compiler but are critical for documentation. Ada
 encourages detailed comments in specifications (e.g., explaining why a contract
 exists), as they form part of the code's "self-documenting" nature.
 
-> **Note on Style**: Ada is case-insensitive, so `snake_case`, `Snake_Case`, and
-> `UPPER_CASE` are all valid. Pick one style for your project and be consistent.
-> The GNAT style checker (`gnatpp`) can automatically format your code to
-> maintain consistency.
+> **Note on Style**: While Ada is case-insensitive, the community follows strong
+> conventions to ensure readability. It is highly recommended to use
+> **PascalCase** for types and subprograms (e.g., `My_Type`, `Calculate_Value`)
+> and **snake_case** for variables and parameters (e.g., `current_index`,
+> `total_count`). The GNAT toolchain includes a pretty-printer (`gnatpp`) to
+> enforce these conventions automatically.
 >
 > "In Ada, comments are not optional—they are the glue that holds complex
 > systems together. A well-commented Ada program is a living specification."  
@@ -1036,6 +1046,7 @@ By mastering types, you will unlock Ada's true power: writing code that is not
 only correct but _self-documenting_. This foundation will prepare you for
 modules on concurrency, generics, and contract-based programming in later
 chapters.
+
 
 > "Ada's type system is not a limitation—it is a superpower. It transforms what
 > would be a debugging nightmare in other languages into a compile-time
