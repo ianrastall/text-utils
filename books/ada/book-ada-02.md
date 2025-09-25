@@ -63,9 +63,10 @@ languages treated types as flexible containers where data could be freely
 manipulated. C, for example, allows implicit conversions between types, which
 can lead to subtle bugs that are difficult to detect. The Therac-25 radiation
 therapy machine disasters (1985-1987) demonstrated the catastrophic
-consequences of such weaknesses—software bugs caused fatal overdoses due to
-race conditions and type-related errors. These incidents reinforced the
-prescience of Ada's emphasis on compile-time safety checks.
+consequences of insufficient software reliability measures—race conditions,
+missing interlocks, and inadequate fault detection combined to produce fatal
+overdoses. These incidents reinforced the prescience of Ada's emphasis on
+compile-time safety checks.
 
 **Modern Relevance**: In today's world of autonomous vehicles, medical
 devices, and aerospace systems, the stakes are higher than ever. A single
@@ -175,10 +176,14 @@ Result := Calculate_Speed ("100", 5.0); -- Compile-time error: string not conver
 ```
 
 **Real-World Impact**: NASA's Mars Climate Orbiter mission failure (1999) was
-caused by a unit conversion error between metric and imperial units. In
-Python, this error would only be caught at runtime, potentially after the
-spacecraft had already been lost. In Ada, distinct types for different units
-would have prevented this mistake entirely:
+caused by a unit conversion error between metric and imperial units in a
+ground-control component written in C/C++. Without distinct unit types, the
+bug went undetected until after integration. Ada's approach—forcing developers
+to create distinct types for different units—would have required an explicit
+conversion and flagged the mismatch early. Dynamic languages like Python can
+now be augmented with optional static analysis tools (e.g., `mypy` or
+`pydantic`) to catch similar inconsistencies, but that safety net depends on
+discipline, whereas Ada bakes it into the core language model:
 
 ```ada
 type Metric_Force is new Float;
@@ -188,10 +193,11 @@ type Imperial_Force is new Float;
 Metric_Force := Imperial_Force (10.0); -- Error: incompatible types
 ```
 
-#### Java: Object-Oriented Typing with Limited Constraints
+#### Java: Object-Oriented Typing with Guard Rails You Build
 
-Java has a strong static type system but lacks user-defined constraints.
-Consider a temperature range:
+Java has a strong static type system, yet it relies on developers to layer
+domain-specific constraints on top of primitives. Consider a temperature
+range:
 
 ```java
 // Java: no built-in range enforcement
@@ -205,21 +211,27 @@ type Temperature is range -50..150;
 Current_Temp : Temperature := 151; -- Compile-time error
 ```
 
-Even more critically, Java's type system doesn't prevent unit mix-ups. In an
-aviation system, you might accidentally pass a speed in knots to a function
-expecting meters per second—something Ada would catch immediately with
-distinct types.
+Even more critically, Java's type system doesn't automatically prevent unit
+mix-ups. In an aviation system, you might accidentally pass a speed in knots
+to a function expecting meters per second unless you wrap each unit in its
+own class or value object—something Ada enforces with distinct types.
 
-> **Table 2.1: Type System Comparisons Across Languages**  
-> | Feature | C | Python | Java | Ada | |---------|---|--------|------|-----|
-> | Implicit conversions | Allowed | Allowed | Limited | Prohibited | |
-> User-defined constraints | No | No | No | Yes | | Unit safety | No | No | No
-> | Yes | | Array bounds checking | None (undefined behavior) | Runtime check
-> | Runtime check | Compile-time or runtime check | | Compile-time error
-> detection | Minimal | None | Moderate | Comprehensive | | Memory safety | No
-> | Limited | Yes | Yes | | Range checking | No | No | No | Yes | | Type
-> inheritance | Yes | Yes | Yes | Yes | | Contract-based programming | No | No
-> | No | Yes |
+> **Table 2.1: Type System Comparisons Across Languages**
+>
+> | Feature | C | Python | Java | Ada |
+> | --- | --- | --- | --- | --- |
+> | Implicit conversions | Allowed | Allowed | Limited | Prohibited |
+> | User-defined constraints | No | Via runtime checks | Via classes / validation* | Yes |
+> | Unit safety | No | No (without libraries) | Via classes* | Yes |
+> | Array bounds checking | None (undefined behavior) | Runtime check | Runtime check | Compile-time or runtime check |
+> | Compile-time error detection | Minimal | None (static analysis optional) | Moderate | Comprehensive |
+> | Memory safety | No | Yes | Yes | Yes |
+> | Range checking | No | No (manual) | Manual (via classes)* | Yes |
+> | Type inheritance | Yes | Yes | Yes | Yes |
+> | Contract-based programming | No | No | No | Yes |
+>
+> *Java provides these capabilities through developer-defined classes or
+> validation logic rather than dedicated language-level range/unit types.
 
 ### 2.1.4 The Historical Evolution of Strong Typing in Ada
 
@@ -342,7 +354,7 @@ arithmetic operations:
 V1 : Sensor_Value := 90;
 V2 : Sensor_Value := 20;
 
-V1 := V1 + V2; -- Compiles? No! 90+20=110 exceeds range → Constraint_Error
+V1 := V1 + V2; -- Compiles? Yes! But raises CONSTRAINT_ERROR at runtime because 90+20=110 exceeds the range.
 ```
 
 **Runtime Checks**: If a value comes from user input or external systems, Ada
@@ -366,10 +378,14 @@ physical damage.
 
 **Historical Context**: The Ariane 5 rocket failure (1996) occurred because a
 legacy Ada module—compiled without range checks as a performance optimization
-for a previous mission—raised an exception. This incident reinforced Ada's
-safety philosophy: even Ada requires proper error handling, and modern Ada
-versions have since strengthened exception handling and range constraint
-features.
+for a previous mission—raised an exception when reused under a different
+flight profile. The exception itself was the correct signal that data had
+exceeded expected bounds; the failure stemmed from the process decisions to
+disable checks and to let the exception propagate into mission-critical code.
+The incident underscores that Ada's tools must be paired with rigorous
+validation and configuration discipline, and later Ada standards reinforced
+these practices with stronger guidance on exception handling and range
+constraints.
 
 **Advanced Range Constraints**: Ada allows for more sophisticated range
 specifications:
@@ -412,6 +428,13 @@ guarantee exact decimal representation:
 type Currency is delta 0.01 digits 15;
 Amount : Currency := 0.01 + 0.02;
 Put_Line (Currency'Image (Amount)); -- Outputs 0.03 exactly
+
+This precision holds because the chosen `delta` (0.01) is exactly
+representable for a decimal fixed-point type. More broadly, Ada keeps
+fixed-point arithmetic exact when the `delta` matches the representation rules
+for the category—powers of ten for decimal fixed point or powers of two for
+ordinary fixed point. Otherwise, the language applies well-defined rounding
+rather than silently losing track of precision.
 ```
 
 **Fixed-Point vs. Floating-Point**: Ada distinguishes between two types of
