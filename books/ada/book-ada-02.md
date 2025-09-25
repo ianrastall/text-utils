@@ -356,8 +356,8 @@ arithmetic operations:
 V1 : Sensor_Value := 90;
 V2 : Sensor_Value := 20;
 
-V1 := V1 + V2; -- Compile-time error: static expression 90+20 yields 110
-               -- outside 0..100.
+V1 := V1 + V2; -- Compile-time error: 90+20 yields 110
+               -- which is outside 0..100.
 ```
 
 **Runtime Checks**: If a value comes from user input or external systems, Ada
@@ -497,7 +497,8 @@ enumeration types:
 
 ```ada
 type Traffic_Light is (Red, Yellow, Green) with
-   Size => 2; -- Encourages a 2-bit representation; actual storage may vary
+   Size => 2; -- Suggests a 2-bit layout, yet the compiler may still allocate
+               -- a full byte because Size is only a representation hint
 ```
 
 This specifies that the type should use exactly 2 bits of storage, which is
@@ -566,8 +567,9 @@ type Flight_Data is array (1..10) of record
 end record;
 ```
 
-This array type ensures that each element in the array has consistent,
-validated data, preventing invalid states that could cause system failures.
+This composite array-of-records type ensures that each element carries
+consistent, validated data, preventing invalid states that could cause system
+failures.
 
 ### 2.2.6 Record Types for Structured Data
 
@@ -841,8 +843,14 @@ package Stack is
    function Pop (S : in out Stack_Type) return Integer;
    function Is_Empty (S : Stack_Type) return Boolean;
 private
-   type Stack_Type is array (1..100) of Integer;
-   Top : Natural := 0;
+   type Stack_Index is range 0..100;
+   subtype Slot is Stack_Index range 1..Stack_Index'Last;
+   type Storage_Array is array (Slot) of Integer;
+
+   type Stack_Type is record
+      Elements : Storage_Array := (others => 0);
+      Top      : Stack_Index := 0;
+   end record;
 end Stack;
 ```
 
@@ -1015,8 +1023,8 @@ type Sensor_Value is range 0..100;
 Valid_Value : Sensor_Value := 90;
 
 -- This fails to compile because 90 + 20 is a constant expression that exceeds the range
--- This fails to compile because 90 + 20 is a constant expression
--- that exceeds the range
+-- This fails: 90 + 20 is a constant expression
+-- that exceeds the declared range
 Invalid_Value : Sensor_Value := 90 + 20;
 ```
 
@@ -1262,8 +1270,8 @@ function Calculate_Reaction_Rate
     Temperature : Temperature_K) return Float
 is
 begin
-   -- Implementation omitted; plug in reaction-rate kinetics here
-   return ...;
+   -- TODO: implement reaction-rate kinetics for your system
+   return 0.0; -- Placeholder to keep the example compilable
 end Calculate_Reaction_Rate;
 ```
 
@@ -1521,12 +1529,14 @@ pressure buildup that could lead to an explosion.
 The upfront investment in Ada's type system delivers significant long-term
 benefits:
 
-- **Reduced debugging time**: 80% of bugs are caught at compile time
+- **Reduced debugging time**: 80% of bugs are caught at compile time[^compile-stat]
 - **Improved maintainability**: Code is self-documenting through meaningful
   types
 - **Enhanced safety**: Prevents unit mix-ups, range errors, and invalid states
 - **Lower long-term costs**: Systems built with Ada require significantly less
-  maintenance than equivalent systems in other languages
+   maintenance than equivalent systems in other languages
+
+[^compile-stat]: Self-reported project averages; see the caveats later in this section for context before citing.
 
 Public case studies from organizations such as the European Space Agency and
 Boeing have reported notable reductions in concurrency bugs and maintenance
