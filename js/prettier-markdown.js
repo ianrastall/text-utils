@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { prettier, markdownPlugin };
     }
 
-    function formatMarkdown() {
+    async function formatMarkdown() {
         const state = ensurePrettierReady();
         if (!state) return;
         const { prettier, markdownPlugin } = state;
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.formatBtn.disabled = true;
         dom.formatBtn.classList.add('disabled');
         try {
-            const formatted = prettier.format(source, {
+            const formatted = await prettier.format(source, {
                 parser: 'markdown',
                 plugins: [markdownPlugin],
                 proseWrap: 'preserve',
