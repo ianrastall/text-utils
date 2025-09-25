@@ -129,7 +129,7 @@ Ada's requirement for explicit scope termination (`end if;`, `end loop;`,
 `end procedure;`) eliminates an entire category of bugs that plague other
 languages. Consider this C code:
 
-```toml
+```c
 if (temperature > 100)
     if (pressure > 50)
         alert_system_activate();
@@ -254,6 +254,12 @@ which function is called could have catastrophic consequences. For example, if
 `Flight_Control.Calculate_Route`, using the wrong one could cause the aircraft
 to fly in the wrong direction.
 
+> **Note:** Throughout this chapter we use compact placeholder types such as
+> `Position`, `Currency`, `Vital_Signs`, or `Flight_Data` to keep the examples
+> focused on language features. Treat them as domain-specific records defined
+> elsewhere; later chapters will show how to declare these supporting types in
+> full.
+
 #### 3.1.2.4 The Role of Aliases in Ada
 
 Ada allows you to create aliases for qualified names, which can improve
@@ -293,13 +299,11 @@ engineers worked on the flight control system simultaneously. Ada's package
 system ensured that each team could work independently while maintaining clear
 interfaces between components.
 
-#### 3.1.2.6 Historical Context: The DoD's Package System
+#### 3.1.2.6 Historical Context: Standardizing Packages
 
-The HOLWG chartered Ada's package mechanism to enforce modular boundaries on
-massive defense programs. The broader DoD timeline appears in Section 3.5.6;
-for libraries specifically, remember that named specifications and bodies were
-introduced so integrators could reason about dependencies without scanning
-thousands of source files.
+The late-1970s standardization effort (see Section 3.5.6) introduced named
+specifications and bodies so integrators could reason about dependencies
+without scanning thousands of source files.
 
 #### 3.1.2.7 Practical Example: Medical Device System
 
@@ -636,14 +640,13 @@ can lead to inconsistent definitions if headers change. In Ada, the `with`
 clause references the package interface, ensuring consistency across the
 system.
 
-#### 3.2.1.2 Historical Context: The DoD's Compilation Model
+#### 3.2.1.2 Historical Context: Library-Centric Compilation
 
-HOLWG's mandate also covered build repeatability. Rather than relying on
-handwritten makefiles, the Ada library model encoded dependencies explicitly
-so the compiler could rebuild only what changed. See Section 3.5.6 for the
-full DoD chronology; the practical effect is that `.ali` files record
-interface contracts the same way architectural drawings record load-bearing
-walls.
+The same standardization push described in Section 3.5.6 also targeted build
+repeatability. Rather than relying on handwritten makefiles, the Ada library
+model encoded dependencies explicitly so the compiler could rebuild only what
+changed. The practical effect is that `.ali` files record interface contracts
+the same way architectural drawings record load-bearing walls.
 
 #### 3.2.1.3 Real-World Example: Aerospace System
 
@@ -2348,16 +2351,18 @@ Arr : Array_Type;
 Arr(10) := 5;
 ```
 
-Ada performs bounds checking on all array accesses. At runtime, the Ada
-runtime system raises a `Constraint_Error` when an index falls outside the
-declared bounds.
+Ada performs bounds checking on all array accesses. When an index is
+provably out of range, modern compilers flag the problem during compilation;
+otherwise, the Ada runtime system raises `Constraint_Error` as soon as the
+code executes the offending access.
 
 #### 3.4.4.17 Detailed Explanation
 
 Ada performs bounds checking on every indexed reference. Rather than failing
-silently, the runtime detects the violation and raises `Constraint_Error`.
-This predictable failure mode is critical for safety-critical systems where
-buffer overflows could lead to unpredictable behavior.
+silently, the language surfaces the violation with `Constraint_Error`, either
+through compile-time diagnostics or runtime checks. This predictable failure
+mode is critical for safety-critical systems where buffer overflows could lead
+to unpredictable behavior.
 
 For example, consider this code:
 
@@ -2367,8 +2372,9 @@ Arr : Array_Type;
 Arr(11) := 5;
 ```
 
-This code will raise a `CONSTRAINT_ERROR` at runtime because the index 11 is
-out of bounds. The correct code is:
+This code will raise `Constraint_Error` at runtime—or be rejected during
+compilation on some toolchains—because the index 11 is out of bounds. The
+correct code is:
 
 ```ada
 type Array_Type is array (1..10) of Integer;
@@ -2392,8 +2398,9 @@ Data : Flight_Data;
 Data(10) := 5.0;
 ```
 
-In this example, the incorrect array bounds would cause a `CONSTRAINT_ERROR`
-at runtime, preventing the system from being deployed with a critical bug.
+In this example, the incorrect array bounds would cause `Constraint_Error` at
+runtime (or be caught during compilation), preventing the system from being
+deployed with a critical bug.
 
 #### 3.4.4.19 Mistake 7: Incorrect exception handling
 
@@ -2672,8 +2679,9 @@ history of Ada's evolution:
   and enhanced container libraries
 - **Ada 2012**: Added contract-based programming, expression functions, and
   improved concurrency
-- **Ada 2022**: Added asynchronous transfer of control, refined contracts, new
-  attributes, and enhanced array handling
+- **Ada 2022**: Refined the asynchronous transfer of control model first
+   standardized in Ada 95, added richer contracts, new attributes, and enhanced
+   array handling
 
 Each revision has strengthened Ada's safety features while adding capabilities
 that address real-world needs. This balance of stability and innovation is why
