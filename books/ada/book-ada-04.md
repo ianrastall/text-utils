@@ -187,7 +187,7 @@ compilers must behave identically.
 Ada's BNF evolves with each standard. For example, Ada 2012 introduced aspect
 specifications:
 
-```
+```ada
 <aspect_specification> ::= with <aspect_identifier> => <expression>
 ```
 
