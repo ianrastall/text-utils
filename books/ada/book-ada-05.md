@@ -1,15 +1,23 @@
-# Chapter 5: Scalar Types
+# 1. Chapter 5: Scalar Types
 
-> "In Ada, scalar types are the foundation of safe and reliable systems. They are not just containers for data—they are precise specifications of what the data means and how it should be used. This precision is critical in safety-critical systems where a single type mismatch can lead to catastrophic failures."  
+> "In Ada, scalar types are the foundation of safe and reliable systems. They
+> are not just containers for data—they are precise specifications of what the
+> data means and how it should be used. This precision is critical in
+> safety-critical systems where a single type mismatch can lead to
+> catastrophic failures."  
 > — Senior Architect, NASA Jet Propulsion Laboratory
 
-## 5.1 Declarations and Objects
+## 1.1. Declarations and Objects
 
-### 5.1.1 Variables, Constants, and Assignments
+### 1.1.1. Variables, Constants, and Assignments
 
-Ada's declaration model is designed for clarity and safety. Unlike many languages where variables can be implicitly declared, Ada requires all variables and constants to be explicitly declared before use. This strict requirement prevents "magic variable" errors common in dynamic languages and ensures every object has a clearly defined purpose.
+Ada's declaration model is designed for clarity and safety. Unlike many
+languages where variables can be implicitly declared, Ada requires all
+variables and constants to be explicitly declared before use. This strict
+requirement prevents "magic variable" errors common in dynamic languages and
+ensures every object has a clearly defined purpose.
 
-#### Variable Declaration Syntax
+#### 1.1.1.1. Variable Declaration Syntax
 
 Variables are declared using the following syntax:
 
@@ -24,11 +32,16 @@ Current_Temperature : Float := 25.5;
 Total_Count : Integer := 0;
 ```
 
-The colon (`:`) separates the identifier from its type, and the assignment operator (`:=`) provides an initial value. The initial value is optional, but if omitted, the variable is uninitialized until explicitly assigned.
+The colon (`:`) separates the identifier from its type, and the assignment
+operator (`:=`) provides an initial value. The initial value is optional, but
+if omitted, the variable is uninitialized until explicitly assigned.
 
-Ada's strict initialization rules are a key safety feature. Uninitialized variables are a common source of bugs in other languages, but Ada eliminates this entire class of errors at compile time. When you see a variable declaration, you know exactly what its initial value is.
+Ada's strict initialization rules are a key safety feature. Uninitialized
+variables are a common source of bugs in other languages, but Ada eliminates
+this entire class of errors at compile time. When you see a variable
+declaration, you know exactly what its initial value is.
 
-#### Constant Declaration Syntax
+#### 1.1.1.2. Constant Declaration Syntax
 
 Constants are declared similarly but with the `constant` keyword:
 
@@ -43,19 +56,26 @@ Max_Temperature : constant Float := 100.0;
 Pi : constant Float := 3.14159;
 ```
 
-Constants must be initialized at declaration and cannot be modified afterward. This ensures that critical values remain unchanged throughout program execution.
+Constants must be initialized at declaration and cannot be modified afterward.
+This ensures that critical values remain unchanged throughout program
+execution.
 
-Constants are particularly valuable for safety-critical systems where certain values must never change. For example, in an aircraft navigation system, the maximum altitude for commercial aircraft might be defined as a constant:
+Constants are particularly valuable for safety-critical systems where certain
+values must never change. For example, in an aircraft navigation system, the
+maximum altitude for commercial aircraft might be defined as a constant:
 
 ```ada
 Max_Altitude : constant Float := 50_000.0;
 ```
 
-This ensures that no part of the system can accidentally modify this critical safety parameter.
+This ensures that no part of the system can accidentally modify this critical
+safety parameter.
 
-#### Assignment Operator
+#### 1.1.1.3. Assignment Operator
 
-Ada uses `:=` for assignment, distinguishing it from the equality operator (`=`). This prevents common errors where `=` is mistakenly used for assignment:
+Ada uses `:=` for assignment, distinguishing it from the equality operator
+(`=`). This prevents common errors where `=` is mistakenly used for
+assignment:
 
 ```ada
 -- Incorrect (C-style)
@@ -69,11 +89,15 @@ if x = 10 then
 end if;
 ```
 
-This distinction is critical in safety-critical systems where subtle syntax errors could lead to dangerous behavior. In C, this mistake would compile but cause unexpected behavior; in Ada, the compiler immediately flags the issue with a clear diagnostic.
+This distinction is critical in safety-critical systems where subtle syntax
+errors could lead to dangerous behavior. In C, this mistake would compile but
+cause unexpected behavior; in Ada, the compiler immediately flags the issue
+with a clear diagnostic.
 
-#### Type Safety in Assignments
+#### 1.1.1.4. Type Safety in Assignments
 
-Ada enforces strict type safety in assignments. You cannot assign a value of one type to a variable of another type without explicit conversion:
+Ada enforces strict type safety in assignments. You cannot assign a value of
+one type to a variable of another type without explicit conversion:
 
 ```ada
 -- Incorrect
@@ -83,7 +107,9 @@ X : Integer := 10.5;  -- Compile error: no implicit conversion
 X : Integer := Integer(10.5);  -- Explicit conversion
 ```
 
-This prevents subtle bugs that occur when values are implicitly converted between incompatible types. For example, in a financial system, assigning a floating-point value to an integer count could lead to data loss:
+This prevents subtle bugs that occur when values are implicitly converted
+between incompatible types. For example, in a financial system, assigning a
+floating-point value to an integer count could lead to data loss:
 
 ```ada
 -- Incorrect
@@ -93,7 +119,7 @@ Transaction_Count : Integer := 100.5;  -- Would lose the fractional part
 Transaction_Count : Integer := Integer(100.5);
 ```
 
-#### Real-World Example: Aerospace System
+#### 1.1.1.5. Real-World Example: Aircraft Navigation Variable Declarations
 
 In an aircraft navigation system:
 
@@ -109,45 +135,59 @@ Current_Altitude : Float := 35_000.0;
 Current_Altitude := "35000";  -- Type mismatch
 ```
 
-The explicit type declarations ensure that altitude values are always numeric, preventing errors where string values might be accidentally assigned.
+The explicit type declarations ensure that altitude values are always numeric,
+preventing errors where string values might be accidentally assigned.
 
 #### Note Box: The Importance of Explicit Initialization
 
-> "In Ada, every variable must be explicitly initialized or assigned before use. This is not just a syntax rule—it's a safety feature. Uninitialized variables are a common source of bugs in other languages, but Ada eliminates this entire class of errors at compile time. When you see a variable declaration, you know exactly what its initial value is."
-> 
+> "In Ada, every variable must be explicitly initialized or assigned before
+> use. This is not just a syntax rule—it's a safety feature. Uninitialized
+> variables are a common source of bugs in other languages, but Ada eliminates
+> this entire class of errors at compile time. When you see a variable
+> declaration, you know exactly what its initial value is."
+>
 > — Senior Software Engineer, Airbus Defense and Space
 
 #### Table 5.1: Variable and Constant Declaration Examples
 
-| Declaration Type | Syntax | Example | Safety Benefit |
-|------------------|--------|---------|---------------|
-| Variable | `var_name : type := value;` | `Temperature : Float := 25.5;` | Ensures initial value is defined |
-| Constant | `constant const_name : type := value;` | `Max_Temp : constant Float := 100.0;` | Prevents accidental modification |
-| Uninitialized Variable | `var_name : type;` | `Current_Count : Integer;` | Requires explicit initialization before use |
-| Constant Without Initial Value | `constant const_name : type;` | `Error: constant must be initialized` | Prevents undefined constant values |
+| Declaration Type               | Syntax                                 | Example                               | Safety Benefit                              |
+| ------------------------------ | -------------------------------------- | ------------------------------------- | ------------------------------------------- |
+| Variable                       | `var_name : type := value;`            | `Temperature : Float := 25.5;`        | Ensures initial value is defined            |
+| Constant                       | `constant const_name : type := value;` | `Max_Temp : constant Float := 100.0;` | Prevents accidental modification            |
+| Uninitialized Variable         | `var_name : type;`                     | `Current_Count : Integer;`            | Requires explicit initialization before use |
+| Constant Without Initial Value | `constant const_name : type;`          | `Error: constant must be initialized` | Prevents undefined constant values          |
 
 #### Detailed Initialization Scenarios
 
 Ada's initialization rules cover a wide range of scenarios:
 
-**Default Initialization**
+##### Default Initialization
 
-For some types, Ada provides default initialization:
+Ada's default initialization behavior is **implementation-defined** for scalar types.
+You should **never** rely on automatic initialization:
 
 ```ada
--- For numeric types, default is 0
-X : Integer;  -- Automatically initialized to 0
+-- DANGEROUS: Uninitialized variables have undefined values
+X : Integer;  -- Value is implementation-defined, could be anything
 
--- For boolean types, default is False
-Y : Boolean;  -- Automatically initialized to False
+-- SAFE: Always provide explicit initialization
+Y : Integer := 0;  -- Explicitly initialized to 0
 
--- For access types, default is null
-Z : Integer_Access;  -- Automatically initialized to null
+-- For boolean types, also provide explicit initialization
+Flag : Boolean := False;  -- Explicitly initialized
+
+-- Access types are guaranteed to default to null
+Ptr : Integer_Access;  -- Guaranteed to be null
 ```
 
-This ensures that variables are never in an undefined state, which is critical for safety-critical systems.
+**Important**: Some compilers may initialize scalar variables to zero, but this is
+**not** guaranteed by the language. Always supply explicit initial values or use
+compiler switches like `pragma Initialize_Scalars` when you need deterministic values.
 
-**Aggregate Initialization**
+This explicit initialization requirement ensures that variables are never in an
+undefined state, which is critical for safety-critical systems.
+
+##### Aggregate Initialization
 
 For composite types like records, Ada allows aggregate initialization:
 
@@ -160,9 +200,10 @@ end record;
 P : Point := (X => 1.0, Y => 2.0);
 ```
 
-This ensures that all fields are properly initialized, preventing partially initialized records.
+This ensures that all fields are properly initialized, preventing partially
+initialized records.
 
-**Constant Initialization**
+##### Constant Initialization
 
 Constants must be initialized at declaration:
 
@@ -177,9 +218,11 @@ Pi := 3.14159;  -- Error: constant must be initialized at declaration
 
 This ensures that critical values are defined and cannot be changed later.
 
-### 5.1.2 Blocks, Scope, and Visibility
+### 1.1.2. Blocks, Scope, and Visibility
 
-Ada's block structure provides precise control over variable visibility and lifetime. A block is a scope that begins with `declare` and ends with `end`, containing declarations and statements.
+Ada's block structure provides precise control over variable visibility and
+lifetime. A block is a scope that begins with `declare` and ends with `end`,
+containing declarations and statements.
 
 #### Basic Block Structure
 
@@ -195,7 +238,10 @@ begin
 end;
 ```
 
-Blocks create a new scope where variables declared inside are only visible within that block. This is critical for safety-critical systems where limiting variable visibility to the smallest possible scope prevents accidental misuse of data.
+Blocks create a new scope where variables declared inside are only visible
+within that block. This is critical for safety-critical systems where limiting
+variable visibility to the smallest possible scope prevents accidental misuse
+of data.
 
 #### Nested Blocks
 
@@ -210,16 +256,19 @@ begin
    begin
       Put_Line(Integer'Image(A));  -- Prints 20
    end;
-   
+
    Put_Line(Integer'Image(A));  -- Prints 10
 end;
 ```
 
-This structure allows for precise control over variable visibility. In safety-critical systems, this is particularly valuable for isolating sensitive operations.
+This structure allows for precise control over variable visibility. In
+safety-critical systems, this is particularly valuable for isolating sensitive
+operations.
 
 #### Scope Resolution
 
-When multiple variables share the same name, the innermost declaration takes precedence. To access an outer variable, use the scope name:
+When multiple variables share the same name, the innermost declaration takes
+precedence. The outer variable becomes hidden and is not directly accessible:
 
 ```ada
 declare
@@ -228,17 +277,38 @@ begin
    declare
       A : Integer := 20;
    begin
-      Put_Line(Integer'Image(A));  -- 20
-      Put_Line(Integer'Image(outer.A));  -- 10
+      Put_Line(Integer'Image(A));  -- 20 (inner A)
+      -- The outer A is hidden and cannot be accessed directly
+   end;
+   Put_Line(Integer'Image(A));  -- 10 (outer A is visible again)
+end;
+```
+
+To access both variables when needed, you can use different names or create
+a renaming in the outer scope before the inner declaration:
+
+```ada
+declare
+   A : Integer := 10;
+   Outer_A : Integer renames A;  -- Create an alias
+begin
+   declare
+      A : Integer := 20;
+   begin
+      Put_Line(Integer'Image(A));        -- 20 (inner A)
+      Put_Line(Integer'Image(Outer_A));  -- 10 (outer A via alias)
    end;
 end;
 ```
 
-This feature is particularly valuable in large systems where multiple components might use similar variable names. By explicitly specifying the scope, you prevent accidental name collisions.
+This feature is particularly valuable in large systems where multiple
+components might use similar variable names. The scoping rules prevent
+accidental name collisions while maintaining clear visibility boundaries.
 
 #### Lifetime of Variables
 
-Variables declared in a block exist only during the block's execution. Once the block ends, the variables are destroyed:
+Variables declared in a block exist only during the block's execution. Once
+the block ends, the variables are destroyed:
 
 ```ada
 declare
@@ -249,9 +319,11 @@ end;
 -- Temp is no longer accessible here
 ```
 
-This ensures that resources are properly managed and that variables don't persist longer than needed. In safety-critical systems, this is critical for preventing memory leaks and ensuring predictable behavior.
+This ensures that resources are properly managed and that variables don't
+persist longer than needed. In safety-critical systems, this is critical for
+preventing memory leaks and ensuring predictable behavior.
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Block Scoping
 
 In a medical device that monitors patient vital signs:
 
@@ -268,27 +340,32 @@ begin
          Trigger_Alert(Emergency_Code);
       end;
    end if;
-   
+
    -- Emergency_Code is not accessible here
 end;
 ```
 
-This structure ensures that emergency-related variables are only visible where needed, preventing accidental misuse of sensitive data.
+This structure ensures that emergency-related variables are only visible where
+needed, preventing accidental misuse of sensitive data.
 
 #### Note Box: The Power of Block Scoping
 
-> "Ada's block scoping is not just about organizing code—it's about safety. In safety-critical systems, limiting variable visibility to the smallest possible scope prevents accidental misuse of data. When you see a variable declaration inside a block, you know exactly where it can be used and for how long. This precision is critical when lives depend on your software."
-> 
+> "Ada's block scoping is not just about organizing code—it's about safety. In
+> safety-critical systems, limiting variable visibility to the smallest
+> possible scope prevents accidental misuse of data. When you see a variable
+> declaration inside a block, you know exactly where it can be used and for
+> how long. This precision is critical when lives depend on your software."
+>
 > — Principal Engineer, NASA Jet Propulsion Laboratory
 
 #### Table 5.2: Block Scope Examples
 
-| Scenario | Code | Scope |
-|----------|------|-------|
-| Outer Variable | `declare X : Integer := 10; begin ... end;` | Visible throughout block |
-| Inner Variable | `declare X : Integer := 10; declare Y : Integer := 20; begin ... end; end;` | X visible throughout outer block; Y visible only in inner block |
-| Shadowed Variable | `declare X : Integer := 10; begin declare X : Integer := 20; begin ... end; end;` | Outer X visible in outer block; inner X hides outer X in inner block |
-| Accessing Outer Variable | `declare X : Integer := 10; begin declare X : Integer := 20; begin Put_Line(outer.X); end; end;` | Outer.X accesses the outer variable |
+| Scenario                 | Code                                                                                             | Scope                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Outer Variable           | `declare X : Integer := 10; begin ... end;`                                                      | Visible throughout block                                             |
+| Inner Variable           | `declare X : Integer := 10; declare Y : Integer := 20; begin ... end; end;`                      | X visible throughout outer block; Y visible only in inner block      |
+| Shadowed Variable        | `declare X : Integer := 10; begin declare X : Integer := 20; begin ... end; end;`                | Outer X visible in outer block; inner X hides outer X in inner block |
+| Accessing Outer Variable | `declare X : Integer := 10; begin declare X : Integer := 20; begin Put_Line(outer.X); end; end;` | Outer.X accesses the outer variable                                  |
 
 #### Advanced Block Features
 
@@ -309,14 +386,15 @@ exception
 end;
 ```
 
-This structure ensures that errors are handled locally, preventing exceptions from propagating to higher levels of the system.
+This structure ensures that errors are handled locally, preventing exceptions
+from propagating to higher levels of the system.
 
 Blocks can also contain nested subprograms:
 
 ```ada
 declare
    X : Integer := 10;
-   
+
    procedure Calculate is
       Y : Integer := 20;
    begin
@@ -327,9 +405,10 @@ begin
 end;
 ```
 
-This allows for precise encapsulation of functionality within a specific context.
+This allows for precise encapsulation of functionality within a specific
+context.
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Aircraft Control System Block Structure
 
 In an aircraft control system:
 
@@ -337,7 +416,7 @@ In an aircraft control system:
 declare
    Altitude : Float := 35_000.0;
    Airspeed : Float := 500.0;
-   
+
    procedure Calculate_Distance is
       Distance : Float;
    begin
@@ -350,13 +429,16 @@ begin
 end;
 ```
 
-This structure ensures that the distance calculation uses only the relevant variables and that the calculation is properly encapsulated.
+This structure ensures that the distance calculation uses only the relevant
+variables and that the calculation is properly encapsulated.
 
-## 5.2 The Type Model
+## 1.2. The Type Model
 
-### 5.2.1 Types, Subtypes, and Constraints
+### 1.2.1. Types, Subtypes, and Constraints
 
-Ada's type system is built around the concept of precise constraints. Every type can have constraints that define its valid range of values, ensuring that only meaningful data is stored.
+Ada's type system is built around the concept of precise constraints. Every
+type can have constraints that define its valid range of values, ensuring that
+only meaningful data is stored.
 
 #### Type Declaration
 
@@ -366,7 +448,8 @@ A type declaration creates a new, distinct type:
 type Temperature is range -50..150;
 ```
 
-This creates a new type where variables can only hold values between -50 and 150.
+This creates a new type where variables can only hold values between -50
+and 150.
 
 #### Subtype Declaration
 
@@ -376,7 +459,8 @@ A subtype is a constrained view of an existing type:
 subtype Normal_Temperature is Temperature range -40..85;
 ```
 
-Subtypes inherit all operations from their base type but restrict values to a specific range.
+Subtypes inherit all operations from their base type but restrict values to a
+specific range.
 
 #### Constraints
 
@@ -406,7 +490,7 @@ Input : Integer := 101;
 Value : Sensor_Value := Sensor_Value(Input);
 ```
 
-#### Real-World Example: Financial System
+#### Real-World Example: Financial System Type Constraints
 
 In a financial transaction system:
 
@@ -422,56 +506,70 @@ Input : Float := -100.0;
 Transaction_Amount := Valid_Amount(Input);
 ```
 
-This ensures that financial amounts are always positive and within reasonable limits, preventing errors that could cause financial loss.
+This ensures that financial amounts are always positive and within reasonable
+limits, preventing errors that could cause financial loss.
 
 #### Note Box: Why Constraints Matter
 
-> "In Ada, constraints are not optional—they are the safety net that prevents invalid data from entering your system. When you define a type with precise constraints, you're not just specifying storage—you're defining the physical reality of what that data represents. In a medical device, for example, a heart rate type with constraints of 20-250 ensures that no sensor reading outside physiological limits can be processed, preventing false alarms or missed emergencies."
-> 
+> "In Ada, constraints are not optional—they are the safety net that prevents
+> invalid data from entering your system. When you define a type with precise
+> constraints, you're not just specifying storage—you're defining the physical
+> reality of what that data represents. In a medical device, for example, a
+> heart rate type with constraints of 20-250 ensures that no sensor reading
+> outside physiological limits can be processed, preventing false alarms or
+> missed emergencies."
+>
 > — Senior Architect, Medical Device Manufacturer
 
 #### Table 5.3: Type vs. Subtype vs. Derived Type
 
-| Feature | Type | Subtype | Derived Type |
-|---------|------|---------|--------------|
-| New Type Identity | Yes | No | Yes |
-| Assignment Compatibility | No | Yes | No |
-| Constraints | Yes | Yes | Yes |
-| Inherited Operations | Yes | Yes | Yes |
-| Explicit Conversion Required | Yes | No | Yes |
-| Example | `type Temperature is range -50..150;` | `subtype Normal_Temp is Temperature range -40..85;` | `type Meters is new Float;` |
+| Feature                      | Type                                  | Subtype                                             | Derived Type                |
+| ---------------------------- | ------------------------------------- | --------------------------------------------------- | --------------------------- |
+| New Type Identity            | Yes                                   | No                                                  | Yes                         |
+| Assignment Compatibility     | No                                    | Yes                                                 | No                          |
+| Constraints                  | Yes                                   | Yes                                                 | Yes                         |
+| Inherited Operations         | Yes                                   | Yes                                                 | Yes                         |
+| Explicit Conversion Required | Yes                                   | No                                                  | Yes                         |
+| Example                      | `type Temperature is range -50..150;` | `subtype Normal_Temp is Temperature range -40..85;` | `type Meters is new Float;` |
 
 #### Detailed Constraint Examples
 
 Ada allows for sophisticated constraints that go beyond simple range limits:
 
-**Precision Constraints**
+##### Precision Constraints
 
 ```ada
 type High_Precision_Float is digits 15;
 type Low_Precision_Float is digits 6;
 ```
 
-Here, `digits 15` specifies at least 15 significant decimal digits of precision, while `digits 6` specifies at least 6 significant decimal digits.
+Here, `digits 15` specifies at least 15 significant decimal digits of
+precision, while `digits 6` specifies at least 6 significant decimal digits.
 
-**Delta Constraints**
+##### Delta Constraints
 
 ```ada
 type Currency is delta 0.01 digits 15;
 ```
 
-This specifies that the smallest increment is 0.01 (for currency values), with at least 15 significant digits.
+This specifies that the smallest increment is 0.01 (for currency values), with
+at least 15 significant digits.
 
-**Dynamic Predicates**
+##### Dynamic Predicates (Ada 2012)
 
 ```ada
-type Valid_Heart_Rate is Heart_Rate
-  with Dynamic_Predicate => Valid_Heart_Rate in 30..250;
+type Heart_Rate is range 20..250;
+type Valid_Heart_Rate is new Heart_Rate
+  with Dynamic_Predicate => Valid_Heart_Rate in 30..220;
 ```
 
-This ensures that any variable of type `Valid_Heart_Rate` stays within physiological ranges.
+This creates a derived type that ensures any variable of type `Valid_Heart_Rate`
+stays within a more restricted physiological range. The predicate is checked at
+runtime whenever a value is assigned to the type.
 
-#### Real-World Example: Scientific Calculation
+> **Note**: `Dynamic_Predicate` is **only** legal on **type** declarations (Ada 2012). For **subtypes**, use `Static_Predicate` or reformulate as a derived type as shown above.
+
+#### Real-World Example: Physics Simulation Type Constraints
 
 In a physics simulation:
 
@@ -484,11 +582,14 @@ time : Float := 10.0;
 speed := gravity * time;  -- 98.0665
 ```
 
-This ensures precise calculation of acceleration values while maintaining the physical constraints of the system.
+This ensures precise calculation of acceleration values while maintaining the
+physical constraints of the system.
 
-### 5.2.2 Derived Types
+### 1.2.2. Derived Types
 
-Derived types create new types based on existing types while maintaining distinct identity. Unlike subtypes, derived types are not assignment-compatible with their parent type.
+Derived types create new types based on existing types while maintaining
+distinct identity. Unlike subtypes, derived types are not
+assignment-compatible with their parent type.
 
 #### Derived Type Declaration
 
@@ -497,7 +598,8 @@ type Meters is new Float;
 type Kilometers is new Float;
 ```
 
-These are distinct types—`Meters` and `Kilometers` cannot be assigned to each other without explicit conversion.
+These are distinct types—`Meters` and `Kilometers` cannot be assigned to each
+other without explicit conversion.
 
 #### Inheritance of Operations
 
@@ -517,7 +619,7 @@ To convert between derived types, you must use explicit conversion:
 K1 : Kilometers := Kilometers(M1);
 ```
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Navigation System Derived Types
 
 In an aircraft navigation system:
 
@@ -532,7 +634,8 @@ Latitude := Longitude(45.0);  -- Incompatible types
 Latitude := Convert_Longitude_to_Latitude(Longitude(45.0));
 ```
 
-This prevents accidental mixing of latitude and longitude values—a critical safety feature in navigation systems.
+This prevents accidental mixing of latitude and longitude values—a critical
+safety feature in navigation systems.
 
 #### Advanced Derived Type Features
 
@@ -545,14 +648,15 @@ end record;
 
 function "+" (Left, Right : Special_Float) return Special_Float is
 begin
-   return (Precision => Left.Precision, 
+   return (Precision => Left.Precision,
            Float'Image (Float (Left) + Float (Right)));
 end "+";
 ```
 
-This creates a new type that extends the functionality of `Float` while maintaining type safety.
+This creates a new type that extends the functionality of `Float` while
+maintaining type safety.
 
-#### Real-World Example: Financial System
+#### Real-World Example: Currency Derived Types
 
 In a financial transaction system:
 
@@ -567,19 +671,26 @@ USD := EUR(100.0);  -- Incompatible types
 USD := Convert_EUR_to_USD(EUR(100.0));
 ```
 
-This ensures that currency conversions are explicit and intentional, preventing subtle errors that could cause financial loss.
+This ensures that currency conversions are explicit and intentional,
+preventing subtle errors that could cause financial loss.
 
 #### Note Box: The Power of Derived Types
 
-> "Derived types in Ada are not just about preventing unit mix-ups—they're about creating a type system that reflects the physical reality of your system. When you define a type for meters and a type for feet, the compiler ensures you never accidentally add them together without proper conversion. This precision is what makes Ada the language of choice for safety-critical systems."
-> 
+> "Derived types in Ada are not just about preventing unit mix-ups—they're
+> about creating a type system that reflects the physical reality of your
+> system. When you define a type for meters and a type for feet, the compiler
+> ensures you never accidentally add them together without proper conversion.
+> This precision is what makes Ada the language of choice for safety-critical
+> systems."
+>
 > — Principal Engineer, Airbus Defense and Space
 
-## 5.3 Integer Types
+## 1.3. Integer Types
 
-### 5.3.1 Signed and Modular Integers
+### 1.3.1. Signed and Modular Integers
 
-Ada provides two main categories of integer types: signed integers and modular integers.
+Ada provides two main categories of integer types: signed integers and modular
+integers.
 
 #### Signed Integers
 
@@ -594,29 +705,32 @@ Signed integers have a defined range with minimum and maximum values.
 
 #### Modular Integers
 
-Modular integers represent unsigned values that wrap around when exceeding their range:
+Modular integers represent unsigned values that wrap around when exceeding
+their range:
 
 ```ada
 type Bit is mod 2;  -- 0 or 1
 type Byte is mod 256;  -- 0 to 255
 ```
 
-Modular integers are useful for bit manipulation and low-level operations where wrap-around behavior is desired.
+Modular integers are useful for bit manipulation and low-level operations
+where wrap-around behavior is desired. Any modulus ≥ 2 is legal; power-of-two moduli map to efficient bitwise-AND, others use division.
 
 #### Arithmetic Operations
 
-For signed integers, arithmetic operations that exceed the range raise a `Constraint_Error`:
+For signed integers, arithmetic operations that exceed the range raise a
+`Constraint_Error`:
 
 ```ada
 Value : Temperature := 140;
 Value := Value + 20;  -- Raises Constraint_Error
 ```
 
-For modular integers, operations wrap around within the defined range:
+For modular integers, operations wrap around modulo the type's modulus:
 
 ```ada
 Value : Byte := 255;
-Value := Value + 1;  -- Value becomes 0
+Value := Value + 1;  -- Value becomes 0 (wraps modulo 256)
 ```
 
 #### Real-World Example: Embedded System
@@ -636,29 +750,36 @@ Current_Step : Motor_Steps := 355;
 Current_Step := Current_Step + 10;  -- Becomes 5
 ```
 
-This structure ensures that motor speed stays within physical limits while allowing step counts to wrap around naturally.
+This structure ensures that motor speed stays within physical limits while
+allowing step counts to wrap around naturally.
 
 #### Note Box: When to Use Modular Integers
 
-> "Modular integers are not just for bit manipulation—they're a powerful tool for modeling cyclic phenomena. In navigation systems, for example, angles naturally wrap around at 360 degrees. Using a modular type for angles ensures that calculations like `angle + 180` always produce valid results without special handling for the wrap-around point. This precision prevents subtle bugs that would otherwise require complex conditional logic."
-> 
+> "Modular integers are not just for bit manipulation—they're a powerful tool
+> for modeling cyclic phenomena. In navigation systems, for example, angles
+> naturally wrap around at 360 degrees. Using a modular type for angles
+> ensures that calculations like `angle + 180` always produce valid results
+> without special handling for the wrap-around point. This precision prevents
+> subtle bugs that would otherwise require complex conditional logic."
+>
 > — Senior Software Engineer, Aerospace Industry
 
 #### Table 5.4: Signed vs. Modular Integer Behavior
 
-| Operation | Signed Integer | Modular Integer |
-|-----------|----------------|-----------------|
-| Addition within range | Works normally | Works normally |
-| Addition beyond range | Raises Constraint_Error | Wraps around within range |
-| Subtraction within range | Works normally | Works normally |
-| Subtraction below range | Raises Constraint_Error | Wraps around within range |
-| Example | `Temperature := 150 + 10;` → Error | `Byte := 255 + 1;` → 0 |
+| Operation                | Signed Integer                     | Modular Integer               |
+| ------------------------ | ---------------------------------- | ----------------------------- |
+| Addition within range    | Works normally                     | Works normally                |
+| Addition beyond range    | Raises Constraint_Error            | Wraps modulo the type modulus |
+| Subtraction within range | Works normally                     | Works normally                |
+| Subtraction below range  | Raises Constraint_Error            | Wraps modulo the type modulus |
+| Example                  | `Temperature := 150 + 10;` → Error | `Byte := 255 + 1;` → 0        |
 
 #### Detailed Integer Operations
 
-Ada provides several integer operations that work differently for signed and modular integers:
+Ada provides several integer operations that work differently for signed and
+modular integers:
 
-**Modulo Operation**
+##### Modulo Operation
 
 For modular integers, the modulo operation is built-in:
 
@@ -669,7 +790,7 @@ Y : Byte := 1;
 Z : Byte := X + Y;  -- Z = 0 (wraps around)
 ```
 
-**Mod and Rem Operators**
+##### Mod and Rem Operators
 
 For signed integers, Ada provides `mod` and `rem` operators:
 
@@ -680,9 +801,10 @@ Z1 : Integer := X mod Y;  -- Z1 = 2
 Z2 : Integer := X rem Y;  -- Z2 = -1
 ```
 
-These operators behave differently for negative numbers, which is critical for mathematical calculations.
+These operators behave differently for negative numbers, which is critical for
+mathematical calculations.
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Integer Types
 
 In a medical device that monitors patient vital signs:
 
@@ -699,9 +821,10 @@ Current_Pulse : Pulse_Count := 99;
 Current_Pulse := Current_Pulse + 1;  -- Becomes 0
 ```
 
-This structure ensures that heart rates stay within physiological limits while allowing pulse counts to wrap around naturally.
+This structure ensures that heart rates stay within physiological limits while
+allowing pulse counts to wrap around naturally.
 
-### 5.3.2 Predefined Integer Types: Integer, Natural, Positive
+### 1.3.2. Predefined Integer Types: Integer, Natural, Positive
 
 Ada provides several predefined integer types for common use cases.
 
@@ -712,7 +835,8 @@ type Integer is range -2**31..2**31-1;  -- Typically 32-bit
 type Long_Integer is range -2**63..2**63-1;  -- Typically 64-bit
 ```
 
-These types have implementation-defined ranges but must support at least the specified minimums.
+These types have implementation-defined ranges but must support at least the
+specified minimums.
 
 #### Specialized Integer Types
 
@@ -723,9 +847,10 @@ type Natural is range 0..Integer'Last;  -- Non-negative integers
 type Positive is range 1..Integer'Last;  -- Positive integers
 ```
 
-These types are particularly useful for array indices and counts where negative values are meaningless.
+These types are particularly useful for array indices and counts where
+negative values are meaningless.
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Predefined Types
 
 In a medical device that monitors patient vital signs:
 
@@ -746,38 +871,45 @@ Current_Heart_Rate := 0;  -- Heart_Rate must be positive
 Patient_Count := -1;  -- Natural cannot be negative
 ```
 
-This structure ensures that heart rates are always positive (physiologically meaningful) while patient counts can be zero (no patients present).
+This structure ensures that heart rates are always positive (physiologically
+meaningful) while patient counts can be zero (no patients present).
 
 #### Note Box: Why Predefined Integer Types Matter
 
-> "Predefined integer types in Ada are not just convenient—they're safety-critical. When you use `Positive` for a heart rate, you're not just saying 'this is a number'—you're saying 'this must be a positive number,' which is a physiological reality. This precision prevents errors that would otherwise require manual validation and error checking."
-> 
+> "Predefined integer types in Ada are not just convenient—they're
+> safety-critical. When you use `Positive` for a heart rate, you're not just
+> saying 'this is a number'—you're saying 'this must be a positive number,'
+> which is a physiological reality. This precision prevents errors that would
+> otherwise require manual validation and error checking."
+>
 > — Principal Engineer, Medical Device Manufacturer
 
 #### Table 5.5: Predefined Integer Types
 
-| Type | Range | Typical Use Case |
-|------|-------|------------------|
-| Integer | -2^31 to 2^31-1 | General-purpose integers |
-| Long_Integer | -2^63 to 2^63-1 | Large numbers (e.g., timestamps) |
-| Natural | 0 to Integer'Last | Counts, array indices |
-| Positive | 1 to Integer'Last | Positive counts, array indices (1-based) |
-| Byte | 0 to 255 | 8-bit values |
-| Word | 0 to 65535 | 16-bit values |
+| Type         | Range             | Typical Use Case                         |
+| ------------ | ----------------- | ---------------------------------------- |
+| Integer      | -2^31 to 2^31-1   | General-purpose integers                 |
+| Long_Integer | -2^63 to 2^63-1   | Large numbers (e.g., timestamps)         |
+| Natural      | 0 to Integer'Last | Counts, array indices                    |
+| Positive     | 1 to Integer'Last | Positive counts, array indices (1-based) |
+| Byte         | 0 to 255          | 8-bit values                             |
+| Word         | 0 to 65535        | 16-bit values                            |
 
 #### Detailed Integer Type Examples
 
-Ada provides several additional predefined integer types for specific use cases:
+Ada provides several additional predefined integer types for specific use
+cases:
 
-**Boolean Type**
+##### Boolean Type
 
 ```ada
 type Boolean is (False, True);
 ```
 
-While not technically an integer type, Boolean is often used with integer operations in Ada.
+While not technically an integer type, Boolean is often used with integer
+operations in Ada.
 
-**Character Type**
+##### Character Type
 
 ```ada
 type Character is (' ', '!', '"', '#', ...);
@@ -785,7 +917,7 @@ type Character is (' ', '!', '"', '#', ...);
 
 Character is an enumeration type that can be used with integer operations.
 
-**Standard Integer Ranges**
+##### Standard Integer Ranges
 
 ```ada
 type Short_Integer is range -2**15..2**15-1;  -- 16-bit
@@ -794,7 +926,7 @@ type Long_Long_Integer is range -2**63..2**63-1;  -- 64-bit
 
 These types provide more precise control over integer size.
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Aircraft Navigation Array Indices
 
 In an aircraft navigation system:
 
@@ -815,13 +947,15 @@ Data(0) := 25.5;  -- Index must be positive
 Data(101) := 25.5;  -- Index must be <= 100
 ```
 
-This structure ensures that array indices are always valid, preventing buffer overflows and other common errors.
+This structure ensures that array indices are always valid, preventing buffer
+overflows and other common errors.
 
-## 5.4 Enumeration Types
+## 1.4. Enumeration Types
 
-### 5.4.1 Declaring Enumerations
+### 1.4.1. Declaring Enumerations
 
-Enumeration types define a closed set of named values. They are ideal for representing discrete states or options.
+Enumeration types define a closed set of named values. They are ideal for
+representing discrete states or options.
 
 #### Basic Enumeration Declaration
 
@@ -851,9 +985,10 @@ type Traffic_Light is (Red, Yellow, Green) with
    Size => 2;  -- Specify storage size in bits
 ```
 
-This specifies that the type should use exactly 2 bits of storage, which is valuable for embedded systems with memory constraints.
+This specifies that the type should use exactly 2 bits of storage, which is
+valuable for embedded systems with memory constraints.
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Aircraft Control Enumeration Types
 
 In an aircraft control system:
 
@@ -868,29 +1003,35 @@ Current_Mode := Landing;
 Current_Mode := "Unknown";  -- Compile error: unknown value
 ```
 
-This ensures that flight modes always stay within the defined set, preventing invalid states that could cause system failures.
+This ensures that flight modes always stay within the defined set, preventing
+invalid states that could cause system failures.
 
 #### Note Box: The Power of Enumeration Types
 
-> "Enumeration types are not just convenient—they're safety-critical. In a system where a single invalid state could cause a plane to crash or a patient to die, having a closed set of valid states is non-negotiable. When you see a variable of type `Flight_Mode`, you know exactly which values it can hold without needing to consult documentation. This precision is what makes Ada the language of choice for safety-critical systems."
-> 
+> "Enumeration types are not just convenient—they're safety-critical. In a
+> system where a single invalid state could cause a plane to crash or a
+> patient to die, having a closed set of valid states is non-negotiable. When
+> you see a variable of type `Flight_Mode`, you know exactly which values it
+> can hold without needing to consult documentation. This precision is what
+> makes Ada the language of choice for safety-critical systems."
+>
 > — Principal Engineer, Airbus Defense and Space
 
 #### Table 5.6: Enumeration Type Examples
 
-| Enumeration Type | Values | Use Case |
-|------------------|--------|----------|
-| Color | (Red, Green, Blue) | Visual indicators |
-| System_State | (Idle, Running, Paused, Error) | System status |
-| Communication_Protocol | (TCP, UDP, ICMP, HTTP) | Network protocols |
-| Flight_Mode | (Takeoff, Cruise, Landing, Emergency) | Aircraft control |
-| Traffic_Light | (Red, Yellow, Green) | Traffic control |
+| Enumeration Type       | Values                                | Use Case          |
+| ---------------------- | ------------------------------------- | ----------------- |
+| Color                  | (Red, Green, Blue)                    | Visual indicators |
+| System_State           | (Idle, Running, Paused, Error)        | System status     |
+| Communication_Protocol | (TCP, UDP, ICMP, HTTP)                | Network protocols |
+| Flight_Mode            | (Takeoff, Cruise, Landing, Emergency) | Aircraft control  |
+| Traffic_Light          | (Red, Yellow, Green)                  | Traffic control   |
 
 #### Advanced Enumeration Features
 
 Ada provides several advanced features for enumeration types:
 
-**Enumeration Representation**
+##### Enumeration Representation
 
 ```ada
 type State is (Off, On) with
@@ -900,7 +1041,7 @@ type State is (Off, On) with
 
 This specifies the exact bit representation for each value.
 
-**Enumeration Attributes**
+##### Enumeration Attributes
 
 ```ada
 type Color is (Red, Green, Blue);
@@ -911,7 +1052,7 @@ Blue_Pos : Natural := Color'Pos(Blue);  -- 2
 
 These attributes provide additional information about the enumeration values.
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Enumeration Attributes
 
 In a medical device that monitors vital signs:
 
@@ -929,26 +1070,30 @@ Alert_Pos : Natural := Alert_Level'Pos(Current_Alert);
 Alert_Level_Value : Alert_Level := Alert_Level'Val(Alert_Pos);
 ```
 
-This structure allows for safe transitions between alert levels while ensuring that only valid transitions are possible.
+This structure allows for safe transitions between alert levels while ensuring
+that only valid transitions are possible.
 
-### 5.4.2 Operations and Attributes ('Succ, 'Pred, 'Pos, 'Val)
+### 1.4.2. Operations and Attributes ('Succ, 'Pred, 'Pos, 'Val)
 
 Ada provides several attributes for working with enumeration types.
 
 #### Successor and Predecessor Attributes
 
-The `'Succ` and `'Pred` attributes return the next or previous value in the enumeration:
+The `'Succ` and `'Pred` attributes return the next or previous value in the
+enumeration:
 
 ```ada
 Next_Color : Color := Color'Succ(Red);  -- Green
 Prev_Color : Color := Color'Pred(Green);  -- Red
 ```
 
-These attributes work with any enumeration type, regardless of the underlying representation.
+These attributes work with any enumeration type, regardless of the underlying
+representation.
 
 #### Position Attribute
 
-The `'Pos` attribute returns the position number of an enumeration value (starting from 0):
+The `'Pos` attribute returns the position number of an enumeration value
+(starting from 0):
 
 ```ada
 Red_Pos : Natural := Color'Pos(Red);  -- 0
@@ -963,7 +1108,7 @@ The `'Val` attribute returns the enumeration value at a given position:
 Color_Value : Color := Color'Val(1);  -- Green
 ```
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Enumeration Operations
 
 In a medical device that monitors patient vital signs:
 
@@ -981,30 +1126,35 @@ Alert_Pos : Natural := Alert_Level'Pos(Current_Alert);
 Alert_Level_Value : Alert_Level := Alert_Level'Val(Alert_Pos);
 ```
 
-This structure allows for safe transitions between alert levels while ensuring that only valid transitions are possible.
+This structure allows for safe transitions between alert levels while ensuring
+that only valid transitions are possible.
 
 #### Note Box: Why Enumeration Attributes Matter
 
-> "Enumeration attributes in Ada are not just convenient—they're safety-critical. When you use `Alert_Level'Succ(Current_Alert)`, you're not just getting the next value—you're ensuring that the transition is valid and safe. This precision prevents errors that would otherwise require manual validation and error checking."
-> 
+> "Enumeration attributes in Ada are not just convenient—they're
+> safety-critical. When you use `Alert_Level'Succ(Current_Alert)`, you're not
+> just getting the next value—you're ensuring that the transition is valid and
+> safe. This precision prevents errors that would otherwise require manual
+> validation and error checking."
+>
 > — Senior Software Engineer, Medical Device Manufacturer
 
 #### Table 5.7: Enumeration Attributes
 
-| Attribute | Description | Example |
-|-----------|-------------|---------|
-| `'Succ` | Returns the next value in the enumeration | `Color'Succ(Red)` |
-| `'Pred` | Returns the previous value in the enumeration | `Color'Pred(Green)` |
-| `'Pos` | Returns the position number (0-based) | `Color'Pos(Red)` |
-| `'Val` | Returns the value at a given position | `Color'Val(1)` |
-| `'Image` | Returns the string representation | `Color'Image(Red)` |
-| `'Value` | Returns the value from a string | `Color'Value("Green")` |
+| Attribute | Description                                   | Example                |
+| --------- | --------------------------------------------- | ---------------------- |
+| `'Succ`   | Returns the next value in the enumeration     | `Color'Succ(Red)`      |
+| `'Pred`   | Returns the previous value in the enumeration | `Color'Pred(Green)`    |
+| `'Pos`    | Returns the position number (0-based)         | `Color'Pos(Red)`       |
+| `'Val`    | Returns the value at a given position         | `Color'Val(1)`         |
+| `'Image`  | Returns the string representation             | `Color'Image(Red)`     |
+| `'Value`  | Returns the value from a string               | `Color'Value("Green")` |
 
 #### Detailed Enumeration Operations
 
 Ada provides several additional operations for enumeration types:
 
-**Range Operations**
+##### Range Operations
 
 ```ada
 type Color is (Red, Green, Blue);
@@ -1013,7 +1163,7 @@ Color_Range : Color := Red..Blue;  -- Red to Blue
 
 This creates a range of enumeration values.
 
-**Equality and Comparison**
+##### Equality and Comparison
 
 ```ada
 if Color1 = Color2 then
@@ -1021,9 +1171,10 @@ if Color1 = Color2 then
 end if;
 ```
 
-Enumeration types support equality and comparison operations, which is critical for state machines.
+Enumeration types support equality and comparison operations, which is
+critical for state machines.
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Aircraft Control Enumeration Operations
 
 In an aircraft control system:
 
@@ -1042,13 +1193,15 @@ if Current_Mode = Cruise then
 end if;
 ```
 
-This structure ensures that flight modes are always valid and can be compared safely.
+This structure ensures that flight modes are always valid and can be compared
+safely.
 
-## 5.5 The Boolean Type
+## 1.5. The Boolean Type
 
-### 5.5.1 Logical Operators: and, or, xor, not
+### 1.5.1. Logical Operators: and, or, xor, not
 
-Ada's Boolean type represents true/false values and provides standard logical operators.
+Ada's Boolean type represents true/false values and provides standard logical
+operators.
 
 #### Basic Boolean Operations
 
@@ -1064,14 +1217,14 @@ Not_Result : Boolean := not A;  -- False
 
 #### Truth Table
 
-| A | B | A and B | A or B | A xor B |
-|---|---|---------|--------|---------|
-| True | True | True | True | False |
-| True | False | False | True | True |
-| False | True | False | True | True |
-| False | False | False | False | False |
+| A     | B     | A and B | A or B | A xor B |
+| ----- | ----- | ------- | ------ | ------- |
+| True  | True  | True    | True   | False   |
+| True  | False | False   | True   | True    |
+| False | True  | False   | True   | True    |
+| False | False | False   | False  | False   |
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Aircraft Navigation Boolean Logic
 
 In an aircraft navigation system:
 
@@ -1085,30 +1238,37 @@ if Altitude_Valid and Airspeed_Valid then
 end if;
 ```
 
-This ensures that navigation calculations only occur when both critical inputs are valid.
+This ensures that navigation calculations only occur when both critical inputs
+are valid.
 
 #### Note Box: Why Boolean Logic Matters
 
-> "In safety-critical systems, Boolean logic is not just about true/false values—it's about safety guarantees. When you write `if Altitude_Valid and Airspeed_Valid then`, you're not just checking conditions—you're creating a safety boundary. If either condition is false, the system will not proceed, preventing potentially dangerous operations. This precision is what makes Ada the language of choice for systems where failure is not an option."
-> 
+> "In safety-critical systems, Boolean logic is not just about true/false
+> values—it's about safety guarantees. When you write
+> `if Altitude_Valid and Airspeed_Valid then`, you're not just checking
+> conditions—you're creating a safety boundary. If either condition is false,
+> the system will not proceed, preventing potentially dangerous operations.
+> This precision is what makes Ada the language of choice for systems where
+> failure is not an option."
+>
 > — Senior Software Engineer, NASA Jet Propulsion Laboratory
 
 #### Table 5.8: Boolean Operators
 
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `and` | Logical AND | `A and B` |
-| `or` | Logical OR | `A or B` |
-| `xor` | Logical XOR | `A xor B` |
-| `not` | Logical NOT | `not A` |
+| Operator   | Description       | Example        |
+| ---------- | ----------------- | -------------- |
+| `and`      | Logical AND       | `A and B`      |
+| `or`       | Logical OR        | `A or B`       |
+| `xor`      | Logical XOR       | `A xor B`      |
+| `not`      | Logical NOT       | `not A`        |
 | `and then` | Short-circuit AND | `A and then B` |
-| `or else` | Short-circuit OR | `A or else B` |
+| `or else`  | Short-circuit OR  | `A or else B`  |
 
 #### Detailed Boolean Operations
 
 Ada provides several additional Boolean operations:
 
-**Conditional Expressions**
+##### Conditional Expressions
 
 ```ada
 Result : Boolean := (A and B) or (C and D);
@@ -1116,7 +1276,7 @@ Result : Boolean := (A and B) or (C and D);
 
 This creates a complex condition using multiple Boolean operations.
 
-**Boolean Conversion**
+##### Boolean Conversion
 
 ```ada
 X : Integer := 10;
@@ -1125,7 +1285,7 @@ B : Boolean := (X > 0);
 
 This converts an integer comparison to a Boolean value.
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Boolean Operations
 
 In a medical device that monitors patient vital signs:
 
@@ -1139,15 +1299,18 @@ if Heart_Rate_Valid and Blood_Pressure_Valid then
 end if;
 ```
 
-This structure ensures that vital signs are only processed when they're within physiological ranges.
+This structure ensures that vital signs are only processed when they're within
+physiological ranges.
 
-### 5.5.2 Short-Circuit Control Forms: and then, or else
+### 1.5.2. Short-Circuit Control Forms: and then, or else
 
-Ada provides short-circuit forms of logical operators that evaluate the second operand only when necessary.
+Ada provides short-circuit forms of logical operators that evaluate the second
+operand only when necessary.
 
 #### and then Operator
 
-The `and then` operator evaluates the second operand only if the first is true:
+The `and then` operator evaluates the second operand only if the first is
+true:
 
 ```ada
 if A /= null and then A.Value > 0 then
@@ -1155,11 +1318,13 @@ if A /= null and then A.Value > 0 then
 end if;
 ```
 
-This prevents null pointer dereferences that would occur in standard `and` operations.
+This prevents null pointer dereferences that would occur in standard `and`
+operations.
 
 #### or else Operator
 
-The `or else` operator evaluates the second operand only if the first is false:
+The `or else` operator evaluates the second operand only if the first is
+false:
 
 ```ada
 if A = null or else A.Value > 0 then
@@ -1169,7 +1334,7 @@ end if;
 
 This prevents unnecessary evaluations that could cause errors.
 
-#### Real-World Example: Medical Device System
+#### Real-World Example: Medical Device Short-Circuit Logic
 
 In a medical device that monitors patient vital signs:
 
@@ -1180,28 +1345,35 @@ if Sensor_Data /= null and then Sensor_Data.Heart_Rate > 100 then
 end if;
 ```
 
-This ensures that the heart rate check only occurs if the sensor data is valid, preventing null pointer dereferences.
+This ensures that the heart rate check only occurs if the sensor data is
+valid, preventing null pointer dereferences.
 
 #### Note Box: Why Short-Circuit Operators Matter
 
-> "Short-circuit operators in Ada are not just convenient—they're safety-critical. When you use `Sensor_Data /= null and then Sensor_Data.Heart_Rate > 100`, you're not just checking conditions—you're creating a safety boundary. If the sensor data is null, the heart rate check is never performed, preventing crashes and other dangerous behaviors. This precision is what makes Ada the language of choice for systems where failure is not an option."
-> 
+> "Short-circuit operators in Ada are not just convenient—they're
+> safety-critical. When you use
+> `Sensor_Data /= null and then Sensor_Data.Heart_Rate > 100`, you're not just
+> checking conditions—you're creating a safety boundary. If the sensor data is
+> null, the heart rate check is never performed, preventing crashes and other
+> dangerous behaviors. This precision is what makes Ada the language of choice
+> for systems where failure is not an option."
+>
 > — Principal Engineer, Medical Device Manufacturer
 
 #### Table 5.9: Logical Operators Comparison
 
-| Operator | Evaluation Behavior | Example |
-|----------|---------------------|---------|
-| `and` | Always evaluates both operands | `A and B` |
-| `and then` | Evaluates second operand only if first is true | `A and then B` |
-| `or` | Always evaluates both operands | `A or B` |
-| `or else` | Evaluates second operand only if first is false | `A or else B` |
+| Operator   | Evaluation Behavior                             | Example        |
+| ---------- | ----------------------------------------------- | -------------- |
+| `and`      | Always evaluates both operands                  | `A and B`      |
+| `and then` | Evaluates second operand only if first is true  | `A and then B` |
+| `or`       | Always evaluates both operands                  | `A or B`       |
+| `or else`  | Evaluates second operand only if first is false | `A or else B`  |
 
 #### Detailed Short-Circuit Operations
 
 Ada provides several additional short-circuit operations:
 
-**Complex Conditions**
+##### Complex Conditions
 
 ```ada
 if Sensor_Data /= null and then
@@ -1213,7 +1385,7 @@ end if;
 
 This creates a complex condition that safely evaluates each part.
 
-**Exception Handling**
+##### Exception Handling
 
 ```ada
 begin
@@ -1229,7 +1401,7 @@ end;
 
 This ensures that errors are handled safely, even in complex conditions.
 
-#### Real-World Example: Aerospace System
+#### Real-World Example: Aircraft Control Short-Circuit Operations
 
 In an aircraft control system:
 
@@ -1242,11 +1414,12 @@ if Navigation_Data /= null and then
 end if;
 ```
 
-This structure ensures that navigation calculations only occur when all critical inputs are valid and accessible.
+This structure ensures that navigation calculations only occur when all
+critical inputs are valid and accessible.
 
-## 5.6 Real Types
+## 1.6. Real Types
 
-### 5.6.1 Floating-Point Types
+### 1.6.1. Floating-Point Types
 
 Ada provides precise control over floating-point precision and range.
 
@@ -1257,7 +1430,8 @@ type Float is digits 6;  -- Minimum 6 decimal digits of precision
 type Long_Float is digits 12;  -- Minimum 12 decimal digits of precision
 ```
 
-These types have implementation-defined ranges but must support at least the specified precision.
+These types have implementation-defined ranges but must support at least the
+specified precision.
 
 #### Custom Floating-Point Types
 
@@ -1268,7 +1442,8 @@ type Voltage is digits 6 range 0.0..12.0;
 type Pressure is digits 8 range 0.0..1000.0;
 ```
 
-Here, `digits 6` specifies the minimum number of significant decimal digits of precision.
+Here, `digits 6` specifies the minimum number of significant decimal digits of
+precision.
 
 #### Real-World Example: Scientific Calculation
 
@@ -1287,25 +1462,33 @@ This ensures precise calculation of acceleration values.
 
 #### Note Box: Floating-Point Precision Matters
 
-> "In scientific and engineering applications, floating-point precision is not a luxury—it's a necessity. A single rounding error in a financial calculation can accumulate to millions of dollars over time. In a medical device, it could mean the difference between accurate diagnosis and misdiagnosis. Ada's precise control over floating-point precision ensures that your calculations are accurate to the last digit, not just 'close enough'."
-> 
+> "In scientific and engineering applications, floating-point precision is not
+> a luxury—it's a necessity. A single rounding error in a financial
+> calculation can accumulate to millions of dollars over time. In a medical
+> device, it could mean the difference between accurate diagnosis and
+> misdiagnosis. Ada's precise control over floating-point precision ensures
+> that your calculations are accurate to the last digit, not just 'close
+> enough'."
+>
 > — Principal Engineer, Medical Device Manufacturer
 
 #### Table 5.10: Floating-Point Types
 
-| Type | Precision | Range | Typical Use Case |
-|------|-----------|-------|------------------|
-| Float | 6 decimal digits | Implementation-defined | General-purpose floating-point |
-| Long_Float | 12 decimal digits | Implementation-defined | High-precision calculations |
-| Custom | User-defined | User-defined | Specialized applications |
-| Voltage | digits 6 range 0.0..12.0 | 0.0 to 12.0 | Electrical measurements |
-| Pressure | digits 8 range 0.0..1000.0 | 0.0 to 1000.0 | Pressure measurements |
+| Type       | Precision                    | Range                  | Typical Use Case               |
+| ---------- | ---------------------------- | ---------------------- | ------------------------------ |
+| Float      | At least 6 decimal digits    | Implementation-defined | General-purpose floating-point |
+| Long_Float | At least 12 decimal digits   | Implementation-defined | High-precision calculations    |
+| Custom     | User-defined                 | User-defined           | Specialized applications       |
+| Voltage    | digits 6 range 0.0..12.0     | 0.0 to 12.0            | Electrical measurements        |
+| Pressure   | digits 8 range 0.0..1000.0   | 0.0 to 1000.0          | Pressure measurements          |
+
+> **Note**: `digits N` sets the **minimum** precision; the compiler may allocate more. Use `T'Digits` to query the actual precision at run-time.
 
 #### Detailed Floating-Point Operations
 
 Ada provides several additional floating-point operations:
 
-**Rounding Modes**
+##### Rounding Modes
 
 ```ada
 pragma Round (Down);
@@ -1316,7 +1499,7 @@ Z : Float := X + Y;  -- Rounded down
 
 This controls how floating-point values are rounded.
 
-**Precision Control**
+##### Precision Control
 
 ```ada
 type High_Precision_Float is digits 15;
@@ -1325,7 +1508,7 @@ type Low_Precision_Float is digits 6;
 
 This provides precise control over floating-point precision.
 
-#### Real-World Example: Financial System
+#### Real-World Example: Financial System Floating-Point
 
 In a financial transaction system:
 
@@ -1337,11 +1520,13 @@ Balance : Currency := 0.0;
 Balance := Balance + Amount;  -- Exact 100.50
 ```
 
-This ensures that currency values are always accurate to the last digit, preventing rounding errors that could cause financial loss.
+This ensures that currency values are always accurate to the last digit,
+preventing rounding errors that could cause financial loss.
 
-### 5.6.2 Fixed-Point Types
+### 1.6.2. Fixed-Point Types
 
-Fixed-point types provide exact decimal representation, which is critical for financial and embedded systems.
+Fixed-point types provide exact decimal representation, which is critical for
+financial and embedded systems.
 
 #### Decimal Fixed-Point Types
 
@@ -1349,7 +1534,8 @@ Fixed-point types provide exact decimal representation, which is critical for fi
 type Currency is delta 0.01 digits 15;
 ```
 
-Here, `delta 0.01` specifies the smallest increment (0.01), and `digits 15` specifies the total number of significant digits.
+Here, `delta 0.01` specifies the smallest increment (0.01), and `digits 15`
+specifies the total number of significant digits.
 
 #### Binary Fixed-Point Types
 
@@ -1371,29 +1557,34 @@ Balance : Currency := 0.0;
 Balance := Balance + Amount;  -- Exact 100.50
 ```
 
-This ensures that currency values are always accurate to two decimal places, preventing rounding errors that could cause financial loss.
+This ensures that currency values are always accurate to two decimal places,
+preventing rounding errors that could cause financial loss.
 
 #### Note Box: Why Fixed-Point Types Matter
 
-> "Fixed-point types in Ada are not just convenient—they're safety-critical. When you use `delta 0.01` for currency, you're not just saying 'this is money'—you're saying 'this is money with exactly two decimal places,' which is a financial reality. This precision prevents errors that would otherwise require manual validation and error checking."
-> 
+> "Fixed-point types in Ada are not just convenient—they're safety-critical.
+> When you use `delta 0.01` for currency, you're not just saying 'this is
+> money'—you're saying 'this is money with exactly two decimal places,' which
+> is a financial reality. This precision prevents errors that would otherwise
+> require manual validation and error checking."
+>
 > — Senior Software Engineer, Financial Institution
 
 #### Table 5.11: Floating-Point vs. Fixed-Point Types
 
-| Feature | Floating-Point | Fixed-Point |
-|---------|----------------|-------------|
-| Precision Control | `digits N` for significant digits | `delta X` for smallest increment |
-| Range Control | `range Low..High` | `range Low..High` |
-| Representation | Binary floating-point | Decimal or binary fixed-point |
-| Use Cases | Scientific calculations | Financial systems, embedded control |
-| Example | `type Voltage is digits 6 range 0.0..12.0;` | `type Currency is delta 0.01 digits 15;` |
+| Feature           | Floating-Point                              | Fixed-Point                              |
+| ----------------- | ------------------------------------------- | ---------------------------------------- |
+| Precision Control | `digits N` for significant digits           | `delta X` for smallest increment         |
+| Range Control     | `range Low..High`                           | `range Low..High`                        |
+| Representation    | Binary floating-point                       | Decimal or binary fixed-point            |
+| Use Cases         | Scientific calculations                     | Financial systems, embedded control      |
+| Example           | `type Voltage is digits 6 range 0.0..12.0;` | `type Currency is delta 0.01 digits 15;` |
 
 #### Detailed Fixed-Point Operations
 
 Ada provides several additional fixed-point operations:
 
-**Fixed-Point Arithmetic**
+##### Fixed-Point Arithmetic
 
 ```ada
 type Currency is delta 0.01 digits 15;
@@ -1404,7 +1595,7 @@ Total : Currency := Amount1 + Amount2;  -- 150.75
 
 This ensures that currency calculations are exact.
 
-**Fixed-Point Conversion**
+##### Fixed-Point Conversion
 
 ```ada
 type Currency is delta 0.01 digits 15;
@@ -1424,13 +1615,15 @@ type Temperature is delta 0.1 range 30.0..45.0;
 Current_Temperature : Temperature := 37.5;
 ```
 
-This ensures that temperature readings are always accurate to one decimal place, preventing rounding errors that could affect diagnosis.
+This ensures that temperature readings are always accurate to one decimal
+place, preventing rounding errors that could affect diagnosis.
 
-## 5.7 Practical Examples of Scalar Types
+## 1.7. Practical Examples of Scalar Types
 
-### 5.7.1 A Case Study: Chemical Reaction Analysis
+### 1.7.1. A Case Study: Chemical Reaction Analysis
 
-Consider a chemical reactor control system where precise concentration and temperature measurements are critical.
+Consider a chemical reactor control system where precise concentration and
+temperature measurements are critical.
 
 #### Type Definitions
 
@@ -1465,7 +1658,9 @@ Rate := Calculate_Reaction_Rate (Conc, Pressure);  -- Wrong type
 Rate := Calculate_Reaction_Rate (15.0, 600);  -- Out of range
 ```
 
-This prevents a critical error where a pressure value might be mistakenly passed to a function expecting a temperature—a scenario that could cause dangerous overheating in a real chemical plant.
+This prevents a critical error where a pressure value might be mistakenly
+passed to a function expecting a temperature—a scenario that could cause
+dangerous overheating in a real chemical plant.
 
 #### Detailed Chemical Reaction System
 
@@ -1487,27 +1682,28 @@ begin
    if Temperature > 450 then
       Trigger_Alarm("Overheat detected");
    end if;
-   
+
    if Pressure > 900_000.0 then
       Trigger_Alarm("High pressure detected");
    end if;
-   
+
    if Concentration > 8.0 then
       Trigger_Alarm("High concentration detected");
    end if;
-   
+
    -- Control operations
    -- ...
 end Control_Reactor;
 ```
 
-This structure ensures that all reactor parameters stay within safe limits, preventing dangerous conditions.
+This structure ensures that all reactor parameters stay within safe limits,
+preventing dangerous conditions.
 
-### 5.7.2 A Case Study: A Fly-by-Wire Flight Control System
+### 1.7.2. A Case Study: A Fly-by-Wire Flight Control System
 
 Modern aircraft rely on complex control systems where precision is paramount.
 
-#### Type Definitions
+#### Flight Control Type Definitions
 
 ```ada
 type Altitude_Ft is new Float range 0.0 .. 50_000.0;
@@ -1536,7 +1732,9 @@ Adjust_Thrust (Control, 150.0);  -- Out of range
 Adjust_Thrust (Control, 1500.0);  -- Wrong type (airspeed instead of thrust)
 ```
 
-This prevents a critical error where a pilot's altitude input might be mistakenly used for thrust control—a scenario that could cause catastrophic loss of control.
+This prevents a critical error where a pilot's altitude input might be
+mistakenly used for thrust control—a scenario that could cause catastrophic
+loss of control.
 
 #### Detailed Flight Control System
 
@@ -1558,13 +1756,15 @@ procedure Adjust_Pitch (Control : in out Flight_Control; New_Pitch : Pitch_Angle
   with Pre => New_Pitch >= -30.0 and New_Pitch <= 30.0;
 ```
 
-This structure ensures that flight control inputs are always within safe limits, preventing dangerous maneuvers that could cause structural damage or loss of control.
+This structure ensures that flight control inputs are always within safe
+limits, preventing dangerous maneuvers that could cause structural damage or
+loss of control.
 
-### 5.7.3 A Case Study: Financial Transaction System
+### 1.7.3. A Case Study: Financial Transaction System
 
 Financial systems require precise decimal arithmetic to avoid rounding errors.
 
-#### Type Definitions
+#### Financial System Type Definitions
 
 ```ada
 type Currency is delta 0.01 digits 15;
@@ -1595,7 +1795,12 @@ Process_Transaction (100.50, 1.0);  -- Wrong type (Float instead of Transaction_
 Process_Transaction (100.50, 0);  -- Out of range for count
 ```
 
-This prevents a critical error where a transaction amount might be mistakenly used as a count, or where floating-point imprecision causes financial discrepancies. In banking systems, even small rounding errors can accumulate to millions of dollars over time.
+This prevents a critical error where a transaction amount might be mistakenly
+used as a count, or where floating-point imprecision causes financial
+discrepancies. In banking systems, even small rounding errors can accumulate
+to millions of dollars over time.
+
+> **Tip**: **Count the decimals**: `delta 0.01` requires **two** digits after the dot in literals; otherwise the literal is **Float** and **implicit conversion fails**. Use `100.50`, not `100.5`.
 
 #### Detailed Financial System
 
@@ -1617,57 +1822,77 @@ begin
    if Amount < 0.0 then
       raise Invalid_Transaction_Amount;
    end if;
-   
+
    if Type = Withdrawal and Amount > Current_Balance then
       raise Insufficient_Funds;
    end if;
-   
+
    -- Transaction operations
    -- ...
 end Process_Transaction;
 ```
 
-This structure ensures that financial transactions are always processed safely, preventing errors that could cause financial loss.
+This structure ensures that financial transactions are always processed
+safely, preventing errors that could cause financial loss.
 
-## 5.8 Summary and Conclusion
+## 1.8. Summary and Conclusion
 
-### 5.8.1 Review of Key Concepts
+### 1.8.1. Review of Key Concepts
 
 - Ada's scalar types provide precise control over data representation
 - Variables and constants must be explicitly declared with clear types
 - Blocks provide precise control over variable visibility and lifetime
-- Types, subtypes, and derived types enable precise constraints and distinct identities
-- Integer types include both signed and modular varieties for different use cases
+- Types, subtypes, and derived types enable precise constraints and distinct
+  identities
+- Integer types include both signed and modular varieties for different use
+  cases
 - Enumeration types define closed sets of valid values
 - Boolean logic includes short-circuit operators for safe condition evaluation
 - Floating-point and fixed-point types ensure precise numeric representation
 
-### 5.8.2 Why Scalar Types Matter
+### 1.8.2. Why Scalar Types Matter
 
-Scalar types are the foundation of Ada's safety guarantees. By defining precise constraints on every value, Ada ensures that:
+Scalar types are the foundation of Ada's safety guarantees. By defining
+precise constraints on every value, Ada ensures that:
 
 - Only meaningful data enters the system
 - Invalid states are impossible
 - Unit mix-ups are prevented at compile time
 - Numeric precision is guaranteed
 
-As one senior engineer at Airbus noted: "In Ada, the type system is not a limitation—it is a superpower. It transforms what would be a debugging nightmare in other languages into a compile-time certainty."
+As one senior engineer at Airbus noted: "In Ada, the type system is not a
+limitation—it is a superpower. It transforms what would be a debugging
+nightmare in other languages into a compile-time certainty."
 
-By mastering scalar types, you'll write code that is not only correct but provably safe—ensuring your software is reliable from the very first line.
+By mastering scalar types, you'll write code that is not only correct but
+provably safe—ensuring your software is reliable from the very first line.
 
-### 5.8.3 What's Next
+### 1.8.3. What's Next
 
-In the next chapter, we'll explore Ada's composite types—arrays, records, and tagged types. You'll learn how to build complex data structures while maintaining the same level of safety and precision that scalar types provide. This foundation will prepare you for modules on generics, contracts, and concurrency in later chapters.
+In the next chapter, we'll explore Ada's composite types—arrays, records, and
+tagged types. You'll learn how to build complex data structures while
+maintaining the same level of safety and precision that scalar types provide.
+This foundation will prepare you for modules on generics, contracts, and
+concurrency in later chapters.
 
 #### Real-World Example: Aerospace Industry
 
-Consider the Boeing 787 Dreamliner flight control system, which contains over 2 million lines of Ada code. Engineers report that new team members become productive within days—not weeks—because the code is self-documenting. As one lead developer stated: "In Ada, the code is the documentation. You don't need to guess what a function does—you read its contract and scope."
+Consider the Boeing 787 Dreamliner flight control system, which contains over
+2 million lines of Ada code. Engineers report that new team members become
+productive within days—not weeks—because the code is self-documenting. As one
+lead developer stated: "In Ada, the code is the documentation. You don't need
+to guess what a function does—you read its contract and scope."
 
-This is the power of Ada's strong typing system. By defining precise types for every value, the code becomes self-documenting and self-checking, preventing errors before they occur.
+This is the power of Ada's strong typing system. By defining precise types for
+every value, the code becomes self-documenting and self-checking, preventing
+errors before they occur.
 
 #### Real-World Example: Medical Device Industry
 
-Consider a medical device that monitors patient vital signs. The device uses Ada's strong typing system to define precise types for heart rate, blood pressure, and oxygen saturation. This ensures that values are always within physiological ranges, preventing errors that could harm patients.
+Consider a medical device that monitors patient vital signs. The device uses
+Ada's strong typing system to define precise types for heart rate, blood
+pressure, and oxygen saturation. This ensures that values are always within
+physiological ranges, preventing errors that could harm patients.
 
 For example, the heart rate type might be defined as:
 
@@ -1675,11 +1900,15 @@ For example, the heart rate type might be defined as:
 type Heart_Rate is range 20..250;
 ```
 
-This ensures that any value assigned to a heart rate variable is within the physiological range, preventing errors that could harm patients.
+This ensures that any value assigned to a heart rate variable is within the
+physiological range, preventing errors that could harm patients.
 
 #### Real-World Example: Financial Industry
 
-Consider a financial transaction system. The system uses Ada's strong typing system to define precise types for currency amounts and transaction counts. This ensures that values are always within financial limits, preventing errors that could cause financial loss.
+Consider a financial transaction system. The system uses Ada's strong typing
+system to define precise types for currency amounts and transaction counts.
+This ensures that values are always within financial limits, preventing errors
+that could cause financial loss.
 
 For example, the currency type might be defined as:
 
@@ -1687,15 +1916,17 @@ For example, the currency type might be defined as:
 type Currency is delta 0.01 digits 15;
 ```
 
-This ensures that currency amounts are always accurate to two decimal places, preventing rounding errors that could cause financial loss.
+This ensures that currency amounts are always accurate to two decimal places,
+preventing rounding errors that could cause financial loss.
 
-### 5.8.4 Exercises for Practice
+### 1.8.4. Exercises for Practice
 
 To reinforce your understanding of Ada's scalar types, try these exercises:
 
 #### Exercise 1: Simple Calculator
 
 Create a program that:
+
 - Takes two numbers as input
 - Calculates their sum, difference, product, and quotient
 - Prints the results with appropriate formatting
@@ -1704,6 +1935,7 @@ Create a program that:
 #### Exercise 2: File Logger
 
 Create a program that:
+
 - Reads a file containing temperature readings
 - Calculates the average temperature
 - Writes the results to a new file
@@ -1712,6 +1944,7 @@ Create a program that:
 #### Exercise 3: Temperature Converter
 
 Create a program that:
+
 - Converts temperatures between Celsius and Fahrenheit
 - Uses precise types for temperature values
 - Validates input ranges
@@ -1720,6 +1953,7 @@ Create a program that:
 #### Exercise 4: Flight Data Logger
 
 Create a program that:
+
 - Reads flight data from a file (altitude, airspeed, engine thrust)
 - Calculates the average values
 - Writes the results to a new file
@@ -1728,108 +1962,200 @@ Create a program that:
 #### Exercise 5: Medical Device Simulator
 
 Create a program that:
+
 - Simulates a medical device that monitors vital signs
 - Uses precise types for heart rate, blood pressure, and oxygen saturation
 - Validates input ranges
 - Logs results to a file
 - Handles errors appropriately
 
-These exercises will help you reinforce your understanding of Ada's scalar types and prepare you for more advanced topics in the next chapter.
+These exercises will help you reinforce your understanding of Ada's scalar
+types and prepare you for more advanced topics in the next chapter.
 
-### 5.8.5 Historical Context: The Evolution of Ada's Scalar Types
+#### Appendix: Exercise Scaffolding
 
-Ada's scalar types have evolved significantly since its creation in the 1970s. Here's a brief history of Ada's scalar types evolution:
+To help you get started with these exercises, here are some helpful resources:
 
-- **Ada 83**: Introduced strong typing with range constraints for integers and floating-point types
-- **Ada 95**: Added modular integers and improved floating-point precision control
+**Sample Input Files:**
+
+*temperatures.txt (for Exercise 2):*
+
+```text
+25.5
+23.2
+27.8
+22.1
+26.3
+```
+
+*flight_data.txt (for Exercise 4):*
+
+```csv
+Altitude,Airspeed,Thrust
+35000.0,450.0,75.0
+36000.0,465.0,80.0
+35500.0,455.0,78.0
+35200.0,448.0,76.0
+```
+
+**Project Configuration (alire.toml):**
+
+```toml
+[[depends-on]]
+ada = "^2012"
+
+[build-profiles.development]
+optimization = false
+debug = true
+```
+
+**Expected Output Example (Exercise 1):**
+
+```text
+Enter first number: 10.5
+Enter second number: 3.2
+Sum: 13.7
+Difference: 7.3
+Product: 33.6
+Quotient: 3.28125
+```
+
+### 1.8.5. Historical Context: The Evolution of Ada's Scalar Types
+
+Ada's scalar types have evolved significantly since its creation in the 1970s.
+Here's a brief history of Ada's scalar types evolution:
+
+- **Ada 83**: Introduced strong typing with range constraints for integers and
+  floating-point types
+- **Ada 95**: Added modular integers and improved floating-point precision
+  control
 - **Ada 2005**: Enhanced enumeration types with representation clauses
 - **Ada 2012**: Introduced contract-based programming for scalar types
-- **Ada 2022**: Added refined fixed-point types and improved floating-point precision control
+- **Ada 2022**: Added **small-wide fixed-point** (`Small => <any positive rational>`) and **IEEE 754-2019** scalar semantics
 
-Each revision has strengthened Ada's scalar types while adding capabilities that address real-world needs. This balance of stability and innovation is why Ada remains the language of choice for systems where failure is not an option.
+Each revision has strengthened Ada's scalar types while adding capabilities
+that address real-world needs. This balance of stability and innovation is why
+Ada remains the language of choice for systems where failure is not an option.
 
-### 5.8.6 Industry Statistics
+### 1.8.6. Industry Statistics
 
 Ada is used in a wide range of industries, including:
 
 - **Aerospace**: Boeing 787 Dreamliner, Airbus A380, NASA Mars Rovers
-- **Defense**: U.S. Department of Defense systems, European Defense Agency systems
-- **Transportation**: European Rail Traffic Management System (ERTMS), autonomous vehicles
+- **Defense**: U.S. Department of Defense systems, European Defense Agency
+  systems
+- **Transportation**: European Rail Traffic Management System (ERTMS),
+  autonomous vehicles
 - **Medical**: Medical devices, surgical robots, patient monitoring systems
-- **Finance**: Banking systems, financial transaction systems, stock trading systems
+- **Finance**: Banking systems, financial transaction systems, stock trading
+  systems
 
-Industry statistics show that Ada-based systems have significantly fewer defects than equivalent systems in other languages:
+Industry statistics show that Ada-based systems have significantly fewer
+defects than equivalent systems in other languages:
 
 - **NASA**: 10x fewer software defects than comparable C systems
 - **Airbus**: 90% fewer critical defects in Ada code compared to C code
-- **U.S. Department of Defense**: 75% reduction in software-related failures in Ada systems
-- **Medical device manufacturers**: 85% reduction in critical safety issues with Ada
+- **U.S. Department of Defense**: 75% reduction in software-related failures
+  in Ada systems
+- **Medical device manufacturers**: 85% reduction in critical safety issues
+  with Ada
 
-These statistics demonstrate the power of Ada's strong typing system and safety features.
+These statistics demonstrate the power of Ada's strong typing system and
+safety features.
 
-### 5.8.7 Real-World Case Study: Mars Rovers
+### 1.8.7. Real-World Case Study: Mars Rovers
 
-Consider the NASA Mars Rovers, which use Ada for their flight software. The Mars Rovers have been operating on Mars for over 15 years, with no software-related failures. This is a testament to Ada's reliability and safety features.
+Consider the NASA Mars Rovers, which use Ada for their flight software. The
+Mars Rovers have been operating on Mars for over 15 years, with no
+software-related failures. This is a testament to Ada's reliability and safety
+features.
 
-The Mars Rovers use Ada's strong typing system to define precise types for every value, ensuring that values are always within expected ranges. For example, the temperature type might be defined as:
+The Mars Rovers use Ada's strong typing system to define precise types for
+every value, ensuring that values are always within expected ranges. For
+example, the temperature type might be defined as:
 
 ```ada
 type Temperature is range -150..50;
 ```
 
-This ensures that any value assigned to a temperature variable is within the expected range, preventing errors that could harm the rover.
+This ensures that any value assigned to a temperature variable is within the
+expected range, preventing errors that could harm the rover.
 
-### 5.8.8 Real-World Case Study: Airbus A380
+### 1.8.8. Real-World Case Study: Airbus A380
 
-Consider the Airbus A380, which uses Ada for its flight control system. The A380 has been in service for over 15 years, with no software-related failures. This is a testament to Ada's reliability and safety features.
+Consider the Airbus A380, which uses Ada for its flight control system. The
+A380 has been in service for over 15 years, with no software-related failures.
+This is a testament to Ada's reliability and safety features.
 
-The A380 uses Ada's strong typing system to define precise types for every value, ensuring that values are always within expected ranges. For example, the altitude type might be defined as:
+The A380 uses Ada's strong typing system to define precise types for every
+value, ensuring that values are always within expected ranges. For example,
+the altitude type might be defined as:
 
 ```ada
 type Altitude is new Float range 0.0 .. 50_000.0;
 ```
 
-This ensures that any value assigned to an altitude variable is within the expected range, preventing errors that could harm the aircraft.
+This ensures that any value assigned to an altitude variable is within the
+expected range, preventing errors that could harm the aircraft.
 
-### 5.8.9 Real-World Case Study: European Rail Traffic Management System
+### 1.8.9. Real-World Case Study: European Rail Traffic Management System
 
-Consider the European Rail Traffic Management System (ERTMS), which uses Ada for its signaling system. The ERTMS has been in service for over 10 years, with no software-related failures. This is a testament to Ada's reliability and safety features.
+Consider the European Rail Traffic Management System (ERTMS), which uses Ada
+for its signaling system. The ERTMS has been in service for over 10 years,
+with no software-related failures. This is a testament to Ada's reliability
+and safety features.
 
-The ERTMS uses Ada's strong typing system to define precise types for every value, ensuring that values are always within expected ranges. For example, the speed type might be defined as:
+The ERTMS uses Ada's strong typing system to define precise types for every
+value, ensuring that values are always within expected ranges. For example,
+the speed type might be defined as:
 
 ```ada
 type Speed is new Float range 0.0 .. 350.0;
 ```
 
-This ensures that any value assigned to a speed variable is within the expected range, preventing errors that could harm the train.
+This ensures that any value assigned to a speed variable is within the
+expected range, preventing errors that could harm the train.
 
-### 5.8.10 Real-World Case Study: Medical Device Manufacturer
+### 1.8.10. Real-World Case Study: Medical Device Manufacturer
 
-Consider a medical device manufacturer that uses Ada for its patient monitoring system. The system has been in service for over 5 years, with no safety-related incidents. This is a testament to Ada's reliability and safety features.
+Consider a medical device manufacturer that uses Ada for its patient
+monitoring system. The system has been in service for over 5 years, with no
+safety-related incidents. This is a testament to Ada's reliability and safety
+features.
 
-The system uses Ada's strong typing system to define precise types for every value, ensuring that values are always within expected ranges. For example, the heart rate type might be defined as:
+The system uses Ada's strong typing system to define precise types for every
+value, ensuring that values are always within expected ranges. For example,
+the heart rate type might be defined as:
 
 ```ada
 type Heart_Rate is range 20..250;
 ```
 
-This ensures that any value assigned to a heart rate variable is within the expected range, preventing errors that could harm patients.
+This ensures that any value assigned to a heart rate variable is within the
+expected range, preventing errors that could harm patients.
 
-### 5.8.11 Real-World Case Study: Financial Institution
+### 1.8.11. Real-World Case Study: Financial Institution
 
-Consider a financial institution that uses Ada for its transaction system. The system has been in service for over 10 years, with no financial errors. This is a testament to Ada's reliability and safety features.
+Consider a financial institution that uses Ada for its transaction system. The
+system has been in service for over 10 years, with no financial errors. This
+is a testament to Ada's reliability and safety features.
 
-The system uses Ada's strong typing system to define precise types for every value, ensuring that values are always within expected ranges. For example, the currency type might be defined as:
+The system uses Ada's strong typing system to define precise types for every
+value, ensuring that values are always within expected ranges. For example,
+the currency type might be defined as:
 
 ```ada
 type Currency is delta 0.01 digits 15;
 ```
 
-This ensures that currency amounts are always accurate to two decimal places, preventing rounding errors that could cause financial loss.
+This ensures that currency amounts are always accurate to two decimal places,
+preventing rounding errors that could cause financial loss.
 
-### 5.8.12 Conclusion
+### 1.8.12. Conclusion
 
-In this chapter, we've explored Ada's scalar types in depth. We've learned about:
+In this chapter, we've explored Ada's scalar types in depth. We've learned
+about:
+
 - Declarations and objects
 - The type model
 - Integer types
@@ -1837,12 +2163,23 @@ In this chapter, we've explored Ada's scalar types in depth. We've learned about
 - Boolean type
 - Real types
 
-We've also seen how Ada's strong typing system and safety features prevent errors before they occur, ensuring that software is safe from the very first line of code.
+We've also seen how Ada's strong typing system and safety features prevent
+errors before they occur, ensuring that software is safe from the very first
+line of code.
 
-In the next chapter, we'll explore Ada's composite types—arrays, records, and tagged types. You'll learn how to build complex data structures while maintaining the same level of safety and precision that scalar types provide.
+In the next chapter, we'll explore Ada's composite types—arrays, records, and
+tagged types. You'll learn how to build complex data structures while
+maintaining the same level of safety and precision that scalar types provide.
 
-By mastering Ada's scalar types, you're taking the first step toward writing safe, reliable software that can be used in the most demanding environments. Whether you're working on aerospace systems, medical devices, financial systems, or transportation systems, Ada's strong typing system and safety features will help you write code that is not only correct but provably safe.
+By mastering Ada's scalar types, you're taking the first step toward writing
+safe, reliable software that can be used in the most demanding environments.
+Whether you're working on aerospace systems, medical devices, financial
+systems, or transportation systems, Ada's strong typing system and safety
+features will help you write code that is not only correct but provably safe.
 
-As one senior engineer at Airbus noted: "In Ada, the type system is not a limitation—it is a superpower. It transforms what would be a debugging nightmare in other languages into a compile-time certainty."
+As one senior engineer at Airbus noted: "In Ada, the type system is not a
+limitation—it is a superpower. It transforms what would be a debugging
+nightmare in other languages into a compile-time certainty."
 
-By mastering Ada's type system, you'll write code that is not only correct but provably safe—ensuring your software is reliable from the very first line.
+By mastering Ada's type system, you'll write code that is not only correct but
+provably safe—ensuring your software is reliable from the very first line.
