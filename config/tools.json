@@ -90,12 +90,6 @@
         "description": "Hash, encode, and decode text using various algorithms and formats."
     },
     {
-        "slug": "coding-tutorials",
-        "name": "Coding Tutorials",
-        "icon": "data_object",
-        "description": "Tutorials for various programming languages, sorted by language and topic."
-    },
-    {
         "slug": "sequence-generator",
         "name": "Sequence Generator",
         "icon": "format_list_numbered",
