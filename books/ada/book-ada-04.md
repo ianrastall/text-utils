@@ -346,7 +346,7 @@ if : Integer := 42;       -- illegal: plain "if" is a reserved word
 
 Ada 2022 defines exactly 69 reserved words—the list above contains them all.
 You can confirm the count with tooling such as `gnatls -v` or by consulting
-Annex P of the Ada Reference Manual. Note in particular the newer additions
+Annex P of the Ada Reference Manual (ARM). Note in particular the newer additions
 `some` (quantified expressions) and `parallel` (structured parallelism), which
 may be unfamiliar if you last used Ada 2005.
 
@@ -379,21 +379,41 @@ embedded teams may adopt a “systems Hungarian” style such as `In_Speed` or
 choose a scheme in your project standards and apply it everywhere so that
 maintainers decades later can infer semantics at a glance.
 
-#### 4.2.1.3 Real-World Example: Aerospace System
+#### 4.2.1.3 Real-World Examples
 
-In an aircraft navigation system:
+**Aerospace Navigation System:**
 
 ```ada
 type Latitude is new Float range -90.0 .. 90.0;
 type Longitude is new Float range -180.0 .. 180.0;
 
-current_latitude : Latitude := 40.7128;
-current_longitude : Longitude := -74.0060;
+Current_Latitude : Latitude := 40.7128;
+Current_Longitude : Longitude := -74.0060;
 ```
 
-The naming conventions clearly indicate the type of each variable. This
-prevents accidental mixing of latitude and longitude values—a critical safety
-feature in navigation systems.
+**Industrial Control System:**
+
+```ada
+type Motor_Speed_RPM is new Integer range 0 .. 10000;
+type Pressure_PSI is new Float range 0.0 .. 500.0;
+
+Current_Motor_Speed : Motor_Speed_RPM := 0;
+System_Pressure : Pressure_PSI := 14.7;  -- Atmospheric pressure
+```
+
+**Financial Trading System:**
+
+```ada
+type Currency_Code is (USD, EUR, GBP, JPY, CHF);
+type Price_Cents is new Integer range 0 .. Integer'Last;
+
+Base_Currency : Currency_Code := USD;
+Current_Price : Price_Cents := 12550;  -- $125.50
+```
+
+The naming conventions clearly indicate the type and purpose of each variable,
+preventing accidental mixing of incompatible values—a critical safety feature
+across all domains.
 
 #### 4.2.1.4 Invalid Identifiers
 
@@ -893,7 +913,25 @@ Hex_Value : constant Integer := 16#FF_FF#;
 Octal_Value : constant Integer := 8#777#;
 ```
 
-#### 4.3.3.1 Based Literals with Exponents
+#### 4.3.3.1 Fractional Based Literals
+
+Based literals can also represent fractional values using a decimal point:
+
+```ada
+-- Binary fraction: 1.5 in decimal
+Binary_Fraction : constant Float := 2#1.1#;  -- 1 + 0.5 = 1.5
+
+-- Hexadecimal fraction: 10.75 in decimal  
+Hex_Fraction : constant Float := 16#A.C#;    -- 10 + 12/16 = 10.75
+
+-- Octal fraction: 3.125 in decimal
+Octal_Fraction : constant Float := 8#3.1#;   -- 3 + 1/8 = 3.125
+```
+
+The fractional part follows the same base rules as the integer part. For
+example, in base 16, `.C` represents 12/16 = 0.75.
+
+#### 4.3.3.2 Based Literals with Exponents
 
 Based literals can include exponents:
 
@@ -908,7 +946,7 @@ Hex_With_Exponent : constant Float := 16#FF#E-2;  -- 255 × 10^-2 = 2.55
 Binary_With_Exponent : constant Float := 2#1.01#E1;  -- 1.25 × 10^1 = 12.5
 ```
 
-#### 4.3.3.2 Base Conversion Examples
+#### 4.3.3.3 Base Conversion Examples
 
 Here are common base conversions:
 
@@ -921,7 +959,7 @@ Here are common base conversions:
 | Base 16 with exponent | 16#FF#E-2 | 2.55               |
 | Base 2 with exponent  | 2#1.01#E1 | 12.5               |
 
-#### 4.3.3.3 Real-World Example: Embedded Systems
+#### 4.3.3.4 Real-World Example: Embedded Systems
 
 In embedded systems, based literals are commonly used for:
 
@@ -940,7 +978,7 @@ Flag_Bit_Mask : constant Integer := 2#0000_1000#;
 Config_Value : constant Integer := 8#77#;
 ```
 
-#### 4.3.3.4 Common Based Literal Mistakes
+#### 4.3.3.5 Common Based Literal Mistakes
 
 1. **Invalid base**:
 
@@ -960,7 +998,7 @@ Config_Value : constant Integer := 8#77#;
    X : Integer := 16#FF;  -- Error: missing closing #
    ```
 
-### 4.3.4 Enumeration Literals
+### 4.3.6 Enumeration Literals
 
 Enumeration literals represent a fixed set of named values. Character literals
 are written between apostrophes, while user-defined enumeration literals are
@@ -988,7 +1026,91 @@ character value of type `Character`, while "A" is a string literal of type
 `n`. The compiler treats these as distinct lexical categories, so be explicit
 about which one you need.
 
-### 4.3.5 Common Pitfalls
+### 4.3.5 String Literals
+
+String literals represent sequences of characters enclosed in double quotes.
+Ada supports various string literal forms to handle different character sets
+and encodings.
+
+#### 4.3.5.1 Basic String Literals
+
+Standard string literals are sequences of characters in double quotes:
+
+```ada
+Message : constant String := "Hello, World!";
+Empty_String : constant String := "";
+Quote_Example : constant String := "He said ""Hello"" to me.";
+```
+
+To include a double quote within a string literal, use two consecutive double
+quotes (`""`).
+
+#### 4.3.5.2 Escape Sequences and Special Characters
+
+Ada uses character literals rather than C-style escape sequences:
+
+```ada
+New_Line : constant Character := ASCII.LF;  -- Line feed
+Tab_Char : constant Character := ASCII.HT;  -- Horizontal tab
+Null_Char : constant Character := ASCII.NUL; -- Null character
+
+-- Building strings with special characters
+Status_Line : constant String := "Status: OK" & ASCII.LF;
+```
+
+#### 4.3.5.3 Wide and Wide_Wide Strings
+
+Ada supports Unicode through Wide_Character and Wide_Wide_Character types:
+
+```ada
+-- Wide strings (16-bit characters)
+Wide_Message : constant Wide_String := "Café";
+
+-- Wide_Wide strings (32-bit characters, full Unicode)
+Unicode_Message : constant Wide_Wide_String := "Hello 世界";
+```
+
+These are essential for internationalized applications where text may contain
+characters outside the basic ASCII range.
+
+#### 4.3.5.4 Real-World Example: Configuration Messages
+
+In an embedded system with multi-language support:
+
+```ada
+type Language is (English, French, German);
+
+function Get_Alert_Message(Lang : Language) return String is
+begin
+   case Lang is
+      when English => return "SYSTEM ALERT: Temperature exceeded";
+      when French  => return "ALERTE SYSTÈME: Température dépassée";
+      when German  => return "SYSTEMALARM: Temperatur überschritten";
+   end case;
+end Get_Alert_Message;
+```
+
+#### 4.3.5.5 Common String Literal Mistakes
+
+1. **Confusing character and string literals**:
+
+   ```ada
+   Ch : Character := "A";  -- Error: should be 'A'
+   ```
+
+2. **Incorrect quote escaping**:
+
+   ```ada
+   Quote : String := "He said "Hello"";  -- Error: should be ""Hello""
+   ```
+
+3. **Mixing string types**:
+
+   ```ada
+   Mixed : String := Wide_String'("Test");  -- Explicit conversion needed
+   ```
+
+### 4.3.7 Common Pitfalls
 
 - Dropping underscores when copying values from specifications. The compiler
    treats `2#1010_1010#` and `2#10101010#` the same, but humans often misread
@@ -1002,7 +1124,7 @@ about which one you need.
    `'Image` attributes (`Direction'Image(Heading)`) to render enumeration values
    safely.
 
-### 4.3.6 Practice Drill
+### 4.3.8 Practice Drill
 
 1. Express the decimal value 255 as both a hexadecimal based literal and a real
    literal that uses an exponent.
@@ -1184,7 +1306,7 @@ This should be used with extreme caution. The Ada Reference Manual states:
 > "The use of suppress pragmas is strongly discouraged in safety-critical
 > systems. They can lead to undefined behavior if used incorrectly."
 
-In mission- or safety-critical software you should suppress at most the
+In mission-critical or safety-critical software you should suppress at most the
 specific check you have proved redundant—and even then only for the smallest
 possible scope. Suppressing `Range_Check`, `Overflow_Check`, or
 `Constraint_Error` around sensor data, for example, invites silent memory
@@ -1193,9 +1315,9 @@ optimisations (better algorithms, representation clauses, or compiler switch
 tuning) before reaching for `Suppress`.
 
 On the rare occasions where a suppression is justified, document the proof and
-constrain its scope. For example, if static analysis demonstrates that a DMA
-ring buffer index is always within bounds, you can wrap the proven code in a
-block and suppress only the index check for that object:
+constrain its scope. For example, if static analysis demonstrates that a Direct
+Memory Access (DMA) ring buffer index is always within bounds, you can wrap the
+proven code in a block and suppress only the index check for that object:
 
 ```ada
 declare
@@ -1207,7 +1329,10 @@ end;
 ```
 
 Here the suppression applies to a single declaration and the justification is
-recorded alongside the code.
+recorded alongside the code. Certification standards such as DO-178C (Software
+Considerations in Airborne Systems) require documented justification for any
+check suppression, including evidence that the suppressed condition has been
+verified through other means.
 
 #### 4.4.2.5 Restrictions Pragma
 
@@ -1372,7 +1497,26 @@ Ada 2022 continues that migration path. When you encounter legacy code that
 still uses `pragma Inline` or `pragma Volatile`, you can usually translate it
 directly into the corresponding aspect on the declaration.
 
-#### 4.4.3.7 Table 4.4: Common Aspect Specifications in Ada
+#### 4.4.3.8 Pragma to Aspect Migration Guide
+
+Table 4.5 shows the systematic mapping from legacy pragma forms to modern
+aspect specifications, helping with code modernization efforts.
+
+| Legacy Pragma Form | Modern Aspect Form | Notes |
+| ------------------ | ------------------ | ----- |
+| `pragma Inline(Subprogram)` | `procedure Subprogram with Inline` | Applies to subprogram declaration |
+| `pragma Volatile(Object)` | `Object : Type with Volatile` | Applies to object declaration |
+| `pragma Atomic(Object)` | `Object : Type with Atomic` | Ensures atomic access |
+| `pragma Pack(Record_Type)` | `type Record_Type is ... with Pack` | Minimizes record storage |
+| `pragma Pure(Package)` | `package Package with Pure` | No side effects allowed |
+| `pragma Preelaborate(Package)` | `package Package with Preelaborate` | Elaboration optimization |
+| `pragma Convention(C, Type)` | `type Type is ... with Convention => C` | Foreign language binding |
+
+The aspect form provides better locality and is checked more thoroughly by
+static analysis tools. When modernizing legacy code, prioritize high-visibility
+declarations first (public interfaces, safety-critical components).
+
+#### 4.4.3.9 Table 4.6: Common Aspect Specifications in Ada
 
 | Aspect            | Purpose                  | Example Usage                                |
 | ----------------- | ------------------------ | -------------------------------------------- |
@@ -1386,7 +1530,7 @@ directly into the corresponding aspect on the declaration.
 | Atomic            | Guarantees atomic read/write | `with Atomic`                           |
 | Address           | Places object at specific address | `with Address => System'To_Address(...)` |
 
-#### 4.4.3.8 Real-World Example: Financial Transaction System
+#### 4.4.3.10 Real-World Example: Financial Transaction System
 
 In a financial transaction system:
 
@@ -1401,7 +1545,7 @@ function Process_Transaction(Amount : Currency) return Boolean
 This ensures transactions are always positive and provides formal verification
 of the transaction process.
 
-#### 4.4.3.9 The Future of Aspect Specifications
+#### 4.4.3.11 The Future of Aspect Specifications
 
 Ada continues to enhance aspect specifications in each standard. Ada 2022
 added:
