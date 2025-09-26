@@ -9,10 +9,11 @@
 ## 4.1 Syntax Notation (BNF)
 
 Ada's syntax is formally defined using Backus-Naur Form (BNF), a mathematical
-notation for describing context-free grammars. This formal definition ensures
-precise language specifications, eliminating ambiguity in language
-interpretation. The Ada Reference Manual (ARM) uses BNF to precisely define
-every syntactic construct, enabling consistent compiler implementations across
+notation for describing context-free grammars. The Ada Reference Manual (ARM)
+uses an Extended BNF (EBNF) variant based on ISO/IEC 14977 to precisely define
+every syntactic construct, eliminating ambiguity in language
+interpretation. This formal definition ensures
+precise language specifications, enabling consistent compiler implementations across
 platforms.
 
 BNF consists of production rules where non-terminal symbols (enclosed in angle
@@ -24,7 +25,7 @@ For example:
                     <sequence_of_statements>
                  [else
                     <sequence_of_statements>]
-                 end if;
+                 end if
 ```
 
 Here, `if`, `then`, `else`, and `end if` are terminal symbols (keywords),
@@ -53,6 +54,12 @@ Consider this example from the ARM for loop statements:
 This rule specifies that a for-loop must start with `for`, followed by a
 parameter specification, then `loop`, then statements, and finally `end loop`
 with an optional label.
+
+> **BNF in 30 seconds**
+> Non-terminal = placeholder you still need to define.
+> Terminal = exact word/symbol you type.
+> `[ ]` optional, `{ }` zero-or-more, `|` picks one branch.
+> That's it—now you can read any Ada grammar rule in the ARM.
 
 ### BNF vs. Other Notations
 
@@ -110,7 +117,7 @@ this structure is precisely defined.
 ```ebnf
 <if_statement> ::= if <condition> then <sequence_of_statements>
                    {elsif <condition> then <sequence_of_statements>}
-                   [else <sequence_of_statements>] end if;
+                   [else <sequence_of_statements>] end if
 ```
 
 When a parser reduces an Ada `if` expression, each branch in the tree is
@@ -231,7 +238,7 @@ BNF is most useful when you can trace each symbol to real code. Revisit the
 ```ebnf
 <if_statement> ::= if <condition> then <sequence_of_statements>
                    {elsif <condition> then <sequence_of_statements>}
-                   [else <sequence_of_statements>] end if;
+                   [else <sequence_of_statements>] end if
 ```
 
 You can map it directly to Ada source by following the placeholders:
@@ -299,6 +306,11 @@ Lexical elements are the smallest units of meaning in Ada code. These include
 identifiers, reserved words, delimiters, and numeric literals. Proper
 understanding of lexical elements is essential for writing correct Ada code.
 
+Ada treats horizontal tabs as single whitespace characters (ARM 2.1), making them
+legal for code alignment but equivalent to spaces in parsing. When aligning
+comments or code blocks, consider that different editors may display tabs with
+different widths, potentially breaking visual alignment.
+
 ### 4.2.1 Identifiers and Reserved Words
 
 Identifiers are names given to program entities like variables, types, and
@@ -309,9 +321,31 @@ subprograms. Ada identifiers follow specific rules:
 - Cannot contain spaces or special characters
 - Are case-insensitive (e.g., `Temperature` and `temperature` are identical)
 
+> **Ada Casefold Rules**  
+> Ada treats identifiers case-insensitively: `Variable`, `VARIABLE`, and
+> `variable` all refer to the same entity. However, consistency in casing
+> improves readability and is enforced by coding standards.
+
 Ada's case-insensitivity simplifies writing but requires disciplined naming
 conventions. The community standard uses PascalCase for types and subprograms,
 and snake_case for variables and parameters.
+
+#### Unicode Identifiers
+
+Ada 2022 supports Unicode identifiers using characters beyond basic ASCII.
+Identifiers may include Latin-1 supplement characters and Unicode letters
+that satisfy the `XID_Start` and `XID_Continue` properties (defined in
+Unicode Standard Annex #31). For example:
+
+```ada
+Δθ : Float;  -- Greek delta and theta
+Température : Float;  -- French accented character
+Velocität : Float;  -- German umlaut
+```
+
+While Unicode identifiers enhance internationalization, consider tool support
+and team preferences before using them extensively. Some legacy tools may not
+display or process Unicode identifiers correctly.
 
 #### 4.2.1.1 Reserved Words
 
@@ -344,7 +378,7 @@ If_Value : Integer := 0;  -- legal: "if" appears inside a longer identifier
 if : Integer := 42;       -- illegal: plain "if" is a reserved word
 ```
 
-Ada 2022 defines exactly 69 reserved words—the list above contains them all.
+Ada 2022 defines exactly 70 reserved words—the list above contains them all.
 You can confirm the count with tooling such as `gnatls -v` or by consulting
 Annex P of the Ada Reference Manual (ARM). Note in particular the newer additions
 `some` (quantified expressions) and `parallel` (structured parallelism), which
@@ -511,6 +545,8 @@ Put_Line(Integer'Image(-13 mod  5));  --  2
 Put_Line(Integer'Image(-13 rem  5));  -- -3
 ```
 
+> **Mnemonic:** **MOD**ulo sign follows the **DIVISOR**; **REM**nant keeps the **DIVIDEND**'s sign.
+
 #### 4.2.2.2 Relational Operators
 
 Relational operators compare values:
@@ -648,9 +684,9 @@ example for each so you can spot them quickly during code reviews.
 | --------- | ------------------------------------- | -------------------------------------- |
 | +         | Addition                              | X := A + B                             |
 | -         | Subtraction or unary negation         | X := -Y                                |
-| \*        | Multiplication                        | Area := Width \* Height                |
+| \*        | Multiplication                        | Area := Width * Height                |
 | /         | Division                              | Average := Sum / Count                 |
-| \*\*      | Exponentiation                        | Square := X \*\* 2                     |
+| **        | Exponentiation                        | Square := X ** 2                     |
 | =         | Equality                              | if A = B then                          |
 | /=        | Not equal                             | if A /= B then                         |
 | <         | Less than                             | if Temp < 100.0 then                   |
@@ -771,6 +807,11 @@ Binary_Value : constant Integer := 2#1010_1010#;
 Underscores carry no semantic meaning—they are removed by the compiler before
 evaluation—so `1_000_000` is precisely the same value as `1000000`. Use them
 liberally to prevent mistakes when scanning long literals.
+
+> **Underscores are free safety belts**  
+> The compiler strips underscores, but your eyes don't. A 24-bit colour value
+> `16#FF_12_A0#` is instantly recognised as R-G-B bytes; without underscores a
+> single flipped hex digit becomes a nightmare to spot during review.
 
 #### 4.3.1.1 Integer Range Constraints
 
@@ -998,7 +1039,7 @@ Config_Value : constant Integer := 8#77#;
    X : Integer := 16#FF;  -- Error: missing closing #
    ```
 
-### 4.3.6 Enumeration Literals
+### 4.3.5 Enumeration Literals
 
 Enumeration literals represent a fixed set of named values. Character literals
 are written between apostrophes, while user-defined enumeration literals are
@@ -1026,13 +1067,13 @@ character value of type `Character`, while "A" is a string literal of type
 `n`. The compiler treats these as distinct lexical categories, so be explicit
 about which one you need.
 
-### 4.3.5 String Literals
+### 4.3.6 String Literals
 
 String literals represent sequences of characters enclosed in double quotes.
 Ada supports various string literal forms to handle different character sets
 and encodings.
 
-#### 4.3.5.1 Basic String Literals
+#### 4.3.6.1 Basic String Literals
 
 Standard string literals are sequences of characters in double quotes:
 
@@ -1045,7 +1086,7 @@ Quote_Example : constant String := "He said ""Hello"" to me.";
 To include a double quote within a string literal, use two consecutive double
 quotes (`""`).
 
-#### 4.3.5.2 Escape Sequences and Special Characters
+#### 4.3.6.2 Escape Sequences and Special Characters
 
 Ada uses character literals rather than C-style escape sequences:
 
@@ -1058,7 +1099,7 @@ Null_Char : constant Character := ASCII.NUL; -- Null character
 Status_Line : constant String := "Status: OK" & ASCII.LF;
 ```
 
-#### 4.3.5.3 Wide and Wide_Wide Strings
+#### 4.3.6.3 Wide and Wide_Wide Strings
 
 Ada supports Unicode through Wide_Character and Wide_Wide_Character types:
 
@@ -1073,7 +1114,7 @@ Unicode_Message : constant Wide_Wide_String := "Hello 世界";
 These are essential for internationalized applications where text may contain
 characters outside the basic ASCII range.
 
-#### 4.3.5.4 Real-World Example: Configuration Messages
+#### 4.3.6.4 Real-World Example: Configuration Messages
 
 In an embedded system with multi-language support:
 
@@ -1090,7 +1131,7 @@ begin
 end Get_Alert_Message;
 ```
 
-#### 4.3.5.5 Common String Literal Mistakes
+#### 4.3.6.5 Common String Literal Mistakes
 
 1. **Confusing character and string literals**:
 
@@ -1497,6 +1538,12 @@ Ada 2022 continues that migration path. When you encounter legacy code that
 still uses `pragma Inline` or `pragma Volatile`, you can usually translate it
 directly into the corresponding aspect on the declaration.
 
+> **Style Rule:** New code should prefer aspects over pragmas when both forms
+> are available. Keep pragma form only when using pre-Ada 2012 toolchains or
+> when the pragma has no aspect equivalent. For subprograms declared in bodies
+> where aspect syntax is illegal, move the aspect to the declaration or keep
+> the pragma.
+
 #### 4.4.3.8 Pragma to Aspect Migration Guide
 
 Table 4.5 shows the systematic mapping from legacy pragma forms to modern
@@ -1593,7 +1640,7 @@ flexible.
 | Comments               | Begin with `--` and extend to end of line                        | `-- Safety check before firing thruster`         |
 | Numeric Literals       | Optional underscores for readability                             | `1_000_000`, `2#1010_1010#`                      |
 | Enumeration            | Named literals in a fixed set                                    | `Heading : Direction := North;`                  |
-| Delimiters             | Semicolon ends statements; square brackets form aggregates       | `Vector := [1, 2, 3];`                           |
+| Delimiters             | Semicolon ends statements; square brackets form aggregates       | `Numbers : constant Int_Array := [1, 2, 3];`     |
 | Quantified Expressions | `some`/`all` quantify over containers (Ada 2012)                 | `if (some R of Readings => R > Limit) then`      |
 | Parallel Blocks        | `parallel` groups handled sequences (Ada 2022)                   | `parallel ... and ... end parallel;`             |
 | Pragmas & Aspects      | Compiler directives and declarative metadata for contracts       | `pragma Restrictions(...)`, `procedure P with Inline;` |
