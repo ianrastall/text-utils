@@ -28,6 +28,9 @@ For example:
                  end if
 ```
 
+> **Note:** Grammar terminals are shown in lower-case for readability; the Ada
+> Reference Manual prints them in upper-case (IF, THEN, END IF).
+
 Here, `if`, `then`, `else`, and `end if` are terminal symbols (keywords),
 while `<condition>` and `<sequence_of_statements>` are non-terminals that can
 be further defined. The square brackets indicate optional elements.
@@ -291,6 +294,21 @@ structure aids safety-critical reviews.
   lowercase, but Ada accepts any casing; tooling and reviews expect lowercase
   for readability.
 
+### When BNF Lies – Contextual Legality
+
+Grammar says the sequence is legal, but Ada still rejects it. For example:
+
+```ada
+type T is tagged null record;
+procedure P (X : T) is abstract;
+...
+P (X => Local); -- legal syntax, illegal because abstract
+```
+
+BNF only promises structure; **semantic rules** finish the job. This separation
+allows the compiler to handle complex constraints (like abstract procedures
+cannot be called) without complicating the grammar.
+
 ### BNF Quick Check
 
 1. Using the grammar for `<for_loop>`, sketch code that iterates over an array
@@ -472,9 +490,10 @@ error: reserved word "for" cannot be used as identifier
 | Control & Flow               | if, elsif, else, then, case, when, loop, while, for, exit, goto, reverse, select, until, return, do                                            |
 | Program Structure & Units    | begin, declare, end, package, procedure, function, separate, body, generic, private, protected, interface, is, renames                         |
 | Types & Data Definition      | type, subtype, range, array, record, access, limited, digits, delta, abstract, tagged, aliased, constant                                      |
+| Object-Oriented Programming  | overriding                                                                                                                                     |
 | Concurrency & Synchronization | accept, entry, task, synchronized, abort, delay, requeue, parallel, terminate                                                                   |
 | Operators & Logic            | and, or, xor, not, abs, mod, rem                                                                                                               |
-| Declarations & Visibility    | pragma, raise, others, some, use, with, null, new, all, out, in, of, overriding, at, exception                                                 |
+| Declarations & Visibility    | pragma, raise, others, some, use, with, null, new, all, out, in, of, at, exception                                                            |
 
 > The groups above are intended for study purposes only; every reserved word
 > retains equal grammatical status in the language regardless of category.
@@ -486,6 +505,9 @@ word, allowing boolean tests across collections:
 if (some Reading of Temperature_Array => Reading > 100.0) then
    Trigger_Cooling_Fan;
 end if;
+
+-- Using quantified expressions in output
+Put_Line("Found faulty sensor: " & Boolean'Image(some R of Readings => R > 120.0));
 ```
 
 Ada 2022 adds the `parallel` reserved word to support explicit parallel blocks
@@ -686,7 +708,7 @@ example for each so you can spot them quickly during code reviews.
 | -         | Subtraction or unary negation         | X := -Y                                |
 | \*        | Multiplication                        | Area := Width * Height                |
 | /         | Division                              | Average := Sum / Count                 |
-| **        | Exponentiation                        | Square := X ** 2                     |
+| **        | Exponentiation                        | Square := X \*\* 2                     |
 | =         | Equality                              | if A = B then                          |
 | /=        | Not equal                             | if A /= B then                         |
 | <         | Less than                             | if Temp < 100.0 then                   |
@@ -771,6 +793,17 @@ New Ada programmers often make these mistakes:
 - Leaving out blank lines around code fences in documentation literals—tools
    such as Markdownlint expect the spacing illustrated in this chapter when
    you prepare design notes or coding standards.
+
+#### Linker Name Pitfall
+
+Even though Ada is case-insensitive, the **exported** symbol respects spelling:
+
+```ada
+procedure InitSensor; -- exports exactly "initsensor" on most platforms
+```
+
+Call from C with the same casing or use `Export("InitSensor")` pragma to
+specify the exact external name.
 
 ### 4.2.4 Practice Drill
 
@@ -970,7 +1003,7 @@ Octal_Fraction : constant Float := 8#3.1#;   -- 3 + 1/8 = 3.125
 ```
 
 The fractional part follows the same base rules as the integer part. For
-example, in base 16, `.C` represents 12/16 = 0.75.
+example, in base 16, `.C` represents 12/16 = 0.75 (hex digit C = 12).
 
 #### 4.3.3.2 Based Literals with Exponents
 
@@ -1085,6 +1118,17 @@ Quote_Example : constant String := "He said ""Hello"" to me.";
 
 To include a double quote within a string literal, use two consecutive double
 quotes (`""`).
+
+> **Raw Strings – Escaping Made Easy** (Ada 2022)
+>
+> Triple quotes give you **raw strings**:
+>
+> ```ada
+> Regex : String := """\d{3}-\d{3}-\d{4}""";
+> Message : String := """He said "Hello" to me""";
+> ```
+>
+> No doubling of inner quotes, perfect for regex/JSON literals.
 
 #### 4.3.6.2 Escape Sequences and Special Characters
 
@@ -1338,8 +1382,12 @@ systems, assertions are often enabled in testing but disabled in production.
 The `Suppress` pragma disables certain checks for performance:
 
 ```ada
-pragma Suppress(All_Checks);
--- Safety-critical section: must be manually verified
+procedure Foo is
+   pragma Suppress(All_Checks);
+   -- Safety-critical section: must be manually verified
+begin
+   -- Implementation
+end Foo;
 ```
 
 This should be used with extreme caution. The Ada Reference Manual states:
@@ -1635,7 +1683,7 @@ flexible.
 | Concept                | Key Rule                                                         | Example                                          |
 | ---------------------- | ---------------------------------------------------------------- | ------------------------------------------------ |
 | Identifiers            | Start with a letter; case-insensitive                            | `Temperature_Sensor`, `Current_Speed`            |
-| Reserved Words         | 69 fixed keywords, always lowercase                              | `if`, `loop`, `pragma`, `parallel`               |
+| Reserved Words         | 70 fixed keywords, always lowercase                              | `if`, `loop`, `pragma`, `parallel`               |
 | Assignment             | Uses `:=` for updates, `=` for comparison                        | `Count := Count + 1;`                            |
 | Comments               | Begin with `--` and extend to end of line                        | `-- Safety check before firing thruster`         |
 | Numeric Literals       | Optional underscores for readability                             | `1_000_000`, `2#1010_1010#`                      |
@@ -1647,10 +1695,17 @@ flexible.
 
 ## 4.6 Exercises
 
+### Lexical Elements
+
 1. Identify the invalid identifiers in this list and explain why: `2nd_Place`,
    `end_loop`, `Altitude`, `range`, `Pressure_Sensor`.
 2. Write the decimal number 42 as both a binary and hexadecimal based literal.
-3. Add a `Pre` aspect to the following subprogram so that division by zero is
+3. Create a record type with three fields using named associations in the
+   aggregate initialization.
+
+### Contracts & Safety
+
+1. Add a `Pre` aspect to the following subprogram so that division by zero is
    prevented:
 
    ```ada
@@ -1660,7 +1715,7 @@ flexible.
    end Divide;
    ```
 
-4. Given the pragma `pragma Suppress(Range_Check);`, outline one safer way to
+2. Given the pragma `pragma Suppress(Range_Check);`, outline one safer way to
    achieve the same performance goal without disabling range checks (e.g.
    narrower subtypes, prevalidated data, or a more efficient algorithm).
 
