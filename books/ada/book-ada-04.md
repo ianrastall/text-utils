@@ -154,6 +154,9 @@ ranges work.
 
 ### Table 4.1: Common BNF Constructs in Ada
 
+Table 4.1 summarises the BNF notation used throughout this chapter so you can
+quickly decode each production rule.
+
 | BNF Construct    | Meaning                  | Example Usage                           |
 | ---------------- | ------------------------ | --------------------------------------- |
 | `<non_terminal>` | Non-terminal symbol      | `<if_statement>`                        |
@@ -207,6 +210,89 @@ This rule defines how aspects like `Pre` and `Post` are written in contracts.
 The BNF ensures consistent implementation across compilers, allowing
 developers to rely on the same syntax features regardless of toolchain.
 
+Ada 2022 extends the grammar with structured parallel constructs. The
+`parallel` reserved word appears in production rules such as:
+
+```ebnf
+<parallel_block> ::= parallel <handled_sequence_of_statements>
+                     {and <handled_sequence_of_statements>}
+                     end parallel
+```
+
+We will explore the concurrency implications in Chapter 11, but the lexical
+lesson is that `parallel` now introduces a block much like `declare` or
+`loop`.
+
+### Translating BNF to Source Code
+
+BNF is most useful when you can trace each symbol to real code. Revisit the
+`if_statement` rule from earlier:
+
+```ebnf
+<if_statement> ::= if <condition> then <sequence_of_statements>
+                   {elsif <condition> then <sequence_of_statements>}
+                   [else <sequence_of_statements>] end if;
+```
+
+You can map it directly to Ada source by following the placeholders:
+
+1. Replace `<condition>` with a boolean expression.
+2. Swap `<sequence_of_statements>` for one or more Ada statements.
+3. Repeat the optional/iterated parts as needed.
+
+```ada
+if Temperature > Safe_Limit then
+   Initiate_Cooling;
+elsif Temperature > Warning_Limit then
+   Log_Warning;
+else
+   Continue_Normal_Operation;
+end if;
+```
+
+Each clause mirrors the grammar: an `if` keyword, a condition, a `then`, and a
+statement sequence, followed by zero or more `elsif` blocks and an optional
+`else` before the closing `end if;`.
+
+### Real-World Example: Launch Abort Rules
+
+Launch systems often encode complex guard logic that traces neatly back to BNF
+rules. Consider a simplified abort decision:
+
+```ada
+if (Fuel_Level < Minimum_Fuel) or else (Guidance_Status = Faulted) then
+   Abort_Countdown;
+elsif Weather_Status = Red_Flag then
+   Hold_Countdown;
+end if;
+```
+
+Mission assurance teams can review the code against the grammar to ensure no
+dangling `else` clauses or missing branches slip in—proof that the BNF-driven
+structure aids safety-critical reviews.
+
+### Common Mistakes When Reading BNF
+
+- Treating `{ ... }` as “exactly once” rather than “zero or more”; remember the
+  braces indicate repetition, not mandatory presence.
+- Forgetting that optional `[ ... ]` clauses may hide required punctuation like
+  `else`—the brackets mean the entire clause can be omitted, not that the
+  keyword itself becomes optional when the clause is present.
+- Ignoring terminators. The `end if;` token in the grammar is part of the
+  production, so leaving it out in code is a syntax error, not mere style.
+- Reading terminal symbols case-insensitively. The grammar lists them in
+  lowercase, but Ada accepts any casing; tooling and reviews expect lowercase
+  for readability.
+
+### BNF Quick Check
+
+1. Using the grammar for `<for_loop>`, sketch code that iterates over an array
+   of temperatures and logs values above a limit.
+2. Identify the optional portion of the `if_statement` grammar and explain when
+   it is acceptable to omit it in production code.
+3. Translate the `parallel_block` rule into a short Ada snippet and describe a
+   scenario where it improves responsiveness on multicore hardware.
+
 ## 4.2 Lexical Elements
 
 Lexical elements are the smallest units of meaning in Ada code. These include
@@ -258,6 +344,12 @@ If_Value : Integer := 0;  -- legal: "if" appears inside a longer identifier
 if : Integer := 42;       -- illegal: plain "if" is a reserved word
 ```
 
+Ada 2022 defines exactly 69 reserved words—the list above contains them all.
+You can confirm the count with tooling such as `gnatls -v` or by consulting
+Annex P of the Ada Reference Manual. Note in particular the newer additions
+`some` (quantified expressions) and `parallel` (structured parallelism), which
+may be unfamiliar if you last used Ada 2005.
+
 #### 4.2.1.2 Naming Conventions
 
 Ada's case-insensitivity requires disciplined naming conventions to ensure
@@ -273,12 +365,12 @@ These conventions make code self-documenting. For example:
 
 ```ada
 type Vehicle_Speed is new Float range 0.0 .. 350.0;
-current_speed : Vehicle_Speed := 0.0;
-max_speed : constant Vehicle_Speed := 300.0;
+Current_Speed : Vehicle_Speed := 0.0;
+Max_Speed : constant Vehicle_Speed := 300.0;
 ```
 
-Here, `Vehicle_Speed` is clearly a type, `current_speed` is a variable, and
-`max_speed` is a constant.
+Here, `Vehicle_Speed` is clearly a type, `Current_Speed` is a variable, and
+`Max_Speed` is a constant.
 
 Large, long-lived Ada programs often extend these conventions with lightweight
 prefixes that encode intent without sacrificing readability. For example,
@@ -352,6 +444,11 @@ and
    Update_Pressure;
 end parallel;
 ```
+
+You will also encounter `parallel loop` and `parallel` reductions in Ada 2022
+tasking code. These constructs appear in detail in Chapter 11 on concurrency,
+but it is helpful to recognise the reserved word early when reading modern Ada
+code bases.
 
 ### 4.2.2 Delimiters and Separators
 
@@ -524,6 +621,9 @@ end loop;
 
 #### 4.2.2.5 Table 4.3: Common Delimiters and Their Usage
 
+Table 4.3 collects the delimiters discussed above and shows a representative
+example for each so you can spot them quickly during code reviews.
+
 | Delimiter | Usage                                 | Example                                |
 | --------- | ------------------------------------- | -------------------------------------- |
 | +         | Addition                              | X := A + B                             |
@@ -615,6 +715,17 @@ New Ada programmers often make these mistakes:
 - Leaving out blank lines around code fences in documentation literals—tools
    such as Markdownlint expect the spacing illustrated in this chapter when
    you prepare design notes or coding standards.
+
+### 4.2.4 Practice Drill
+
+1. Rename three identifiers from a legacy subsystem to follow the PascalCase
+   and snake_case conventions described above. What readability improvements do
+   you notice during code review?
+2. Write a short Ada snippet that demonstrates both a legal and an illegal use
+   of a reserved word inside an identifier. What diagnostic does GNAT emit on
+   the illegal case?
+3. Construct a record declaration using named associations (`=>`) and annotate
+   each delimiter with comments to reinforce its role.
 
 ## 4.3 Numeric Literals
 
@@ -865,9 +976,10 @@ Newline : constant Character := '\n';
 
 Enumeration literals participate in the lexical rules just like numeric
 literals: they are single tokens, cannot contain whitespace, and are
-case-insensitive. Later chapters cover advanced topics such as derived
-enumerations and `for` loops over enumeration ranges, but it is helpful to
-recognize them now as part of Ada's lexical vocabulary.
+case-insensitive. Chapter 6 (Types and Declarations) revisits derived
+enumerations and Chapter 7 (Control Structures) shows how `for` loops iterate
+over enumeration ranges, but it is helpful to recognize them now as part of
+Ada's lexical vocabulary.
 
 Do not confuse character literals with strings: `'A'` represents a single
 character value of type `Character`, while "A" is a string literal of type
@@ -889,6 +1001,16 @@ about which one you need.
 - Mixing enumeration and numeric literals in I/O without conversion; use
    `'Image` attributes (`Direction'Image(Heading)`) to render enumeration values
    safely.
+
+### 4.3.6 Practice Drill
+
+1. Express the decimal value 255 as both a hexadecimal based literal and a real
+   literal that uses an exponent.
+2. Write a small enumeration for traffic-light states and iterate over it with
+   a `for` loop, printing each literal via `'Image` to reinforce enumeration I/O.
+3. Given a sensor value subtype constrained to `0 .. 4095`, explain why
+   suppressing range checks could be dangerous and propose a safer optimisation
+   (for example, a tighter subtype or pre-validation step).
 
 ## 4.4 Comments, Pragmas, and Aspects
 
@@ -959,9 +1081,9 @@ Ada comments should follow these formatting rules:
 -- Calculate distance using Haversine formula
 -- This formula accounts for Earth's curvature and is accurate
 -- for distances up to 20,000 kilometers. The formula is:
--- a = sin²(Δφ/2) + cos(φ1) * cos(φ2) * sin²(Δλ/2)
--- c = 2 * atan2(√a, √(1−a))
--- d = R * c
+$$a = \sin^2\left(\frac{\Delta\varphi}{2}\right) + \cos(\varphi_1) \cdot \cos(\varphi_2) \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)$$
+$$c = 2 \cdot \operatorname{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)$$
+$$d = R \cdot c$$
 -- Where φ is latitude, λ is longitude, R is Earth's radius
 function Calculate_Haversine(Lat1, Lon1, Lat2, Lon2 : Float) return Float is
    -- Implementation details
@@ -1069,6 +1191,23 @@ possible scope. Suppressing `Range_Check`, `Overflow_Check`, or
 corruption and can render certification evidence invalid. Prefer targeted
 optimisations (better algorithms, representation clauses, or compiler switch
 tuning) before reaching for `Suppress`.
+
+On the rare occasions where a suppression is justified, document the proof and
+constrain its scope. For example, if static analysis demonstrates that a DMA
+ring buffer index is always within bounds, you can wrap the proven code in a
+block and suppress only the index check for that object:
+
+```ada
+declare
+   pragma Suppress(Index_Check, On => Sensor_Buffer);
+begin
+   -- Copying has been formally verified to stay within Sensor_Buffer'Range
+   Copy_DMA_Frame (Sensor_Buffer, Frame);
+end;
+```
+
+Here the suppression applies to a single declaration and the justification is
+recorded alongside the code.
 
 #### 4.4.2.5 Restrictions Pragma
 
@@ -1227,6 +1366,12 @@ Using aspects keeps the metadata co-located with the declaration, which makes
 reviews easier and reduces the chance that a pragma drifts away from the code
 it is meant to influence.
 
+Historically, many of these annotations began life as pragmas in Ada 83/95.
+Ada 2012 standardised aspect syntax for the majority of common directives and
+Ada 2022 continues that migration path. When you encounter legacy code that
+still uses `pragma Inline` or `pragma Volatile`, you can usually translate it
+directly into the corresponding aspect on the declaration.
+
 #### 4.4.3.7 Table 4.4: Common Aspect Specifications in Ada
 
 | Aspect            | Purpose                  | Example Usage                                |
@@ -1268,18 +1413,46 @@ added:
 These enhancements make Ada's contract-based programming more powerful and
 flexible.
 
+### 4.4.4 Common Mistakes
+
+- Relying on `pragma Suppress` for performance before proving the check is
+   redundant. In most cases a tighter subtype or a memoised computation removes
+   the hot path entirely.
+- Leaving assertions (`pragma Assert`) disabled in qualification builds.
+   Certification authorities often require evidence that checks were exercised;
+   keep them enabled until late in the release cycle.
+- Mixing pragma and aspect forms for the same concept. Pick one style—prefer
+   aspects in new code—so reviewers do not have to hunt in multiple locations.
+- Forgetting that comment blocks must be maintained with the code. A stale
+   requirement description is worse than none; update or delete comments when
+   behaviour changes.
+
+### 4.4.5 Practice Drill
+
+1. Convert an existing `pragma Inline` or `pragma Suppress` in your project to
+   the equivalent aspect form and record whether the change improved local
+   readability.
+2. Draft a brief comment block that captures the *why* for a safety-critical
+   validation step. Share it with a teammate and confirm they can restate the
+   rationale without reading the code.
+3. Identify a subprogram where you can add a `Pre` or `Post` aspect to encode
+   an implicit assumption. Implement the aspect and run unit tests to confirm it
+   holds.
+
 ## 4.5 Lexical Quick Reference
 
-| Concept           | Key Rule                                               | Example                                  |
-| ----------------- | ------------------------------------------------------ | ---------------------------------------- |
-| Identifiers       | Start with a letter; case-insensitive                  | `Temperature_Sensor`, `current_speed`    |
-| Reserved Words    | 69 fixed keywords, always lowercase                    | `if`, `loop`, `pragma`, `synchronized`   |
-| Assignment        | Uses `:=` for updates, `=` for comparison              | `Count := Count + 1;`                    |
-| Comments          | Begin with `--` and extend to end of line              | `-- Safety check before firing thruster` |
-| Numeric Literals  | Optional underscores for readability                   | `1_000_000`, `2#1010_1010#`              |
-| Enumeration       | Named literals in a fixed set                          | `Heading : Direction := North;`          |
-| Delimiters        | Semicolon ends statements; square brackets form aggregates | `Vector := [1, 2, 3];`                |
-| Aspects           | Declarative metadata attached with `with Aspect`       | `procedure P with Inline;`               |
+| Concept                | Key Rule                                                         | Example                                          |
+| ---------------------- | ---------------------------------------------------------------- | ------------------------------------------------ |
+| Identifiers            | Start with a letter; case-insensitive                            | `Temperature_Sensor`, `Current_Speed`            |
+| Reserved Words         | 69 fixed keywords, always lowercase                              | `if`, `loop`, `pragma`, `parallel`               |
+| Assignment             | Uses `:=` for updates, `=` for comparison                        | `Count := Count + 1;`                            |
+| Comments               | Begin with `--` and extend to end of line                        | `-- Safety check before firing thruster`         |
+| Numeric Literals       | Optional underscores for readability                             | `1_000_000`, `2#1010_1010#`                      |
+| Enumeration            | Named literals in a fixed set                                    | `Heading : Direction := North;`                  |
+| Delimiters             | Semicolon ends statements; square brackets form aggregates       | `Vector := [1, 2, 3];`                           |
+| Quantified Expressions | `some`/`all` quantify over containers (Ada 2012)                 | `if (some R of Readings => R > Limit) then`      |
+| Parallel Blocks        | `parallel` groups handled sequences (Ada 2022)                   | `parallel ... and ... end parallel;`             |
+| Pragmas & Aspects      | Compiler directives and declarative metadata for contracts       | `pragma Restrictions(...)`, `procedure P with Inline;` |
 
 ## 4.6 Exercises
 
