@@ -333,6 +333,26 @@ error: reserved word "for" cannot be used as identifier
 > The groups above are intended for study purposes only; every reserved word
 > retains equal grammatical status in the language regardless of category.
 
+Ada 2012 introduced quantified expressions that rely on the `some` reserved
+word, allowing boolean tests across collections:
+
+```ada
+if (some Reading of Temperature_Array => Reading > 100.0) then
+   Trigger_Cooling_Fan;
+end if;
+```
+
+Ada 2022 adds the `parallel` reserved word to support explicit parallel blocks
+and loops for multi-core execution:
+
+```ada
+parallel
+   Update_Temperature;
+and
+   Update_Pressure;
+end parallel;
+```
+
 ### 4.2.2 Delimiters and Separators
 
 Delimiters and separators are symbols that define structure in Ada code. They
@@ -417,7 +437,8 @@ Ada 2012 introduced square brackets as an alternative notation for array
 aggregates, particularly when working with containers:
 
 ```ada
-Numbers : constant array (Positive range <>) of Integer := [1, 2, 3, 4];
+type Number_Array is array (1 .. 4) of Integer;
+Numbers : Number_Array := [1, 2, 3, 4];
 ```
 
 Curly braces remain outside the Ada grammar and are sometimes reserved for
@@ -592,7 +613,8 @@ New Ada programmers often make these mistakes:
    An imported C symbol named `InitSensor` must be referenced exactly as exported;
    adding or removing underscores in Ada will change the linker name.
 - Leaving out blank lines around code fences in documentation literals—tools
-   such as Markdownlint expect the spacing illustrated in this chapter.
+   such as Markdownlint expect the spacing illustrated in this chapter when
+   you prepare design notes or coding standards.
 
 ## 4.3 Numeric Literals
 
@@ -846,6 +868,13 @@ literals: they are single tokens, cannot contain whitespace, and are
 case-insensitive. Later chapters cover advanced topics such as derived
 enumerations and `for` loops over enumeration ranges, but it is helpful to
 recognize them now as part of Ada's lexical vocabulary.
+
+Do not confuse character literals with strings: `'A'` represents a single
+character value of type `Character`, while "A" is a string literal of type
+`String` with length 1. Likewise, `'\n'` is a newline character, whereas
+"\n" is a two-character string containing a backslash followed by the letter
+`n`. The compiler treats these as distinct lexical categories, so be explicit
+about which one you need.
 
 ### 4.3.5 Common Pitfalls
 
@@ -1267,8 +1296,9 @@ flexible.
    end Divide;
    ```
 
-4. Given the pragma `pragma Suppress(Range_Check);`, describe a safer
-   alternative that keeps the check while still meeting a performance goal.
+4. Given the pragma `pragma Suppress(Range_Check);`, outline one safer way to
+   achieve the same performance goal without disabling range checks (e.g.
+   narrower subtypes, prevalidated data, or a more efficient algorithm).
 
 > "Ada's aspect specifications transform what would be runtime checks in other
 > languages into compile-time verifications. This is the foundation of Ada's
