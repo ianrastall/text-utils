@@ -54,6 +54,14 @@
                                         <label for="maxPages" class="form-label fw-bold">Max Pages</label>
                                         <input type="number" class="form-control" id="maxPages" min="1" max="5000" value="200">
                                     </div>
+                                    <div class="col-md-8">
+                                        <label for="corsProxy" class="form-label fw-bold">CORS Proxy (optional)</label>
+                                        <input type="text" class="form-control" id="corsProxy" placeholder="https://cors.isomorphic-git.org/">
+                                        <div class="form-text">
+                                            Supply a proxy URL if your host blocks direct cross-origin requests (commonly the case for GitHub-hosted sites).
+                                            Leave blank to request pages directly. Use <code>{target}</code> in the proxy URL if it requires a placeholder for the encoded destination.
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold">Link Filtering</label>
                                         <div class="form-check form-switch">
@@ -297,6 +305,29 @@
             }
         }
 
+        function buildRequestUrl(targetUrl, corsProxy) {
+            if (!corsProxy) {
+                return targetUrl;
+            }
+
+            const trimmedProxy = corsProxy.trim();
+            if (trimmedProxy === '') {
+                return targetUrl;
+            }
+
+            if (trimmedProxy.includes('{target}')) {
+                return trimmedProxy.replace(/\{target\}/g, encodeURIComponent(targetUrl));
+            }
+
+            const lastChar = trimmedProxy.slice(-1);
+            if (lastChar === '?' || lastChar === '&' || lastChar === '=') {
+                return `${trimmedProxy}${encodeURIComponent(targetUrl)}`;
+            }
+
+            const joiner = trimmedProxy.endsWith('/') ? '' : '/';
+            return `${trimmedProxy}${joiner}${targetUrl}`;
+        }
+
         function escapeXml(value) {
             return String(value).replace(/[<>&'"]/g, char => {
                 switch (char) {
@@ -517,6 +548,7 @@
             const visited = new Set();
             const enqueued = new Set();
             const queue = [];
+            const corsProxy = (options.corsProxy || '').trim();
 
             const startingUrl = normalizeUrl(startUrl, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
             if (!startingUrl) {
@@ -553,13 +585,17 @@
                 if (visited.has(url)) continue;
                 visited.add(url);
 
-                notify(`Fetching ${url}`, 'info');
+                const requestUrl = corsProxy ? buildRequestUrl(url, corsProxy) : url;
+                const fetchLabel = corsProxy ? `${url} (via proxy)` : url;
+                notify(`Fetching ${fetchLabel}`, 'info');
 
                 let response;
                 try {
-                    response = await fetch(url, { mode: 'cors' });
+                    response = await fetch(requestUrl, { mode: 'cors' });
                 } catch (error) {
-                    notify(`Failed to fetch ${url}: ${error.message}`, 'warning');
+                    const message = error && error.message ? error.message : 'Unknown error';
+                    const suggestion = corsProxy ? '' : ' Provide a CORS proxy if the host blocks cross-origin requests.';
+                    notify(`Failed to fetch ${url}: ${message}.${suggestion}`, 'warning');
                     continue;
                 }
 
@@ -684,6 +720,7 @@
                 const changefreq = document.getElementById('changefreq').value || null;
                 const priorityRaw = document.getElementById('priorityInput').value.trim();
                 const collapseIndex = document.getElementById('collapseIndex').checked;
+                const corsProxyInput = (document.getElementById('corsProxy')?.value || '').trim();
 
                 let priority = null;
                 if (priorityRaw !== '') {
@@ -700,7 +737,8 @@
                     lastmodSource: includeLastmod.checked ? lastmodSource.value : 'none',
                     changefreq,
                     priority,
-                    collapseIndex
+                    collapseIndex,
+                    corsProxy: corsProxyInput
                 };
 
                 generateBtn.disabled = true;
