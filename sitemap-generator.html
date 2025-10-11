@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Utilities</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0V2F0V7FWB');
+    </script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4 d-flex align-items-center" id="dynamic-title">
+                            <span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true" id="tool-icon">sitemap</span>
+                            <span id="tool-name">XML Sitemap Generator</span>
+                        </h2>
+
+                        <p class="text-white-50 mb-4" id="tool-description">
+                            Build a standards-compliant XML sitemap by crawling a live site or uploading your static site files.
+                        </p>
+
+                        <form id="sitemapForm" class="post-content">
+                            <fieldset class="mb-4">
+                                <legend class="h5 mb-3">How would you like to build the sitemap?</legend>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="sitemapMode" id="modeUrl" value="url" checked>
+                                            <label class="form-check-label" for="modeUrl">
+                                                Crawl a live website (enter a starting URL)
+                                            </label>
+                                        </div>
+                                        <div class="small text-white-50 ms-4">
+                                            Uses fetch requests from your browser. Remote servers must allow cross-origin access.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="sitemapMode" id="modeFile" value="file">
+                                            <label class="form-check-label" for="modeFile">
+                                                Upload site files (HTML folder or zip extraction)
+                                            </label>
+                                        </div>
+                                        <div class="small text-white-50 ms-4">
+                                            Select a directory or multiple files. Paths will be combined with your base URL.
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="mb-4" id="urlModeContainer">
+                                <legend class="h5 mb-3">Crawl Settings</legend>
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <label for="startUrl" class="form-label fw-bold">Starting URL</label>
+                                        <input type="url" class="form-control" id="startUrl" placeholder="https://example.com/">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="maxDepth" class="form-label fw-bold">Max Depth</label>
+                                        <input type="number" class="form-control" id="maxDepth" min="0" max="6" value="2">
+                                        <div class="form-text">Depth of link following from the start page.</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="maxPages" class="form-label fw-bold">Max Pages</label>
+                                        <input type="number" class="form-control" id="maxPages" min="1" max="5000" value="200">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">Link Filtering</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="includeQuery">
+                                            <label class="form-check-label" for="includeQuery">Keep query strings</label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="stayOnHost" checked>
+                                            <label class="form-check-label" for="stayOnHost">Stay on the starting host</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">Robots.txt</label>
+                                        <div class="form-text">
+                                            This tool does not fetch robots.txt. Ensure you respect your site's crawl policies.
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="mb-4 d-none" id="fileModeContainer">
+                                <legend class="h5 mb-3">File Upload Settings</legend>
+                                <div class="row g-3">
+                                    <div class="col-md-7">
+                                        <label for="baseDomain" class="form-label fw-bold">Base Site URL</label>
+                                        <input type="url" class="form-control" id="baseDomain" placeholder="https://example.com/">
+                                        <div class="form-text">Used to convert each file path into a full URL.</div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label for="extensionsInput" class="form-label fw-bold">Include Extensions</label>
+                                        <input type="text" class="form-control" id="extensionsInput" value=".html,.htm,.xhtml">
+                                        <div class="form-text">Comma separated. Leave blank for every file.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="fileInput" class="form-label fw-bold">Select Your Files</label>
+                                        <input type="file" class="form-control" id="fileInput" webkitdirectory multiple>
+                                        <div class="form-text">Choose a folder or multiple files. Browser support for folder selection varies.</div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="mb-4">
+                                <legend class="h5 mb-3">Sitemap Options</legend>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="changefreq" class="form-label fw-bold">Default Change Frequency</label>
+                                        <select id="changefreq" class="form-select">
+                                            <option value="">(omit)</option>
+                                            <option value="always">always</option>
+                                            <option value="hourly">hourly</option>
+                                            <option value="daily">daily</option>
+                                            <option value="weekly">weekly</option>
+                                            <option value="monthly">monthly</option>
+                                            <option value="yearly">yearly</option>
+                                            <option value="never">never</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="priorityInput" class="form-label fw-bold">Default Priority</label>
+                                        <input type="number" class="form-control" id="priorityInput" min="0" max="1" step="0.1" placeholder="0.5">
+                                        <div class="form-text">0.0 to 1.0. Leave blank to omit.</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-4 pt-1">
+                                            <input class="form-check-input" type="checkbox" id="collapseIndex" checked>
+                                            <label class="form-check-label" for="collapseIndex">Collapse index.* to folder root</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="includeLastmod" checked>
+                                            <label class="form-check-label fw-bold" for="includeLastmod">Include &lt;lastmod&gt;</label>
+                                        </div>
+                                        <div id="lastmodOptions" class="mt-2">
+                                            <label for="lastmodSource" class="form-label">Last Modified Source</label>
+                                            <select id="lastmodSource" class="form-select">
+                                                <option value="current">Current timestamp (UTC)</option>
+                                                <option value="http">HTTP Last-Modified header</option>
+                                                <option value="file">File modification time</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="mb-4">
+                                <legend class="h5 mb-3">Generate</legend>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-task d-flex align-items-center" id="generateBtn">
+                                        <span class="material-icons me-2" aria-hidden="true">play_arrow</span>
+                                        Generate Sitemap
+                                    </button>
+                                    <button type="reset" class="btn btn-clear d-flex align-items-center" id="resetBtn">
+                                        <span class="material-icons me-2" aria-hidden="true">restart_alt</span>
+                                        Reset Form
+                                    </button>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend class="h5 mb-3">Results</legend>
+                                <div class="mb-3">
+                                    <label for="outputXml" class="form-label fw-bold">Sitemap XML</label>
+                                    <textarea id="outputXml" class="form-control font-monospace" rows="12" readonly placeholder="Your sitemap will appear here."></textarea>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <button type="button" class="btn btn-task btn-sm d-flex align-items-center" id="copyBtn" disabled>
+                                        <span class="material-icons me-2" aria-hidden="true">content_copy</span>
+                                        Copy XML
+                                    </button>
+                                    <button type="button" class="btn btn-task btn-sm d-flex align-items-center" id="downloadBtn" disabled>
+                                        <span class="material-icons me-2" aria-hidden="true">download</span>
+                                        Download sitemap.xml
+                                    </button>
+                                    <button type="button" class="btn btn-clear btn-sm d-flex align-items-center" id="clearBtn" disabled>
+                                        <span class="material-icons me-2" aria-hidden="true">clear</span>
+                                        Clear Output
+                                    </button>
+                                </div>
+                                <div>
+                                    <label class="form-label fw-bold">Status</label>
+                                    <ul class="list-group list-group-flush bg-dark small" id="statusList" aria-live="polite" aria-label="Sitemap generation status" style="max-height: 260px; overflow-y: auto;"></ul>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar"></nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div id="footer-placeholder"></div>
+    
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+
+    <script>
+        function initThemeSwitcher() {
+            const themes = [
+                'burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet',
+                'goldenyellow', 'mutedcoral', 'softpink', 'lightcyan', 'lightgray', 'neongreen', 'brightyellow'
+            ];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+
+            function applyTheme(theme) {
+                htmlElement.className = '';
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+
+        async function initPageMetadata() {
+            const currentSlug = 'sitemap-generator';
+
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+
+                const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
+
+                document.getElementById('tool-name').textContent = currentTool.name || 'XML Sitemap Generator';
+                document.getElementById('tool-description').textContent = currentTool.description || 'Build a standards-compliant XML sitemap by crawling a live site or uploading your static site files.';
+
+                const iconEl = document.getElementById('tool-icon');
+                if (currentTool.icon) {
+                    if (currentTool.icon.endsWith('.svg') || currentTool.icon.endsWith('.png')) {
+                        iconEl.textContent = '';
+                        iconEl.outerHTML = `<img src="${currentTool.icon}" alt="" style="height: 36px; margin-right: 15px;" id="tool-icon" aria-hidden="true" />`;
+                    } else {
+                        iconEl.outerHTML = `<span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true">${currentTool.icon}</span>`;
+                    }
+                }
+
+                const sidebarHtml = tools
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(tool => {
+                        const isActive = tool.slug === currentSlug;
+                        const activeClass = isActive ? ' active' : '';
+                        const iconHtml = tool.icon ?
+                            (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
+                                `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
+                                `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
+                            `<span class="me-2" style="width: 24px;"></span>`;
+
+                        return `
+                            <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
+                                ${iconHtml}
+                                <span>${tool.name}</span>
+                            </a>
+                        `;
+                    }).join('');
+
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+            } catch (error) {
+                console.error('Error loading metadata:', error);
+            }
+        }
+
+        function formatAsW3CDate(value) {
+            const date = value instanceof Date ? value : new Date(value);
+            if (Number.isNaN(date.getTime())) {
+                return null;
+            }
+            return date.toISOString();
+        }
+
+        function collapseIndexPath(pathname) {
+            if (!pathname) return '/';
+            const lower = pathname.toLowerCase();
+            const indexNames = ['index.html', 'index.htm', 'default.html', 'default.htm'];
+            for (const name of indexNames) {
+                if (lower === name) {
+                    return '/';
+                }
+                if (lower.endsWith('/' + name)) {
+                    const trimmed = pathname.slice(0, -name.length);
+                    return trimmed === '' ? '/' : trimmed;
+                }
+            }
+            return pathname;
+        }
+
+        function normalizeUrl(rawUrl, options = {}) {
+            const includeQuery = options.includeQuery !== undefined ? options.includeQuery : true;
+            const collapseIndex = Boolean(options.collapseIndex);
+            try {
+                const url = new URL(rawUrl);
+                url.hash = '';
+                if (!includeQuery) {
+                    url.search = '';
+                }
+                if (collapseIndex) {
+                    url.pathname = collapseIndexPath(url.pathname);
+                }
+                return url.href;
+            } catch (error) {
+                console.warn('Could not normalize URL:', rawUrl, error);
+                return null;
+            }
+        }
+
+        function escapeXml(value) {
+            return String(value).replace(/[<>&'"]/g, char => {
+                switch (char) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '"': return '&quot;';
+                    case '\'': return '&apos;';
+                    default: return char;
+                }
+            });
+        }
+
+        function buildSitemapXml(entries) {
+            const body = entries.map(entry => {
+                const lines = [
+                    '  <url>',
+                    `    <loc>${escapeXml(entry.loc)}</loc>`
+                ];
+                if (entry.lastmod) {
+                    lines.push(`    <lastmod>${escapeXml(entry.lastmod)}</lastmod>`);
+                }
+                if (entry.changefreq) {
+                    lines.push(`    <changefreq>${entry.changefreq}</changefreq>`);
+                }
+                if (entry.priority) {
+                    lines.push(`    <priority>${entry.priority}</priority>`);
+                }
+                lines.push('  </url>');
+                return lines.join('\n');
+            }).join('\n');
+
+            return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+        }
+
+        function extractLinks(html, currentUrl, allowedOrigin, options) {
+            const includeQuery = options.includeQuery;
+            const collapseIndex = options.collapseIndex;
+            const links = new Set();
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const anchors = doc.querySelectorAll('a[href]');
+                anchors.forEach(anchor => {
+                    const href = anchor.getAttribute('href');
+                    if (!href) return;
+                    const trimmed = href.trim();
+                    if (!trimmed || trimmed.startsWith('#')) return;
+                    const blockedProtocols = ['mailto:', 'tel:', 'javascript:', 'data:'];
+                    if (blockedProtocols.some(prefix => trimmed.toLowerCase().startsWith(prefix))) return;
+                    let resolved;
+                    try {
+                        resolved = new URL(trimmed, currentUrl);
+                    } catch {
+                        return;
+                    }
+                    if (resolved.origin !== allowedOrigin) return;
+                    const normalized = normalizeUrl(resolved.href, { includeQuery, collapseIndex });
+                    if (normalized) {
+                        links.add(normalized);
+                    }
+                });
+            } catch (error) {
+                console.warn('Failed to parse HTML for links:', error);
+            }
+            return Array.from(links);
+        }
+
+        function createEntry(loc, options, metadata = {}) {
+            const normalized = normalizeUrl(loc, {
+                includeQuery: options.includeQuery !== undefined ? options.includeQuery : true,
+                collapseIndex: options.collapseIndex
+            });
+            const entry = {
+                loc: normalized || loc
+            };
+            if (options.includeLastmod) {
+                let lastmodValue = null;
+                if (options.lastmodSource === 'http' && metadata.httpLastModified) {
+                    lastmodValue = formatAsW3CDate(metadata.httpLastModified);
+                } else if (options.lastmodSource === 'file' && metadata.fileLastModified) {
+                    lastmodValue = formatAsW3CDate(metadata.fileLastModified);
+                } else if (options.lastmodSource === 'current') {
+                    lastmodValue = formatAsW3CDate(new Date());
+                }
+                if (!lastmodValue && options.lastmodSource !== 'current') {
+                    lastmodValue = formatAsW3CDate(new Date());
+                }
+                if (lastmodValue) {
+                    entry.lastmod = lastmodValue;
+                }
+            }
+            if (options.changefreq) {
+                entry.changefreq = options.changefreq;
+            }
+            if (options.priority !== null && options.priority !== undefined) {
+                entry.priority = options.priority;
+            }
+            return entry;
+        }
+
+        async function crawlSite(startUrl, options, notify) {
+            const entries = [];
+            const entrySet = new Set();
+            const visited = new Set();
+            const enqueued = new Set();
+            const queue = [];
+
+            const startingUrl = normalizeUrl(startUrl, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
+            if (!startingUrl) {
+                throw new Error('Unable to normalize the starting URL.');
+            }
+
+            const origin = new URL(startingUrl).origin;
+
+            queue.push({ url: startingUrl, depth: 0 });
+            enqueued.add(startingUrl);
+
+            while (queue.length > 0) {
+                if (entries.length >= options.maxPages) {
+                    notify(`Reached the page limit (${options.maxPages}).`, 'warning');
+                    break;
+                }
+
+                const { url, depth } = queue.shift();
+                enqueued.delete(url);
+                if (visited.has(url)) continue;
+
+                if (options.stayOnHost) {
+                    const candidateOrigin = new URL(url).origin;
+                    if (candidateOrigin !== origin) {
+                        notify(`Skipping ${url} (different host).`, 'warning');
+                        continue;
+                    }
+                }
+
+                visited.add(url);
+                notify(`Fetching ${url}`, 'info');
+
+                let response;
+                try {
+                    response = await fetch(url, { mode: 'cors' });
+                } catch (error) {
+                    notify(`Failed to fetch ${url}: ${error.message}`, 'warning');
+                    continue;
+                }
+
+                if (!response.ok) {
+                    notify(`Skipping ${url} (HTTP ${response.status}).`, 'warning');
+                    continue;
+                }
+
+                const contentType = response.headers.get('content-type') || '';
+                let pageHtml = '';
+                if (contentType.includes('text/html')) {
+                    pageHtml = await response.text();
+                } else if (contentType.includes('xml')) {
+                    pageHtml = await response.text();
+                } else {
+                    await response.text().catch(() => null);
+                }
+
+                if (!entrySet.has(url)) {
+                    const entry = createEntry(url, options, { httpLastModified: response.headers.get('last-modified') });
+                    entries.push(entry);
+                    entrySet.add(entry.loc);
+                    notify(`Added ${entry.loc}`, 'success');
+                }
+
+                if (pageHtml && depth < options.maxDepth) {
+                    const discovered = extractLinks(pageHtml, url, origin, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
+                    for (const link of discovered) {
+                        if (entries.length + queue.length >= options.maxPages) {
+                            break;
+                        }
+                        if (entrySet.has(link) || visited.has(link) || enqueued.has(link)) continue;
+                        queue.push({ url: link, depth: depth + 1 });
+                        enqueued.add(link);
+                    }
+                }
+            }
+
+            return entries.sort((a, b) => a.loc.localeCompare(b.loc));
+        }
+
+        function normalizeRelativePath(path) {
+            if (!path) return null;
+            let normalized = path.replace(/\\/g, '/');
+            normalized = normalized.replace(/^\.+/, '');
+            normalized = normalized.replace(/^\/+/, '');
+            if (normalized === '') return '/';
+            return '/' + normalized;
+        }
+
+        function parseExtensions(inputValue) {
+            if (!inputValue) return [];
+            return inputValue
+                .split(',')
+                .map(part => part.trim().toLowerCase())
+                .filter(Boolean)
+                .map(part => part.startsWith('.') ? part : '.' + part);
+        }
+
+        async function buildFromFiles(files, options, notify) {
+            const entries = [];
+            const entrySet = new Set();
+            const extensions = options.extensions || [];
+            const allowAll = extensions.length === 0;
+
+            notify(`Processing ${files.length} file${files.length === 1 ? '' : 's'}...`, 'info');
+
+            for (const file of files) {
+                const relativePath = file.webkitRelativePath || file.name;
+                const normalizedPath = normalizeRelativePath(relativePath);
+                if (!normalizedPath) {
+                    notify(`Skipping ${relativePath}: could not determine path.`, 'warning');
+                    continue;
+                }
+
+                const lowerName = relativePath.toLowerCase();
+                const dotIndex = lowerName.lastIndexOf('.');
+                const extension = dotIndex === -1 ? '' : lowerName.slice(dotIndex);
+
+                if (!allowAll && (extension === '' || !extensions.includes(extension))) {
+                    continue;
+                }
+
+                let fullUrl;
+                try {
+                    fullUrl = new URL(normalizedPath, options.baseUrl).href;
+                } catch (error) {
+                    notify(`Skipping ${relativePath}: ${error.message}`, 'warning');
+                    continue;
+                }
+
+                const normalized = normalizeUrl(fullUrl, { includeQuery: true, collapseIndex: options.collapseIndex });
+                if (!normalized) {
+                    notify(`Skipping ${relativePath}: invalid URL after normalization.`, 'warning');
+                    continue;
+                }
+
+                if (entrySet.has(normalized)) {
+                    continue;
+                }
+
+                const entry = createEntry(normalized, options, { fileLastModified: file.lastModified });
+                entries.push(entry);
+                entrySet.add(entry.loc);
+            }
+
+            entries.sort((a, b) => a.loc.localeCompare(b.loc));
+            notify(`Included ${entries.length} file${entries.length === 1 ? '' : 's'} in the sitemap.`, 'success');
+            return entries;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            await ComponentLoader.loadAll();
+            initThemeSwitcher();
+            await initPageMetadata();
+
+            const modeRadios = document.querySelectorAll('input[name="sitemapMode"]');
+            const urlModeContainer = document.getElementById('urlModeContainer');
+            const fileModeContainer = document.getElementById('fileModeContainer');
+            const includeLastmod = document.getElementById('includeLastmod');
+            const lastmodOptions = document.getElementById('lastmodOptions');
+            const lastmodSource = document.getElementById('lastmodSource');
+            const statusList = document.getElementById('statusList');
+            const outputArea = document.getElementById('outputXml');
+            const generateBtn = document.getElementById('generateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const sitemapForm = document.getElementById('sitemapForm');
+
+            function clearStatus() {
+                statusList.innerHTML = '';
+            }
+
+            function addStatus(message, tone = 'info') {
+                const toneClassMap = {
+                    success: 'text-success',
+                    warning: 'text-warning',
+                    danger: 'text-danger',
+                    info: 'text-info'
+                };
+                const item = document.createElement('li');
+                item.className = `list-group-item bg-dark border-secondary ${toneClassMap[tone] || 'text-white-50'}`;
+                item.textContent = message;
+                statusList.appendChild(item);
+                statusList.scrollTop = statusList.scrollHeight;
+            }
+
+            function updateOutputActions() {
+                const hasOutput = outputArea.value.trim().length > 0;
+                copyBtn.disabled = !hasOutput;
+                downloadBtn.disabled = !hasOutput;
+                clearBtn.disabled = !hasOutput;
+            }
+
+            function toggleMode() {
+                const mode = document.querySelector('input[name="sitemapMode"]:checked').value;
+                urlModeContainer.classList.toggle('d-none', mode !== 'url');
+                fileModeContainer.classList.toggle('d-none', mode !== 'file');
+                adjustLastmodOptions(mode);
+            }
+
+            function toggleLastmodOptions() {
+                lastmodOptions.classList.toggle('d-none', !includeLastmod.checked);
+            }
+
+            function adjustLastmodOptions(mode) {
+                if (!includeLastmod.checked) return;
+                Array.from(lastmodSource.options).forEach(option => {
+                    if (option.value === 'http') {
+                        option.disabled = mode !== 'url';
+                    }
+                    if (option.value === 'file') {
+                        option.disabled = mode !== 'file';
+                    }
+                });
+                if (lastmodSource.options[lastmodSource.selectedIndex] && lastmodSource.options[lastmodSource.selectedIndex].disabled) {
+                    lastmodSource.value = mode === 'file' ? 'file' : 'current';
+                }
+            }
+
+            async function generateSitemap() {
+                outputArea.value = '';
+                updateOutputActions();
+                clearStatus();
+
+                const mode = document.querySelector('input[name="sitemapMode"]:checked').value;
+                const changefreq = document.getElementById('changefreq').value || null;
+                const priorityRaw = document.getElementById('priorityInput').value.trim();
+                const collapseIndex = document.getElementById('collapseIndex').checked;
+
+                let priority = null;
+                if (priorityRaw !== '') {
+                    const parsed = Number(priorityRaw);
+                    if (Number.isNaN(parsed) || parsed < 0 || parsed > 1) {
+                        addStatus('Priority must be a number between 0.0 and 1.0.', 'danger');
+                        return;
+                    }
+                    priority = (Math.round(parsed * 1000) / 1000).toString();
+                }
+
+                const options = {
+                    includeLastmod: includeLastmod.checked,
+                    lastmodSource: includeLastmod.checked ? lastmodSource.value : 'none',
+                    changefreq,
+                    priority,
+                    collapseIndex
+                };
+
+                generateBtn.disabled = true;
+                addStatus('Starting sitemap generation...', 'info');
+
+                try {
+                    let entries = [];
+                    if (mode === 'url') {
+                        const startUrl = document.getElementById('startUrl').value.trim();
+                        if (!startUrl) {
+                            addStatus('Please enter a starting URL.', 'danger');
+                            return;
+                        }
+
+                        let validatedStartUrl;
+                        try {
+                            validatedStartUrl = new URL(startUrl);
+                        } catch {
+                            addStatus('The starting URL is not valid.', 'danger');
+                            return;
+                        }
+
+                        const maxDepth = parseInt(document.getElementById('maxDepth').value, 10);
+                        const maxPages = parseInt(document.getElementById('maxPages').value, 10);
+
+                        if (Number.isNaN(maxDepth) || maxDepth < 0) {
+                            addStatus('Max depth must be zero or a positive integer.', 'danger');
+                            return;
+                        }
+                        if (Number.isNaN(maxPages) || maxPages < 1) {
+                            addStatus('Max pages must be at least 1.', 'danger');
+                            return;
+                        }
+
+                        const includeQuery = document.getElementById('includeQuery').checked;
+                        const stayOnHost = document.getElementById('stayOnHost').checked;
+
+                        entries = await crawlSite(validatedStartUrl.href, {
+                            ...options,
+                            includeQuery,
+                            stayOnHost,
+                            maxDepth,
+                            maxPages
+                        }, addStatus);
+                    } else {
+                        const baseDomain = document.getElementById('baseDomain').value.trim();
+                        const fileInput = document.getElementById('fileInput');
+                        const files = Array.from(fileInput.files);
+
+                        if (!baseDomain) {
+                            addStatus('Please enter the base site URL.', 'danger');
+                            return;
+                        }
+
+                        if (!files.length) {
+                            addStatus('Select at least one file or folder to include.', 'danger');
+                            return;
+                        }
+
+                        let baseUrl;
+                        try {
+                            baseUrl = new URL(baseDomain).href;
+                        } catch {
+                            addStatus('The base site URL is not valid.', 'danger');
+                            return;
+                        }
+
+                        const extensions = parseExtensions(document.getElementById('extensionsInput').value);
+
+                        entries = await buildFromFiles(files, {
+                            ...options,
+                            baseUrl,
+                            extensions
+                        }, addStatus);
+                    }
+
+                    if (!entries.length) {
+                        addStatus('No URLs were added to the sitemap. Adjust your settings and try again.', 'warning');
+                        return;
+                    }
+
+                    const xml = buildSitemapXml(entries);
+                    outputArea.value = xml;
+                    updateOutputActions();
+                    addStatus(`Sitemap generated with ${entries.length} URL${entries.length === 1 ? '' : 's'}.`, 'success');
+                } catch (error) {
+                    console.error('Sitemap generation failed:', error);
+                    addStatus(`Unexpected error: ${error.message}`, 'danger');
+                } finally {
+                    generateBtn.disabled = false;
+                }
+            }
+
+            modeRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    toggleMode();
+                    clearStatus();
+                });
+            });
+
+            includeLastmod.addEventListener('change', () => {
+                toggleLastmodOptions();
+                adjustLastmodOptions(document.querySelector('input[name="sitemapMode"]:checked').value);
+            });
+
+            generateBtn.addEventListener('click', generateSitemap);
+
+            copyBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(outputArea.value);
+                    addStatus('Sitemap copied to clipboard.', 'success');
+                } catch (error) {
+                    addStatus('Copy failed. Your browser may not allow clipboard access.', 'warning');
+                }
+            });
+
+            downloadBtn.addEventListener('click', () => {
+                const blob = new Blob([outputArea.value], { type: 'application/xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'sitemap.xml';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                addStatus('sitemap.xml downloaded.', 'success');
+            });
+
+            clearBtn.addEventListener('click', () => {
+                outputArea.value = '';
+                updateOutputActions();
+                addStatus('Output cleared.', 'info');
+            });
+
+            resetBtn.addEventListener('click', () => {
+                setTimeout(() => {
+                    sitemapForm.reset();
+                    toggleMode();
+                    toggleLastmodOptions();
+                    clearStatus();
+                    outputArea.value = '';
+                    updateOutputActions();
+                    addStatus('Form reset.', 'info');
+                }, 0);
+            });
+
+            toggleMode();
+            toggleLastmodOptions();
+            updateOutputActions();
+        });
+    </script>
+</body>
+</html>

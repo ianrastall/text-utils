@@ -8,6 +8,7 @@ Designed by me, but coded by LLMs such as Gemini, Qwen, and Claude, at my own di
 
 - **Text Tools:**  
   - Case converter, find & replace, line operations, remove accents, curly quotes, hashing, random number and sequence generators, and more.
+  - XML sitemap generator that can crawl a URL or build from uploaded site files.
 - **Font & Icon Choosers:**  
   - Font Awesome and Google Material icon choosers, font preview tools.
 - **IP & Unicode Info:**  
