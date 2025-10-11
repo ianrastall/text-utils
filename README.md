@@ -1,6 +1,6 @@
 # Text Utilities
 
-A collection of interactive web-based tools and educational tutorials for text processing, programming, and developer productivity.
+A collection of interactive web-based tools for text processing, programming, and developer productivity.
 
 Designed by me, but coded by LLMs such as Gemini, Qwen, and Claude, at my own direction.
 
@@ -15,8 +15,6 @@ Designed by me, but coded by LLMs such as Gemini, Qwen, and Claude, at my own di
   - IP information lookup, Unicode character explorer.
 - **Unit Converters:**  
   - CSS unit converter and other developer-focused utilities.
-- **Programming Tutorials:**  
-  - In-depth, multi-part tutorials for Ada and other languages, with a focus on safety-critical and high-integrity software engineering.
 - **Modern UI:**  
   - Responsive, mobile-friendly design using Bootstrap and custom CSS.
 
@@ -70,15 +68,7 @@ Designed by me, but coded by LLMs such as Gemini, Qwen, and Claude, at my own di
 
    - **VS Code Live Server extension** also works well.
 
-3. **Open `index.html` in your browser** (via the local server) to access the main landing page and explore available tools and tutorials.
-
-4. **Browse tutorials:**
-
-   - Visit `coding-tutorials.html` for the interactive programming tutorial navigator.
-   - Ada tutorials are in `tutorials/ada/`.
-   - Assembly language tutorials are in `tutorials/asm/`.
-   - C language tutorials are in `tutorials/c/`.
-   - Etc.
+3. **Open `index.html` in your browser** (via the local server) to access the main landing page and explore available tools.
 
 ## Development
 
