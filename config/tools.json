@@ -104,7 +104,7 @@
     {
         "slug": "sitemap-generator",
         "name": "XML Sitemap Generator",
-        "icon": "sitemap",
+        "icon": "schema",
         "description": "Generate XML sitemaps by crawling a site or uploading site files.",
         "category": "Web",
         "order": 21
@@ -170,14 +170,6 @@
         "description": "Select named or custom colors and generate corresponding code snippets for various programming languages.",
         "category": "CSS",
         "order": 14
-    },
-    {
-        "slug": "space-invaders",
-        "name": "Retro Space Defender",
-        "icon": "rocket_launch",
-        "description": "Play a retro space shooter with keyboard and touch controls.",
-        "category": "Games",
-        "order": 25
     },
     {
         "slug": "structured-prompt-builder",
