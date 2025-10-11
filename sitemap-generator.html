@@ -31,40 +31,15 @@
                         </h2>
 
                         <p class="text-white-50 mb-4" id="tool-description">
-                            Build a standards-compliant XML sitemap by crawling a live site or uploading your static site files.
+                            Build a standards-compliant XML sitemap by crawling a live site starting from a single URL.
                         </p>
 
                         <form id="sitemapForm" class="post-content">
                             <fieldset class="mb-4">
-                                <legend class="h5 mb-3">How would you like to build the sitemap?</legend>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="sitemapMode" id="modeUrl" value="url" checked>
-                                            <label class="form-check-label" for="modeUrl">
-                                                Crawl a live website (enter a starting URL)
-                                            </label>
-                                        </div>
-                                        <div class="small text-white-50 ms-4">
-                                            Uses fetch requests from your browser. Remote servers must allow cross-origin access.
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="sitemapMode" id="modeFile" value="file">
-                                            <label class="form-check-label" for="modeFile">
-                                                Upload site files (HTML folder or zip extraction)
-                                            </label>
-                                        </div>
-                                        <div class="small text-white-50 ms-4">
-                                            Select a directory or multiple files. Paths will be combined with your base URL.
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-
-                            <fieldset class="mb-4" id="urlModeContainer">
                                 <legend class="h5 mb-3">Crawl Settings</legend>
+                                <p class="small text-white-50">
+                                    Crawling runs entirely in your browser using fetch requests, so the target host must permit cross-origin access.
+                                </p>
                                 <div class="row g-3">
                                     <div class="col-md-8">
                                         <label for="startUrl" class="form-label fw-bold">Starting URL</label>
@@ -95,27 +70,6 @@
                                         <div class="form-text">
                                             This tool does not fetch robots.txt. Ensure you respect your site's crawl policies.
                                         </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-
-                            <fieldset class="mb-4 d-none" id="fileModeContainer">
-                                <legend class="h5 mb-3">File Upload Settings</legend>
-                                <div class="row g-3">
-                                    <div class="col-md-7">
-                                        <label for="baseDomain" class="form-label fw-bold">Base Site URL</label>
-                                        <input type="url" class="form-control" id="baseDomain" placeholder="https://example.com/">
-                                        <div class="form-text">Used to convert each file path into a full URL.</div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label for="extensionsInput" class="form-label fw-bold">Include Extensions</label>
-                                        <input type="text" class="form-control" id="extensionsInput" value=".html,.htm,.xhtml">
-                                        <div class="form-text">Comma separated. Leave blank for every file.</div>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="fileInput" class="form-label fw-bold">Select Your Files</label>
-                                        <input type="file" class="form-control" id="fileInput" webkitdirectory multiple>
-                                        <div class="form-text">Choose a folder or multiple files. Browser support for folder selection varies.</div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -157,7 +111,6 @@
                                             <select id="lastmodSource" class="form-select">
                                                 <option value="current">Current timestamp (UTC)</option>
                                                 <option value="http">HTTP Last-Modified header</option>
-                                                <option value="file">File modification time</option>
                                             </select>
                                         </div>
                                     </div>
@@ -264,7 +217,7 @@
                 const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
 
                 document.getElementById('tool-name').textContent = currentTool.name || 'XML Sitemap Generator';
-                document.getElementById('tool-description').textContent = currentTool.description || 'Build a standards-compliant XML sitemap by crawling a live site or uploading your static site files.';
+                document.getElementById('tool-description').textContent = currentTool.description || 'Build a standards-compliant XML sitemap by crawling a live site starting from a single URL.';
 
                 const iconEl = document.getElementById('tool-icon');
                 if (currentTool.icon) {
@@ -422,14 +375,14 @@
             };
             if (options.includeLastmod) {
                 let lastmodValue = null;
-                if (options.lastmodSource === 'http' && metadata.httpLastModified) {
-                    lastmodValue = formatAsW3CDate(metadata.httpLastModified);
-                } else if (options.lastmodSource === 'file' && metadata.fileLastModified) {
-                    lastmodValue = formatAsW3CDate(metadata.fileLastModified);
+                if (options.lastmodSource === 'http') {
+                    if (metadata.httpLastModified) {
+                        lastmodValue = formatAsW3CDate(metadata.httpLastModified);
+                    }
+                    if (!lastmodValue) {
+                        lastmodValue = formatAsW3CDate(new Date());
+                    }
                 } else if (options.lastmodSource === 'current') {
-                    lastmodValue = formatAsW3CDate(new Date());
-                }
-                if (!lastmodValue && options.lastmodSource !== 'current') {
                     lastmodValue = formatAsW3CDate(new Date());
                 }
                 if (lastmodValue) {
@@ -529,84 +482,11 @@
             return entries.sort((a, b) => a.loc.localeCompare(b.loc));
         }
 
-        function normalizeRelativePath(path) {
-            if (!path) return null;
-            let normalized = path.replace(/\\/g, '/');
-            normalized = normalized.replace(/^\.+/, '');
-            normalized = normalized.replace(/^\/+/, '');
-            if (normalized === '') return '/';
-            return '/' + normalized;
-        }
-
-        function parseExtensions(inputValue) {
-            if (!inputValue) return [];
-            return inputValue
-                .split(',')
-                .map(part => part.trim().toLowerCase())
-                .filter(Boolean)
-                .map(part => part.startsWith('.') ? part : '.' + part);
-        }
-
-        async function buildFromFiles(files, options, notify) {
-            const entries = [];
-            const entrySet = new Set();
-            const extensions = options.extensions || [];
-            const allowAll = extensions.length === 0;
-
-            notify(`Processing ${files.length} file${files.length === 1 ? '' : 's'}...`, 'info');
-
-            for (const file of files) {
-                const relativePath = file.webkitRelativePath || file.name;
-                const normalizedPath = normalizeRelativePath(relativePath);
-                if (!normalizedPath) {
-                    notify(`Skipping ${relativePath}: could not determine path.`, 'warning');
-                    continue;
-                }
-
-                const lowerName = relativePath.toLowerCase();
-                const dotIndex = lowerName.lastIndexOf('.');
-                const extension = dotIndex === -1 ? '' : lowerName.slice(dotIndex);
-
-                if (!allowAll && (extension === '' || !extensions.includes(extension))) {
-                    continue;
-                }
-
-                let fullUrl;
-                try {
-                    fullUrl = new URL(normalizedPath, options.baseUrl).href;
-                } catch (error) {
-                    notify(`Skipping ${relativePath}: ${error.message}`, 'warning');
-                    continue;
-                }
-
-                const normalized = normalizeUrl(fullUrl, { includeQuery: true, collapseIndex: options.collapseIndex });
-                if (!normalized) {
-                    notify(`Skipping ${relativePath}: invalid URL after normalization.`, 'warning');
-                    continue;
-                }
-
-                if (entrySet.has(normalized)) {
-                    continue;
-                }
-
-                const entry = createEntry(normalized, options, { fileLastModified: file.lastModified });
-                entries.push(entry);
-                entrySet.add(entry.loc);
-            }
-
-            entries.sort((a, b) => a.loc.localeCompare(b.loc));
-            notify(`Included ${entries.length} file${entries.length === 1 ? '' : 's'} in the sitemap.`, 'success');
-            return entries;
-        }
-
         document.addEventListener('DOMContentLoaded', async function () {
             await ComponentLoader.loadAll();
             initThemeSwitcher();
             await initPageMetadata();
 
-            const modeRadios = document.querySelectorAll('input[name="sitemapMode"]');
-            const urlModeContainer = document.getElementById('urlModeContainer');
-            const fileModeContainer = document.getElementById('fileModeContainer');
             const includeLastmod = document.getElementById('includeLastmod');
             const lastmodOptions = document.getElementById('lastmodOptions');
             const lastmodSource = document.getElementById('lastmodSource');
@@ -644,30 +524,8 @@
                 clearBtn.disabled = !hasOutput;
             }
 
-            function toggleMode() {
-                const mode = document.querySelector('input[name="sitemapMode"]:checked').value;
-                urlModeContainer.classList.toggle('d-none', mode !== 'url');
-                fileModeContainer.classList.toggle('d-none', mode !== 'file');
-                adjustLastmodOptions(mode);
-            }
-
             function toggleLastmodOptions() {
                 lastmodOptions.classList.toggle('d-none', !includeLastmod.checked);
-            }
-
-            function adjustLastmodOptions(mode) {
-                if (!includeLastmod.checked) return;
-                Array.from(lastmodSource.options).forEach(option => {
-                    if (option.value === 'http') {
-                        option.disabled = mode !== 'url';
-                    }
-                    if (option.value === 'file') {
-                        option.disabled = mode !== 'file';
-                    }
-                });
-                if (lastmodSource.options[lastmodSource.selectedIndex] && lastmodSource.options[lastmodSource.selectedIndex].disabled) {
-                    lastmodSource.value = mode === 'file' ? 'file' : 'current';
-                }
             }
 
             async function generateSitemap() {
@@ -675,7 +533,6 @@
                 updateOutputActions();
                 clearStatus();
 
-                const mode = document.querySelector('input[name="sitemapMode"]:checked').value;
                 const changefreq = document.getElementById('changefreq').value || null;
                 const priorityRaw = document.getElementById('priorityInput').value.trim();
                 const collapseIndex = document.getElementById('collapseIndex').checked;
@@ -702,75 +559,42 @@
                 addStatus('Starting sitemap generation...', 'info');
 
                 try {
-                    let entries = [];
-                    if (mode === 'url') {
-                        const startUrl = document.getElementById('startUrl').value.trim();
-                        if (!startUrl) {
-                            addStatus('Please enter a starting URL.', 'danger');
-                            return;
-                        }
-
-                        let validatedStartUrl;
-                        try {
-                            validatedStartUrl = new URL(startUrl);
-                        } catch {
-                            addStatus('The starting URL is not valid.', 'danger');
-                            return;
-                        }
-
-                        const maxDepth = parseInt(document.getElementById('maxDepth').value, 10);
-                        const maxPages = parseInt(document.getElementById('maxPages').value, 10);
-
-                        if (Number.isNaN(maxDepth) || maxDepth < 0) {
-                            addStatus('Max depth must be zero or a positive integer.', 'danger');
-                            return;
-                        }
-                        if (Number.isNaN(maxPages) || maxPages < 1) {
-                            addStatus('Max pages must be at least 1.', 'danger');
-                            return;
-                        }
-
-                        const includeQuery = document.getElementById('includeQuery').checked;
-                        const stayOnHost = document.getElementById('stayOnHost').checked;
-
-                        entries = await crawlSite(validatedStartUrl.href, {
-                            ...options,
-                            includeQuery,
-                            stayOnHost,
-                            maxDepth,
-                            maxPages
-                        }, addStatus);
-                    } else {
-                        const baseDomain = document.getElementById('baseDomain').value.trim();
-                        const fileInput = document.getElementById('fileInput');
-                        const files = Array.from(fileInput.files);
-
-                        if (!baseDomain) {
-                            addStatus('Please enter the base site URL.', 'danger');
-                            return;
-                        }
-
-                        if (!files.length) {
-                            addStatus('Select at least one file or folder to include.', 'danger');
-                            return;
-                        }
-
-                        let baseUrl;
-                        try {
-                            baseUrl = new URL(baseDomain).href;
-                        } catch {
-                            addStatus('The base site URL is not valid.', 'danger');
-                            return;
-                        }
-
-                        const extensions = parseExtensions(document.getElementById('extensionsInput').value);
-
-                        entries = await buildFromFiles(files, {
-                            ...options,
-                            baseUrl,
-                            extensions
-                        }, addStatus);
+                    const startUrl = document.getElementById('startUrl').value.trim();
+                    if (!startUrl) {
+                        addStatus('Please enter a starting URL.', 'danger');
+                        return;
                     }
+
+                    let validatedStartUrl;
+                    try {
+                        validatedStartUrl = new URL(startUrl);
+                    } catch {
+                        addStatus('The starting URL is not valid.', 'danger');
+                        return;
+                    }
+
+                    const maxDepth = parseInt(document.getElementById('maxDepth').value, 10);
+                    const maxPages = parseInt(document.getElementById('maxPages').value, 10);
+
+                    if (Number.isNaN(maxDepth) || maxDepth < 0) {
+                        addStatus('Max depth must be zero or a positive integer.', 'danger');
+                        return;
+                    }
+                    if (Number.isNaN(maxPages) || maxPages < 1) {
+                        addStatus('Max pages must be at least 1.', 'danger');
+                        return;
+                    }
+
+                    const includeQuery = document.getElementById('includeQuery').checked;
+                    const stayOnHost = document.getElementById('stayOnHost').checked;
+
+                    const entries = await crawlSite(validatedStartUrl.href, {
+                        ...options,
+                        includeQuery,
+                        stayOnHost,
+                        maxDepth,
+                        maxPages
+                    }, addStatus);
 
                     if (!entries.length) {
                         addStatus('No URLs were added to the sitemap. Adjust your settings and try again.', 'warning');
@@ -789,16 +613,8 @@
                 }
             }
 
-            modeRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    toggleMode();
-                    clearStatus();
-                });
-            });
-
             includeLastmod.addEventListener('change', () => {
                 toggleLastmodOptions();
-                adjustLastmodOptions(document.querySelector('input[name="sitemapMode"]:checked').value);
             });
 
             generateBtn.addEventListener('click', generateSitemap);
@@ -834,7 +650,6 @@
             resetBtn.addEventListener('click', () => {
                 setTimeout(() => {
                     sitemapForm.reset();
-                    toggleMode();
                     toggleLastmodOptions();
                     clearStatus();
                     outputArea.value = '';
@@ -843,7 +658,6 @@
                 }, 0);
             });
 
-            toggleMode();
             toggleLastmodOptions();
             updateOutputActions();
         });

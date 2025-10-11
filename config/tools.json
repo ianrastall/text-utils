@@ -105,7 +105,7 @@
         "slug": "sitemap-generator",
         "name": "XML Sitemap Generator",
         "icon": "schema",
-        "description": "Generate XML sitemaps by crawling a site or uploading site files.",
+        "description": "Generate XML sitemaps by crawling a site starting from a single URL.",
         "category": "Web",
         "order": 21
     },
