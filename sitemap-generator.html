@@ -335,34 +335,147 @@
         function extractLinks(html, currentUrl, allowedOrigin, options) {
             const includeQuery = options.includeQuery;
             const collapseIndex = options.collapseIndex;
-            const links = new Set();
+            const pageLinks = new Set();
+            const resourceLinks = new Set();
+
+            const addCandidate = (raw, type = 'page') => {
+                if (!raw) return;
+                const trimmed = raw.trim();
+                if (!trimmed || trimmed.startsWith('#')) return;
+                const blockedProtocols = ['mailto:', 'tel:', 'javascript:', 'data:'];
+                const lowerTrimmed = trimmed.toLowerCase();
+                if (blockedProtocols.some(prefix => lowerTrimmed.startsWith(prefix))) return;
+                let resolved;
+                try {
+                    resolved = new URL(trimmed, currentUrl);
+                } catch {
+                    return;
+                }
+                if (resolved.origin !== allowedOrigin) return;
+                const normalized = normalizeUrl(resolved.href, { includeQuery, collapseIndex });
+                if (!normalized) return;
+                if (type === 'resource') {
+                    resourceLinks.add(normalized);
+                } else {
+                    pageLinks.add(normalized);
+                }
+            };
+
             try {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const anchors = doc.querySelectorAll('a[href]');
-                anchors.forEach(anchor => {
-                    const href = anchor.getAttribute('href');
-                    if (!href) return;
-                    const trimmed = href.trim();
-                    if (!trimmed || trimmed.startsWith('#')) return;
-                    const blockedProtocols = ['mailto:', 'tel:', 'javascript:', 'data:'];
-                    if (blockedProtocols.some(prefix => trimmed.toLowerCase().startsWith(prefix))) return;
-                    let resolved;
-                    try {
-                        resolved = new URL(trimmed, currentUrl);
-                    } catch {
-                        return;
-                    }
-                    if (resolved.origin !== allowedOrigin) return;
-                    const normalized = normalizeUrl(resolved.href, { includeQuery, collapseIndex });
-                    if (normalized) {
-                        links.add(normalized);
-                    }
+
+                doc.querySelectorAll('a[href], area[href]').forEach(element => {
+                    addCandidate(element.getAttribute('href'), 'page');
+                });
+
+                doc.querySelectorAll('link[rel="canonical"][href], link[rel="alternate"][href]').forEach(linkTag => {
+                    addCandidate(linkTag.getAttribute('href'), 'page');
                 });
             } catch (error) {
                 console.warn('Failed to parse HTML for links:', error);
             }
-            return Array.from(links);
+
+            const resourcePattern = /["']([^"'<>]+?\.(?:json|jsonp|xml|txt|csv|ya?ml))(?:\?[^"']*)?["']/gi;
+            let match;
+            while ((match = resourcePattern.exec(html)) !== null) {
+                addCandidate(match[1], 'resource');
+            }
+
+            return {
+                pageLinks: Array.from(pageLinks),
+                resourceLinks: Array.from(resourceLinks)
+            };
+        }
+
+        function extractUrlsFromJson(data, currentUrl, allowedOrigin, options) {
+            const pageLinks = new Set();
+            const resourceLinks = new Set();
+            const baseUrl = new URL(currentUrl);
+
+            const resourceExtensions = ['.json', '.xml', '.yaml', '.yml', '.txt', '.csv'];
+            const pageExtensions = ['.html', '.htm', '.php', '.asp', '.aspx', '.jsp'];
+
+            const pushCandidate = (value, keyHint = '') => {
+                if (!value) return;
+                let candidate = value.trim();
+                if (!candidate) return;
+
+                const lowerHint = keyHint.toLowerCase();
+                if (lowerHint === 'slug' || lowerHint.endsWith('slug')) {
+                    candidate = candidate.replace(/^\//, '');
+                    if (!candidate.match(/\.(html?|php|asp(x)?|jsp)$/i)) {
+                        candidate = `${candidate}.html`;
+                    }
+                }
+
+                let type = 'page';
+                const lowerCandidate = candidate.toLowerCase();
+                if (resourceExtensions.some(ext => lowerCandidate.endsWith(ext))) {
+                    type = 'resource';
+                } else if (pageExtensions.some(ext => lowerCandidate.endsWith(ext))) {
+                    type = 'page';
+                } else if (lowerCandidate.endsWith('/')) {
+                    type = 'page';
+                } else if (lowerCandidate.includes('.json')) {
+                    type = 'resource';
+                }
+
+                let resolved;
+                try {
+                    resolved = new URL(candidate, baseUrl);
+                } catch {
+                    return;
+                }
+
+                if (options.stayOnHost && resolved.origin !== allowedOrigin) {
+                    return;
+                }
+
+                const normalized = normalizeUrl(resolved.href, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
+                if (!normalized) return;
+
+                if (type === 'resource') {
+                    resourceLinks.add(normalized);
+                } else {
+                    pageLinks.add(normalized);
+                }
+            };
+
+            const walk = (node, keyHint = '') => {
+                if (typeof node === 'string') {
+                    const trimmed = node.trim();
+                    if (!trimmed) return;
+                    const lower = trimmed.toLowerCase();
+                    if (
+                        lower.startsWith('http://') ||
+                        lower.startsWith('https://') ||
+                        lower.startsWith('//') ||
+                        lower.startsWith('/') ||
+                        lower.includes('.html') ||
+                        lower.includes('.htm') ||
+                        lower.includes('.php') ||
+                        lower.includes('.asp') ||
+                        lower.includes('.jsp') ||
+                        lower.endsWith('.json')
+                    ) {
+                        pushCandidate(trimmed, keyHint);
+                    } else if (keyHint.toLowerCase().includes('slug')) {
+                        pushCandidate(trimmed, keyHint);
+                    }
+                } else if (Array.isArray(node)) {
+                    node.forEach(item => walk(item, keyHint));
+                } else if (node && typeof node === 'object') {
+                    Object.entries(node).forEach(([key, value]) => walk(value, key));
+                }
+            };
+
+            walk(data);
+
+            return {
+                pageLinks: Array.from(pageLinks),
+                resourceLinks: Array.from(resourceLinks)
+            };
         }
 
         function createEntry(loc, options, metadata = {}) {
@@ -412,8 +525,23 @@
 
             const origin = new URL(startingUrl).origin;
 
-            queue.push({ url: startingUrl, depth: 0 });
-            enqueued.add(startingUrl);
+            const enqueue = (targetUrl, depth, type) => {
+                if (!targetUrl && targetUrl !== '') return;
+                let normalizedTarget;
+                try {
+                    normalizedTarget = new URL(targetUrl, startingUrl).href;
+                } catch {
+                    return;
+                }
+                const finalUrl = normalizeUrl(normalizedTarget, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex }) || normalizedTarget;
+                if (options.stayOnHost && new URL(finalUrl).origin !== origin) return;
+                if (visited.has(finalUrl) || enqueued.has(finalUrl)) return;
+                if (type === 'page' && depth > options.maxDepth) return;
+                queue.push({ url: finalUrl, depth, type });
+                enqueued.add(finalUrl);
+            };
+
+            enqueue(startingUrl, 0, 'page');
 
             while (queue.length > 0) {
                 if (entries.length >= options.maxPages) {
@@ -421,19 +549,10 @@
                     break;
                 }
 
-                const { url, depth } = queue.shift();
-                enqueued.delete(url);
+                const { url, depth, type } = queue.shift();
                 if (visited.has(url)) continue;
-
-                if (options.stayOnHost) {
-                    const candidateOrigin = new URL(url).origin;
-                    if (candidateOrigin !== origin) {
-                        notify(`Skipping ${url} (different host).`, 'warning');
-                        continue;
-                    }
-                }
-
                 visited.add(url);
+
                 notify(`Fetching ${url}`, 'info');
 
                 let response;
@@ -449,37 +568,66 @@
                     continue;
                 }
 
-                const contentType = response.headers.get('content-type') || '';
-                let pageHtml = '';
-                if (contentType.includes('text/html')) {
-                    pageHtml = await response.text();
-                } else if (contentType.includes('xml')) {
-                    pageHtml = await response.text();
+                const contentType = (response.headers.get('content-type') || '').toLowerCase();
+                const isHtml = contentType.includes('text/html') || contentType.includes('application/xhtml');
+                const isXml = contentType.includes('xml');
+                const isJson = contentType.includes('json') || url.toLowerCase().endsWith('.json');
+
+                let responseText = '';
+                if (isHtml || isXml || isJson) {
+                    try {
+                        responseText = await response.text();
+                    } catch {
+                        responseText = '';
+                    }
                 } else {
                     await response.text().catch(() => null);
                 }
 
-                if (!entrySet.has(url)) {
+                const pageKey = normalizeUrl(url, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex }) || url;
+                if (type === 'page' && !entrySet.has(pageKey)) {
                     const entry = createEntry(url, options, { httpLastModified: response.headers.get('last-modified') });
                     entries.push(entry);
+                    entrySet.add(pageKey);
                     entrySet.add(entry.loc);
                     notify(`Added ${entry.loc}`, 'success');
+                    if (entries.length >= options.maxPages) {
+                        notify(`Reached the page limit (${options.maxPages}).`, 'warning');
+                        break;
+                    }
                 }
 
-                if (pageHtml && depth < options.maxDepth) {
-                    const discovered = extractLinks(pageHtml, url, origin, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
-                    for (const link of discovered) {
-                        if (entries.length + queue.length >= options.maxPages) {
-                            break;
+                if ((isHtml || isXml) && responseText && depth < options.maxDepth) {
+                    const { pageLinks, resourceLinks } = extractLinks(responseText, url, origin, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
+                    for (const link of pageLinks) {
+                        enqueue(link, depth + 1, 'page');
+                    }
+                    for (const resource of resourceLinks) {
+                        enqueue(resource, depth, 'resource');
+                    }
+                    if (pageLinks.length || resourceLinks.length) {
+                        notify(`Discovered ${pageLinks.length} page link(s) and ${resourceLinks.length} resource link(s) in ${url}.`, 'info');
+                    }
+                }
+
+                if (isJson && responseText) {
+                    try {
+                        const jsonData = JSON.parse(responseText);
+                        const { pageLinks, resourceLinks } = extractUrlsFromJson(jsonData, url, origin, options);
+                        pageLinks.forEach(link => enqueue(link, depth + 1, 'page'));
+                        resourceLinks.forEach(resource => enqueue(resource, depth + 1, 'resource'));
+                        if (pageLinks.length || resourceLinks.length) {
+                            notify(`Parsed JSON at ${url} and found ${pageLinks.length} page link(s) and ${resourceLinks.length} resource link(s).`, 'info');
                         }
-                        if (entrySet.has(link) || visited.has(link) || enqueued.has(link)) continue;
-                        queue.push({ url: link, depth: depth + 1 });
-                        enqueued.add(link);
+                    } catch (error) {
+                        notify(`Failed to parse JSON from ${url}: ${error.message}`, 'warning');
                     }
                 }
             }
 
-            return entries.sort((a, b) => a.loc.localeCompare(b.loc));
+            return entries
+                .filter((entry, index, self) => self.findIndex(other => other.loc === entry.loc) === index)
+                .sort((a, b) => a.loc.localeCompare(b.loc));
         }
 
         document.addEventListener('DOMContentLoaded', async function () {
