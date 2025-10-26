@@ -67,19 +67,27 @@
         "category": "Text",
         "order": 17
     },
+	{
+		"slug": "html-tag-remover",
+		"name": "HTML Tag Remover",
+		"icon": "code_off",
+		"description": "Remove HTML/XML tags, trim blank lines, strip all attributes, and minify pasted HTML.",
+		"category": "Text",
+		"order": 12
+	},
     {
-        "slug": "html-tag-remover",
-        "name": "HTML Tag Remover",
-        "icon": "code_off",
-        "description": "Remove HTML/XML tags, trim blank lines, strip all attributes, and minify pasted HTML.",
+        "slug": "gutenberg-cleaner",
+        "name": "Gutenberg Cleaner",
+        "icon": "menu_book",
+        "description": "Strip Project Gutenberg boilerplate, remove TOCs, and flatten paragraphs for easier editing.",
         "category": "Text",
-        "order": 12
+        "order": 19
     },
-    {
-        "slug": "compare-items",
-        "name": "Compare Items",
-        "icon": "compare_arrows",
-        "description": "Pairwise tournament tool with Elo, Glicko-2, TrueSkill, multiple formats, bracket view, and export.",
+	{
+		"slug": "compare-items",
+		"name": "Compare Items",
+		"icon": "compare_arrows",
+		"description": "Pairwise tournament tool with Elo, Glicko-2, TrueSkill, multiple formats, bracket view, and export.",
         "category": "Ranking",
         "order": 13
     },

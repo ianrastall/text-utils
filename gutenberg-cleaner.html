@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gutenberg Cleaner</title>
+    <meta name="description" content="Strip Project Gutenberg boilerplate, trim TOCs, and flatten paragraphs before further editing.">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/tutorials.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body class="bg-dark text-light">
+    <div id="header-placeholder"></div>
+
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="material-icons me-3" aria-hidden="true" style="font-size: 36px;">menu_book</span>
+                            <div>
+                                <h1 class="h3 mb-1">Gutenberg Cleaner</h1>
+                                <p class="text-white-50 mb-0">Prep Project Gutenberg downloads before editing, formatting, or importing elsewhere.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-black border border-secondary rounded-3 p-3 mb-4">
+                            <p class="small mb-2">Paste the raw HTML or plain text from Gutenberg (e.g., <code>9248.html</code> or <code>9255.html</code>) and choose the clean-up passes you need. The tool stays conservative and only targets common boilerplate markers.</p>
+                            <ul class="small ps-3 mb-0">
+                                <li>“Remove boilerplate” trims headers/footers, <code>*** START/END ***</code> blocks, and <code>pg-header</code>/<code>pg-footer</code> sections.</li>
+                                <li>“Remove TOC” deletes HTML elements with <code>.toc</code> plus early “CONTENTS” blocks.</li>
+                                <li>“Flatten paragraphs” un-wraps soft line breaks while keeping blank-line paragraph spacing.</li>
+                            </ul>
+                        </div>
+
+                        <form id="gutenbergForm" class="post-content">
+                            <div class="mb-4">
+                                <label for="gutenbergInput" class="form-label fw-semibold">Raw Gutenberg text</label>
+                                <textarea class="form-control font-monospace" id="gutenbergInput" rows="14" spellcheck="false" placeholder="Paste the full text or HTML you downloaded from Project Gutenberg..."></textarea>
+                                <div class="form-text text-white-50">Tip: If you downloaded a ZIP, open the .txt or .html file inside and paste it here.</div>
+                            </div>
+
+                            <fieldset class="mb-4 border border-secondary rounded-3 p-3">
+                                <legend class="float-none w-auto px-2 text-uppercase small fw-semibold">Cleaning options</legend>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="optionBoilerplate" checked>
+                                            <label class="form-check-label fw-semibold" for="optionBoilerplate">Remove boilerplate</label>
+                                        </div>
+                                        <p class="small text-white-50 mb-0">Strips license/legal headers, footers, and <code>pg-*</code> boilerplate sections.</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="optionToc" checked>
+                                            <label class="form-check-label fw-semibold" for="optionToc">Remove TOC</label>
+                                        </div>
+                                        <p class="small text-white-50 mb-0">Drops early “CONTENTS” blocks plus HTML nodes with <code>.toc</code>.</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="optionFlatten">
+                                            <label class="form-check-label fw-semibold" for="optionFlatten">Flatten paragraphs</label>
+                                        </div>
+                                        <p class="small text-white-50 mb-0">Merges wrapped lines into single paragraphs, keeping blank lines between sections.</p>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <button type="button" class="btn btn-task d-flex align-items-center" id="cleanText">
+                                    <span class="material-icons me-2" aria-hidden="true">auto_fix_high</span>
+                                    Clean text
+                                </button>
+                                <button type="button" class="btn btn-edit d-flex align-items-center" id="useCleaned" disabled>
+                                    <span class="material-icons me-2" aria-hidden="true">assignment_return</span>
+                                    Send to input
+                                </button>
+                                <button type="button" class="btn btn-edit d-flex align-items-center" id="copyCleaned" disabled>
+                                    <span class="material-icons me-2" aria-hidden="true">content_copy</span>
+                                    Copy output
+                                </button>
+                                <button type="button" class="btn btn-clear d-flex align-items-center ms-auto" id="clearAll">
+                                    <span class="material-icons me-2" aria-hidden="true">delete_sweep</span>
+                                    Clear all
+                                </button>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="gutenbergOutput" class="form-label fw-semibold">Clean output</label>
+                                <textarea class="form-control font-monospace" id="gutenbergOutput" rows="14" spellcheck="false" placeholder="Cleaned text will appear here..." readonly></textarea>
+                            </div>
+
+                            <div class="bg-black border border-secondary rounded-3 p-3 mb-3">
+                                <div class="row text-center g-3">
+                                    <div class="col">
+                                        <div class="fs-4 fw-semibold" id="statWords">0</div>
+                                        <div class="text-uppercase text-white-50 small">Words</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="fs-4 fw-semibold" id="statChars">0</div>
+                                        <div class="text-uppercase text-white-50 small">Characters</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="fs-4 fw-semibold" id="statParagraphs">0</div>
+                                        <div class="text-uppercase text-white-50 small">Paragraphs</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="gutenbergStatus" class="small text-white-50" aria-live="polite">Paste Gutenberg text to get started.</div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                            <div class="card bg-dark border-0 rounded-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/gutenberg-cleaner.js"></script>
+</body>
+</html>
