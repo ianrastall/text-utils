@@ -11,26 +11,86 @@
       gtag('js', new Date());
       gtag('config', 'G-0V2F0V7FWB');
     </script>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        :root {
+            --accent-color: burlywood;
+        }
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .card {
+            background-color: #2a2a2a;
+            border-color: #404040;
+        }
+        .form-control, .form-select {
+            background-color: #1a1a1a;
+            border-color: #404040;
+            color: #e0e0e0;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #2a2a2a;
+            border-color: var(--accent-color);
+            color: #e0e0e0;
+        }
+        .btn-task {
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+        }
+        .btn-task:hover {
+            background-color: var(--accent-color);
+            opacity: 0.9;
+            color: #000;
+        }
+        .btn-clear {
+            background-color: #404040;
+            color: #e0e0e0;
+            border: none;
+        }
+        .btn-clear:hover {
+            background-color: #505050;
+            color: #e0e0e0;
+        }
+        .list-group-item {
+            background-color: #2a2a2a;
+            border-color: #404040;
+        }
+        .form-check-input:checked {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        fieldset {
+            border: 1px solid #404040;
+            padding: 1rem;
+            border-radius: 0.375rem;
+        }
+        legend {
+            width: auto;
+            padding: 0 0.5rem;
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+    </style>
 </head>
 <body>
-    <div id="header-placeholder"></div>
     <div class="container-fluid my-4">
         <div class="row gx-3 gy-3">
-            <main class="col-md-9">
+            <main class="col-12">
                 <div class="card bg-dark border-secondary">
                     <div class="card-body">
-                        <h2 class="card-title mb-4 d-flex align-items-center" id="dynamic-title">
+                        <h2 class="card-title mb-4 d-flex align-items-center">
                             <span class="material-icons me-3" aria-hidden="true" style="font-size: 36px;">schema</span>
-                            <span id="tool-name">XML Sitemap Generator</span>
+                            <span>XML Sitemap Generator</span>
                         </h2>
 
-                        <p class="text-white-50 mb-4" id="tool-description">
+                        <p class="text-white-50 mb-4">
                             Build a standards-compliant XML sitemap by crawling a live site starting from a single URL.
                         </p>
 
@@ -56,10 +116,10 @@
                                     </div>
                                     <div class="col-md-8">
                                         <label for="corsProxy" class="form-label fw-bold">CORS Proxy (optional)</label>
-                                        <input type="text" class="form-control" id="corsProxy" placeholder="https://cors.isomorphic-git.org/">
+                                        <input type="text" class="form-control" id="corsProxy" placeholder="https://cors-anywhere.herokuapp.com/">
                                         <div class="form-text">
-                                            Supply a proxy URL if your host blocks direct cross-origin requests (commonly the case for GitHub-hosted sites).
-                                            Leave blank to request pages directly. Use <code>{target}</code> in the proxy URL if it requires a placeholder for the encoded destination.
+                                            Supply a proxy URL if your host blocks direct cross-origin requests.
+                                            The proxy must support appending the target URL directly (e.g., proxy.com/target-url).
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -168,100 +228,11 @@
                     </div>
                 </div>
             </main>
-            <aside class="col-md-3">
-                <div class="card bg-dark border-secondary">
-                    <div class="card-body p-0">
-                        <nav class="sidebar nav flex-column" id="dynamic-sidebar"></nav>
-                    </div>
-                </div>
-            </aside>
         </div>
     </div>
-    <div id="footer-placeholder"></div>
-    
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/component-loader.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        function initThemeSwitcher() {
-            const themes = [
-                'burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet',
-                'goldenyellow', 'mutedcoral', 'softpink', 'lightcyan', 'lightgray', 'neongreen', 'brightyellow'
-            ];
-            const themeDropdown = document.getElementById('accentColorDropdownMenu');
-            const htmlElement = document.documentElement;
-
-            function applyTheme(theme) {
-                htmlElement.className = '';
-                htmlElement.classList.add('theme-' + theme);
-                localStorage.setItem('accentTheme', theme);
-            }
-
-            if (themeDropdown) {
-                themes.forEach(theme => {
-                    const li = document.createElement('li');
-                    const button = document.createElement('button');
-                    button.className = 'dropdown-item';
-                    button.type = 'button';
-                    button.textContent = theme;
-                    button.onclick = () => applyTheme(theme);
-                    li.appendChild(button);
-                    themeDropdown.appendChild(li);
-                });
-            }
-
-            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
-            applyTheme(savedTheme);
-        }
-
-        async function initPageMetadata() {
-            const currentSlug = 'sitemap-generator';
-
-            try {
-                const response = await fetch('config/tools.json');
-                if (!response.ok) throw new Error('Failed to load tools.json');
-                const tools = await response.json();
-
-                const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
-
-                document.getElementById('tool-name').textContent = currentTool.name || 'XML Sitemap Generator';
-                document.getElementById('tool-description').textContent = currentTool.description || 'Build a standards-compliant XML sitemap by crawling a live site starting from a single URL.';
-
-                const iconEl = document.getElementById('tool-icon');
-                if (currentTool.icon) {
-                    if (currentTool.icon.endsWith('.svg') || currentTool.icon.endsWith('.png')) {
-                        iconEl.textContent = '';
-                        iconEl.outerHTML = `<img src="${currentTool.icon}" alt="" style="height: 36px; margin-right: 15px;" id="tool-icon" aria-hidden="true" />`;
-                    } else {
-                        iconEl.outerHTML = `<span class="material-icons me-3" style="font-size: 36px;" aria-hidden="true">${currentTool.icon}</span>`;
-                    }
-                }
-
-                const sidebarHtml = tools
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map(tool => {
-                        const isActive = tool.slug === currentSlug;
-                        const activeClass = isActive ? ' active' : '';
-                        const iconHtml = tool.icon ?
-                            (tool.icon.endsWith('.svg') || tool.icon.endsWith('.png') ?
-                                `<img src="${tool.icon}" alt="" class="icon me-2" aria-hidden="true" />` :
-                                `<span class="material-icons me-2" aria-hidden="true">${tool.icon}</span>`) :
-                            `<span class="me-2" style="width: 24px;"></span>`;
-
-                        return `
-                            <a class="nav-link d-flex align-items-center${activeClass}" href="${tool.slug}.html">
-                                ${iconHtml}
-                                <span>${tool.name}</span>
-                            </a>
-                        `;
-                    }).join('');
-
-                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
-            } catch (error) {
-                console.error('Error loading metadata:', error);
-            }
-        }
-
         function formatAsW3CDate(value) {
             const date = value instanceof Date ? value : new Date(value);
             if (Number.isNaN(date.getTime())) {
@@ -271,16 +242,15 @@
         }
 
         function collapseIndexPath(pathname) {
-            if (!pathname) return '/';
+            if (!pathname || pathname === '/') return '/';
             const lower = pathname.toLowerCase();
             const indexNames = ['index.html', 'index.htm', 'default.html', 'default.htm'];
             for (const name of indexNames) {
-                if (lower === name) {
+                if (lower === '/' + name) {
                     return '/';
                 }
                 if (lower.endsWith('/' + name)) {
-                    const trimmed = pathname.slice(0, -name.length);
-                    return trimmed === '' ? '/' : trimmed;
+                    return pathname.slice(0, -(name.length));
                 }
             }
             return pathname;
@@ -306,26 +276,27 @@
         }
 
         function buildRequestUrl(targetUrl, corsProxy) {
-            if (!corsProxy) {
+            if (!corsProxy || corsProxy.trim() === '') {
                 return targetUrl;
             }
 
             const trimmedProxy = corsProxy.trim();
-            if (trimmedProxy === '') {
+            
+            // Validate the proxy URL
+            try {
+                new URL(trimmedProxy);
+            } catch {
+                console.warn('Invalid CORS proxy URL:', trimmedProxy);
                 return targetUrl;
             }
 
-            if (trimmedProxy.includes('{target}')) {
-                return trimmedProxy.replace(/\{target\}/g, encodeURIComponent(targetUrl));
+            // Simple concatenation: proxy + target
+            // Most CORS proxies work like: https://proxy.com/https://target.com
+            if (trimmedProxy.endsWith('/')) {
+                return trimmedProxy + targetUrl;
+            } else {
+                return trimmedProxy + '/' + targetUrl;
             }
-
-            const lastChar = trimmedProxy.slice(-1);
-            if (lastChar === '?' || lastChar === '&' || lastChar === '=') {
-                return `${trimmedProxy}${encodeURIComponent(targetUrl)}`;
-            }
-
-            const joiner = trimmedProxy.endsWith('/') ? '' : '/';
-            return `${trimmedProxy}${joiner}${targetUrl}`;
         }
 
         function escapeXml(value) {
@@ -367,29 +338,28 @@
             const includeQuery = options.includeQuery;
             const collapseIndex = options.collapseIndex;
             const pageLinks = new Set();
-            const resourceLinks = new Set();
 
-            const addCandidate = (raw, type = 'page') => {
+            const addCandidate = (raw) => {
                 if (!raw) return;
                 const trimmed = raw.trim();
                 if (!trimmed || trimmed.startsWith('#')) return;
                 const blockedProtocols = ['mailto:', 'tel:', 'javascript:', 'data:'];
                 const lowerTrimmed = trimmed.toLowerCase();
                 if (blockedProtocols.some(prefix => lowerTrimmed.startsWith(prefix))) return;
+                
                 let resolved;
                 try {
                     resolved = new URL(trimmed, currentUrl);
                 } catch {
                     return;
                 }
+                
                 if (resolved.origin !== allowedOrigin) return;
+                
                 const normalized = normalizeUrl(resolved.href, { includeQuery, collapseIndex });
                 if (!normalized) return;
-                if (type === 'resource') {
-                    resourceLinks.add(normalized);
-                } else {
-                    pageLinks.add(normalized);
-                }
+                
+                pageLinks.add(normalized);
             };
 
             try {
@@ -397,116 +367,17 @@
                 const doc = parser.parseFromString(html, 'text/html');
 
                 doc.querySelectorAll('a[href], area[href]').forEach(element => {
-                    addCandidate(element.getAttribute('href'), 'page');
+                    addCandidate(element.getAttribute('href'));
                 });
 
                 doc.querySelectorAll('link[rel="canonical"][href], link[rel="alternate"][href]').forEach(linkTag => {
-                    addCandidate(linkTag.getAttribute('href'), 'page');
+                    addCandidate(linkTag.getAttribute('href'));
                 });
             } catch (error) {
                 console.warn('Failed to parse HTML for links:', error);
             }
 
-            const resourcePattern = /["']([^"'<>]+?\.(?:json|jsonp|xml|txt|csv|ya?ml))(?:\?[^"']*)?["']/gi;
-            let match;
-            while ((match = resourcePattern.exec(html)) !== null) {
-                addCandidate(match[1], 'resource');
-            }
-
-            return {
-                pageLinks: Array.from(pageLinks),
-                resourceLinks: Array.from(resourceLinks)
-            };
-        }
-
-        function extractUrlsFromJson(data, currentUrl, allowedOrigin, options) {
-            const pageLinks = new Set();
-            const resourceLinks = new Set();
-            const baseUrl = new URL(currentUrl);
-
-            const resourceExtensions = ['.json', '.xml', '.yaml', '.yml', '.txt', '.csv'];
-            const pageExtensions = ['.html', '.htm', '.php', '.asp', '.aspx', '.jsp'];
-
-            const pushCandidate = (value, keyHint = '') => {
-                if (!value) return;
-                let candidate = value.trim();
-                if (!candidate) return;
-
-                const lowerHint = keyHint.toLowerCase();
-                if (lowerHint === 'slug' || lowerHint.endsWith('slug')) {
-                    candidate = candidate.replace(/^\//, '');
-                    if (!candidate.match(/\.(html?|php|asp(x)?|jsp)$/i)) {
-                        candidate = `${candidate}.html`;
-                    }
-                }
-
-                let type = 'page';
-                const lowerCandidate = candidate.toLowerCase();
-                if (resourceExtensions.some(ext => lowerCandidate.endsWith(ext))) {
-                    type = 'resource';
-                } else if (pageExtensions.some(ext => lowerCandidate.endsWith(ext))) {
-                    type = 'page';
-                } else if (lowerCandidate.endsWith('/')) {
-                    type = 'page';
-                } else if (lowerCandidate.includes('.json')) {
-                    type = 'resource';
-                }
-
-                let resolved;
-                try {
-                    resolved = new URL(candidate, baseUrl);
-                } catch {
-                    return;
-                }
-
-                if (options.stayOnHost && resolved.origin !== allowedOrigin) {
-                    return;
-                }
-
-                const normalized = normalizeUrl(resolved.href, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
-                if (!normalized) return;
-
-                if (type === 'resource') {
-                    resourceLinks.add(normalized);
-                } else {
-                    pageLinks.add(normalized);
-                }
-            };
-
-            const walk = (node, keyHint = '') => {
-                if (typeof node === 'string') {
-                    const trimmed = node.trim();
-                    if (!trimmed) return;
-                    const lower = trimmed.toLowerCase();
-                    if (
-                        lower.startsWith('http://') ||
-                        lower.startsWith('https://') ||
-                        lower.startsWith('//') ||
-                        lower.startsWith('/') ||
-                        lower.includes('.html') ||
-                        lower.includes('.htm') ||
-                        lower.includes('.php') ||
-                        lower.includes('.asp') ||
-                        lower.includes('.jsp') ||
-                        lower.endsWith('.json')
-                    ) {
-                        pushCandidate(trimmed, keyHint);
-                    } else if (keyHint.toLowerCase().includes('slug')) {
-                        pushCandidate(trimmed, keyHint);
-                    }
-                } else if (Array.isArray(node)) {
-                    node.forEach(item => walk(item, keyHint));
-                } else if (node && typeof node === 'object') {
-                    Object.entries(node).forEach(([key, value]) => walk(value, key));
-                }
-            };
-
-            walk(data);
-
-            return {
-                pageLinks: Array.from(pageLinks),
-                resourceLinks: Array.from(resourceLinks)
-            };
+            return Array.from(pageLinks);
         }
 
         function createEntry(loc, options, metadata = {}) {
@@ -557,23 +428,27 @@
 
             const origin = new URL(startingUrl).origin;
 
-            const enqueue = (targetUrl, depth, type) => {
-                if (!targetUrl && targetUrl !== '') return;
+            const enqueue = (targetUrl, depth) => {
+                if (!targetUrl) return;
+                
                 let normalizedTarget;
                 try {
                     normalizedTarget = new URL(targetUrl, startingUrl).href;
                 } catch {
                     return;
                 }
+                
                 const finalUrl = normalizeUrl(normalizedTarget, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex }) || normalizedTarget;
+                
                 if (options.stayOnHost && new URL(finalUrl).origin !== origin) return;
                 if (visited.has(finalUrl) || enqueued.has(finalUrl)) return;
-                if (type === 'page' && depth > options.maxDepth) return;
-                queue.push({ url: finalUrl, depth, type });
+                if (depth > options.maxDepth) return;
+                
+                queue.push({ url: finalUrl, depth });
                 enqueued.add(finalUrl);
             };
 
-            enqueue(startingUrl, 0, 'page');
+            enqueue(startingUrl, 0);
 
             while (queue.length > 0) {
                 if (entries.length >= options.maxPages) {
@@ -581,82 +456,74 @@
                     break;
                 }
 
-                const { url, depth, type } = queue.shift();
+                const { url, depth } = queue.shift();
                 if (visited.has(url)) continue;
                 visited.add(url);
 
                 const requestUrl = corsProxy ? buildRequestUrl(url, corsProxy) : url;
-                const fetchLabel = corsProxy ? `${url} (via proxy)` : url;
-                notify(`Fetching ${fetchLabel}`, 'info');
+                notify(`Fetching: ${url}${corsProxy ? ' (via proxy)' : ''}`, 'info');
 
                 let response;
                 try {
-                    response = await fetch(requestUrl, { mode: 'cors' });
+                    response = await fetch(requestUrl, { 
+                        mode: 'cors',
+                        redirect: 'follow'
+                    });
                 } catch (error) {
-                    const message = error && error.message ? error.message : 'Unknown error';
-                    const suggestion = corsProxy ? '' : ' Provide a CORS proxy if the host blocks cross-origin requests.';
+                    const message = error?.message || 'Unknown error';
+                    const suggestion = !corsProxy ? ' Try using a CORS proxy.' : '';
                     notify(`Failed to fetch ${url}: ${message}.${suggestion}`, 'warning');
                     continue;
                 }
 
-                if (!response.ok) {
-                    notify(`Skipping ${url} (HTTP ${response.status}).`, 'warning');
+                // Only add pages that returned 200 OK
+                if (response.status !== 200) {
+                    notify(`Skipping ${url} (HTTP ${response.status})`, 'warning');
                     continue;
                 }
 
                 const contentType = (response.headers.get('content-type') || '').toLowerCase();
                 const isHtml = contentType.includes('text/html') || contentType.includes('application/xhtml');
-                const isXml = contentType.includes('xml');
-                const isJson = contentType.includes('json') || url.toLowerCase().endsWith('.json');
 
-                let responseText = '';
-                if (isHtml || isXml || isJson) {
-                    try {
-                        responseText = await response.text();
-                    } catch {
-                        responseText = '';
-                    }
-                } else {
-                    await response.text().catch(() => null);
+                if (!isHtml) {
+                    notify(`Skipping ${url} (content-type: ${contentType})`, 'info');
+                    continue;
                 }
 
+                let responseText = '';
+                try {
+                    responseText = await response.text();
+                } catch {
+                    notify(`Failed to read response from ${url}`, 'warning');
+                    continue;
+                }
+
+                // Add to sitemap
                 const pageKey = normalizeUrl(url, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex }) || url;
-                if (type === 'page' && !entrySet.has(pageKey)) {
+                if (!entrySet.has(pageKey)) {
                     const entry = createEntry(url, options, { httpLastModified: response.headers.get('last-modified') });
                     entries.push(entry);
                     entrySet.add(pageKey);
                     entrySet.add(entry.loc);
-                    notify(`Added ${entry.loc}`, 'success');
+                    notify(`✓ Added: ${entry.loc}`, 'success');
+                    
                     if (entries.length >= options.maxPages) {
                         notify(`Reached the page limit (${options.maxPages}).`, 'warning');
                         break;
                     }
                 }
 
-                if ((isHtml || isXml) && responseText && depth < options.maxDepth) {
-                    const { pageLinks, resourceLinks } = extractLinks(responseText, url, origin, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
+                // Extract and enqueue links if we haven't reached max depth
+                if (depth < options.maxDepth && responseText) {
+                    const pageLinks = extractLinks(responseText, url, origin, { includeQuery: options.includeQuery, collapseIndex: options.collapseIndex });
+                    let enqueuedCount = 0;
                     for (const link of pageLinks) {
-                        enqueue(link, depth + 1, 'page');
+                        const beforeSize = enqueued.size;
+                        enqueue(link, depth + 1);
+                        if (enqueued.size > beforeSize) enqueuedCount++;
                     }
-                    for (const resource of resourceLinks) {
-                        enqueue(resource, depth, 'resource');
-                    }
-                    if (pageLinks.length || resourceLinks.length) {
-                        notify(`Discovered ${pageLinks.length} page link(s) and ${resourceLinks.length} resource link(s) in ${url}.`, 'info');
-                    }
-                }
-
-                if (isJson && responseText) {
-                    try {
-                        const jsonData = JSON.parse(responseText);
-                        const { pageLinks, resourceLinks } = extractUrlsFromJson(jsonData, url, origin, options);
-                        pageLinks.forEach(link => enqueue(link, depth + 1, 'page'));
-                        resourceLinks.forEach(resource => enqueue(resource, depth + 1, 'resource'));
-                        if (pageLinks.length || resourceLinks.length) {
-                            notify(`Parsed JSON at ${url} and found ${pageLinks.length} page link(s) and ${resourceLinks.length} resource link(s).`, 'info');
-                        }
-                    } catch (error) {
-                        notify(`Failed to parse JSON from ${url}: ${error.message}`, 'warning');
+                    if (enqueuedCount > 0) {
+                        notify(`  Found ${pageLinks.length} links, queued ${enqueuedCount} new URLs`, 'info');
                     }
                 }
             }
@@ -666,11 +533,7 @@
                 .sort((a, b) => a.loc.localeCompare(b.loc));
         }
 
-        document.addEventListener('DOMContentLoaded', async function () {
-            await ComponentLoader.loadAll();
-            initThemeSwitcher();
-            await initPageMetadata();
-
+        document.addEventListener('DOMContentLoaded', function () {
             const includeLastmod = document.getElementById('includeLastmod');
             const lastmodOptions = document.getElementById('lastmodOptions');
             const lastmodSource = document.getElementById('lastmodSource');
@@ -783,14 +646,14 @@
                     }, addStatus);
 
                     if (!entries.length) {
-                        addStatus('No URLs were added to the sitemap. Adjust your settings and try again.', 'warning');
+                        addStatus('No URLs were added to the sitemap. Check the status messages above.', 'warning');
                         return;
                     }
 
                     const xml = buildSitemapXml(entries);
                     outputArea.value = xml;
                     updateOutputActions();
-                    addStatus(`Sitemap generated with ${entries.length} URL${entries.length === 1 ? '' : 's'}.`, 'success');
+                    addStatus(`✓ Sitemap generated successfully with ${entries.length} URL${entries.length === 1 ? '' : 's'}.`, 'success');
                 } catch (error) {
                     console.error('Sitemap generation failed:', error);
                     addStatus(`Unexpected error: ${error.message}`, 'danger');
