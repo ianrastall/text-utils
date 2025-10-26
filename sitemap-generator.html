@@ -38,33 +38,69 @@
             background-color: #2a2a2a;
             border-color: var(--accent-color);
             color: #e0e0e0;
+            box-shadow: 0 0 0 0.25rem rgba(222, 184, 135, 0.25);
+        }
+        .form-control::placeholder {
+            color: #666;
+        }
+        .form-control:disabled,
+        .form-control[readonly] {
+            background-color: #1a1a1a;
+            color: #999;
+        }
+        .form-text {
+            color: #999;
         }
         .btn-task {
             background-color: var(--accent-color);
             color: #000;
             border: none;
         }
-        .btn-task:hover {
+        .btn-task:hover:not(:disabled) {
             background-color: var(--accent-color);
-            opacity: 0.9;
+            opacity: 0.85;
             color: #000;
+        }
+        .btn-task:disabled {
+            background-color: #555;
+            color: #888;
+            opacity: 0.6;
         }
         .btn-clear {
             background-color: #404040;
             color: #e0e0e0;
             border: none;
         }
-        .btn-clear:hover {
+        .btn-clear:hover:not(:disabled) {
             background-color: #505050;
             color: #e0e0e0;
+        }
+        .btn-clear:disabled {
+            background-color: #2a2a2a;
+            color: #666;
         }
         .list-group-item {
             background-color: #2a2a2a;
             border-color: #404040;
+            color: #e0e0e0;
+        }
+        .form-check-input {
+            background-color: #1a1a1a;
+            border-color: #666;
         }
         .form-check-input:checked {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
+        }
+        .form-check-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(222, 184, 135, 0.25);
+        }
+        .form-check-label {
+            color: #e0e0e0;
+        }
+        .form-label {
+            color: #e0e0e0;
         }
         fieldset {
             border: 1px solid #404040;
@@ -76,6 +112,16 @@
             padding: 0 0.5rem;
             margin-bottom: 0;
             font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        code {
+            color: var(--accent-color);
+            background-color: #1a1a1a;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
         }
     </style>
 </head>
