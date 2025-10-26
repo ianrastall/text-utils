@@ -1,4 +1,11 @@
 const GutenbergCleaner = (() => {
+  const BLOCK_SELECTOR = [
+    'article', 'aside', 'blockquote', 'div', 'dl', 'dt', 'dd', 'figure',
+    'figcaption', 'footer', 'header', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'hr', 'li', 'main', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'thead',
+    'tbody', 'tfoot', 'tr', 'td', 'th', 'ul'
+  ].join(',');
+
   const dom = {
     form: null,
     input: null,
@@ -250,22 +257,28 @@ const GutenbergCleaner = (() => {
     const looksLikeHtml = /<\/?[a-z][^>]*>/i.test(normalized);
 
     if (looksLikeHtml) {
-      const collapsed = normalized
-        .replace(/\s*\n+\s*/g, ' ')
-        .replace(/\s{2,}/g, ' ')
-        .trim();
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(normalized, 'text/html');
+        const body = doc.body;
+        if (!body) throw new Error('No body');
 
-      const closingBlockTags = /<\/(p|div|section|article|blockquote|pre|figure|h[1-6]|li|ul|ol|table|thead|tbody|tfoot|tr|dd|dt|dl)>/gi;
-      const selfClosingBlocks = /<(hr|br)(\s[^>]*)?>/gi;
+        const blocks = Array.from(body.querySelectorAll(BLOCK_SELECTOR));
+        const lines = [];
 
-      let formatted = collapsed.replace(closingBlockTags, match => `${match}\n`);
-      formatted = formatted.replace(selfClosingBlocks, match => `${match}\n`);
+        blocks.forEach(block => {
+          if (block.querySelector(BLOCK_SELECTOR)) return;
+          const outer = block.outerHTML
+            .replace(/\s*\n+\s*/g, ' ')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+          if (outer) lines.push(outer);
+        });
 
-      return formatted
-        .split('\n')
-        .map(line => line.trim())
-        .filter(Boolean)
-        .join('\n');
+        if (lines.length) return lines.join('\n');
+      } catch (error) {
+        console.warn('GutenbergCleaner flatten fallback:', error);
+      }
     }
 
     return normalized
