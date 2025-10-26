@@ -73,7 +73,7 @@ const GutenbergCleaner = (() => {
       return;
     }
 
-    let text = raw.replace(/\r\n/g, '\n');
+    let text = raw.replace(/\r\n?/g, '\n');
     const changes = [];
 
     if (dom.options.boilerplate?.checked) {
@@ -246,11 +246,33 @@ const GutenbergCleaner = (() => {
 
   function flattenParagraphs(text) {
     if (!text.trim()) return '';
-    return text
+    const normalized = text.replace(/\r\n?/g, '\n');
+    const looksLikeHtml = /<\/?[a-z][^>]*>/i.test(normalized);
+
+    if (looksLikeHtml) {
+      const collapsed = normalized
+        .replace(/\s*\n+\s*/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      const closingBlockTags = /<\/(p|div|section|article|blockquote|pre|figure|h[1-6]|li|ul|ol|table|thead|tbody|tfoot|tr|dd|dt|dl)>/gi;
+      const selfClosingBlocks = /<(hr|br)(\s[^>]*)?>/gi;
+
+      let formatted = collapsed.replace(closingBlockTags, match => `${match}\n`);
+      formatted = formatted.replace(selfClosingBlocks, match => `${match}\n`);
+
+      return formatted
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean)
+        .join('\n');
+    }
+
+    return normalized
       .split(/\n{2,}/)
       .map(block => block
-        .replace(/\s*\n+\s*/g, ' ')   // collapse wrapped lines within the block
-        .replace(/\s{2,}/g, ' ')      // normalize spacing
+        .replace(/\s*\n+\s*/g, ' ')
+        .replace(/\s{2,}/g, ' ')
         .trim())
       .filter(Boolean)
       .join('\n');
