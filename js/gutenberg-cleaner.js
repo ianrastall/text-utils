@@ -149,7 +149,14 @@ const GutenbergCleaner = (() => {
     const trimmed = (text || '').trim();
     const chars = trimmed.length;
     const words = trimmed ? (trimmed.match(/[^\s]+/g) || []).length : 0;
-    const paragraphs = trimmed ? trimmed.split(/\n{2,}/).filter(block => block.trim().length).length : 0;
+    const paragraphBlocks = (() => {
+      if (!trimmed) return [];
+      if (trimmed.includes('\n\n')) {
+        return trimmed.split(/\n{2,}/).filter(block => block.trim().length);
+      }
+      return trimmed.split(/\n/).filter(block => block.trim().length);
+    })();
+    const paragraphs = paragraphBlocks.length;
 
     if (dom.stats.words) dom.stats.words.textContent = words.toLocaleString();
     if (dom.stats.chars) dom.stats.chars.textContent = chars.toLocaleString();
@@ -241,9 +248,12 @@ const GutenbergCleaner = (() => {
     if (!text.trim()) return '';
     return text
       .split(/\n{2,}/)
-      .map(block => block.replace(/\s*\n\s*/g, ' ').replace(/\s{2,}/g, ' ').trim())
+      .map(block => block
+        .replace(/\s*\n+\s*/g, ' ')   // collapse wrapped lines within the block
+        .replace(/\s{2,}/g, ' ')      // normalize spacing
+        .trim())
       .filter(Boolean)
-      .join('\n\n');
+      .join('\n');
   }
 
   return { init };
