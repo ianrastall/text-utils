@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaga - Text Utils</title>
+  <meta name="description" content="Play a JavaScript remake of the classic Galaga arcade shooter. Use the arrow keys to dodge and the space bar to fire.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+  <link rel="stylesheet" href="css/galaga.css">
+</head>
+<body class="bg-black text-light">
+  <div id="header-placeholder"></div>
+
+  <div class="container-fluid my-4">
+    <div class="row gx-3 gy-3">
+      <main class="col-lg-9">
+        <div class="card bg-dark border-secondary shadow-sm galaga-card">
+          <div class="card-body">
+            <h2 class="d-flex align-items-center gap-3 mb-3">
+              <span class="material-icons" aria-hidden="true">sports_esports</span>
+              <span>Galaga</span>
+            </h2>
+            <p class="text-white-50 mb-4">
+              Survive wave after wave of enemy insects. Use the left and right arrow keys to fly and press the space bar to fire.
+            </p>
+
+            <div class="game-hud d-flex flex-column flex-md-row align-items-md-center gap-3 mb-3">
+              <div class="scoreboard d-flex flex-column">
+                <span class="hud-label text-uppercase text-white-50">Score</span>
+                <span id="score-value" class="hud-value">000000</span>
+              </div>
+              <button id="new-game-button" type="button" class="btn btn-edit ms-md-auto">
+                <span class="material-icons me-2" aria-hidden="true">refresh</span>
+                New Game
+              </button>
+            </div>
+
+            <div class="game-stage border border-light border-opacity-50 rounded-3 overflow-hidden bg-black position-relative">
+              <canvas
+                id="galaga-canvas"
+                width="960"
+                height="720"
+                tabindex="0"
+                role="img"
+                aria-label="Galaga arcade gameplay area"
+              ></canvas>
+              <div class="tap-overlay d-md-none">
+                Tap to focus, then use on-screen buttons below.
+              </div>
+            </div>
+
+            <div class="touch-controls d-md-none mt-3 gap-2">
+              <button type="button" class="btn btn-secondary flex-fill" data-control="left" aria-label="Move left">
+                &larr;
+              </button>
+              <button type="button" class="btn btn-secondary flex-fill" data-control="fire" aria-label="Fire laser">
+                &#x2607;
+              </button>
+              <button type="button" class="btn btn-secondary flex-fill" data-control="right" aria-label="Move right">
+                &rarr;
+              </button>
+            </div>
+
+            <p class="visually-hidden" id="sr-announcer" aria-live="polite" aria-atomic="true"></p>
+          </div>
+        </div>
+      </main>
+
+      <aside class="col-lg-3">
+        <div class="card bg-dark border-secondary shadow-sm h-100">
+          <div class="card-body">
+            <h3 class="h5 mb-3">How to play</h3>
+            <ul class="list-unstyled small text-white-50 mb-0">
+              <li><strong>Left / Right</strong> &mdash; Move your starfighter.</li>
+              <li><strong>Space</strong> &mdash; Fire a laser shot.</li>
+              <li>Eliminate every bug to advance to the next formation.</li>
+              <li>Avoid colliding with enemies while your ship is active.</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/component-loader.js"></script>
+  <script src="js/galaga.js"></script>
+</body>
+</html>

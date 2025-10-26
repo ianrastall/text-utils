@@ -190,18 +190,53 @@ a:hover {
 
 /* Accent-tintable navbar icons */
 .nav-icon {
-  --icon-size: 30px;                /* default size; override per-icon if needed */
+  --icon-size: 36px; /* default size; override per-icon if needed */
   width: var(--icon-size);
   height: var(--icon-size);
-  display: inline-block;
-  background-color: var(--accent-color);   /* ← picks up your theme accent */
-  -webkit-mask: var(--icon) center / contain no-repeat;
-          mask: var(--icon) center / contain no-repeat;
-  opacity: 0.92;
-  transition: opacity .15s ease, transform .15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at 35% 25%,
+              rgba(var(--accent-color-rgb, 222, 184, 135), .35),
+              rgba(var(--accent-color-rgb, 222, 184, 135), .05) 65%);
+  border: 1px solid rgba(var(--accent-color-rgb, 222, 184, 135), .55);
+  box-shadow: 0 0 6px rgba(0, 0, 0, .35);
+  opacity: .93;
+  transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease;
   vertical-align: middle;
 }
-.nav-link:hover .nav-icon { opacity: 1; transform: translateY(-1px); }
+.nav-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 222, 184, 135), .45);
+  opacity: .45;
+  transition: opacity .15s ease;
+  pointer-events: none;
+}
+.nav-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 3px rgba(var(--accent-color-rgb, 222, 184, 135), .35));
+  transition: filter .15s ease;
+}
+.nav-link:hover .nav-icon {
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 222, 184, 135), .5);
+}
+.nav-link:hover .nav-icon::after { opacity: .8; }
+.nav-link:hover .nav-icon img {
+  filter: drop-shadow(0 0 6px rgba(var(--accent-color-rgb, 222, 184, 135), .65))
+          brightness(1.05);
+}
 
 
 footer {
