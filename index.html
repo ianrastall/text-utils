@@ -128,12 +128,15 @@
         }
         
         .tool-card {
+            display: block;
             background: var(--bg-tertiary);
             border-radius: 8px;
             padding: 1.5rem;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid transparent;
+            color: inherit;
+            text-decoration: none;
         }
         
         .tool-card:hover {
@@ -261,6 +264,7 @@ const tools = [
     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
+    { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
@@ -284,10 +288,11 @@ function renderToolGrid(filter = '', category = 'all') {
     });
     
     filteredTools.forEach(tool => {
-        const card = document.createElement('div');
+        const card = document.createElement('a');
         card.className = 'tool-card';
+        card.href = `${tool.id}.html`;
+        card.setAttribute('aria-label', `${tool.name} tool`);
         card.innerHTML = `<div class="tool-icon"><span class="material-icons">${tool.icon}</span></div><h3>${tool.name}</h3><p>${tool.description}</p>`;
-        card.addEventListener('click', () => window.location.href = `${tool.id}.html`);
         toolGrid.appendChild(card);
     });
     

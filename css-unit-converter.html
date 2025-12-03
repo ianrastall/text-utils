@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Unit Converter - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .section-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        .section-header .hint-text {
+            margin: 0;
+        }
+        .inline-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .inline-toggle input {
+            width: auto;
+        }
+        .results-wrap {
+            margin-top: 1.5rem;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        .result-card {
+            position: relative;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .result-value {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 1.4rem;
+            margin: 0.35rem 0;
+            color: var(--text-primary);
+        }
+        .result-hint {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        .copy-chip {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .copy-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .copy-chip:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .highlight-input {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+        .hint-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .empty-state {
+            grid-column: 1 / -1;
+            padding: 1rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div id="toolView">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons" id="toolIcon">straighten</span>
+                        <h2 id="toolName">CSS Unit Converter</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="resetButton" class="btn btn-secondary">
+                            <span class="material-icons">restart_alt</span>
+                            Reset
+                        </button>
+                        <button id="copyAll" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy Results
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">
+                    Convert between px, em, rem, %, pt, vw, and vh with contextual controls for font sizes and viewport dimensions.
+                </p>
+
+                <div class="options-panel">
+                    <div class="converter-grid">
+                        <div class="option-group">
+                            <label for="inputValue">Input Value</label>
+                            <input type="number" id="inputValue" step="any" value="16" aria-label="Input value">
+                        </div>
+                        <div class="option-group">
+                            <label for="sourceUnit">Source Unit</label>
+                            <select id="sourceUnit">
+                                <option value="px" selected>Pixels (px)</option>
+                                <option value="em">em</option>
+                                <option value="rem">rem</option>
+                                <option value="percent">Percent (%)</option>
+                                <option value="pt">Points (pt)</option>
+                                <option value="vw">Viewport width (vw)</option>
+                                <option value="vh">Viewport height (vh)</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label for="propertyType">CSS Property</label>
+                            <select id="propertyType">
+                                <option value="font-size" selected>Font size</option>
+                                <option value="dimension">Width/height/other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h4>Font Context</h4>
+                        <label class="inline-toggle" for="syncParentFont">
+                            <input type="checkbox" id="syncParentFont" checked>
+                            <span>Sync parent with root</span>
+                        </label>
+                    </div>
+                    <div class="converter-grid">
+                        <div class="option-group">
+                            <label for="rootFontSize">Root Font Size (px)</label>
+                            <input type="number" id="rootFontSize" min="0.01" step="any" value="16" aria-label="Root font size">
+                        </div>
+                        <div class="option-group">
+                            <label for="parentFontSize">Parent Font Size (px)</label>
+                            <input type="number" id="parentFontSize" min="0.01" step="any" value="16" aria-label="Parent font size">
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h4>Viewport Context</h4>
+                        <p class="hint-text">Used for vw and vh conversions.</p>
+                    </div>
+                    <div class="converter-grid">
+                        <div class="option-group">
+                            <label for="viewportWidth">Viewport Width (px)</label>
+                            <input type="number" id="viewportWidth" min="1" step="1" value="1920" aria-label="Viewport width">
+                        </div>
+                        <div class="option-group">
+                            <label for="viewportHeight">Viewport Height (px)</label>
+                            <input type="number" id="viewportHeight" min="1" step="1" value="1080" aria-label="Viewport height">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-wrap">
+                    <div class="section-header">
+                        <h4>Conversion Results</h4>
+                        <p class="hint-text">Values are rounded to four decimals.</p>
+                    </div>
+                    <div id="resultsList" class="results-grid" aria-live="polite"></div>
+                </div>
+
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="toolStats">No calculations yet</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            const dom = {
+                inputValue: document.getElementById('inputValue'),
+                sourceUnit: document.getElementById('sourceUnit'),
+                propertyType: document.getElementById('propertyType'),
+                rootFontSize: document.getElementById('rootFontSize'),
+                parentFontSize: document.getElementById('parentFontSize'),
+                viewportWidth: document.getElementById('viewportWidth'),
+                viewportHeight: document.getElementById('viewportHeight'),
+                syncParentFont: document.getElementById('syncParentFont'),
+                resultsList: document.getElementById('resultsList'),
+                statusMessage: document.getElementById('statusMessage'),
+                toolStats: document.getElementById('toolStats'),
+                backButton: document.getElementById('backButton'),
+                resetButton: document.getElementById('resetButton'),
+                copyAll: document.getElementById('copyAll')
+            };
+
+            const TARGET_UNITS = ['px', 'em', 'rem', 'percent', 'pt', 'vw', 'vh'];
+            const UNIT_HELP_TEXT = {
+                px: 'Absolute pixels (1px = 1/96 inch)',
+                em: 'Relative to parent font size',
+                rem: 'Relative to root (HTML) font size',
+                percent: '% of parent font size for fonts',
+                pt: 'Points (1pt = 1/72 inch)',
+                vw: '1% of viewport width',
+                vh: '1% of viewport height'
+            };
+
+            const converters = {
+                toPx: {
+                    px: (val) => val,
+                    em: (val, ctx) => val * ctx.parent,
+                    rem: (val, ctx) => val * ctx.root,
+                    percent: (val, ctx) => (val / 100) * ctx.parent,
+                    pt: (val) => val * (96 / 72),
+                    vw: (val, ctx) => (val / 100) * ctx.vw,
+                    vh: (val, ctx) => (val / 100) * ctx.vh
+                },
+                fromPx: {
+                    px: (px) => px,
+                    em: (px, ctx) => px / ctx.parent,
+                    rem: (px, ctx) => px / ctx.root,
+                    percent: (px, ctx) => (px / ctx.parent) * 100,
+                    pt: (px) => px * (72 / 96),
+                    vw: (px, ctx) => (px / ctx.vw) * 100,
+                    vh: (px, ctx) => (px / ctx.vh) * 100
+                }
+            };
+
+            function debounce(fn, delay = 180) {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => fn.apply(null, args), delay);
+                };
+            }
+
+            function getNumber(el, fallback) {
+                const value = parseFloat(el.value);
+                if (Number.isFinite(value)) return value;
+                el.value = fallback;
+                return fallback;
+            }
+
+            function getContext() {
+                return {
+                    root: Math.max(0.01, getNumber(dom.rootFontSize, 16)),
+                    parent: Math.max(0.01, getNumber(dom.parentFontSize, 16)),
+                    vw: Math.max(1, getNumber(dom.viewportWidth, 1920)),
+                    vh: Math.max(1, getNumber(dom.viewportHeight, 1080))
+                };
+            }
+
+            function formatResult(value) {
+                if (!Number.isFinite(value)) return 'N/A';
+                const rounded = Math.abs(value) < 1e-4 ? 0 : value;
+                return parseFloat(rounded.toFixed(4)).toString();
+            }
+
+            function renderEmptyState(message) {
+                dom.resultsList.innerHTML = '<div class="empty-state">' + message + '</div>';
+            }
+
+            function copyValue(value, unitLabel) {
+                navigator.clipboard.writeText(value).then(() => {
+                    dom.statusMessage.textContent = 'Copied ' + value + unitLabel + ' to clipboard';
+                    dom.statusMessage.className = 'success';
+                }).catch(() => {
+                    dom.statusMessage.textContent = 'Clipboard copy failed';
+                    dom.statusMessage.className = 'error';
+                });
+            }
+
+            function renderResults(results) {
+                dom.resultsList.innerHTML = '';
+                const fragment = document.createDocumentFragment();
+
+                TARGET_UNITS.forEach((unit) => {
+                    const unitLabel = unit === 'percent' ? '%' : unit;
+                    const percentBlocked = unit === 'percent' && dom.propertyType.value === 'dimension';
+                    const value = percentBlocked ? 'N/A' : (results[unit] ?? 'N/A');
+
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.dataset.unit = unitLabel;
+                    card.dataset.value = value;
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.type = 'button';
+                    copyBtn.className = 'copy-chip';
+                    copyBtn.setAttribute('aria-label', 'Copy ' + unitLabel + ' value');
+                    copyBtn.innerHTML = '<span class="material-icons" aria-hidden="true">content_copy</span>Copy';
+                    copyBtn.disabled = value === 'N/A';
+                    if (!copyBtn.disabled) {
+                        copyBtn.addEventListener('click', () => copyValue(value, unitLabel));
+                    }
+
+                    card.innerHTML = `
+                        <div class="result-label">${unitLabel}</div>
+                        <div class="result-value">${value}</div>
+                        <div class="result-hint">${percentBlocked ? 'Use container size for % on dimensions.' : (UNIT_HELP_TEXT[unit] || '')}</div>
+                    `;
+                    card.appendChild(copyBtn);
+                    fragment.appendChild(card);
+                });
+
+                dom.resultsList.appendChild(fragment);
+            }
+
+            function highlightDependencies() {
+                const deps = {
+                    em: ['parentFontSize'],
+                    rem: ['rootFontSize'],
+                    percent: ['parentFontSize'],
+                    vw: ['viewportWidth'],
+                    vh: ['viewportHeight']
+                };
+
+                ['rootFontSize', 'parentFontSize', 'viewportWidth', 'viewportHeight'].forEach((key) => {
+                    dom[key].classList.remove('highlight-input');
+                });
+
+                const activeDeps = deps[dom.sourceUnit.value];
+                if (activeDeps) {
+                    activeDeps.forEach((key) => {
+                        const el = dom[key];
+                        if (!el.disabled) {
+                            el.classList.add('highlight-input');
+                        }
+                    });
+                }
+            }
+
+            function calculate() {
+                const inputVal = parseFloat(dom.inputValue.value);
+                if (!Number.isFinite(inputVal)) {
+                    dom.statusMessage.textContent = 'Enter a numeric input value';
+                    dom.statusMessage.className = 'warning';
+                    dom.toolStats.textContent = 'Waiting for valid input';
+                    renderEmptyState('Enter a numeric value to see conversions.');
+                    highlightDependencies();
+                    return;
+                }
+
+                const context = getContext();
+                const converter = converters.toPx[dom.sourceUnit.value];
+                if (!converter) {
+                    dom.statusMessage.textContent = 'Unsupported source unit';
+                    dom.statusMessage.className = 'error';
+                    dom.toolStats.textContent = 'Conversion failed';
+                    renderEmptyState('Unsupported source unit.');
+                    return;
+                }
+
+                const start = performance.now();
+                const basePx = converter(inputVal, context);
+                const results = {};
+
+                TARGET_UNITS.forEach((unit) => {
+                    const value = converters.fromPx[unit](basePx, context);
+                    results[unit] = formatResult(value);
+                });
+
+                renderResults(results);
+                highlightDependencies();
+
+                const end = performance.now();
+                dom.statusMessage.textContent = 'Converted ' + inputVal + ' ' + dom.sourceUnit.value + ' across contexts';
+                dom.statusMessage.className = 'success';
+                dom.toolStats.textContent = 'Updated in ' + Math.round(end - start) + 'ms (base px: ' + formatResult(basePx) + ')';
+            }
+
+            const debouncedCalculate = debounce(calculate);
+
+            function handleSyncToggle() {
+                dom.parentFontSize.disabled = dom.syncParentFont.checked;
+                if (dom.syncParentFont.checked) {
+                    dom.parentFontSize.value = dom.rootFontSize.value;
+                }
+                debouncedCalculate();
+            }
+
+            function resetDefaults() {
+                dom.inputValue.value = '16';
+                dom.sourceUnit.value = 'px';
+                dom.propertyType.value = 'font-size';
+                dom.rootFontSize.value = '16';
+                dom.parentFontSize.value = '16';
+                dom.viewportWidth.value = '1920';
+                dom.viewportHeight.value = '1080';
+                dom.syncParentFont.checked = true;
+                handleSyncToggle();
+                dom.statusMessage.textContent = 'Reset to defaults';
+                dom.statusMessage.className = 'success';
+                dom.toolStats.textContent = 'Defaults restored';
+            }
+
+            function copyAllResults() {
+                const lines = Array.from(dom.resultsList.querySelectorAll('.result-card'))
+                    .map((card) => {
+                        const value = card.dataset.value;
+                        const unit = card.dataset.unit;
+                        return value && value !== 'N/A' ? unit + ': ' + value : null;
+                    })
+                    .filter(Boolean);
+
+                if (!lines.length) return;
+
+                navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                    dom.statusMessage.textContent = 'Copied all available results';
+                    dom.statusMessage.className = 'success';
+                }).catch(() => {
+                    dom.statusMessage.textContent = 'Clipboard copy failed';
+                    dom.statusMessage.className = 'error';
+                });
+            }
+
+            function attachListeners() {
+                [
+                    dom.inputValue,
+                    dom.sourceUnit,
+                    dom.propertyType,
+                    dom.rootFontSize,
+                    dom.parentFontSize,
+                    dom.viewportWidth,
+                    dom.viewportHeight
+                ].forEach((el) => {
+                    el.addEventListener('input', debouncedCalculate);
+                });
+
+                dom.syncParentFont.addEventListener('change', handleSyncToggle);
+                dom.rootFontSize.addEventListener('input', () => {
+                    if (dom.syncParentFont.checked) {
+                        dom.parentFontSize.value = dom.rootFontSize.value;
+                    }
+                });
+
+                dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
+                dom.resetButton.addEventListener('click', resetDefaults);
+                dom.copyAll.addEventListener('click', copyAllResults);
+
+                document.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        calculate();
+                    }
+                });
+            }
+
+            resetDefaults();
+            attachListeners();
+            calculate();
+        })();
+    </script>
+</body>
+</html>
