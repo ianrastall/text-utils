@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Tool - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .mode-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mode-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mode-tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .mode-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .error-panel {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--error);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .error-panel.show {
+            display: block;
+        }
+
+        .error-title {
+            color: var(--error);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .error-message {
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+
+        .info-panel {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .info-panel h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .example-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .json-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+                <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">data_object</span>
+                        <h2>JSON Tool</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="exampleBtn" class="btn btn-secondary">
+                            <span class="material-icons">science</span>
+                            Example
+                        </button>
+                        <button id="copyOutput" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                        <button id="clearBtn" class="btn btn-secondary">
+                            <span class="material-icons">clear</span>
+                            Clear
+                        </button>
+                        <button id="processBtn" class="btn btn-primary">
+                            <span class="material-icons">play_arrow</span>
+                            Process
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Format, validate, and convert JSON to JSONL format</p>
+
+                <div class="mode-tabs">
+                    <button class="mode-tab active" data-mode="format">
+                        <span class="material-icons">code</span>
+                        Format JSON
+                    </button>
+                    <button class="mode-tab" data-mode="jsonl">
+                        <span class="material-icons">view_list</span>
+                        JSON to JSONL
+                    </button>
+                    <button class="mode-tab" data-mode="validate">
+                        <span class="material-icons">check_circle</span>
+                        Validate Only
+                    </button>
+                </div>
+
+                <div class="info-panel">
+                    <h4>
+                        <span class="material-icons">info</span>
+                        <span id="infoTitle">JSON Formatting</span>
+                    </h4>
+                    <p id="infoText">
+                        Format and validate JSON with customizable indentation. 
+                        Automatically detects syntax errors and provides helpful error messages.
+                    </p>
+                </div>
+
+                <div class="error-panel" id="errorPanel">
+                    <div class="error-title">
+                        <span class="material-icons">error</span>
+                        <span>Syntax Error</span>
+                    </div>
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+
+                <div class="json-stats" id="statsPanel" style="display: none;">
+                    <div class="stat-item">
+                        <span class="stat-label">Objects</span>
+                        <span class="stat-value" id="statObjects">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Arrays</span>
+                        <span class="stat-value" id="statArrays">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Keys</span>
+                        <span class="stat-value" id="statKeys">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Max Depth</span>
+                        <span class="stat-value" id="statDepth">0</span>
+                    </div>
+                </div>
+
+                <div class="options-panel" id="optionsPanel">
+                    <div class="options-grid">
+                        <div class="option-group">
+                            <label for="indentSelect">Indentation</label>
+                            <select id="indentSelect">
+                                <option value="2">2 spaces</option>
+                                <option value="4">4 spaces</option>
+                                <option value="tab">Tab</option>
+                                <option value="0">Minified</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label for="sortKeysCheck">
+                                <input type="checkbox" id="sortKeysCheck">
+                                Sort object keys alphabetically
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="io-container">
+                    <div class="io-panel">
+                        <div class="io-label">
+                            <span>Input JSON</span>
+                            <span class="stats" id="inputStats">0 chars</span>
+                        </div>
+                        <textarea id="inputText" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
+                    </div>
+                    <div class="io-panel">
+                        <div class="io-label">
+                            <span id="outputLabel">Formatted Output</span>
+                            <span class="stats" id="outputStats">0 chars</span>
+                        </div>
+                        <textarea id="outputText" class="output" readonly placeholder="Processed output will appear here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="processingTime">No operations yet</div>
+                </div>
+            </div>
+        </main>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        'use strict';
+
+        // DOM Elements
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const processBtn = document.getElementById('processBtn');
+        const copyBtn = document.getElementById('copyOutput');
+        const clearBtn = document.getElementById('clearBtn');
+        const exampleBtn = document.getElementById('exampleBtn');
+        const backBtn = document.getElementById('backButton');
+        const modeTabs = document.querySelectorAll('.mode-tab');
+        const indentSelect = document.getElementById('indentSelect');
+        const sortKeysCheck = document.getElementById('sortKeysCheck');
+        const errorPanel = document.getElementById('errorPanel');
+        const errorMessage = document.getElementById('errorMessage');
+        const statsPanel = document.getElementById('statsPanel');
+        const optionsPanel = document.getElementById('optionsPanel');
+        const infoTitle = document.getElementById('infoTitle');
+        const infoText = document.getElementById('infoText');
+        const outputLabel = document.getElementById('outputLabel');
+        const statusMessage = document.getElementById('statusMessage');
+        const processingTime = document.getElementById('processingTime');
+        const inputStats = document.getElementById('inputStats');
+        const outputStats = document.getElementById('outputStats');
+
+        // State
+        let currentMode = 'format';
+
+        // Mode Information
+        const modeInfo = {
+            format: {
+                title: 'JSON Formatting',
+                text: 'Format and validate JSON with customizable indentation. Automatically detects syntax errors and provides helpful error messages.',
+                outputLabel: 'Formatted Output'
+            },
+            jsonl: {
+                title: 'JSON to JSONL Conversion',
+                text: 'Convert JSON arrays to JSON Lines format (JSONL). Each array element becomes a separate line of valid JSON. Perfect for streaming data and big data processing.',
+                outputLabel: 'JSONL Output'
+            },
+            validate: {
+                title: 'JSON Validation',
+                text: 'Validate JSON syntax and structure. Shows detailed error messages with line and column numbers. Also provides statistics about your JSON structure.',
+                outputLabel: 'Validation Result'
+            }
+        };
+
+        // Example JSON
+        const exampleJSON = {
+            users: [
+                {
+                    id: 1,
+                    name: "Alice Johnson",
+                    email: "alice@example.com",
+                    age: 28,
+                    active: true
+                },
+                {
+                    id: 2,
+                    name: "Bob Smith",
+                    email: "bob@example.com",
+                    age: 34,
+                    active: false
+                },
+                {
+                    id: 3,
+                    name: "Carol White",
+                    email: "carol@example.com",
+                    age: 31,
+                    active: true
+                }
+            ],
+            metadata: {
+                total: 3,
+                page: 1,
+                timestamp: "2024-01-15T10:30:00Z"
+            }
+        };
+
+        // Mode switching
+        modeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                modeTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentMode = tab.dataset.mode;
+                updateModeUI();
+            });
+        });
+
+        function updateModeUI() {
+            const info = modeInfo[currentMode];
+            infoTitle.textContent = info.title;
+            infoText.textContent = info.text;
+            outputLabel.textContent = info.outputLabel;
+            
+            // Show/hide options panel
+            optionsPanel.style.display = currentMode === 'format' ? 'block' : 'none';
+            
+            // Update button text
+            const processIcon = processBtn.querySelector('.material-icons');
+            if (currentMode === 'validate') {
+                processIcon.textContent = 'check_circle';
+                processBtn.childNodes[1].textContent = ' Validate';
+            } else {
+                processIcon.textContent = 'play_arrow';
+                processBtn.childNodes[1].textContent = ' Process';
+            }
+        }
+
+        // JSON Processing Functions
+        function analyzeJSON(obj, depth = 0, stats = null) {
+            if (!stats) {
+                stats = { objects: 0, arrays: 0, keys: 0, maxDepth: 0 };
+            }
+            
+            stats.maxDepth = Math.max(stats.maxDepth, depth);
+            
+            if (Array.isArray(obj)) {
+                stats.arrays++;
+                obj.forEach(item => analyzeJSON(item, depth + 1, stats));
+            } else if (obj !== null && typeof obj === 'object') {
+                stats.objects++;
+                stats.keys += Object.keys(obj).length;
+                Object.values(obj).forEach(value => analyzeJSON(value, depth + 1, stats));
+            }
+            
+            return stats;
+        }
+
+        function displayStats(stats) {
+            document.getElementById('statObjects').textContent = stats.objects;
+            document.getElementById('statArrays').textContent = stats.arrays;
+            document.getElementById('statKeys').textContent = stats.keys;
+            document.getElementById('statDepth').textContent = stats.maxDepth;
+            statsPanel.style.display = 'grid';
+        }
+
+        function hideStats() {
+            statsPanel.style.display = 'none';
+        }
+
+        function sortObjectKeys(obj) {
+            if (Array.isArray(obj)) {
+                return obj.map(sortObjectKeys);
+            } else if (obj !== null && typeof obj === 'object') {
+                return Object.keys(obj)
+                    .sort()
+                    .reduce((sorted, key) => {
+                        sorted[key] = sortObjectKeys(obj[key]);
+                        return sorted;
+                    }, {});
+            }
+            return obj;
+        }
+
+        function formatJSON(input) {
+            const parsed = JSON.parse(input);
+            const shouldSort = sortKeysCheck.checked;
+            const indentValue = indentSelect.value;
+            
+            let obj = shouldSort ? sortObjectKeys(parsed) : parsed;
+            let indent = indentValue === 'tab' ? '\t' : 
+                        indentValue === '0' ? 0 : 
+                        parseInt(indentValue);
+            
+            const stats = analyzeJSON(obj);
+            displayStats(stats);
+            
+            return JSON.stringify(obj, null, indent);
+        }
+
+        function convertToJSONL(input) {
+            const parsed = JSON.parse(input);
+            
+            if (!Array.isArray(parsed)) {
+                throw new Error('Input must be a JSON array for JSONL conversion. Wrap your object in square brackets [] if needed.');
+            }
+            
+            if (parsed.length === 0) {
+                throw new Error('Array is empty. Cannot convert to JSONL.');
+            }
+            
+            const stats = analyzeJSON(parsed);
+            stats.lines = parsed.length;
+            displayStats(stats);
+            
+            return parsed.map(item => JSON.stringify(item)).join('\n');
+        }
+
+        function validateJSON(input) {
+            const parsed = JSON.parse(input);
+            const stats = analyzeJSON(parsed);
+            displayStats(stats);
+            
+            const type = Array.isArray(parsed) ? 'Array' : 
+                        typeof parsed === 'object' ? 'Object' : 
+                        typeof parsed;
+            
+            return `? Valid JSON\n\nType: ${type}\nObjects: ${stats.objects}\nArrays: ${stats.arrays}\nTotal Keys: ${stats.keys}\nMax Depth: ${stats.maxDepth}`;
+        }
+
+        function showError(error) {
+            errorPanel.classList.add('show');
+            
+            // Parse error message for better display
+            let message = error.message;
+            
+            // Try to extract position from error
+            const posMatch = message.match(/position (\d+)/i);
+            if (posMatch) {
+                const pos = parseInt(posMatch[1]);
+                const lines = inputText.value.substring(0, pos).split('\n');
+                const line = lines.length;
+                const col = lines[lines.length - 1].length + 1;
+                message += `\n\nLocation: Line ${line}, Column ${col}`;
+            }
+            
+            errorMessage.textContent = message;
+            hideStats();
+        }
+
+        function hideError() {
+            errorPanel.classList.remove('show');
+        }
+
+        function processJSON() {
+            const input = inputText.value.trim();
+            
+            if (!input) {
+                showStatus('Please enter some JSON to process', 'warning');
+                return;
+            }
+
+            hideError();
+            
+            try {
+                const startTime = performance.now();
+                let result;
+                
+                switch (currentMode) {
+                    case 'format':
+                        result = formatJSON(input);
+                        break;
+                    case 'jsonl':
+                        result = convertToJSONL(input);
+                        break;
+                    case 'validate':
+                        result = validateJSON(input);
+                        break;
+                }
+                
+                const endTime = performance.now();
+                
+                outputText.value = result;
+                showStatus('Success!', 'success');
+                processingTime.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
+                updateStats();
+                
+            } catch (error) {
+                console.error('Processing error:', error);
+                showError(error);
+                outputText.value = '';
+                showStatus('Error: ' + error.message, 'error');
+                processingTime.textContent = 'Processing failed';
+            }
+        }
+
+        function loadExample() {
+            inputText.value = JSON.stringify(exampleJSON, null, 2);
+            updateStats();
+            showStatus('Example loaded', 'success');
+        }
+
+        function clearAll() {
+            inputText.value = '';
+            outputText.value = '';
+            hideError();
+            hideStats();
+            updateStats();
+            showStatus('Cleared', 'success');
+        }
+
+        function copyToClipboard() {
+            if (!outputText.value) {
+                showStatus('Nothing to copy', 'warning');
+                return;
+            }
+            
+            navigator.clipboard.writeText(outputText.value).then(
+                () => showStatus('Copied to clipboard!', 'success'),
+                () => showStatus('Copy failed', 'error')
+            );
+        }
+
+        function showStatus(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.className = type;
+        }
+
+        function updateStats() {
+            const inputLength = inputText.value.length;
+            const outputLength = outputText.value.length;
+            const inputLines = inputText.value.split('\n').length;
+            const outputLines = outputText.value.split('\n').length;
+            
+            inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
+            outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
+        }
+
+        // Event Listeners
+        processBtn.addEventListener('click', processJSON);
+        copyBtn.addEventListener('click', copyToClipboard);
+        clearBtn.addEventListener('click', clearAll);
+        exampleBtn.addEventListener('click', loadExample);
+        backBtn.addEventListener('click', () => window.location.href = 'index.html');
+
+        inputText.addEventListener('input', updateStats);
+
+        // Keyboard shortcuts
+        inputText.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                processJSON();
+            }
+        });
+
+        // Initialize
+        updateStats();
+        updateModeUI();
+    </script>
+</body>
+</html>

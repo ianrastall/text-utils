@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date/Time Info - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 1024px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .panel {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .panel h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.75rem;
+        }
+        .output-block {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            white-space: pre-wrap;
+            min-height: 200px;
+        }
+        .small-note {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .btn-bar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">schedule</span>
+                        <h2>Date/Time Info</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="copyBtn" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                        <button id="refreshBtn" class="btn btn-secondary">
+                            <span class="material-icons">refresh</span>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Inspect the current date/time (or a custom moment) across calendars, formats, and time zones.</p>
+
+                <div class="tool-grid">
+                    <div class="panel">
+                        <h4><span class="material-icons" style="font-size:20px;">tune</span>Settings</h4>
+                        <form id="dtForm">
+                            <div class="option-grid">
+                                <div class="option-group">
+                                    <label for="calendarSelect">Calendar</label>
+                                    <select id="calendarSelect">
+                                        <option value="gregory">Gregorian</option>
+                                        <option value="buddhist">Buddhist</option>
+                                        <option value="chinese">Chinese</option>
+                                        <option value="coptic">Coptic</option>
+                                        <option value="dangi">Dangi</option>
+                                        <option value="ethiopic">Ethiopic</option>
+                                        <option value="ethiopic-amete-alem">Ethiopic Amete Alem</option>
+                                        <option value="hebrew">Hebrew</option>
+                                        <option value="islamic">Islamic (tabular)</option>
+                                        <option value="islamic-umalqura">Islamic (Umm al-Qura)</option>
+                                        <option value="islamic-civil">Islamic (civil)</option>
+                                        <option value="islamic-rgsa">Islamic (Saudi)</option>
+                                        <option value="japanese">Japanese</option>
+                                        <option value="persian">Persian</option>
+                                        <option value="roc">Minguo (ROC)</option>
+                                        <option value="badi">Baha'i</option>
+                                        <option value="indian">Indian (National)</option>
+                                    </select>
+                                </div>
+                                <div class="option-group">
+                                    <label for="timeFormatSelect">Time Format</label>
+                                    <select id="timeFormatSelect">
+                                        <option value="24h">24-hour</option>
+                                        <option value="12h">12-hour AM/PM</option>
+                                        <option value="iso">ISO 8601</option>
+                                        <option value="rfc">RFC 2822</option>
+                                        <option value="unix">Unix Timestamp</option>
+                                        <option value="utc">UTC (Zulu)</option>
+                                        <option value="julian">Julian Date (astronomy)</option>
+                                    </select>
+                                </div>
+                                <div class="option-group">
+                                    <label for="timezoneSelect">Time Zone</label>
+                                    <select id="timezoneSelect">
+                                        <option value="local">Auto (browser time zone)</option>
+                                        <option value="UTC">UTC</option>
+                                        <option value="America/New_York">America/New_York</option>
+                                        <option value="America/Chicago">America/Chicago</option>
+                                        <option value="America/Denver">America/Denver</option>
+                                        <option value="America/Los_Angeles">America/Los_Angeles</option>
+                                        <option value="America/Phoenix">America/Phoenix</option>
+                                        <option value="America/Anchorage">America/Anchorage</option>
+                                        <option value="Pacific/Honolulu">Pacific/Honolulu</option>
+                                        <option value="Europe/London">Europe/London</option>
+                                        <option value="Europe/Paris">Europe/Paris</option>
+                                        <option value="Europe/Berlin">Europe/Berlin</option>
+                                        <option value="Europe/Moscow">Europe/Moscow</option>
+                                        <option value="Africa/Cairo">Africa/Cairo</option>
+                                        <option value="Africa/Johannesburg">Africa/Johannesburg</option>
+                                        <option value="Asia/Jerusalem">Asia/Jerusalem</option>
+                                        <option value="Asia/Dubai">Asia/Dubai</option>
+                                        <option value="Asia/Kolkata">Asia/Kolkata</option>
+                                        <option value="Asia/Bangkok">Asia/Bangkok</option>
+                                        <option value="Asia/Shanghai">Asia/Shanghai</option>
+                                        <option value="Asia/Tokyo">Asia/Tokyo</option>
+                                        <option value="Asia/Seoul">Asia/Seoul</option>
+                                        <option value="Australia/Sydney">Australia/Sydney</option>
+                                        <option value="Pacific/Auckland">Pacific/Auckland</option>
+                                    </select>
+                                </div>
+                                <div class="option-group">
+                                    <label for="customDateTime">Custom Date/Time (optional)</label>
+                                    <input type="datetime-local" id="customDateTime">
+                                    <p class="small-note">If blank, the current moment is used.</p>
+                                </div>
+                            </div>
+                            <div class="btn-bar" style="margin-top:0.75rem;">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="material-icons">play_arrow</span>
+                                    Generate
+                                </button>
+                                <button type="button" id="useNowBtn" class="btn btn-secondary">
+                                    <span class="material-icons">schedule</span>
+                                    Use Now
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <div>
+                            <h4><span class="material-icons" style="font-size:20px;">code</span>Formatted Output</h4>
+                            <div id="outputBlock" class="output-block" aria-live="polite"></div>
+                        </div>
+                        <div class="status-bar">
+                            <div id="statusMessage" class="success">Ready</div>
+                            <div id="toolStats">Awaiting input</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        (() => {
+            'use strict';
+
+            const dom = {};
+
+            const calendarOptions = [
+                'gregory','buddhist','chinese','coptic','dangi','ethiopic','ethiopic-amete-alem','hebrew','islamic','islamic-umalqura','islamic-civil','islamic-rgsa','japanese','persian','roc','badi','indian'
+            ];
+            const supportedCalendars = typeof Intl.supportedValuesOf === 'function'
+                ? Intl.supportedValuesOf('calendar')
+                : [];
+
+            const setStatus = (msg, type = 'success') => {
+                dom.status.textContent = msg;
+                dom.status.className = type;
+            };
+
+            const pad = (n, w = 2) => String(n).padStart(w, '0');
+
+            const toJulianDate = (date) => {
+                // Algorithm for Julian Date from UTC
+                const t = date.getTime(); // ms since epoch UTC
+                return t / 86400000 + 2440587.5;
+            };
+
+            const toZonedDate = (date, timeZone) => {
+                if (timeZone === 'local') return new Date(date);
+                const parts = new Intl.DateTimeFormat('en-US', {
+                    timeZone,
+                    hour12: false,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                }).formatToParts(date).reduce((acc, part) => {
+                    if (part.type !== 'literal') acc[part.type] = part.value;
+                    return acc;
+                }, {});
+                return new Date(`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}Z`);
+            };
+
+            // --- Badíʿ calendar (approx, but uses astronomical Naw-Rúz via Tehran equinox) ---
+            const marchEquinoxUTC = (year) => {
+                // Meeus approximation for March equinox (valid roughly 1900-2100)
+                const Y = (year - 2000) / 1000;
+                let JDE0 = 2451623.80984 + 365242.37404 * Y + 0.05169 * Y * Y - 0.00411 * Y * Y * Y - 0.00057 * Y * Y * Y * Y;
+                const terms = [
+                    [485, 324.96, 1934.136],
+                    [203, 337.23, 32964.467],
+                    [199, 283.45, 20.186],
+                    [182, 310.26, 71998.144],
+                    [156, 360.0, 0.0],
+                    [136, 231.19, 743.669],
+                    [77,  299.77, 445267.112],
+                    [74,  243.58, 45036.886],
+                    [70,  166.56, 3.553],
+                    [58,  348.93, 1179.062],
+                    [52,  65.62,  102.937],
+                    [50,  146.93,  119.066],
+                    [45,  197.69,  1685.932],
+                    [44,  254.52,  9224.66],
+                    [29,  205.91,  1.719],
+                    [18,  343.45,  14.065],
+                    [17,  295.44,  45036.886],
+                    [16,  242.57,  2.196],
+                    [14,  211.98,  337.23],
+                    [12,  189.17,  20.186],
+                    [12,  207.19,  32964.467],
+                    [12,  335.06,  1.116],
+                    [12,  186.19,  1.719],
+                    [11,  175.0,   0.0]
+                ];
+                let S = 0;
+                for (const [a, b, c] of terms) {
+                    S += a * Math.sin((b + c * Y) * Math.PI / 180);
+                }
+                const JDE = JDE0 + (S * 0.00001) / 3600;
+                const ms = (JDE - 2440587.5) * 86400000;
+                return new Date(ms);
+            };
+
+            const nawruzUTC = (year) => {
+                // Tehran offset (no DST): UTC+3:30
+                const equinox = marchEquinoxUTC(year);
+                const offsetMs = 3.5 * 3600 * 1000;
+                const tehranDate = new Date(equinox.getTime() + offsetMs);
+                const tehranYear = tehranDate.getUTCFullYear();
+                const tehranMonth = tehranDate.getUTCMonth();
+                const tehranDay = tehranDate.getUTCDate();
+                // Start of that Tehran day in UTC
+                return Date.UTC(tehranYear, tehranMonth, tehranDay, 0, 0, 0) - offsetMs;
+            };
+
+            const badiFromGregorian = (dateUtc) => {
+                const gYear = dateUtc.getUTCFullYear();
+                let start = nawruzUTC(gYear);
+                let badiYearGregorian = gYear;
+                if (dateUtc.getTime() < start) {
+                    badiYearGregorian -= 1;
+                    start = nawruzUTC(badiYearGregorian);
+                }
+                const nextStart = nawruzUTC(badiYearGregorian + 1);
+                const totalDays = Math.round((nextStart - start) / 86400000);
+                const ayyamiHaDays = totalDays - 361; // 4 or 5
+                const dayOfYear = Math.floor((dateUtc - start) / 86400000) + 1; // 1-based
+
+                const monthNames = [
+                    'Bahá', 'Jalál', 'Jamál', '‘Aẓamat', 'Núr', 'Raḥmat', 'Kalimát', 'Kamál', 'Asmá’', '‘Izzat',
+                    'Mashíyyat', '‘Ilm', 'Qudrat', 'Qawl', 'Masá’il', 'Sharaf', 'Sulṭán', 'Mulk', '‘Alá’'
+                ];
+
+                const coreMonthsDays = 19 * 18;
+                let section = 'month';
+                let month = 0;
+                let day = 0;
+                if (dayOfYear <= coreMonthsDays) {
+                    month = Math.floor((dayOfYear - 1) / 19) + 1;
+                    day = ((dayOfYear - 1) % 19) + 1;
+                } else if (dayOfYear <= coreMonthsDays + ayyamiHaDays) {
+                    section = 'ayyamiha';
+                    day = dayOfYear - coreMonthsDays;
+                } else {
+                    month = 19;
+                    day = dayOfYear - (coreMonthsDays + ayyamiHaDays);
+                }
+
+                const yearBE = badiYearGregorian - 1844 + 1;
+                const label = section === 'ayyamiha'
+                    ? `Ayyám-i-Há (intercalary) day ${day} of ${ayyamiHaDays}`
+                    : `Month ${month}: ${monthNames[month - 1]}, Day ${day}`;
+
+                return { yearBE, month, day, section, label, ayyamiHaDays, nawruz: new Date(start), nawruzNext: new Date(nextStart) };
+            };
+
+            const buildFormats = (dt, opts) => {
+                const { calendar, timeZone, timeFormat } = opts;
+                const tz = timeZone === 'local' ? Intl.DateTimeFormat().resolvedOptions().timeZone : timeZone;
+                const baseOpts = { calendar, timeZone: tz, hour: 'numeric', minute: 'numeric', second: 'numeric' };
+
+                const formatter24 = new Intl.DateTimeFormat('en', { ...baseOpts, hour12: false, year: 'numeric', month: 'long', day: 'numeric' });
+                const formatter12 = new Intl.DateTimeFormat('en', { ...baseOpts, hour12: true, year: 'numeric', month: 'long', day: 'numeric' });
+                const formatterDateOnly = new Intl.DateTimeFormat('en', { ...baseOpts, hour: undefined, minute: undefined, second: undefined, year: 'numeric', month: 'long', day: 'numeric' });
+
+                const iso = dt.toISOString();
+                const rfc = dt.toUTCString();
+                const unix = Math.floor(dt.getTime() / 1000);
+                const julian = toJulianDate(dt).toFixed(5);
+
+                const parts = {
+                    '24h': formatter24.format(dt),
+                    '12h': formatter12.format(dt),
+                    'iso': iso,
+                    'rfc': rfc,
+                    'unix': unix,
+                    'utc': dt.toISOString().replace('T', ' ').replace('Z', ' UTC'),
+                    'julian': julian,
+                    dateOnly: formatterDateOnly.format(dt),
+                };
+
+                return { parts, tz };
+            };
+
+            const resolveDate = () => {
+                const val = dom.customDateTime.value;
+                if (!val) return new Date();
+                const parsed = new Date(val);
+                return isNaN(parsed.getTime()) ? new Date() : parsed;
+            };
+
+            const render = () => {
+                const calendar = dom.calendarSelect.value;
+                const timeFormat = dom.timeFormatSelect.value;
+                const timeZone = dom.timezoneSelect.value;
+                const dtInput = resolveDate();
+                const zonedDate = toZonedDate(dtInput, timeZone);
+
+                const useBadi = calendar === 'badi';
+                const effectiveCalendar = useBadi ? 'gregory' : calendar;
+
+                let displayCalendar = effectiveCalendar;
+                let fallbackUsed = false;
+                if (!useBadi && supportedCalendars.length && !supportedCalendars.includes(effectiveCalendar)) {
+                    displayCalendar = 'gregory';
+                    fallbackUsed = true;
+                }
+
+                let formats;
+                try {
+                    formats = buildFormats(zonedDate, { calendar: displayCalendar, timeZone, timeFormat });
+                    setStatus(
+                        useBadi
+                            ? 'Badíʿ calendar (approximate) shown with Gregorian reference.'
+                            : (fallbackUsed ? 'Calendar not supported; showing Gregorian equivalent.' : 'Updated.'),
+                        useBadi ? 'info' : (fallbackUsed ? 'warning' : 'success')
+                    );
+                } catch (err) {
+                    formats = buildFormats(zonedDate, { calendar: 'gregory', timeZone, timeFormat });
+                    displayCalendar = 'gregory';
+                    fallbackUsed = true;
+                    setStatus('Calendar not supported; showing Gregorian equivalent.', 'warning');
+                }
+
+                const { parts, tz } = formats;
+                const lines = [
+                    `Calendar: ${calendar}${fallbackUsed && !useBadi ? ' (not supported; showing Gregorian)' : ''}`,
+                    `Time Zone: ${timeZone === 'local' ? `${tz} (auto)` : tz}`,
+                    `Date (long): ${parts.dateOnly}`,
+                    `Time (${timeFormat}): ${parts[timeFormat] ?? parts['24h']}`,
+                    `ISO 8601: ${parts.iso}`,
+                    `RFC 2822: ${parts.rfc}`,
+                    `Unix Timestamp: ${parts.unix}`,
+                    `Julian Date: ${parts.julian}`
+                ];
+
+                if (useBadi) {
+                    const badi = badiFromGregorian(new Date(zonedDate.toISOString()));
+                    lines.push(
+                        `Badíʿ (approx): Year ${badi.yearBE} B.E., ${badi.label}`,
+                        `Intercalary days this year: ${badi.ayyamiHaDays}`
+                    );
+                }
+
+                dom.outputBlock.textContent = lines.join('\n');
+                dom.toolStats.textContent = `Calendar ${useBadi ? 'Badíʿ (approx)' : displayCalendar}${fallbackUsed && !useBadi ? ' (fallback)' : ''}, ${timeFormat} format, ${timeZone === 'local' ? tz : timeZone}`;
+            };
+
+            const copyOutput = () => {
+                const text = dom.outputBlock.textContent.trim();
+                if (!text) {
+                    setStatus('Nothing to copy.', 'warning');
+                    return;
+                }
+                navigator.clipboard.writeText(text).then(
+                    () => setStatus('Copied.', 'success'),
+                    () => setStatus('Copy failed.', 'error')
+                );
+            };
+
+            const useNow = () => {
+                dom.customDateTime.value = '';
+                render();
+            };
+
+            const cacheDom = () => {
+                dom.calendarSelect = document.getElementById('calendarSelect');
+                dom.timeFormatSelect = document.getElementById('timeFormatSelect');
+                dom.timezoneSelect = document.getElementById('timezoneSelect');
+                dom.customDateTime = document.getElementById('customDateTime');
+                dom.outputBlock = document.getElementById('outputBlock');
+                dom.status = document.getElementById('statusMessage');
+                dom.toolStats = document.getElementById('toolStats');
+                dom.copyBtn = document.getElementById('copyBtn');
+                dom.refreshBtn = document.getElementById('refreshBtn');
+                dom.useNowBtn = document.getElementById('useNowBtn');
+                dom.backButton = document.getElementById('backButton');
+                dom.form = document.getElementById('dtForm');
+            };
+
+            const init = () => {
+                cacheDom();
+                dom.form.addEventListener('submit', (e) => { e.preventDefault(); render(); });
+                dom.calendarSelect.addEventListener('change', render);
+                dom.timeFormatSelect.addEventListener('change', render);
+                dom.timezoneSelect.addEventListener('change', render);
+                dom.customDateTime.addEventListener('change', render);
+                dom.copyBtn.addEventListener('click', copyOutput);
+                dom.refreshBtn.addEventListener('click', render);
+                dom.useNowBtn.addEventListener('click', useNow);
+                dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
+                render();
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+check-square	&#xf14a
+check-square-o	&#xf046;
+circle	&#xf111;
+circle-o	&#xf10c
+dot-circle-o	&#xf192;
+minus-square	&#xf146;
+minus-square-o	&#xf147;
+plus-square	&#xf0fe
+plus-square-o	&#xf196;
+square	&#xf0c8;
+square-o	&#xf096;

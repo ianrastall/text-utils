@@ -1,0 +1,27 @@
+bitcoin (alias)	&#xf15a
+btc	&#xf15a
+cny (alias)	&#xf157;
+dollar (alias)	&#xf155;
+eur	&#xf153;
+euro (alias)	&#xf153;
+gbp	&#xf154;
+gg	&#xf260;
+gg-circle	&#xf261;
+ils	&#xf20b
+inr	&#xf156;
+jpy	&#xf157;
+krw	&#xf159;
+money	&#xf0d6;
+rmb (alias)	&#xf157;
+rouble (alias)	&#xf158;
+rub	&#xf158;
+ruble (alias)	&#xf158;
+rupee (alias)	&#xf156;
+shekel (alias)	&#xf20b
+sheqel (alias)	&#xf20b
+try	&#xf195;
+turkish-lira (alias)	&#xf195;
+usd	&#xf155;
+viacoin	&#xf237;
+won (alias)	&#xf159;
+yen (alias)	&#xf157;

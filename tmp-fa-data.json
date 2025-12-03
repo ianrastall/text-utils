@@ -1,0 +1,3668 @@
+{
+  "accessibility.txt": [
+    {
+      "name": "american-sign-language-interpreting",
+      "codepoint": "&#xf2a3;"
+    },
+    {
+      "name": "asl-interpreting (alias)",
+      "codepoint": "&#xf2a3;"
+    },
+    {
+      "name": "assistive-listening-systems",
+      "codepoint": "&#xf2a2;"
+    },
+    {
+      "name": "audio-description",
+      "codepoint": "&#xf29e"
+    },
+    {
+      "name": "blind",
+      "codepoint": "&#xf29d"
+    },
+    {
+      "name": "braille",
+      "codepoint": "&#xf2a1;"
+    },
+    {
+      "name": "cc",
+      "codepoint": "&#xf20a"
+    },
+    {
+      "name": "deaf",
+      "codepoint": "&#xf2a4;"
+    },
+    {
+      "name": "deafness (alias)",
+      "codepoint": "&#xf2a4;"
+    },
+    {
+      "name": "hard-of-hearing (alias)",
+      "codepoint": "&#xf2a4;"
+    },
+    {
+      "name": "low-vision",
+      "codepoint": "&#xf2a8;"
+    },
+    {
+      "name": "question-circle-o",
+      "codepoint": "&#xf29c"
+    },
+    {
+      "name": "sign-language",
+      "codepoint": "&#xf2a7;"
+    },
+    {
+      "name": "signing (alias)",
+      "codepoint": "&#xf2a7;"
+    },
+    {
+      "name": "tty",
+      "codepoint": "&#xf1e4;"
+    },
+    {
+      "name": "universal-access",
+      "codepoint": "&#xf29a"
+    },
+    {
+      "name": "volume-control-phone",
+      "codepoint": "&#xf2a0;"
+    },
+    {
+      "name": "wheelchair",
+      "codepoint": "&#xf193;"
+    },
+    {
+      "name": "wheelchair-alt",
+      "codepoint": "&#xf29b"
+    }
+  ],
+  "brand.txt": [
+    {
+      "name": "500px",
+      "codepoint": "&#xf26e"
+    },
+    {
+      "name": "adn",
+      "codepoint": "&#xf170;"
+    },
+    {
+      "name": "amazon",
+      "codepoint": "&#xf270;"
+    },
+    {
+      "name": "android",
+      "codepoint": "&#xf17b"
+    },
+    {
+      "name": "angellist",
+      "codepoint": "&#xf209;"
+    },
+    {
+      "name": "apple",
+      "codepoint": "&#xf179;"
+    },
+    {
+      "name": "bandcamp",
+      "codepoint": "&#xf2d5;"
+    },
+    {
+      "name": "behance",
+      "codepoint": "&#xf1b4;"
+    },
+    {
+      "name": "behance-square",
+      "codepoint": "&#xf1b5;"
+    },
+    {
+      "name": "bitbucket",
+      "codepoint": "&#xf171;"
+    },
+    {
+      "name": "bitbucket-square",
+      "codepoint": "&#xf172;"
+    },
+    {
+      "name": "bitcoin (alias)",
+      "codepoint": "&#xf15a"
+    },
+    {
+      "name": "black-tie",
+      "codepoint": "&#xf27e"
+    },
+    {
+      "name": "bluetooth",
+      "codepoint": "&#xf293;"
+    },
+    {
+      "name": "bluetooth-b",
+      "codepoint": "&#xf294;"
+    },
+    {
+      "name": "btc",
+      "codepoint": "&#xf15a"
+    },
+    {
+      "name": "buysellads",
+      "codepoint": "&#xf20d"
+    },
+    {
+      "name": "cc-amex",
+      "codepoint": "&#xf1f3;"
+    },
+    {
+      "name": "cc-diners-club",
+      "codepoint": "&#xf24c"
+    },
+    {
+      "name": "cc-discover",
+      "codepoint": "&#xf1f2;"
+    },
+    {
+      "name": "cc-jcb",
+      "codepoint": "&#xf24b"
+    },
+    {
+      "name": "cc-mastercard",
+      "codepoint": "&#xf1f1;"
+    },
+    {
+      "name": "cc-paypal",
+      "codepoint": "&#xf1f4;"
+    },
+    {
+      "name": "cc-stripe",
+      "codepoint": "&#xf1f5;"
+    },
+    {
+      "name": "cc-visa",
+      "codepoint": "&#xf1f0;"
+    },
+    {
+      "name": "chrome",
+      "codepoint": "&#xf268;"
+    },
+    {
+      "name": "codepen",
+      "codepoint": "&#xf1cb"
+    },
+    {
+      "name": "codiepie",
+      "codepoint": "&#xf284;"
+    },
+    {
+      "name": "connectdevelop",
+      "codepoint": "&#xf20e"
+    },
+    {
+      "name": "contao",
+      "codepoint": "&#xf26d"
+    },
+    {
+      "name": "css3",
+      "codepoint": "&#xf13c"
+    },
+    {
+      "name": "dashcube",
+      "codepoint": "&#xf210;"
+    },
+    {
+      "name": "delicious",
+      "codepoint": "&#xf1a5;"
+    },
+    {
+      "name": "deviantart",
+      "codepoint": "&#xf1bd"
+    },
+    {
+      "name": "digg",
+      "codepoint": "&#xf1a6;"
+    },
+    {
+      "name": "dribbble",
+      "codepoint": "&#xf17d"
+    },
+    {
+      "name": "dropbox",
+      "codepoint": "&#xf16b"
+    },
+    {
+      "name": "drupal",
+      "codepoint": "&#xf1a9;"
+    },
+    {
+      "name": "edge",
+      "codepoint": "&#xf282;"
+    },
+    {
+      "name": "eercast",
+      "codepoint": "&#xf2da"
+    },
+    {
+      "name": "empire",
+      "codepoint": "&#xf1d1;"
+    },
+    {
+      "name": "envira",
+      "codepoint": "&#xf299;"
+    },
+    {
+      "name": "etsy",
+      "codepoint": "&#xf2d7;"
+    },
+    {
+      "name": "expeditedssl",
+      "codepoint": "&#xf23e"
+    },
+    {
+      "name": "fa (alias)",
+      "codepoint": "&#xf2b4;"
+    },
+    {
+      "name": "facebook",
+      "codepoint": "&#xf09a"
+    },
+    {
+      "name": "facebook-f (alias)",
+      "codepoint": "&#xf09a"
+    },
+    {
+      "name": "facebook-official",
+      "codepoint": "&#xf230;"
+    },
+    {
+      "name": "facebook-square",
+      "codepoint": "&#xf082;"
+    },
+    {
+      "name": "firefox",
+      "codepoint": "&#xf269;"
+    },
+    {
+      "name": "first-order",
+      "codepoint": "&#xf2b0;"
+    },
+    {
+      "name": "flickr",
+      "codepoint": "&#xf16e"
+    },
+    {
+      "name": "font-awesome",
+      "codepoint": "&#xf2b4;"
+    },
+    {
+      "name": "fonticons",
+      "codepoint": "&#xf280;"
+    },
+    {
+      "name": "fort-awesome",
+      "codepoint": "&#xf286;"
+    },
+    {
+      "name": "forumbee",
+      "codepoint": "&#xf211;"
+    },
+    {
+      "name": "foursquare",
+      "codepoint": "&#xf180;"
+    },
+    {
+      "name": "free-code-camp",
+      "codepoint": "&#xf2c5;"
+    },
+    {
+      "name": "ge (alias)",
+      "codepoint": "&#xf1d1;"
+    },
+    {
+      "name": "get-pocket",
+      "codepoint": "&#xf265;"
+    },
+    {
+      "name": "gg",
+      "codepoint": "&#xf260;"
+    },
+    {
+      "name": "gg-circle",
+      "codepoint": "&#xf261;"
+    },
+    {
+      "name": "git",
+      "codepoint": "&#xf1d3;"
+    },
+    {
+      "name": "git-square",
+      "codepoint": "&#xf1d2;"
+    },
+    {
+      "name": "github",
+      "codepoint": "&#xf09b"
+    },
+    {
+      "name": "github-alt",
+      "codepoint": "&#xf113;"
+    },
+    {
+      "name": "github-square",
+      "codepoint": "&#xf092;"
+    },
+    {
+      "name": "gitlab",
+      "codepoint": "&#xf296;"
+    },
+    {
+      "name": "gittip (alias)",
+      "codepoint": "&#xf184;"
+    },
+    {
+      "name": "glide",
+      "codepoint": "&#xf2a5;"
+    },
+    {
+      "name": "glide-g",
+      "codepoint": "&#xf2a6;"
+    },
+    {
+      "name": "google",
+      "codepoint": "&#xf1a0;"
+    },
+    {
+      "name": "google-plus",
+      "codepoint": "&#xf0d5;"
+    },
+    {
+      "name": "google-plus-circle (alias)",
+      "codepoint": "&#xf2b3;"
+    },
+    {
+      "name": "google-plus-official",
+      "codepoint": "&#xf2b3;"
+    },
+    {
+      "name": "google-plus-square",
+      "codepoint": "&#xf0d4;"
+    },
+    {
+      "name": "google-wallet",
+      "codepoint": "&#xf1ee"
+    },
+    {
+      "name": "gratipay",
+      "codepoint": "&#xf184;"
+    },
+    {
+      "name": "grav",
+      "codepoint": "&#xf2d6;"
+    },
+    {
+      "name": "hacker-news",
+      "codepoint": "&#xf1d4;"
+    },
+    {
+      "name": "houzz",
+      "codepoint": "&#xf27c"
+    },
+    {
+      "name": "html5",
+      "codepoint": "&#xf13b"
+    },
+    {
+      "name": "imdb",
+      "codepoint": "&#xf2d8;"
+    },
+    {
+      "name": "instagram",
+      "codepoint": "&#xf16d"
+    },
+    {
+      "name": "internet-explorer",
+      "codepoint": "&#xf26b"
+    },
+    {
+      "name": "ioxhost",
+      "codepoint": "&#xf208;"
+    },
+    {
+      "name": "joomla",
+      "codepoint": "&#xf1aa"
+    },
+    {
+      "name": "jsfiddle",
+      "codepoint": "&#xf1cc"
+    },
+    {
+      "name": "lastfm",
+      "codepoint": "&#xf202;"
+    },
+    {
+      "name": "lastfm-square",
+      "codepoint": "&#xf203;"
+    },
+    {
+      "name": "leanpub",
+      "codepoint": "&#xf212;"
+    },
+    {
+      "name": "linkedin",
+      "codepoint": "&#xf0e1;"
+    },
+    {
+      "name": "linkedin-square",
+      "codepoint": "&#xf08c"
+    },
+    {
+      "name": "linode",
+      "codepoint": "&#xf2b8;"
+    },
+    {
+      "name": "linux",
+      "codepoint": "&#xf17c"
+    },
+    {
+      "name": "maxcdn",
+      "codepoint": "&#xf136;"
+    },
+    {
+      "name": "meanpath",
+      "codepoint": "&#xf20c"
+    },
+    {
+      "name": "medium",
+      "codepoint": "&#xf23a"
+    },
+    {
+      "name": "meetup",
+      "codepoint": "&#xf2e0;"
+    },
+    {
+      "name": "mixcloud",
+      "codepoint": "&#xf289;"
+    },
+    {
+      "name": "modx",
+      "codepoint": "&#xf285;"
+    },
+    {
+      "name": "odnoklassniki",
+      "codepoint": "&#xf263;"
+    },
+    {
+      "name": "odnoklassniki-square",
+      "codepoint": "&#xf264;"
+    },
+    {
+      "name": "opencart",
+      "codepoint": "&#xf23d"
+    },
+    {
+      "name": "openid",
+      "codepoint": "&#xf19b"
+    },
+    {
+      "name": "opera",
+      "codepoint": "&#xf26a"
+    },
+    {
+      "name": "optin-monster",
+      "codepoint": "&#xf23c"
+    },
+    {
+      "name": "pagelines",
+      "codepoint": "&#xf18c"
+    },
+    {
+      "name": "paypal",
+      "codepoint": "&#xf1ed"
+    },
+    {
+      "name": "pied-piper",
+      "codepoint": "&#xf2ae"
+    },
+    {
+      "name": "pied-piper-alt",
+      "codepoint": "&#xf1a8;"
+    },
+    {
+      "name": "pied-piper-pp",
+      "codepoint": "&#xf1a7;"
+    },
+    {
+      "name": "pinterest",
+      "codepoint": "&#xf0d2;"
+    },
+    {
+      "name": "pinterest-p",
+      "codepoint": "&#xf231;"
+    },
+    {
+      "name": "pinterest-square",
+      "codepoint": "&#xf0d3;"
+    },
+    {
+      "name": "product-hunt",
+      "codepoint": "&#xf288;"
+    },
+    {
+      "name": "qq",
+      "codepoint": "&#xf1d6;"
+    },
+    {
+      "name": "quora",
+      "codepoint": "&#xf2c4;"
+    },
+    {
+      "name": "ra (alias)",
+      "codepoint": "&#xf1d0;"
+    },
+    {
+      "name": "ravelry",
+      "codepoint": "&#xf2d9;"
+    },
+    {
+      "name": "rebel",
+      "codepoint": "&#xf1d0;"
+    },
+    {
+      "name": "reddit",
+      "codepoint": "&#xf1a1;"
+    },
+    {
+      "name": "reddit-alien",
+      "codepoint": "&#xf281;"
+    },
+    {
+      "name": "reddit-square",
+      "codepoint": "&#xf1a2;"
+    },
+    {
+      "name": "renren",
+      "codepoint": "&#xf18b"
+    },
+    {
+      "name": "resistance (alias)",
+      "codepoint": "&#xf1d0;"
+    },
+    {
+      "name": "safari",
+      "codepoint": "&#xf267;"
+    },
+    {
+      "name": "scribd",
+      "codepoint": "&#xf28a"
+    },
+    {
+      "name": "sellsy",
+      "codepoint": "&#xf213;"
+    },
+    {
+      "name": "share-alt",
+      "codepoint": "&#xf1e0;"
+    },
+    {
+      "name": "share-alt-square",
+      "codepoint": "&#xf1e1;"
+    },
+    {
+      "name": "shirtsinbulk",
+      "codepoint": "&#xf214;"
+    },
+    {
+      "name": "simplybuilt",
+      "codepoint": "&#xf215;"
+    },
+    {
+      "name": "skyatlas",
+      "codepoint": "&#xf216;"
+    },
+    {
+      "name": "skype",
+      "codepoint": "&#xf17e"
+    },
+    {
+      "name": "slack",
+      "codepoint": "&#xf198;"
+    },
+    {
+      "name": "slideshare",
+      "codepoint": "&#xf1e7;"
+    },
+    {
+      "name": "snapchat",
+      "codepoint": "&#xf2ab"
+    },
+    {
+      "name": "snapchat-ghost",
+      "codepoint": "&#xf2ac"
+    },
+    {
+      "name": "snapchat-square",
+      "codepoint": "&#xf2ad"
+    },
+    {
+      "name": "soundcloud",
+      "codepoint": "&#xf1be"
+    },
+    {
+      "name": "spotify",
+      "codepoint": "&#xf1bc"
+    },
+    {
+      "name": "stack-exchange",
+      "codepoint": "&#xf18d"
+    },
+    {
+      "name": "stack-overflow",
+      "codepoint": "&#xf16c"
+    },
+    {
+      "name": "steam",
+      "codepoint": "&#xf1b6;"
+    },
+    {
+      "name": "steam-square",
+      "codepoint": "&#xf1b7;"
+    },
+    {
+      "name": "stumbleupon",
+      "codepoint": "&#xf1a4;"
+    },
+    {
+      "name": "stumbleupon-circle",
+      "codepoint": "&#xf1a3;"
+    },
+    {
+      "name": "superpowers",
+      "codepoint": "&#xf2dd"
+    },
+    {
+      "name": "telegram",
+      "codepoint": "&#xf2c6;"
+    },
+    {
+      "name": "tencent-weibo",
+      "codepoint": "&#xf1d5;"
+    },
+    {
+      "name": "themeisle",
+      "codepoint": "&#xf2b2;"
+    },
+    {
+      "name": "trello",
+      "codepoint": "&#xf181;"
+    },
+    {
+      "name": "tripadvisor",
+      "codepoint": "&#xf262;"
+    },
+    {
+      "name": "tumblr",
+      "codepoint": "&#xf173;"
+    },
+    {
+      "name": "tumblr-square",
+      "codepoint": "&#xf174;"
+    },
+    {
+      "name": "twitch",
+      "codepoint": "&#xf1e8;"
+    },
+    {
+      "name": "twitter",
+      "codepoint": "&#xf099;"
+    },
+    {
+      "name": "twitter-square",
+      "codepoint": "&#xf081;"
+    },
+    {
+      "name": "usb",
+      "codepoint": "&#xf287;"
+    },
+    {
+      "name": "viacoin",
+      "codepoint": "&#xf237;"
+    },
+    {
+      "name": "viadeo",
+      "codepoint": "&#xf2a9;"
+    },
+    {
+      "name": "viadeo-square",
+      "codepoint": "&#xf2aa"
+    },
+    {
+      "name": "vimeo",
+      "codepoint": "&#xf27d"
+    },
+    {
+      "name": "vimeo-square",
+      "codepoint": "&#xf194;"
+    },
+    {
+      "name": "vine",
+      "codepoint": "&#xf1ca"
+    },
+    {
+      "name": "vk",
+      "codepoint": "&#xf189;"
+    },
+    {
+      "name": "wechat (alias)",
+      "codepoint": "&#xf1d7;"
+    },
+    {
+      "name": "weibo",
+      "codepoint": "&#xf18a"
+    },
+    {
+      "name": "weixin",
+      "codepoint": "&#xf1d7;"
+    },
+    {
+      "name": "whatsapp",
+      "codepoint": "&#xf232;"
+    },
+    {
+      "name": "wikipedia-w",
+      "codepoint": "&#xf266;"
+    },
+    {
+      "name": "windows",
+      "codepoint": "&#xf17a"
+    },
+    {
+      "name": "wordpress",
+      "codepoint": "&#xf19a"
+    },
+    {
+      "name": "wpbeginner",
+      "codepoint": "&#xf297;"
+    },
+    {
+      "name": "wpexplorer",
+      "codepoint": "&#xf2de"
+    },
+    {
+      "name": "wpforms",
+      "codepoint": "&#xf298;"
+    },
+    {
+      "name": "xing",
+      "codepoint": "&#xf168;"
+    },
+    {
+      "name": "xing-square",
+      "codepoint": "&#xf169;"
+    },
+    {
+      "name": "y-combinator",
+      "codepoint": "&#xf23b"
+    },
+    {
+      "name": "y-combinator-square (alias)",
+      "codepoint": "&#xf1d4;"
+    },
+    {
+      "name": "yahoo",
+      "codepoint": "&#xf19e"
+    },
+    {
+      "name": "yc (alias)",
+      "codepoint": "&#xf23b"
+    },
+    {
+      "name": "yc-square (alias)",
+      "codepoint": "&#xf1d4;"
+    },
+    {
+      "name": "yelp",
+      "codepoint": "&#xf1e9;"
+    },
+    {
+      "name": "yoast",
+      "codepoint": "&#xf2b1;"
+    },
+    {
+      "name": "youtube",
+      "codepoint": "&#xf167;"
+    },
+    {
+      "name": "youtube-play",
+      "codepoint": "&#xf16a"
+    },
+    {
+      "name": "youtube-square",
+      "codepoint": "&#xf166;"
+    }
+  ],
+  "chart.txt": [
+    {
+      "name": "area-chart",
+      "codepoint": "&#xf1fe"
+    },
+    {
+      "name": "bar-chart",
+      "codepoint": "&#xf080;"
+    },
+    {
+      "name": "bar-chart-o (alias)",
+      "codepoint": "&#xf080;"
+    },
+    {
+      "name": "line-chart",
+      "codepoint": "&#xf201;"
+    },
+    {
+      "name": "pie-chart",
+      "codepoint": "&#xf200;"
+    }
+  ],
+  "currency.txt": [
+    {
+      "name": "bitcoin (alias)",
+      "codepoint": "&#xf15a"
+    },
+    {
+      "name": "btc",
+      "codepoint": "&#xf15a"
+    },
+    {
+      "name": "cny (alias)",
+      "codepoint": "&#xf157;"
+    },
+    {
+      "name": "dollar (alias)",
+      "codepoint": "&#xf155;"
+    },
+    {
+      "name": "eur",
+      "codepoint": "&#xf153;"
+    },
+    {
+      "name": "euro (alias)",
+      "codepoint": "&#xf153;"
+    },
+    {
+      "name": "gbp",
+      "codepoint": "&#xf154;"
+    },
+    {
+      "name": "gg",
+      "codepoint": "&#xf260;"
+    },
+    {
+      "name": "gg-circle",
+      "codepoint": "&#xf261;"
+    },
+    {
+      "name": "ils",
+      "codepoint": "&#xf20b"
+    },
+    {
+      "name": "inr",
+      "codepoint": "&#xf156;"
+    },
+    {
+      "name": "jpy",
+      "codepoint": "&#xf157;"
+    },
+    {
+      "name": "krw",
+      "codepoint": "&#xf159;"
+    },
+    {
+      "name": "money",
+      "codepoint": "&#xf0d6;"
+    },
+    {
+      "name": "rmb (alias)",
+      "codepoint": "&#xf157;"
+    },
+    {
+      "name": "rouble (alias)",
+      "codepoint": "&#xf158;"
+    },
+    {
+      "name": "rub",
+      "codepoint": "&#xf158;"
+    },
+    {
+      "name": "ruble (alias)",
+      "codepoint": "&#xf158;"
+    },
+    {
+      "name": "rupee (alias)",
+      "codepoint": "&#xf156;"
+    },
+    {
+      "name": "shekel (alias)",
+      "codepoint": "&#xf20b"
+    },
+    {
+      "name": "sheqel (alias)",
+      "codepoint": "&#xf20b"
+    },
+    {
+      "name": "try",
+      "codepoint": "&#xf195;"
+    },
+    {
+      "name": "turkish-lira (alias)",
+      "codepoint": "&#xf195;"
+    },
+    {
+      "name": "usd",
+      "codepoint": "&#xf155;"
+    },
+    {
+      "name": "viacoin",
+      "codepoint": "&#xf237;"
+    },
+    {
+      "name": "won (alias)",
+      "codepoint": "&#xf159;"
+    },
+    {
+      "name": "yen (alias)",
+      "codepoint": "&#xf157;"
+    }
+  ],
+  "directional.txt": [
+    {
+      "name": "angle-double-down",
+      "codepoint": "&#xf103;"
+    },
+    {
+      "name": "angle-double-left",
+      "codepoint": "&#xf100;"
+    },
+    {
+      "name": "angle-double-right",
+      "codepoint": "&#xf101;"
+    },
+    {
+      "name": "angle-double-up",
+      "codepoint": "&#xf102;"
+    },
+    {
+      "name": "angle-down",
+      "codepoint": "&#xf107;"
+    },
+    {
+      "name": "angle-left",
+      "codepoint": "&#xf104;"
+    },
+    {
+      "name": "angle-right",
+      "codepoint": "&#xf105;"
+    },
+    {
+      "name": "angle-up",
+      "codepoint": "&#xf106;"
+    },
+    {
+      "name": "arrow-circle-down",
+      "codepoint": "&#xf0ab"
+    },
+    {
+      "name": "arrow-circle-left",
+      "codepoint": "&#xf0a8;"
+    },
+    {
+      "name": "arrow-circle-o-down",
+      "codepoint": "&#xf01a"
+    },
+    {
+      "name": "arrow-circle-o-left",
+      "codepoint": "&#xf190;"
+    },
+    {
+      "name": "arrow-circle-o-right",
+      "codepoint": "&#xf18e"
+    },
+    {
+      "name": "arrow-circle-o-up",
+      "codepoint": "&#xf01b"
+    },
+    {
+      "name": "arrow-circle-right",
+      "codepoint": "&#xf0a9;"
+    },
+    {
+      "name": "arrow-circle-up",
+      "codepoint": "&#xf0aa"
+    },
+    {
+      "name": "arrow-down",
+      "codepoint": "&#xf063;"
+    },
+    {
+      "name": "arrow-left",
+      "codepoint": "&#xf060;"
+    },
+    {
+      "name": "arrow-right",
+      "codepoint": "&#xf061;"
+    },
+    {
+      "name": "arrow-up",
+      "codepoint": "&#xf062;"
+    },
+    {
+      "name": "arrows",
+      "codepoint": "&#xf047;"
+    },
+    {
+      "name": "arrows-alt",
+      "codepoint": "&#xf0b2;"
+    },
+    {
+      "name": "arrows-h",
+      "codepoint": "&#xf07e"
+    },
+    {
+      "name": "arrows-v",
+      "codepoint": "&#xf07d"
+    },
+    {
+      "name": "caret-down",
+      "codepoint": "&#xf0d7;"
+    },
+    {
+      "name": "caret-left",
+      "codepoint": "&#xf0d9;"
+    },
+    {
+      "name": "caret-right",
+      "codepoint": "&#xf0da"
+    },
+    {
+      "name": "caret-square-o-down",
+      "codepoint": "&#xf150;"
+    },
+    {
+      "name": "caret-square-o-left",
+      "codepoint": "&#xf191;"
+    },
+    {
+      "name": "caret-square-o-right",
+      "codepoint": "&#xf152;"
+    },
+    {
+      "name": "caret-square-o-up",
+      "codepoint": "&#xf151;"
+    },
+    {
+      "name": "caret-up",
+      "codepoint": "&#xf0d8;"
+    },
+    {
+      "name": "chevron-circle-down",
+      "codepoint": "&#xf13a"
+    },
+    {
+      "name": "chevron-circle-left",
+      "codepoint": "&#xf137;"
+    },
+    {
+      "name": "chevron-circle-right",
+      "codepoint": "&#xf138;"
+    },
+    {
+      "name": "chevron-circle-up",
+      "codepoint": "&#xf139;"
+    },
+    {
+      "name": "chevron-down",
+      "codepoint": "&#xf078;"
+    },
+    {
+      "name": "chevron-left",
+      "codepoint": "&#xf053;"
+    },
+    {
+      "name": "chevron-right",
+      "codepoint": "&#xf054;"
+    },
+    {
+      "name": "chevron-up",
+      "codepoint": "&#xf077;"
+    },
+    {
+      "name": "exchange",
+      "codepoint": "&#xf0ec"
+    },
+    {
+      "name": "hand-o-down",
+      "codepoint": "&#xf0a7;"
+    },
+    {
+      "name": "hand-o-left",
+      "codepoint": "&#xf0a5;"
+    },
+    {
+      "name": "hand-o-right",
+      "codepoint": "&#xf0a4;"
+    },
+    {
+      "name": "hand-o-up",
+      "codepoint": "&#xf0a6;"
+    },
+    {
+      "name": "long-arrow-down",
+      "codepoint": "&#xf175;"
+    },
+    {
+      "name": "long-arrow-left",
+      "codepoint": "&#xf177;"
+    },
+    {
+      "name": "long-arrow-right",
+      "codepoint": "&#xf178;"
+    },
+    {
+      "name": "long-arrow-up",
+      "codepoint": "&#xf176;"
+    },
+    {
+      "name": "toggle-down (alias)",
+      "codepoint": "&#xf150;"
+    },
+    {
+      "name": "toggle-left (alias)",
+      "codepoint": "&#xf191;"
+    },
+    {
+      "name": "toggle-right (alias)",
+      "codepoint": "&#xf152;"
+    },
+    {
+      "name": "toggle-up (alias)",
+      "codepoint": "&#xf151;"
+    }
+  ],
+  "file-type.txt": [
+    {
+      "name": "file",
+      "codepoint": "&#xf15b"
+    },
+    {
+      "name": "file-archive-o",
+      "codepoint": "&#xf1c6;"
+    },
+    {
+      "name": "file-audio-o",
+      "codepoint": "&#xf1c7;"
+    },
+    {
+      "name": "file-code-o",
+      "codepoint": "&#xf1c9;"
+    },
+    {
+      "name": "file-excel-o",
+      "codepoint": "&#xf1c3;"
+    },
+    {
+      "name": "file-image-o",
+      "codepoint": "&#xf1c5;"
+    },
+    {
+      "name": "file-movie-o (alias)",
+      "codepoint": "&#xf1c8;"
+    },
+    {
+      "name": "file-o",
+      "codepoint": "&#xf016;"
+    },
+    {
+      "name": "file-pdf-o",
+      "codepoint": "&#xf1c1;"
+    },
+    {
+      "name": "file-photo-o (alias)",
+      "codepoint": "&#xf1c5;"
+    },
+    {
+      "name": "file-picture-o (alias)",
+      "codepoint": "&#xf1c5;"
+    },
+    {
+      "name": "file-powerpoint-o",
+      "codepoint": "&#xf1c4;"
+    },
+    {
+      "name": "file-sound-o (alias)",
+      "codepoint": "&#xf1c7;"
+    },
+    {
+      "name": "file-text",
+      "codepoint": "&#xf15c"
+    },
+    {
+      "name": "file-text-o",
+      "codepoint": "&#xf0f6;"
+    },
+    {
+      "name": "file-video-o",
+      "codepoint": "&#xf1c8;"
+    },
+    {
+      "name": "file-word-o",
+      "codepoint": "&#xf1c2;"
+    },
+    {
+      "name": "file-zip-o (alias)",
+      "codepoint": "&#xf1c6;"
+    }
+  ],
+  "form-control.txt": [
+    {
+      "name": "check-square",
+      "codepoint": "&#xf14a"
+    },
+    {
+      "name": "check-square-o",
+      "codepoint": "&#xf046;"
+    },
+    {
+      "name": "circle",
+      "codepoint": "&#xf111;"
+    },
+    {
+      "name": "circle-o",
+      "codepoint": "&#xf10c"
+    },
+    {
+      "name": "dot-circle-o",
+      "codepoint": "&#xf192;"
+    },
+    {
+      "name": "minus-square",
+      "codepoint": "&#xf146;"
+    },
+    {
+      "name": "minus-square-o",
+      "codepoint": "&#xf147;"
+    },
+    {
+      "name": "plus-square",
+      "codepoint": "&#xf0fe"
+    },
+    {
+      "name": "plus-square-o",
+      "codepoint": "&#xf196;"
+    },
+    {
+      "name": "square",
+      "codepoint": "&#xf0c8;"
+    },
+    {
+      "name": "square-o",
+      "codepoint": "&#xf096;"
+    }
+  ],
+  "gender.txt": [
+    {
+      "name": "genderless",
+      "codepoint": "&#xf22d"
+    },
+    {
+      "name": "intersex (alias)",
+      "codepoint": "&#xf224;"
+    },
+    {
+      "name": "mars",
+      "codepoint": "&#xf222;"
+    },
+    {
+      "name": "mars-double",
+      "codepoint": "&#xf227;"
+    },
+    {
+      "name": "mars-stroke",
+      "codepoint": "&#xf229;"
+    },
+    {
+      "name": "mars-stroke-h",
+      "codepoint": "&#xf22b"
+    },
+    {
+      "name": "mars-stroke-v",
+      "codepoint": "&#xf22a"
+    },
+    {
+      "name": "mercury",
+      "codepoint": "&#xf223;"
+    },
+    {
+      "name": "neuter",
+      "codepoint": "&#xf22c"
+    },
+    {
+      "name": "transgender",
+      "codepoint": "&#xf224;"
+    },
+    {
+      "name": "transgender-alt",
+      "codepoint": "&#xf225;"
+    },
+    {
+      "name": "venus",
+      "codepoint": "&#xf221;"
+    },
+    {
+      "name": "venus-double",
+      "codepoint": "&#xf226;"
+    },
+    {
+      "name": "venus-mars",
+      "codepoint": "&#xf228;"
+    }
+  ],
+  "hand.txt": [
+    {
+      "name": "hand-grab-o (alias)",
+      "codepoint": "&#xf255;"
+    },
+    {
+      "name": "hand-lizard-o",
+      "codepoint": "&#xf258;"
+    },
+    {
+      "name": "hand-o-down",
+      "codepoint": "&#xf0a7;"
+    },
+    {
+      "name": "hand-o-left",
+      "codepoint": "&#xf0a5;"
+    },
+    {
+      "name": "hand-o-right",
+      "codepoint": "&#xf0a4;"
+    },
+    {
+      "name": "hand-o-up",
+      "codepoint": "&#xf0a6;"
+    },
+    {
+      "name": "hand-paper-o",
+      "codepoint": "&#xf256;"
+    },
+    {
+      "name": "hand-peace-o",
+      "codepoint": "&#xf25b"
+    },
+    {
+      "name": "hand-pointer-o",
+      "codepoint": "&#xf25a"
+    },
+    {
+      "name": "hand-rock-o",
+      "codepoint": "&#xf255;"
+    },
+    {
+      "name": "hand-scissors-o",
+      "codepoint": "&#xf257;"
+    },
+    {
+      "name": "hand-spock-o",
+      "codepoint": "&#xf259;"
+    },
+    {
+      "name": "hand-stop-o (alias)",
+      "codepoint": "&#xf256;"
+    },
+    {
+      "name": "thumbs-down",
+      "codepoint": "&#xf165;"
+    },
+    {
+      "name": "thumbs-o-down",
+      "codepoint": "&#xf088;"
+    },
+    {
+      "name": "thumbs-o-up",
+      "codepoint": "&#xf087;"
+    },
+    {
+      "name": "thumbs-up",
+      "codepoint": "&#xf164;"
+    }
+  ],
+  "payment.txt": [
+    {
+      "name": "cc-amex",
+      "codepoint": "&#xf1f3;"
+    },
+    {
+      "name": "cc-diners-club",
+      "codepoint": "&#xf24c"
+    },
+    {
+      "name": "cc-discover",
+      "codepoint": "&#xf1f2;"
+    },
+    {
+      "name": "cc-jcb",
+      "codepoint": "&#xf24b"
+    },
+    {
+      "name": "cc-mastercard",
+      "codepoint": "&#xf1f1;"
+    },
+    {
+      "name": "cc-paypal",
+      "codepoint": "&#xf1f4;"
+    },
+    {
+      "name": "cc-stripe",
+      "codepoint": "&#xf1f5;"
+    },
+    {
+      "name": "cc-visa",
+      "codepoint": "&#xf1f0;"
+    },
+    {
+      "name": "credit-card",
+      "codepoint": "&#xf09d"
+    },
+    {
+      "name": "credit-card-alt",
+      "codepoint": "&#xf283;"
+    },
+    {
+      "name": "google-wallet",
+      "codepoint": "&#xf1ee"
+    },
+    {
+      "name": "paypal",
+      "codepoint": "&#xf1ed"
+    }
+  ],
+  "spinner.txt": [
+    {
+      "name": "circle-o-notch",
+      "codepoint": "&#xf1ce"
+    },
+    {
+      "name": "cog",
+      "codepoint": "&#xf013;"
+    },
+    {
+      "name": "gear (alias)",
+      "codepoint": "&#xf013;"
+    },
+    {
+      "name": "refresh",
+      "codepoint": "&#xf021;"
+    },
+    {
+      "name": "spinner",
+      "codepoint": "&#xf110;"
+    }
+  ],
+  "text-editor.txt": [
+    {
+      "name": "align-center",
+      "codepoint": "&#xf037;"
+    },
+    {
+      "name": "align-justify",
+      "codepoint": "&#xf039;"
+    },
+    {
+      "name": "align-left",
+      "codepoint": "&#xf036;"
+    },
+    {
+      "name": "align-right",
+      "codepoint": "&#xf038;"
+    },
+    {
+      "name": "bold",
+      "codepoint": "&#xf032;"
+    },
+    {
+      "name": "chain (alias)",
+      "codepoint": "&#xf0c1;"
+    },
+    {
+      "name": "chain-broken",
+      "codepoint": "&#xf127;"
+    },
+    {
+      "name": "clipboard",
+      "codepoint": "&#xf0ea"
+    },
+    {
+      "name": "columns",
+      "codepoint": "&#xf0db"
+    },
+    {
+      "name": "copy (alias)",
+      "codepoint": "&#xf0c5;"
+    },
+    {
+      "name": "cut (alias)",
+      "codepoint": "&#xf0c4;"
+    },
+    {
+      "name": "dedent (alias)",
+      "codepoint": "&#xf03b"
+    },
+    {
+      "name": "eraser",
+      "codepoint": "&#xf12d"
+    },
+    {
+      "name": "file",
+      "codepoint": "&#xf15b"
+    },
+    {
+      "name": "file-o",
+      "codepoint": "&#xf016;"
+    },
+    {
+      "name": "file-text",
+      "codepoint": "&#xf15c"
+    },
+    {
+      "name": "file-text-o",
+      "codepoint": "&#xf0f6;"
+    },
+    {
+      "name": "files-o",
+      "codepoint": "&#xf0c5;"
+    },
+    {
+      "name": "floppy-o",
+      "codepoint": "&#xf0c7;"
+    },
+    {
+      "name": "font",
+      "codepoint": "&#xf031;"
+    },
+    {
+      "name": "header",
+      "codepoint": "&#xf1dc"
+    },
+    {
+      "name": "indent",
+      "codepoint": "&#xf03c"
+    },
+    {
+      "name": "italic",
+      "codepoint": "&#xf033;"
+    },
+    {
+      "name": "link",
+      "codepoint": "&#xf0c1;"
+    },
+    {
+      "name": "list",
+      "codepoint": "&#xf03a"
+    },
+    {
+      "name": "list-alt",
+      "codepoint": "&#xf022;"
+    },
+    {
+      "name": "list-ol",
+      "codepoint": "&#xf0cb"
+    },
+    {
+      "name": "list-ul",
+      "codepoint": "&#xf0ca"
+    },
+    {
+      "name": "outdent",
+      "codepoint": "&#xf03b"
+    },
+    {
+      "name": "paperclip",
+      "codepoint": "&#xf0c6;"
+    },
+    {
+      "name": "paragraph",
+      "codepoint": "&#xf1dd"
+    },
+    {
+      "name": "paste (alias)",
+      "codepoint": "&#xf0ea"
+    },
+    {
+      "name": "repeat",
+      "codepoint": "&#xf01e"
+    },
+    {
+      "name": "rotate-left (alias)",
+      "codepoint": "&#xf0e2;"
+    },
+    {
+      "name": "rotate-right (alias)",
+      "codepoint": "&#xf01e"
+    },
+    {
+      "name": "save (alias)",
+      "codepoint": "&#xf0c7;"
+    },
+    {
+      "name": "scissors",
+      "codepoint": "&#xf0c4;"
+    },
+    {
+      "name": "strikethrough",
+      "codepoint": "&#xf0cc"
+    },
+    {
+      "name": "subscript",
+      "codepoint": "&#xf12c"
+    },
+    {
+      "name": "superscript",
+      "codepoint": "&#xf12b"
+    },
+    {
+      "name": "table",
+      "codepoint": "&#xf0ce"
+    },
+    {
+      "name": "text-height",
+      "codepoint": "&#xf034;"
+    },
+    {
+      "name": "text-width",
+      "codepoint": "&#xf035;"
+    },
+    {
+      "name": "th",
+      "codepoint": "&#xf00a"
+    },
+    {
+      "name": "th-large",
+      "codepoint": "&#xf009;"
+    },
+    {
+      "name": "th-list",
+      "codepoint": "&#xf00b"
+    },
+    {
+      "name": "underline",
+      "codepoint": "&#xf0cd"
+    },
+    {
+      "name": "undo",
+      "codepoint": "&#xf0e2;"
+    },
+    {
+      "name": "unlink (alias)",
+      "codepoint": "&#xf127;"
+    }
+  ],
+  "transportation.txt": [
+    {
+      "name": "ambulance",
+      "codepoint": "&#xf0f9;"
+    },
+    {
+      "name": "automobile (alias)",
+      "codepoint": "&#xf1b9;"
+    },
+    {
+      "name": "bicycle",
+      "codepoint": "&#xf206;"
+    },
+    {
+      "name": "bus",
+      "codepoint": "&#xf207;"
+    },
+    {
+      "name": "cab (alias)",
+      "codepoint": "&#xf1ba"
+    },
+    {
+      "name": "car",
+      "codepoint": "&#xf1b9;"
+    },
+    {
+      "name": "fighter-jet",
+      "codepoint": "&#xf0fb"
+    },
+    {
+      "name": "motorcycle",
+      "codepoint": "&#xf21c"
+    },
+    {
+      "name": "plane",
+      "codepoint": "&#xf072;"
+    },
+    {
+      "name": "rocket",
+      "codepoint": "&#xf135;"
+    },
+    {
+      "name": "ship",
+      "codepoint": "&#xf21a"
+    },
+    {
+      "name": "space-shuttle",
+      "codepoint": "&#xf197;"
+    },
+    {
+      "name": "subway",
+      "codepoint": "&#xf239;"
+    },
+    {
+      "name": "taxi",
+      "codepoint": "&#xf1ba"
+    },
+    {
+      "name": "train",
+      "codepoint": "&#xf238;"
+    },
+    {
+      "name": "truck",
+      "codepoint": "&#xf0d1;"
+    },
+    {
+      "name": "wheelchair",
+      "codepoint": "&#xf193;"
+    },
+    {
+      "name": "wheelchair-alt",
+      "codepoint": "&#xf29b"
+    }
+  ],
+  "video-player.txt": [
+    {
+      "name": "arrows-alt",
+      "codepoint": "&#xf0b2;"
+    },
+    {
+      "name": "backward",
+      "codepoint": "&#xf04a"
+    },
+    {
+      "name": "compress",
+      "codepoint": "&#xf066;"
+    },
+    {
+      "name": "eject",
+      "codepoint": "&#xf052;"
+    },
+    {
+      "name": "expand",
+      "codepoint": "&#xf065;"
+    },
+    {
+      "name": "fast-backward",
+      "codepoint": "&#xf049;"
+    },
+    {
+      "name": "fast-forward",
+      "codepoint": "&#xf050;"
+    },
+    {
+      "name": "forward",
+      "codepoint": "&#xf04e"
+    },
+    {
+      "name": "pause",
+      "codepoint": "&#xf04c"
+    },
+    {
+      "name": "pause-circle",
+      "codepoint": "&#xf28b"
+    },
+    {
+      "name": "pause-circle-o",
+      "codepoint": "&#xf28c"
+    },
+    {
+      "name": "play",
+      "codepoint": "&#xf04b"
+    },
+    {
+      "name": "play-circle",
+      "codepoint": "&#xf144;"
+    },
+    {
+      "name": "play-circle-o",
+      "codepoint": "&#xf01d"
+    },
+    {
+      "name": "random",
+      "codepoint": "&#xf074;"
+    },
+    {
+      "name": "step-backward",
+      "codepoint": "&#xf048;"
+    },
+    {
+      "name": "step-forward",
+      "codepoint": "&#xf051;"
+    },
+    {
+      "name": "stop",
+      "codepoint": "&#xf04d"
+    },
+    {
+      "name": "stop-circle",
+      "codepoint": "&#xf28d"
+    },
+    {
+      "name": "stop-circle-o",
+      "codepoint": "&#xf28e"
+    },
+    {
+      "name": "youtube-play",
+      "codepoint": "&#xf16a"
+    }
+  ],
+  "web-application.txt": [
+    {
+      "name": "address-book",
+      "codepoint": "&#xf2b9;"
+    },
+    {
+      "name": "address-book-o",
+      "codepoint": "&#xf2ba"
+    },
+    {
+      "name": "address-card",
+      "codepoint": "&#xf2bb"
+    },
+    {
+      "name": "address-card-o",
+      "codepoint": "&#xf2bc"
+    },
+    {
+      "name": "adjust",
+      "codepoint": "&#xf042;"
+    },
+    {
+      "name": "american-sign-language-interpreting",
+      "codepoint": "&#xf2a3;"
+    },
+    {
+      "name": "anchor",
+      "codepoint": "&#xf13d"
+    },
+    {
+      "name": "archive",
+      "codepoint": "&#xf187;"
+    },
+    {
+      "name": "area-chart",
+      "codepoint": "&#xf1fe"
+    },
+    {
+      "name": "arrows",
+      "codepoint": "&#xf047;"
+    },
+    {
+      "name": "arrows-h",
+      "codepoint": "&#xf07e"
+    },
+    {
+      "name": "arrows-v",
+      "codepoint": "&#xf07d"
+    },
+    {
+      "name": "asl-interpreting (alias)",
+      "codepoint": "&#xf2a3;"
+    },
+    {
+      "name": "assistive-listening-systems",
+      "codepoint": "&#xf2a2;"
+    },
+    {
+      "name": "asterisk",
+      "codepoint": "&#xf069;"
+    },
+    {
+      "name": "at",
+      "codepoint": "&#xf1fa"
+    },
+    {
+      "name": "audio-description",
+      "codepoint": "&#xf29e"
+    },
+    {
+      "name": "automobile (alias)",
+      "codepoint": "&#xf1b9;"
+    },
+    {
+      "name": "balance-scale",
+      "codepoint": "&#xf24e"
+    },
+    {
+      "name": "ban",
+      "codepoint": "&#xf05e"
+    },
+    {
+      "name": "bank (alias)",
+      "codepoint": "&#xf19c"
+    },
+    {
+      "name": "bar-chart",
+      "codepoint": "&#xf080;"
+    },
+    {
+      "name": "bar-chart-o (alias)",
+      "codepoint": "&#xf080;"
+    },
+    {
+      "name": "barcode",
+      "codepoint": "&#xf02a"
+    },
+    {
+      "name": "bars",
+      "codepoint": "&#xf0c9;"
+    },
+    {
+      "name": "bath",
+      "codepoint": "&#xf2cd"
+    },
+    {
+      "name": "bathtub (alias)",
+      "codepoint": "&#xf2cd"
+    },
+    {
+      "name": "battery (alias)",
+      "codepoint": "&#xf240;"
+    },
+    {
+      "name": "battery-0 (alias)",
+      "codepoint": "&#xf244;"
+    },
+    {
+      "name": "battery-1 (alias)",
+      "codepoint": "&#xf243;"
+    },
+    {
+      "name": "battery-2 (alias)",
+      "codepoint": "&#xf242;"
+    },
+    {
+      "name": "battery-3 (alias)",
+      "codepoint": "&#xf241;"
+    },
+    {
+      "name": "battery-4 (alias)",
+      "codepoint": "&#xf240;"
+    },
+    {
+      "name": "battery-empty",
+      "codepoint": "&#xf244;"
+    },
+    {
+      "name": "battery-full",
+      "codepoint": "&#xf240;"
+    },
+    {
+      "name": "battery-half",
+      "codepoint": "&#xf242;"
+    },
+    {
+      "name": "battery-quarter",
+      "codepoint": "&#xf243;"
+    },
+    {
+      "name": "battery-three-quarters",
+      "codepoint": "&#xf241;"
+    },
+    {
+      "name": "bed",
+      "codepoint": "&#xf236;"
+    },
+    {
+      "name": "beer",
+      "codepoint": "&#xf0fc"
+    },
+    {
+      "name": "bell",
+      "codepoint": "&#xf0f3;"
+    },
+    {
+      "name": "bell-o",
+      "codepoint": "&#xf0a2;"
+    },
+    {
+      "name": "bell-slash",
+      "codepoint": "&#xf1f6;"
+    },
+    {
+      "name": "bell-slash-o",
+      "codepoint": "&#xf1f7;"
+    },
+    {
+      "name": "bicycle",
+      "codepoint": "&#xf206;"
+    },
+    {
+      "name": "binoculars",
+      "codepoint": "&#xf1e5;"
+    },
+    {
+      "name": "birthday-cake",
+      "codepoint": "&#xf1fd"
+    },
+    {
+      "name": "blind",
+      "codepoint": "&#xf29d"
+    },
+    {
+      "name": "bluetooth",
+      "codepoint": "&#xf293;"
+    },
+    {
+      "name": "bluetooth-b",
+      "codepoint": "&#xf294;"
+    },
+    {
+      "name": "bolt",
+      "codepoint": "&#xf0e7;"
+    },
+    {
+      "name": "bomb",
+      "codepoint": "&#xf1e2;"
+    },
+    {
+      "name": "book",
+      "codepoint": "&#xf02d"
+    },
+    {
+      "name": "bookmark",
+      "codepoint": "&#xf02e"
+    },
+    {
+      "name": "bookmark-o",
+      "codepoint": "&#xf097;"
+    },
+    {
+      "name": "braille",
+      "codepoint": "&#xf2a1;"
+    },
+    {
+      "name": "briefcase",
+      "codepoint": "&#xf0b1;"
+    },
+    {
+      "name": "bug",
+      "codepoint": "&#xf188;"
+    },
+    {
+      "name": "building",
+      "codepoint": "&#xf1ad"
+    },
+    {
+      "name": "building-o",
+      "codepoint": "&#xf0f7;"
+    },
+    {
+      "name": "bullhorn",
+      "codepoint": "&#xf0a1;"
+    },
+    {
+      "name": "bullseye",
+      "codepoint": "&#xf140;"
+    },
+    {
+      "name": "bus",
+      "codepoint": "&#xf207;"
+    },
+    {
+      "name": "cab (alias)",
+      "codepoint": "&#xf1ba"
+    },
+    {
+      "name": "calculator",
+      "codepoint": "&#xf1ec"
+    },
+    {
+      "name": "calendar",
+      "codepoint": "&#xf073;"
+    },
+    {
+      "name": "calendar-check-o",
+      "codepoint": "&#xf274;"
+    },
+    {
+      "name": "calendar-minus-o",
+      "codepoint": "&#xf272;"
+    },
+    {
+      "name": "calendar-o",
+      "codepoint": "&#xf133;"
+    },
+    {
+      "name": "calendar-plus-o",
+      "codepoint": "&#xf271;"
+    },
+    {
+      "name": "calendar-times-o",
+      "codepoint": "&#xf273;"
+    },
+    {
+      "name": "camera",
+      "codepoint": "&#xf030;"
+    },
+    {
+      "name": "camera-retro",
+      "codepoint": "&#xf083;"
+    },
+    {
+      "name": "car",
+      "codepoint": "&#xf1b9;"
+    },
+    {
+      "name": "caret-square-o-down",
+      "codepoint": "&#xf150;"
+    },
+    {
+      "name": "caret-square-o-left",
+      "codepoint": "&#xf191;"
+    },
+    {
+      "name": "caret-square-o-right",
+      "codepoint": "&#xf152;"
+    },
+    {
+      "name": "caret-square-o-up",
+      "codepoint": "&#xf151;"
+    },
+    {
+      "name": "cart-arrow-down",
+      "codepoint": "&#xf218;"
+    },
+    {
+      "name": "cart-plus",
+      "codepoint": "&#xf217;"
+    },
+    {
+      "name": "cc",
+      "codepoint": "&#xf20a"
+    },
+    {
+      "name": "certificate",
+      "codepoint": "&#xf0a3;"
+    },
+    {
+      "name": "check",
+      "codepoint": "&#xf00c"
+    },
+    {
+      "name": "check-circle",
+      "codepoint": "&#xf058;"
+    },
+    {
+      "name": "check-circle-o",
+      "codepoint": "&#xf05d"
+    },
+    {
+      "name": "check-square",
+      "codepoint": "&#xf14a"
+    },
+    {
+      "name": "check-square-o",
+      "codepoint": "&#xf046;"
+    },
+    {
+      "name": "child",
+      "codepoint": "&#xf1ae"
+    },
+    {
+      "name": "circle",
+      "codepoint": "&#xf111;"
+    },
+    {
+      "name": "circle-o",
+      "codepoint": "&#xf10c"
+    },
+    {
+      "name": "circle-o-notch",
+      "codepoint": "&#xf1ce"
+    },
+    {
+      "name": "circle-thin",
+      "codepoint": "&#xf1db"
+    },
+    {
+      "name": "clock-o",
+      "codepoint": "&#xf017;"
+    },
+    {
+      "name": "clone",
+      "codepoint": "&#xf24d"
+    },
+    {
+      "name": "close (alias)",
+      "codepoint": "&#xf00d"
+    },
+    {
+      "name": "cloud",
+      "codepoint": "&#xf0c2;"
+    },
+    {
+      "name": "cloud-download",
+      "codepoint": "&#xf0ed"
+    },
+    {
+      "name": "cloud-upload",
+      "codepoint": "&#xf0ee"
+    },
+    {
+      "name": "code",
+      "codepoint": "&#xf121;"
+    },
+    {
+      "name": "code-fork",
+      "codepoint": "&#xf126;"
+    },
+    {
+      "name": "coffee",
+      "codepoint": "&#xf0f4;"
+    },
+    {
+      "name": "cog",
+      "codepoint": "&#xf013;"
+    },
+    {
+      "name": "cogs",
+      "codepoint": "&#xf085;"
+    },
+    {
+      "name": "comment",
+      "codepoint": "&#xf075;"
+    },
+    {
+      "name": "comment-o",
+      "codepoint": "&#xf0e5;"
+    },
+    {
+      "name": "commenting",
+      "codepoint": "&#xf27a"
+    },
+    {
+      "name": "commenting-o",
+      "codepoint": "&#xf27b"
+    },
+    {
+      "name": "comments",
+      "codepoint": "&#xf086;"
+    },
+    {
+      "name": "comments-o",
+      "codepoint": "&#xf0e6;"
+    },
+    {
+      "name": "compass",
+      "codepoint": "&#xf14e"
+    },
+    {
+      "name": "copyright",
+      "codepoint": "&#xf1f9;"
+    },
+    {
+      "name": "creative-commons",
+      "codepoint": "&#xf25e"
+    },
+    {
+      "name": "credit-card",
+      "codepoint": "&#xf09d"
+    },
+    {
+      "name": "credit-card-alt",
+      "codepoint": "&#xf283;"
+    },
+    {
+      "name": "crop",
+      "codepoint": "&#xf125;"
+    },
+    {
+      "name": "crosshairs",
+      "codepoint": "&#xf05b"
+    },
+    {
+      "name": "cube",
+      "codepoint": "&#xf1b2;"
+    },
+    {
+      "name": "cubes",
+      "codepoint": "&#xf1b3;"
+    },
+    {
+      "name": "cutlery",
+      "codepoint": "&#xf0f5;"
+    },
+    {
+      "name": "dashboard (alias)",
+      "codepoint": "&#xf0e4;"
+    },
+    {
+      "name": "database",
+      "codepoint": "&#xf1c0;"
+    },
+    {
+      "name": "deaf",
+      "codepoint": "&#xf2a4;"
+    },
+    {
+      "name": "deafness (alias)",
+      "codepoint": "&#xf2a4;"
+    },
+    {
+      "name": "desktop",
+      "codepoint": "&#xf108;"
+    },
+    {
+      "name": "diamond",
+      "codepoint": "&#xf219;"
+    },
+    {
+      "name": "dot-circle-o",
+      "codepoint": "&#xf192;"
+    },
+    {
+      "name": "download",
+      "codepoint": "&#xf019;"
+    },
+    {
+      "name": "drivers-license (alias)",
+      "codepoint": "&#xf2c2;"
+    },
+    {
+      "name": "drivers-license-o (alias)",
+      "codepoint": "&#xf2c3;"
+    },
+    {
+      "name": "edit (alias)",
+      "codepoint": "&#xf044;"
+    },
+    {
+      "name": "ellipsis-h",
+      "codepoint": "&#xf141;"
+    },
+    {
+      "name": "ellipsis-v",
+      "codepoint": "&#xf142;"
+    },
+    {
+      "name": "envelope",
+      "codepoint": "&#xf0e0;"
+    },
+    {
+      "name": "envelope-o",
+      "codepoint": "&#xf003;"
+    },
+    {
+      "name": "envelope-open",
+      "codepoint": "&#xf2b6;"
+    },
+    {
+      "name": "envelope-open-o",
+      "codepoint": "&#xf2b7;"
+    },
+    {
+      "name": "envelope-square",
+      "codepoint": "&#xf199;"
+    },
+    {
+      "name": "eraser",
+      "codepoint": "&#xf12d"
+    },
+    {
+      "name": "exchange",
+      "codepoint": "&#xf0ec"
+    },
+    {
+      "name": "exclamation",
+      "codepoint": "&#xf12a"
+    },
+    {
+      "name": "exclamation-circle",
+      "codepoint": "&#xf06a"
+    },
+    {
+      "name": "exclamation-triangle",
+      "codepoint": "&#xf071;"
+    },
+    {
+      "name": "external-link",
+      "codepoint": "&#xf08e"
+    },
+    {
+      "name": "external-link-square",
+      "codepoint": "&#xf14c"
+    },
+    {
+      "name": "eye",
+      "codepoint": "&#xf06e"
+    },
+    {
+      "name": "eye-slash",
+      "codepoint": "&#xf070;"
+    },
+    {
+      "name": "eyedropper",
+      "codepoint": "&#xf1fb"
+    },
+    {
+      "name": "fax",
+      "codepoint": "&#xf1ac"
+    },
+    {
+      "name": "feed (alias)",
+      "codepoint": "&#xf09e"
+    },
+    {
+      "name": "female",
+      "codepoint": "&#xf182;"
+    },
+    {
+      "name": "fighter-jet",
+      "codepoint": "&#xf0fb"
+    },
+    {
+      "name": "file-archive-o",
+      "codepoint": "&#xf1c6;"
+    },
+    {
+      "name": "file-audio-o",
+      "codepoint": "&#xf1c7;"
+    },
+    {
+      "name": "file-code-o",
+      "codepoint": "&#xf1c9;"
+    },
+    {
+      "name": "file-excel-o",
+      "codepoint": "&#xf1c3;"
+    },
+    {
+      "name": "file-image-o",
+      "codepoint": "&#xf1c5;"
+    },
+    {
+      "name": "file-movie-o (alias)",
+      "codepoint": "&#xf1c8;"
+    },
+    {
+      "name": "file-pdf-o",
+      "codepoint": "&#xf1c1;"
+    },
+    {
+      "name": "file-photo-o (alias)",
+      "codepoint": "&#xf1c5;"
+    },
+    {
+      "name": "file-picture-o (alias)",
+      "codepoint": "&#xf1c5;"
+    },
+    {
+      "name": "file-powerpoint-o",
+      "codepoint": "&#xf1c4;"
+    },
+    {
+      "name": "file-sound-o (alias)",
+      "codepoint": "&#xf1c7;"
+    },
+    {
+      "name": "file-video-o",
+      "codepoint": "&#xf1c8;"
+    },
+    {
+      "name": "file-word-o",
+      "codepoint": "&#xf1c2;"
+    },
+    {
+      "name": "file-zip-o (alias)",
+      "codepoint": "&#xf1c6;"
+    },
+    {
+      "name": "film",
+      "codepoint": "&#xf008;"
+    },
+    {
+      "name": "filter",
+      "codepoint": "&#xf0b0;"
+    },
+    {
+      "name": "fire",
+      "codepoint": "&#xf06d"
+    },
+    {
+      "name": "fire-extinguisher",
+      "codepoint": "&#xf134;"
+    },
+    {
+      "name": "flag",
+      "codepoint": "&#xf024;"
+    },
+    {
+      "name": "flag-checkered",
+      "codepoint": "&#xf11e"
+    },
+    {
+      "name": "flag-o",
+      "codepoint": "&#xf11d"
+    },
+    {
+      "name": "flash (alias)",
+      "codepoint": "&#xf0e7;"
+    },
+    {
+      "name": "flask",
+      "codepoint": "&#xf0c3;"
+    },
+    {
+      "name": "folder",
+      "codepoint": "&#xf07b"
+    },
+    {
+      "name": "folder-o",
+      "codepoint": "&#xf114;"
+    },
+    {
+      "name": "folder-open",
+      "codepoint": "&#xf07c"
+    },
+    {
+      "name": "folder-open-o",
+      "codepoint": "&#xf115;"
+    },
+    {
+      "name": "frown-o",
+      "codepoint": "&#xf119;"
+    },
+    {
+      "name": "futbol-o",
+      "codepoint": "&#xf1e3;"
+    },
+    {
+      "name": "gamepad",
+      "codepoint": "&#xf11b"
+    },
+    {
+      "name": "gavel",
+      "codepoint": "&#xf0e3;"
+    },
+    {
+      "name": "gear (alias)",
+      "codepoint": "&#xf013;"
+    },
+    {
+      "name": "gears (alias)",
+      "codepoint": "&#xf085;"
+    },
+    {
+      "name": "gift",
+      "codepoint": "&#xf06b"
+    },
+    {
+      "name": "glass",
+      "codepoint": "&#xf000;"
+    },
+    {
+      "name": "globe",
+      "codepoint": "&#xf0ac"
+    },
+    {
+      "name": "graduation-cap",
+      "codepoint": "&#xf19d"
+    },
+    {
+      "name": "group (alias)",
+      "codepoint": "&#xf0c0;"
+    },
+    {
+      "name": "hand-grab-o (alias)",
+      "codepoint": "&#xf255;"
+    },
+    {
+      "name": "hand-lizard-o",
+      "codepoint": "&#xf258;"
+    },
+    {
+      "name": "hand-paper-o",
+      "codepoint": "&#xf256;"
+    },
+    {
+      "name": "hand-peace-o",
+      "codepoint": "&#xf25b"
+    },
+    {
+      "name": "hand-pointer-o",
+      "codepoint": "&#xf25a"
+    },
+    {
+      "name": "hand-rock-o",
+      "codepoint": "&#xf255;"
+    },
+    {
+      "name": "hand-scissors-o",
+      "codepoint": "&#xf257;"
+    },
+    {
+      "name": "hand-spock-o",
+      "codepoint": "&#xf259;"
+    },
+    {
+      "name": "hand-stop-o (alias)",
+      "codepoint": "&#xf256;"
+    },
+    {
+      "name": "handshake-o",
+      "codepoint": "&#xf2b5;"
+    },
+    {
+      "name": "hard-of-hearing (alias)",
+      "codepoint": "&#xf2a4;"
+    },
+    {
+      "name": "hashtag",
+      "codepoint": "&#xf292;"
+    },
+    {
+      "name": "hdd-o",
+      "codepoint": "&#xf0a0;"
+    },
+    {
+      "name": "headphones",
+      "codepoint": "&#xf025;"
+    },
+    {
+      "name": "heart",
+      "codepoint": "&#xf004;"
+    },
+    {
+      "name": "heart-o",
+      "codepoint": "&#xf08a"
+    },
+    {
+      "name": "heartbeat",
+      "codepoint": "&#xf21e"
+    },
+    {
+      "name": "history",
+      "codepoint": "&#xf1da"
+    },
+    {
+      "name": "home",
+      "codepoint": "&#xf015;"
+    },
+    {
+      "name": "hotel (alias)",
+      "codepoint": "&#xf236;"
+    },
+    {
+      "name": "hourglass",
+      "codepoint": "&#xf254;"
+    },
+    {
+      "name": "hourglass-1 (alias)",
+      "codepoint": "&#xf251;"
+    },
+    {
+      "name": "hourglass-2 (alias)",
+      "codepoint": "&#xf252;"
+    },
+    {
+      "name": "hourglass-3 (alias)",
+      "codepoint": "&#xf253;"
+    },
+    {
+      "name": "hourglass-end",
+      "codepoint": "&#xf253;"
+    },
+    {
+      "name": "hourglass-half",
+      "codepoint": "&#xf252;"
+    },
+    {
+      "name": "hourglass-o",
+      "codepoint": "&#xf250;"
+    },
+    {
+      "name": "hourglass-start",
+      "codepoint": "&#xf251;"
+    },
+    {
+      "name": "i-cursor",
+      "codepoint": "&#xf246;"
+    },
+    {
+      "name": "id-badge",
+      "codepoint": "&#xf2c1;"
+    },
+    {
+      "name": "id-card",
+      "codepoint": "&#xf2c2;"
+    },
+    {
+      "name": "id-card-o",
+      "codepoint": "&#xf2c3;"
+    },
+    {
+      "name": "image (alias)",
+      "codepoint": "&#xf03e"
+    },
+    {
+      "name": "inbox",
+      "codepoint": "&#xf01c"
+    },
+    {
+      "name": "industry",
+      "codepoint": "&#xf275;"
+    },
+    {
+      "name": "info",
+      "codepoint": "&#xf129;"
+    },
+    {
+      "name": "info-circle",
+      "codepoint": "&#xf05a"
+    },
+    {
+      "name": "institution (alias)",
+      "codepoint": "&#xf19c"
+    },
+    {
+      "name": "key",
+      "codepoint": "&#xf084;"
+    },
+    {
+      "name": "keyboard-o",
+      "codepoint": "&#xf11c"
+    },
+    {
+      "name": "language",
+      "codepoint": "&#xf1ab"
+    },
+    {
+      "name": "laptop",
+      "codepoint": "&#xf109;"
+    },
+    {
+      "name": "leaf",
+      "codepoint": "&#xf06c"
+    },
+    {
+      "name": "legal (alias)",
+      "codepoint": "&#xf0e3;"
+    },
+    {
+      "name": "lemon-o",
+      "codepoint": "&#xf094;"
+    },
+    {
+      "name": "level-down",
+      "codepoint": "&#xf149;"
+    },
+    {
+      "name": "level-up",
+      "codepoint": "&#xf148;"
+    },
+    {
+      "name": "life-bouy (alias)",
+      "codepoint": "&#xf1cd"
+    },
+    {
+      "name": "life-buoy (alias)",
+      "codepoint": "&#xf1cd"
+    },
+    {
+      "name": "life-ring",
+      "codepoint": "&#xf1cd"
+    },
+    {
+      "name": "life-saver (alias)",
+      "codepoint": "&#xf1cd"
+    },
+    {
+      "name": "lightbulb-o",
+      "codepoint": "&#xf0eb"
+    },
+    {
+      "name": "line-chart",
+      "codepoint": "&#xf201;"
+    },
+    {
+      "name": "location-arrow",
+      "codepoint": "&#xf124;"
+    },
+    {
+      "name": "lock",
+      "codepoint": "&#xf023;"
+    },
+    {
+      "name": "low-vision",
+      "codepoint": "&#xf2a8;"
+    },
+    {
+      "name": "magic",
+      "codepoint": "&#xf0d0;"
+    },
+    {
+      "name": "magnet",
+      "codepoint": "&#xf076;"
+    },
+    {
+      "name": "mail-forward (alias)",
+      "codepoint": "&#xf064;"
+    },
+    {
+      "name": "mail-reply (alias)",
+      "codepoint": "&#xf112;"
+    },
+    {
+      "name": "mail-reply-all (alias)",
+      "codepoint": "&#xf122;"
+    },
+    {
+      "name": "male",
+      "codepoint": "&#xf183;"
+    },
+    {
+      "name": "map",
+      "codepoint": "&#xf279;"
+    },
+    {
+      "name": "map-marker",
+      "codepoint": "&#xf041;"
+    },
+    {
+      "name": "map-o",
+      "codepoint": "&#xf278;"
+    },
+    {
+      "name": "map-pin",
+      "codepoint": "&#xf276;"
+    },
+    {
+      "name": "map-signs",
+      "codepoint": "&#xf277;"
+    },
+    {
+      "name": "meh-o",
+      "codepoint": "&#xf11a"
+    },
+    {
+      "name": "microchip",
+      "codepoint": "&#xf2db"
+    },
+    {
+      "name": "microphone",
+      "codepoint": "&#xf130;"
+    },
+    {
+      "name": "microphone-slash",
+      "codepoint": "&#xf131;"
+    },
+    {
+      "name": "minus",
+      "codepoint": "&#xf068;"
+    },
+    {
+      "name": "minus-circle",
+      "codepoint": "&#xf056;"
+    },
+    {
+      "name": "minus-square",
+      "codepoint": "&#xf146;"
+    },
+    {
+      "name": "minus-square-o",
+      "codepoint": "&#xf147;"
+    },
+    {
+      "name": "mobile",
+      "codepoint": "&#xf10b"
+    },
+    {
+      "name": "mobile-phone (alias)",
+      "codepoint": "&#xf10b"
+    },
+    {
+      "name": "money",
+      "codepoint": "&#xf0d6;"
+    },
+    {
+      "name": "moon-o",
+      "codepoint": "&#xf186;"
+    },
+    {
+      "name": "mortar-board (alias)",
+      "codepoint": "&#xf19d"
+    },
+    {
+      "name": "motorcycle",
+      "codepoint": "&#xf21c"
+    },
+    {
+      "name": "mouse-pointer",
+      "codepoint": "&#xf245;"
+    },
+    {
+      "name": "music",
+      "codepoint": "&#xf001;"
+    },
+    {
+      "name": "navicon (alias)",
+      "codepoint": "&#xf0c9;"
+    },
+    {
+      "name": "newspaper-o",
+      "codepoint": "&#xf1ea"
+    },
+    {
+      "name": "object-group",
+      "codepoint": "&#xf247;"
+    },
+    {
+      "name": "object-ungroup",
+      "codepoint": "&#xf248;"
+    },
+    {
+      "name": "paint-brush",
+      "codepoint": "&#xf1fc"
+    },
+    {
+      "name": "paper-plane",
+      "codepoint": "&#xf1d8;"
+    },
+    {
+      "name": "paper-plane-o",
+      "codepoint": "&#xf1d9;"
+    },
+    {
+      "name": "paw",
+      "codepoint": "&#xf1b0;"
+    },
+    {
+      "name": "pencil",
+      "codepoint": "&#xf040;"
+    },
+    {
+      "name": "pencil-square",
+      "codepoint": "&#xf14b"
+    },
+    {
+      "name": "pencil-square-o",
+      "codepoint": "&#xf044;"
+    },
+    {
+      "name": "percent",
+      "codepoint": "&#xf295;"
+    },
+    {
+      "name": "phone",
+      "codepoint": "&#xf095;"
+    },
+    {
+      "name": "phone-square",
+      "codepoint": "&#xf098;"
+    },
+    {
+      "name": "photo (alias)",
+      "codepoint": "&#xf03e"
+    },
+    {
+      "name": "picture-o",
+      "codepoint": "&#xf03e"
+    },
+    {
+      "name": "pie-chart",
+      "codepoint": "&#xf200;"
+    },
+    {
+      "name": "plane",
+      "codepoint": "&#xf072;"
+    },
+    {
+      "name": "plug",
+      "codepoint": "&#xf1e6;"
+    },
+    {
+      "name": "plus",
+      "codepoint": "&#xf067;"
+    },
+    {
+      "name": "plus-circle",
+      "codepoint": "&#xf055;"
+    },
+    {
+      "name": "plus-square",
+      "codepoint": "&#xf0fe"
+    },
+    {
+      "name": "plus-square-o",
+      "codepoint": "&#xf196;"
+    },
+    {
+      "name": "podcast",
+      "codepoint": "&#xf2ce"
+    },
+    {
+      "name": "power-off",
+      "codepoint": "&#xf011;"
+    },
+    {
+      "name": "print",
+      "codepoint": "&#xf02f"
+    },
+    {
+      "name": "puzzle-piece",
+      "codepoint": "&#xf12e"
+    },
+    {
+      "name": "qrcode",
+      "codepoint": "&#xf029;"
+    },
+    {
+      "name": "question",
+      "codepoint": "&#xf128;"
+    },
+    {
+      "name": "question-circle",
+      "codepoint": "&#xf059;"
+    },
+    {
+      "name": "question-circle-o",
+      "codepoint": "&#xf29c"
+    },
+    {
+      "name": "quote-left",
+      "codepoint": "&#xf10d"
+    },
+    {
+      "name": "quote-right",
+      "codepoint": "&#xf10e"
+    },
+    {
+      "name": "random",
+      "codepoint": "&#xf074;"
+    },
+    {
+      "name": "recycle",
+      "codepoint": "&#xf1b8;"
+    },
+    {
+      "name": "refresh",
+      "codepoint": "&#xf021;"
+    },
+    {
+      "name": "registered",
+      "codepoint": "&#xf25d"
+    },
+    {
+      "name": "remove (alias)",
+      "codepoint": "&#xf00d"
+    },
+    {
+      "name": "reorder (alias)",
+      "codepoint": "&#xf0c9;"
+    },
+    {
+      "name": "reply",
+      "codepoint": "&#xf112;"
+    },
+    {
+      "name": "reply-all",
+      "codepoint": "&#xf122;"
+    },
+    {
+      "name": "retweet",
+      "codepoint": "&#xf079;"
+    },
+    {
+      "name": "road",
+      "codepoint": "&#xf018;"
+    },
+    {
+      "name": "rocket",
+      "codepoint": "&#xf135;"
+    },
+    {
+      "name": "rss",
+      "codepoint": "&#xf09e"
+    },
+    {
+      "name": "rss-square",
+      "codepoint": "&#xf143;"
+    },
+    {
+      "name": "s15 (alias)",
+      "codepoint": "&#xf2cd"
+    },
+    {
+      "name": "search",
+      "codepoint": "&#xf002;"
+    },
+    {
+      "name": "search-minus",
+      "codepoint": "&#xf010;"
+    },
+    {
+      "name": "search-plus",
+      "codepoint": "&#xf00e"
+    },
+    {
+      "name": "send (alias)",
+      "codepoint": "&#xf1d8;"
+    },
+    {
+      "name": "send-o (alias)",
+      "codepoint": "&#xf1d9;"
+    },
+    {
+      "name": "server",
+      "codepoint": "&#xf233;"
+    },
+    {
+      "name": "share",
+      "codepoint": "&#xf064;"
+    },
+    {
+      "name": "share-alt",
+      "codepoint": "&#xf1e0;"
+    },
+    {
+      "name": "share-alt-square",
+      "codepoint": "&#xf1e1;"
+    },
+    {
+      "name": "share-square",
+      "codepoint": "&#xf14d"
+    },
+    {
+      "name": "share-square-o",
+      "codepoint": "&#xf045;"
+    },
+    {
+      "name": "shield",
+      "codepoint": "&#xf132;"
+    },
+    {
+      "name": "ship",
+      "codepoint": "&#xf21a"
+    },
+    {
+      "name": "shopping-bag",
+      "codepoint": "&#xf290;"
+    },
+    {
+      "name": "shopping-basket",
+      "codepoint": "&#xf291;"
+    },
+    {
+      "name": "shopping-cart",
+      "codepoint": "&#xf07a"
+    },
+    {
+      "name": "shower",
+      "codepoint": "&#xf2cc"
+    },
+    {
+      "name": "sign-in",
+      "codepoint": "&#xf090;"
+    },
+    {
+      "name": "sign-language",
+      "codepoint": "&#xf2a7;"
+    },
+    {
+      "name": "sign-out",
+      "codepoint": "&#xf08b"
+    },
+    {
+      "name": "signal",
+      "codepoint": "&#xf012;"
+    },
+    {
+      "name": "signing (alias)",
+      "codepoint": "&#xf2a7;"
+    },
+    {
+      "name": "sitemap",
+      "codepoint": "&#xf0e8;"
+    },
+    {
+      "name": "sliders",
+      "codepoint": "&#xf1de"
+    },
+    {
+      "name": "smile-o",
+      "codepoint": "&#xf118;"
+    },
+    {
+      "name": "snowflake-o",
+      "codepoint": "&#xf2dc"
+    },
+    {
+      "name": "soccer-ball-o (alias)",
+      "codepoint": "&#xf1e3;"
+    },
+    {
+      "name": "sort",
+      "codepoint": "&#xf0dc"
+    },
+    {
+      "name": "sort-alpha-asc",
+      "codepoint": "&#xf15d"
+    },
+    {
+      "name": "sort-alpha-desc",
+      "codepoint": "&#xf15e"
+    },
+    {
+      "name": "sort-amount-asc",
+      "codepoint": "&#xf160;"
+    },
+    {
+      "name": "sort-amount-desc",
+      "codepoint": "&#xf161;"
+    },
+    {
+      "name": "sort-asc",
+      "codepoint": "&#xf0de"
+    },
+    {
+      "name": "sort-desc",
+      "codepoint": "&#xf0dd"
+    },
+    {
+      "name": "sort-down (alias)",
+      "codepoint": "&#xf0dd"
+    },
+    {
+      "name": "sort-numeric-asc",
+      "codepoint": "&#xf162;"
+    },
+    {
+      "name": "sort-numeric-desc",
+      "codepoint": "&#xf163;"
+    },
+    {
+      "name": "sort-up (alias)",
+      "codepoint": "&#xf0de"
+    },
+    {
+      "name": "space-shuttle",
+      "codepoint": "&#xf197;"
+    },
+    {
+      "name": "spinner",
+      "codepoint": "&#xf110;"
+    },
+    {
+      "name": "spoon",
+      "codepoint": "&#xf1b1;"
+    },
+    {
+      "name": "square",
+      "codepoint": "&#xf0c8;"
+    },
+    {
+      "name": "square-o",
+      "codepoint": "&#xf096;"
+    },
+    {
+      "name": "star",
+      "codepoint": "&#xf005;"
+    },
+    {
+      "name": "star-half",
+      "codepoint": "&#xf089;"
+    },
+    {
+      "name": "star-half-empty (alias)",
+      "codepoint": "&#xf123;"
+    },
+    {
+      "name": "star-half-full (alias)",
+      "codepoint": "&#xf123;"
+    },
+    {
+      "name": "star-half-o",
+      "codepoint": "&#xf123;"
+    },
+    {
+      "name": "star-o",
+      "codepoint": "&#xf006;"
+    },
+    {
+      "name": "sticky-note",
+      "codepoint": "&#xf249;"
+    },
+    {
+      "name": "sticky-note-o",
+      "codepoint": "&#xf24a"
+    },
+    {
+      "name": "street-view",
+      "codepoint": "&#xf21d"
+    },
+    {
+      "name": "suitcase",
+      "codepoint": "&#xf0f2;"
+    },
+    {
+      "name": "sun-o",
+      "codepoint": "&#xf185;"
+    },
+    {
+      "name": "support (alias)",
+      "codepoint": "&#xf1cd"
+    },
+    {
+      "name": "tablet",
+      "codepoint": "&#xf10a"
+    },
+    {
+      "name": "tachometer",
+      "codepoint": "&#xf0e4;"
+    },
+    {
+      "name": "tag",
+      "codepoint": "&#xf02b"
+    },
+    {
+      "name": "tags",
+      "codepoint": "&#xf02c"
+    },
+    {
+      "name": "tasks",
+      "codepoint": "&#xf0ae"
+    },
+    {
+      "name": "taxi",
+      "codepoint": "&#xf1ba"
+    },
+    {
+      "name": "television",
+      "codepoint": "&#xf26c"
+    },
+    {
+      "name": "terminal",
+      "codepoint": "&#xf120;"
+    },
+    {
+      "name": "thermometer (alias)",
+      "codepoint": "&#xf2c7;"
+    },
+    {
+      "name": "thermometer-0 (alias)",
+      "codepoint": "&#xf2cb"
+    },
+    {
+      "name": "thermometer-1 (alias)",
+      "codepoint": "&#xf2ca"
+    },
+    {
+      "name": "thermometer-2 (alias)",
+      "codepoint": "&#xf2c9;"
+    },
+    {
+      "name": "thermometer-3 (alias)",
+      "codepoint": "&#xf2c8;"
+    },
+    {
+      "name": "thermometer-4 (alias)",
+      "codepoint": "&#xf2c7;"
+    },
+    {
+      "name": "thermometer-empty",
+      "codepoint": "&#xf2cb"
+    },
+    {
+      "name": "thermometer-full",
+      "codepoint": "&#xf2c7;"
+    },
+    {
+      "name": "thermometer-half",
+      "codepoint": "&#xf2c9;"
+    },
+    {
+      "name": "thermometer-quarter",
+      "codepoint": "&#xf2ca"
+    },
+    {
+      "name": "thermometer-three-quarters",
+      "codepoint": "&#xf2c8;"
+    },
+    {
+      "name": "thumb-tack",
+      "codepoint": "&#xf08d"
+    },
+    {
+      "name": "thumbs-down",
+      "codepoint": "&#xf165;"
+    },
+    {
+      "name": "thumbs-o-down",
+      "codepoint": "&#xf088;"
+    },
+    {
+      "name": "thumbs-o-up",
+      "codepoint": "&#xf087;"
+    },
+    {
+      "name": "thumbs-up",
+      "codepoint": "&#xf164;"
+    },
+    {
+      "name": "ticket",
+      "codepoint": "&#xf145;"
+    },
+    {
+      "name": "times",
+      "codepoint": "&#xf00d"
+    },
+    {
+      "name": "times-circle",
+      "codepoint": "&#xf057;"
+    },
+    {
+      "name": "times-circle-o",
+      "codepoint": "&#xf05c"
+    },
+    {
+      "name": "times-rectangle (alias)",
+      "codepoint": "&#xf2d3;"
+    },
+    {
+      "name": "times-rectangle-o (alias)",
+      "codepoint": "&#xf2d4;"
+    },
+    {
+      "name": "tint",
+      "codepoint": "&#xf043;"
+    },
+    {
+      "name": "toggle-down (alias)",
+      "codepoint": "&#xf150;"
+    },
+    {
+      "name": "toggle-left (alias)",
+      "codepoint": "&#xf191;"
+    },
+    {
+      "name": "toggle-off",
+      "codepoint": "&#xf204;"
+    },
+    {
+      "name": "toggle-on",
+      "codepoint": "&#xf205;"
+    },
+    {
+      "name": "toggle-right (alias)",
+      "codepoint": "&#xf152;"
+    },
+    {
+      "name": "toggle-up (alias)",
+      "codepoint": "&#xf151;"
+    },
+    {
+      "name": "trademark",
+      "codepoint": "&#xf25c"
+    },
+    {
+      "name": "trash",
+      "codepoint": "&#xf1f8;"
+    },
+    {
+      "name": "trash-o",
+      "codepoint": "&#xf014;"
+    },
+    {
+      "name": "tree",
+      "codepoint": "&#xf1bb"
+    },
+    {
+      "name": "trophy",
+      "codepoint": "&#xf091;"
+    },
+    {
+      "name": "truck",
+      "codepoint": "&#xf0d1;"
+    },
+    {
+      "name": "tty",
+      "codepoint": "&#xf1e4;"
+    },
+    {
+      "name": "tv (alias)",
+      "codepoint": "&#xf26c"
+    },
+    {
+      "name": "umbrella",
+      "codepoint": "&#xf0e9;"
+    },
+    {
+      "name": "universal-access",
+      "codepoint": "&#xf29a"
+    },
+    {
+      "name": "university",
+      "codepoint": "&#xf19c"
+    },
+    {
+      "name": "unlock",
+      "codepoint": "&#xf09c"
+    },
+    {
+      "name": "unlock-alt",
+      "codepoint": "&#xf13e"
+    },
+    {
+      "name": "unsorted (alias)",
+      "codepoint": "&#xf0dc"
+    },
+    {
+      "name": "upload",
+      "codepoint": "&#xf093;"
+    },
+    {
+      "name": "user",
+      "codepoint": "&#xf007;"
+    },
+    {
+      "name": "user-circle",
+      "codepoint": "&#xf2bd"
+    },
+    {
+      "name": "user-circle-o",
+      "codepoint": "&#xf2be"
+    },
+    {
+      "name": "user-o",
+      "codepoint": "&#xf2c0;"
+    },
+    {
+      "name": "user-plus",
+      "codepoint": "&#xf234;"
+    },
+    {
+      "name": "user-secret",
+      "codepoint": "&#xf21b"
+    },
+    {
+      "name": "user-times",
+      "codepoint": "&#xf235;"
+    },
+    {
+      "name": "users",
+      "codepoint": "&#xf0c0;"
+    },
+    {
+      "name": "vcard (alias)",
+      "codepoint": "&#xf2bb"
+    },
+    {
+      "name": "vcard-o (alias)",
+      "codepoint": "&#xf2bc"
+    },
+    {
+      "name": "video-camera",
+      "codepoint": "&#xf03d"
+    },
+    {
+      "name": "volume-control-phone",
+      "codepoint": "&#xf2a0;"
+    },
+    {
+      "name": "volume-down",
+      "codepoint": "&#xf027;"
+    },
+    {
+      "name": "volume-off",
+      "codepoint": "&#xf026;"
+    },
+    {
+      "name": "volume-up",
+      "codepoint": "&#xf028;"
+    },
+    {
+      "name": "warning (alias)",
+      "codepoint": "&#xf071;"
+    },
+    {
+      "name": "wheelchair",
+      "codepoint": "&#xf193;"
+    },
+    {
+      "name": "wheelchair-alt",
+      "codepoint": "&#xf29b"
+    },
+    {
+      "name": "wifi",
+      "codepoint": "&#xf1eb"
+    },
+    {
+      "name": "window-close",
+      "codepoint": "&#xf2d3;"
+    },
+    {
+      "name": "window-close-o",
+      "codepoint": "&#xf2d4;"
+    },
+    {
+      "name": "window-maximize",
+      "codepoint": "&#xf2d0;"
+    },
+    {
+      "name": "window-minimize",
+      "codepoint": "&#xf2d1;"
+    },
+    {
+      "name": "window-restore",
+      "codepoint": "&#xf2d2;"
+    },
+    {
+      "name": "wrench",
+      "codepoint": "&#xf0ad"
+    }
+  ]
+}

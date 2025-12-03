@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Info - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stats-grid dt {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .stats-grid dd {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .stats-section {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-section h5 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .stats-section h5 .material-icons {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Tool View -->
+            <div id="toolView">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons" id="toolIcon">analytics</span>
+                        <h2 id="toolName">Text Info</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="pasteButton" class="btn btn-secondary">
+                            <span class="material-icons">content_paste</span>
+                            Paste
+                        </button>
+                        <button id="clearAll" class="btn btn-secondary">
+                            <span class="material-icons">delete</span>
+                            Clear
+                        </button>
+                        <button id="copyOutput" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Input -->
+                <div class="io-container" style="grid-template-columns: 1fr;">
+                    <div class="io-panel">
+                        <div class="io-label">
+                            <span>Your Text</span>
+                            <span class="stats" id="inputStats">0 chars</span>
+                        </div>
+                        <textarea id="inputText" placeholder="Paste or type your text here..." style="min-height: 200px;"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Results Area -->
+                <div style="margin-top: 1.5rem;">
+                    <div class="io-container">
+                        <!-- Basic Stats -->
+                        <div class="stats-section">
+                            <h5>
+                                <span class="material-icons">functions</span>
+                                Basic Stats
+                            </h5>
+                            <dl class="stats-grid">
+                                <dt>Words</dt><dd id="res-words">-</dd>
+                                <dt>Characters</dt><dd id="res-chars">-</dd>
+                                <dt>Sentences</dt><dd id="res-sentences">-</dd>
+                                <dt>Paragraphs</dt><dd id="res-paragraphs">-</dd>
+                                <dt>Avg. Word Length</dt><dd id="res-avgWordLength">-</dd>
+                                <dt>Longest Word</dt><dd id="res-longestWord">-</dd>
+                                <dt>Most Frequent</dt><dd id="res-mostFrequent">-</dd>
+                            </dl>
+                        </div>
+                        
+                        <!-- Readability Stats -->
+                        <div class="stats-section">
+                            <h5>
+                                <span class="material-icons">visibility</span>
+                                Readability & Speaking
+                            </h5>
+                            <dl class="stats-grid">
+                                <dt>Syllables (Est.)</dt><dd id="res-syllables">-</dd>
+                                <dt>Reading Time</dt><dd id="res-readingTime">-</dd>
+                                <dt>Speaking Time</dt><dd id="res-speakingTime">-</dd>
+                                <dt>Flesch-Kincaid</dt><dd id="res-fleschKincaid">-</dd>
+                                <dt>Gunning Fog Index</dt><dd id="res-gunningFog">-</dd>
+                                <dt>Coleman-Liau</dt><dd id="res-colemanLiau">-</dd>
+                                <dt>SMOG Index</dt><dd id="res-smog">-</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="toolStats">Enter text to see analysis</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        // Common utility functions
+        const inputText = document.getElementById('inputText');
+        const inputStats = document.getElementById('inputStats');
+        const statusMessage = document.getElementById('statusMessage');
+        const toolStats = document.getElementById('toolStats');
+        const copyButton = document.getElementById('copyOutput');
+        const clearButton = document.getElementById('clearAll');
+        const backButton = document.getElementById('backButton');
+        const pasteButton = document.getElementById('pasteButton');
+
+        // Cache result elements
+        const resultElements = {
+            words: document.getElementById('res-words'),
+            chars: document.getElementById('res-chars'),
+            sentences: document.getElementById('res-sentences'),
+            paragraphs: document.getElementById('res-paragraphs'),
+            avgWordLength: document.getElementById('res-avgWordLength'),
+            longestWord: document.getElementById('res-longestWord'),
+            mostFrequent: document.getElementById('res-mostFrequent'),
+            syllables: document.getElementById('res-syllables'),
+            readingTime: document.getElementById('res-readingTime'),
+            speakingTime: document.getElementById('res-speakingTime'),
+            fleschKincaid: document.getElementById('res-fleschKincaid'),
+            gunningFog: document.getElementById('res-gunningFog'),
+            colemanLiau: document.getElementById('res-colemanLiau'),
+            smog: document.getElementById('res-smog')
+        };
+
+        // Update input statistics
+        function updateInputStats() {
+            const length = inputText.value.length;
+            const lines = inputText.value.split('\n').length;
+            inputStats.textContent = `${length} chars, ${lines} lines`;
+        }
+
+        // Text analysis helper functions
+        function getWords(text) {
+            return text.trim().match(/[\w'-]+/g) || [];
+        }
+
+        function getSentences(text) {
+            const sentences = text.match(/(?<!\b(?:[A-Z][a-z]?)\.)[.?!…]+(\s+|\n+|$)/g) || [];
+            return sentences.filter(s => s.trim().length > 0);
+        }
+
+        function countSyllables(word) {
+            word = word.toLowerCase().replace(/[^a-z]/g, '');
+            if (word.length <= 3) return 1;
+            word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+            word = word.replace(/^y/, '');
+            const matches = word.match(/[aeiouy]{1,2}/g);
+            return matches ? Math.max(1, matches.length) : 1;
+        }
+
+        function getLongestWord(words) {
+            return words.reduce((longest, current) => 
+                current.length > longest.length ? current : longest, "");
+        }
+
+        function getMostFrequentWord(words) {
+            if (!words.length) return '';
+            const counts = {};
+            words.forEach(word => {
+                const lowerWord = word.toLowerCase();
+                counts[lowerWord] = (counts[lowerWord] || 0) + 1;
+            });
+            return Object.keys(counts).reduce((a, b) => 
+                counts[a] > counts[b] ? a : b);
+        }
+
+        function getReadingTime(wordCount, wpm = 200) {
+            const minutes = wordCount / wpm;
+            if (minutes < 1) return "< 1 min";
+            return `${Math.ceil(minutes)} min`;
+        }
+
+        // Readability formulas
+        function calculateFleschKincaid(words, sentences, syllables) {
+            if (sentences === 0 || words === 0) return 'N/A';
+            return (0.39 * (words / sentences) + 11.8 * (syllables / words) - 15.59).toFixed(2);
+        }
+
+        function calculateGunningFog(words, sentences, complexWords) {
+            if (sentences === 0 || words === 0) return 'N/A';
+            return (0.4 * ((words / sentences) + 100 * (complexWords / words))).toFixed(2);
+        }
+
+        function calculateColemanLiau(words, sentences, text) {
+            if (words === 0) return 'N/A';
+            const L = (text.replace(/\s/g, '').length / words) * 100;
+            const S = (sentences / words) * 100;
+            return (0.0588 * L - 0.296 * S - 15.8).toFixed(2);
+        }
+
+        function calculateSMOG(sentences, complexWords) {
+            if (sentences < 30) return 'N/A (< 30 sentences)';
+            return (1.0430 * Math.sqrt(complexWords * (30 / sentences)) + 3.1291).toFixed(2);
+        }
+
+        // Main analysis function
+        function analyzeText() {
+            const text = inputText.value;
+            
+            if (text.trim() === '') {
+                // Reset all results
+                Object.values(resultElements).forEach(el => el.textContent = '-');
+                statusMessage.textContent = 'Ready';
+                statusMessage.className = 'success';
+                toolStats.textContent = 'Enter text to see analysis';
+                return;
+            }
+
+            try {
+                const startTime = performance.now();
+                
+                const words = getWords(text);
+                const sentences = getSentences(text);
+                const wordCount = words.length;
+                const sentenceCount = sentences.length;
+                const charCount = text.length;
+                const paragraphCount = text.split(/\n\s*\n/).filter(p => p.trim() !== '').length;
+
+                if (wordCount === 0) {
+                    resultElements.chars.textContent = charCount;
+                    resultElements.words.textContent = '0';
+                    resultElements.sentences.textContent = '0';
+                    resultElements.paragraphs.textContent = '0';
+                    Object.keys(resultElements).filter(k => !['chars', 'words', 'sentences', 'paragraphs'].includes(k))
+                        .forEach(k => resultElements[k].textContent = '-');
+                    return;
+                }
+                
+                const syllables = words.reduce((total, word) => total + countSyllables(word), 0);
+                const complexWords = words.filter(word => countSyllables(word) >= 3).length;
+
+                // Update all results
+                resultElements.words.textContent = wordCount;
+                resultElements.chars.textContent = charCount;
+                resultElements.sentences.textContent = sentenceCount;
+                resultElements.paragraphs.textContent = paragraphCount;
+                resultElements.avgWordLength.textContent = (charCount / wordCount).toFixed(2);
+                resultElements.longestWord.textContent = getLongestWord(words);
+                resultElements.mostFrequent.textContent = getMostFrequentWord(words);
+                resultElements.syllables.textContent = syllables;
+                resultElements.readingTime.textContent = getReadingTime(wordCount);
+                resultElements.speakingTime.textContent = getReadingTime(wordCount, 150);
+                resultElements.fleschKincaid.textContent = calculateFleschKincaid(wordCount, sentenceCount, syllables);
+                resultElements.gunningFog.textContent = calculateGunningFog(wordCount, sentenceCount, complexWords);
+                resultElements.colemanLiau.textContent = calculateColemanLiau(wordCount, sentenceCount, text);
+                resultElements.smog.textContent = calculateSMOG(sentenceCount, complexWords);
+
+                const endTime = performance.now();
+                
+                statusMessage.textContent = 'Analysis complete';
+                statusMessage.className = 'success';
+                toolStats.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
+            } catch (error) {
+                statusMessage.textContent = 'Error';
+                statusMessage.className = 'error';
+                toolStats.textContent = 'Analysis failed';
+                console.error('Analysis error:', error);
+            }
+        }
+
+        // Debounce function for input
+        function debounce(func, delay) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Copy results to clipboard
+        function copyToClipboard() {
+            const results = [];
+            results.push('=== TEXT ANALYSIS RESULTS ===\n');
+            results.push('Basic Stats:');
+            results.push(`Words: ${resultElements.words.textContent}`);
+            results.push(`Characters: ${resultElements.chars.textContent}`);
+            results.push(`Sentences: ${resultElements.sentences.textContent}`);
+            results.push(`Paragraphs: ${resultElements.paragraphs.textContent}`);
+            results.push(`Avg. Word Length: ${resultElements.avgWordLength.textContent}`);
+            results.push(`Longest Word: ${resultElements.longestWord.textContent}`);
+            results.push(`Most Frequent: ${resultElements.mostFrequent.textContent}`);
+            results.push('\nReadability & Speaking:');
+            results.push(`Syllables: ${resultElements.syllables.textContent}`);
+            results.push(`Reading Time: ${resultElements.readingTime.textContent}`);
+            results.push(`Speaking Time: ${resultElements.speakingTime.textContent}`);
+            results.push(`Flesch-Kincaid: ${resultElements.fleschKincaid.textContent}`);
+            results.push(`Gunning Fog Index: ${resultElements.gunningFog.textContent}`);
+            results.push(`Coleman-Liau: ${resultElements.colemanLiau.textContent}`);
+            results.push(`SMOG Index: ${resultElements.smog.textContent}`);
+            
+            const text = results.join('\n');
+            
+            navigator.clipboard.writeText(text).then(() => {
+                statusMessage.textContent = 'Results copied to clipboard!';
+                statusMessage.className = 'success';
+                setTimeout(() => {
+                    statusMessage.textContent = 'Ready';
+                }, 2000);
+            }).catch(() => {
+                statusMessage.textContent = 'Failed to copy';
+                statusMessage.className = 'error';
+            });
+        }
+
+        // Paste from clipboard
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                inputText.value = text;
+                updateInputStats();
+                analyzeText();
+                statusMessage.textContent = 'Pasted from clipboard!';
+                statusMessage.className = 'success';
+                setTimeout(() => {
+                    statusMessage.textContent = 'Ready';
+                }, 2000);
+            } catch (err) {
+                statusMessage.textContent = 'Paste failed';
+                statusMessage.className = 'error';
+            }
+        }
+
+        // Clear all
+        function clearAll() {
+            inputText.value = '';
+            Object.values(resultElements).forEach(el => el.textContent = '-');
+            updateInputStats();
+            statusMessage.textContent = 'Cleared';
+            statusMessage.className = 'success';
+            toolStats.textContent = 'Enter text to see analysis';
+            setTimeout(() => {
+                statusMessage.textContent = 'Ready';
+            }, 1500);
+        }
+
+        // Navigate back
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Setup event listeners
+        inputText.addEventListener('input', () => {
+            updateInputStats();
+            debounce(analyzeText, 300)();
+        });
+        copyButton.addEventListener('click', copyToClipboard);
+        pasteButton.addEventListener('click', pasteFromClipboard);
+        clearButton.addEventListener('click', clearAll);
+        backButton.addEventListener('click', goBack);
+
+        // Initialize
+        updateInputStats();
+    </script>
+</body>
+</html>

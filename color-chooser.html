@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Chooser - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tool-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.25rem; }
+        @media (max-width: 1024px) { .tool-grid { grid-template-columns: 1fr; } }
+        .panel { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+        .panel h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 1rem; }
+        .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+        .output-block { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; min-height: 200px; white-space: pre-wrap; }
+        .btn-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .color-swatch { width: 4rem; height: 2.75rem; border-radius: 6px; border: 1px solid var(--border-color); }
+        .search-result { min-height: 48px; }
+        .png-preview { display: inline-block; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">palette</span>
+                        <h2>Color Chooser</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="copyBtn" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                        <button id="savePngBtn" class="btn btn-secondary">
+                            <span class="material-icons">save</span>
+                            Save PNG
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Pick named or custom colors, see matches, and grab ready-to-use snippets or PNG swatches.</p>
+
+                <div class="tool-grid">
+                    <div class="panel">
+                        <h4><span class="material-icons" style="font-size:20px;">tune</span>Selection</h4>
+                        <div class="option-grid">
+                            <div class="option-group">
+                                <label for="colorCategory">Category</label>
+                                <select id="colorCategory">
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label for="colorName">Named Color</label>
+                                <select id="colorName">
+                                    <option value="">-- Select Color --</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label for="languageSelect">Code Format</label>
+                                <select id="languageSelect"></select>
+                            </div>
+                        </div>
+
+                        <div class="btn-bar" style="margin-top:0.75rem; align-items:center;">
+                            <input type="color" id="customColorInput" value="#ffffff" title="Choose a custom color" class="color-dropdown" style="width:4rem; height:2.75rem; padding:0;">
+                            <button type="button" class="btn btn-secondary" id="eyedropperBtn">
+                                <span class="material-icons">colorize</span> Eyedropper
+                            </button>
+                            <div id="colorDisplay" class="color-swatch" title="Current color"></div>
+                        </div>
+
+                        <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">search</span>Find by Code</h4>
+                        <div class="btn-bar" style="align-items:center;">
+                            <button type="button" id="getCurrentColorBtn" class="btn btn-secondary">
+                                <span class="material-icons">format_color_fill</span>Use Current
+                            </button>
+                            <input type="text" id="colorInput" placeholder="#FF0000 or 255,0,0" style="flex:1; min-width:200px;">
+                            <button type="button" id="applySearchBtn" class="btn btn-primary">
+                                <span class="material-icons">check</span>Apply
+                            </button>
+                        </div>
+                        <div id="colorSearchResult" class="search-result" aria-live="polite"></div>
+
+                        <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">image</span>PNG Export</h4>
+                        <div class="option-grid">
+                            <div class="option-group">
+                                <label for="pngWidth">Width (px)</label>
+                                <input type="number" id="pngWidth" value="200" min="10" max="2000">
+                            </div>
+                            <div class="option-group">
+                                <label for="pngHeight">Height (px)</label>
+                                <input type="number" id="pngHeight" value="200" min="10" max="2000">
+                            </div>
+                            <div class="option-group">
+                                <label for="pngFilename">Filename</label>
+                                <input type="text" id="pngFilename" value="color-swatch">
+                            </div>
+                        </div>
+                        <div id="pngPreview" class="png-preview"></div>
+                    </div>
+
+                    <div class="panel" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <div>
+                            <h4><span class="material-icons" style="font-size:20px;">code</span>Snippet</h4>
+                            <div class="output-block" id="colorOutput" aria-live="polite"></div>
+                        </div>
+                        <div class="status-bar">
+                            <div id="statusMessage" class="success">Ready</div>
+                            <div id="toolStats">Awaiting selection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        (() => {
+            'use strict';
+
+            const namedColors = {
+                AliceBlue: '#F0F8FF',
+                AntiqueWhite: '#FAEBD7',
+                Aqua: '#00FFFF',
+                Aquamarine: '#7FFFD4',
+                Azure: '#F0FFFF',
+                Beige: '#F5F5DC',
+                Bisque: '#FFE4C4',
+                Black: '#000000',
+                BlanchedAlmond: '#FFEBCD',
+                Blue: '#0000FF',
+                BlueViolet: '#8A2BE2',
+                Brown: '#A52A2A',
+                BurlyWood: '#DEB887',
+                CadetBlue: '#5F9EA0',
+                Chartreuse: '#7FFF00',
+                Chocolate: '#D2691E',
+                Coral: '#FF7F50',
+                CornflowerBlue: '#6495ED',
+                Cornsilk: '#FFF8DC',
+                Crimson: '#DC143C',
+                Cyan: '#00FFFF',
+                DarkBlue: '#00008B',
+                DarkCyan: '#008B8B',
+                DarkGoldenRod: '#B8860B',
+                DarkGray: '#A9A9A9',
+                DarkGrey: '#A9A9A9',
+                DarkGreen: '#006400',
+                DarkKhaki: '#BDB76B',
+                DarkMagenta: '#8B008B',
+                DarkOliveGreen: '#556B2F',
+                DarkOrange: '#FF8C00',
+                DarkOrchid: '#9932CC',
+                DarkRed: '#8B0000',
+                DarkSalmon: '#E9967A',
+                DarkSeaGreen: '#8FBC8F',
+                DarkSlateBlue: '#483D8B',
+                DarkSlateGray: '#2F4F4F',
+                DarkSlateGrey: '#2F4F4F',
+                DarkTurquoise: '#00CED1',
+                DarkViolet: '#9400D3',
+                DeepPink: '#FF1493',
+                DeepSkyBlue: '#00BFFF',
+                DimGray: '#696969',
+                DimGrey: '#696969',
+                DodgerBlue: '#1E90FF',
+                FireBrick: '#B22222',
+                FloralWhite: '#FFFAF0',
+                ForestGreen: '#228B22',
+                Fuchsia: '#FF00FF',
+                Gainsboro: '#DCDCDC',
+                GhostWhite: '#F8F8FF',
+                Gold: '#FFD700',
+                GoldenRod: '#DAA520',
+                Gray: '#808080',
+                Grey: '#808080',
+                Green: '#008000',
+                GreenYellow: '#ADFF2F',
+                HoneyDew: '#F0FFF0',
+                HotPink: '#FF69B4',
+                IndianRed: '#CD5C5C',
+                Indigo: '#4B0082',
+                Ivory: '#FFFFF0',
+                Khaki: '#F0E68C',
+                Lavender: '#E6E6FA',
+                LavenderBlush: '#FFF0F5',
+                LawnGreen: '#7CFC00',
+                LemonChiffon: '#FFFACD',
+                LightBlue: '#ADD8E6',
+                LightCoral: '#F08080',
+                LightCyan: '#E0FFFF',
+                LightGoldenRodYellow: '#FAFAD2',
+                LightGray: '#D3D3D3',
+                LightGrey: '#D3D3D3',
+                LightGreen: '#90EE90',
+                LightPink: '#FFB6C1',
+                LightSalmon: '#FFA07A',
+                LightSeaGreen: '#20B2AA',
+                LightSkyBlue: '#87CEFA',
+                LightSlateGray: '#778899',
+                LightSlateGrey: '#778899',
+                LightSteelBlue: '#B0C4DE',
+                LightYellow: '#FFFFE0',
+                Lime: '#00FF00',
+                LimeGreen: '#32CD32',
+                Linen: '#FAF0E6',
+                Magenta: '#FF00FF',
+                Maroon: '#800000',
+                MediumAquaMarine: '#66CDAA',
+                MediumBlue: '#0000CD',
+                MediumOrchid: '#BA55D3',
+                MediumPurple: '#9370DB',
+                MediumSeaGreen: '#3CB371',
+                MediumSlateBlue: '#7B68EE',
+                MediumSpringGreen: '#00FA9A',
+                MediumTurquoise: '#48D1CC',
+                MediumVioletRed: '#C71585',
+                MidnightBlue: '#191970',
+                MintCream: '#F5FFFA',
+                MistyRose: '#FFE4E1',
+                Moccasin: '#FFE4B5',
+                NavajoWhite: '#FFDEAD',
+                Navy: '#000080',
+                OldLace: '#FDF5E6',
+                Olive: '#808000',
+                OliveDrab: '#6B8E23',
+                Orange: '#FFA500',
+                OrangeRed: '#FF4500',
+                Orchid: '#DA70D6',
+                PaleGoldenRod: '#EEE8AA',
+                PaleGreen: '#98FB98',
+                PaleTurquoise: '#AFEEEE',
+                PaleVioletRed: '#DB7093',
+                PapayaWhip: '#FFEFD5',
+                PeachPuff: '#FFDAB9',
+                Peru: '#CD853F',
+                Pink: '#FFC0CB',
+                Plum: '#DDA0DD',
+                PowderBlue: '#B0E0E6',
+                Purple: '#800080',
+                RebeccaPurple: '#663399',
+                Red: '#FF0000',
+                RosyBrown: '#BC8F8F',
+                RoyalBlue: '#4169E1',
+                SaddleBrown: '#8B4513',
+                Salmon: '#FA8072',
+                SandyBrown: '#F4A460',
+                SeaGreen: '#2E8B57',
+                SeaShell: '#FFF5EE',
+                Sienna: '#A0522D',
+                Silver: '#C0C0C0',
+                SkyBlue: '#87CEEB',
+                SlateBlue: '#6A5ACD',
+                SlateGray: '#708090',
+                SlateGrey: '#708090',
+                Snow: '#FFFAFA',
+                SpringGreen: '#00FF7F',
+                SteelBlue: '#4682B4',
+                Tan: '#D2B48C',
+                Teal: '#008080',
+                Thistle: '#D8BFD8',
+                Tomato: '#FF6347',
+                Turquoise: '#40E0D0',
+                Violet: '#EE82EE',
+                Wheat: '#F5DEB3',
+                White: '#FFFFFF',
+                WhiteSmoke: '#F5F5F5',
+                Yellow: '#FFFF00',
+                YellowGreen: '#9ACD32'
+            };
+
+            const buildCategory = (names) => names.reduce((acc, name) => {
+                if (namedColors[name]) acc[name] = namedColors[name];
+                return acc;
+            }, {});
+
+            const colors = {
+                "All Colors": namedColors,
+                "Reds & Pinks": buildCategory(['Red', 'DarkRed', 'FireBrick', 'Crimson', 'IndianRed', 'LightCoral', 'Salmon', 'DarkSalmon', 'LightSalmon', 'Tomato', 'OrangeRed', 'Coral', 'LightPink', 'Pink', 'HotPink', 'DeepPink', 'PaleVioletRed', 'MediumVioletRed']),
+                "Oranges & Browns": buildCategory(['Orange', 'DarkOrange', 'Peru', 'Chocolate', 'SaddleBrown', 'Sienna', 'Brown', 'RosyBrown', 'SandyBrown', 'GoldenRod', 'DarkGoldenRod', 'BurlyWood', 'Tan', 'Bisque', 'Moccasin', 'NavajoWhite', 'PeachPuff', 'PapayaWhip', 'BlanchedAlmond', 'Wheat']),
+                "Yellows & Golds": buildCategory(['Yellow', 'LightYellow', 'LemonChiffon', 'LightGoldenRodYellow', 'PaleGoldenRod', 'Gold', 'Khaki', 'DarkKhaki', 'Cornsilk']),
+                "Greens": buildCategory(['Green', 'DarkGreen', 'ForestGreen', 'SeaGreen', 'MediumSeaGreen', 'DarkSeaGreen', 'PaleGreen', 'LightGreen', 'Lime', 'LimeGreen', 'SpringGreen', 'MediumSpringGreen', 'Chartreuse', 'LawnGreen', 'Olive', 'OliveDrab', 'DarkOliveGreen', 'YellowGreen', 'GreenYellow']),
+                "Cyans & Aquas": buildCategory(['Aqua', 'Cyan', 'LightCyan', 'DarkCyan', 'Teal', 'Turquoise', 'MediumTurquoise', 'LightSeaGreen', 'MediumAquaMarine', 'Aquamarine', 'PaleTurquoise', 'DarkTurquoise', 'CadetBlue']),
+                "Blues": buildCategory(['Blue', 'MediumBlue', 'DarkBlue', 'Navy', 'MidnightBlue', 'RoyalBlue', 'CornflowerBlue', 'DodgerBlue', 'DeepSkyBlue', 'SkyBlue', 'LightSkyBlue', 'SteelBlue', 'LightSteelBlue', 'PowderBlue', 'AliceBlue', 'LightBlue', 'SlateBlue', 'MediumSlateBlue', 'DarkSlateBlue']),
+                "Purples": buildCategory(['Purple', 'Indigo', 'DarkMagenta', 'DarkOrchid', 'DarkViolet', 'BlueViolet', 'MediumOrchid', 'MediumPurple', 'Orchid', 'Violet', 'Plum', 'Thistle', 'RebeccaPurple', 'Magenta', 'Fuchsia']),
+                "Whites & Pastels": buildCategory(['White', 'Snow', 'HoneyDew', 'MintCream', 'Azure', 'GhostWhite', 'WhiteSmoke', 'FloralWhite', 'Ivory', 'SeaShell', 'Beige', 'OldLace', 'AntiqueWhite', 'Lavender', 'LavenderBlush', 'MistyRose', 'Linen']),
+                "Grays & Blacks": buildCategory(['Black', 'DimGray', 'DimGrey', 'Gray', 'Grey', 'DarkGray', 'DarkGrey', 'LightGray', 'LightGrey', 'Gainsboro', 'Silver', 'SlateGray', 'SlateGrey', 'LightSlateGray', 'LightSlateGrey', 'DarkSlateGray', 'DarkSlateGrey'])
+            };
+
+            const nameToCategory = {};
+            Object.entries(colors).forEach(([category, palette]) => {
+                if (category === 'All Colors') return;
+                Object.keys(palette).forEach((name) => {
+                    if (!nameToCategory[name]) nameToCategory[name] = category;
+                });
+            });
+            const languages = { "css": "CSS", "javascript": "JavaScript", "python": "Python", "java": "Java", "csharp": "C#", "php": "PHP", "ruby": "Ruby", "swift": "Swift", "kotlin": "Kotlin", "c++": "C++", "go": "Go", "r": "R", "matlab": "MATLAB", "typescript": "TypeScript", "shell": "Shell", "objective-c": "Objective-C", "html": "HTML", "json": "JSON", "sql": "SQL", "rust": "Rust", "dart": "Dart", "sass": "Sass", "c": "C", "powershell": "PowerShell" };
+            let currentColor = '#FFFFFF';
+
+            const dom = {};
+
+            const hexToRgb = (hex) => {
+                let h = hex.replace('#', '');
+                if (h.length === 3) h = h.split('').map(c => c + c).join('');
+                if (h.length !== 6) return null;
+                const v = parseInt(h, 16);
+                if (Number.isNaN(v)) return null;
+                return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
+            };
+            const rgbToHex = (r, g, b) => '#' + [r, g, b].map(c => Math.round(c).toString(16).padStart(2, '0')).join('').toUpperCase();
+            const parseColorInput = (input) => {
+                const val = input.trim();
+                if (/^#?([0-9a-fA-F]{3}){1,2}$/.test(val)) return val.startsWith('#') ? val.toUpperCase() : '#' + val.toUpperCase();
+                const rgbMatch = val.match(/^(?:rgba?\(?)?\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)?$/);
+                if (rgbMatch) {
+                    const [r, g, b] = rgbMatch.slice(1).map(Number);
+                    if ([r, g, b].every(c => c >= 0 && c <= 255)) return rgbToHex(r, g, b);
+                }
+                return null;
+            };
+            const findClosestColor = (targetHex) => {
+                const targetRgb = hexToRgb(targetHex);
+                if (!targetRgb) return null;
+                let best = null;
+                let min = Infinity;
+                for (const [name, hex] of Object.entries(namedColors)) {
+                    const rgb = hexToRgb(hex);
+                    if (!rgb) continue;
+                    const d = Math.sqrt((rgb.r - targetRgb.r) ** 2 + (rgb.g - targetRgb.g) ** 2 + (rgb.b - targetRgb.b) ** 2);
+                    if (d < min) {
+                        min = d;
+                        best = { name, hex: hex.toUpperCase(), category: nameToCategory[name] || 'All Colors' };
+                    }
+                }
+                return best;
+            };
+
+            const setStatus = (msg, type = 'success') => {
+                dom.status.textContent = msg;
+                dom.status.className = type;
+            };
+
+            const populateCategories = () => {
+                const options = ['<option value="">-- Select Category --</option>']
+                    .concat(Object.keys(colors).map(c => `<option value="${c}">${c}</option>`));
+                dom.colorCategory.innerHTML = options.join('');
+            };
+            const populateColorNames = () => {
+                const cat = dom.colorCategory.value || 'All Colors';
+                const palette = colors[cat] || {};
+                const list = Object.entries(palette).sort((a, b) => a[0].localeCompare(b[0]));
+                dom.colorName.innerHTML = '<option value="">-- Select Color --</option>' + list.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
+            };
+            const populateLanguages = () => {
+                dom.languageSelect.innerHTML = Object.entries(languages).sort((a, b) => a[1].localeCompare(b[1]))
+                    .map(([code, label]) => `<option value="${code}">${label}</option>`).join('');
+                dom.languageSelect.value = 'css';
+            };
+
+            const generateSnippet = () => {
+                const lang = dom.languageSelect.value;
+                const rgb = hexToRgb(currentColor);
+                if (!rgb) { dom.colorOutput.textContent = 'Invalid color.'; return; }
+                const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+                const formats = {
+                    css: `color: ${currentColor};\n/* or */\ncolor: ${rgbString};`,
+                    html: `<div style="color:${currentColor};">Example</div>`,
+                    javascript: `const colorHex = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
+                    python: `color_hex = '${currentColor}'\ncolor_rgb = (${rgb.r}, ${rgb.g}, ${rgb.b})`,
+                    php: `$colorHex = '${currentColor}';\n$colorRGB = ['r' => ${rgb.r}, 'g' => ${rgb.g}, 'b' => ${rgb.b}];`,
+                    java: `String colorHex = "${currentColor}";\n// Color.decode("${currentColor}")`,
+                    csharp: `string colorHex = "${currentColor}";\n// ColorTranslator.FromHtml("${currentColor}")`,
+                    ruby: `color_hex = '${currentColor}'\ncolor_rgb = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} }`,
+                    swift: `let colorHex = "${currentColor}" // convert to UIColor as needed`,
+                    kotlin: `val colorHex = "${currentColor}" // Color.parseColor(colorHex)`,
+                    "c++": `std::string colorHex = "${currentColor}";\nint rgb[3] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
+                    c: `const char* color_hex = "${currentColor}";\nunsigned char rgb[] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
+                    go: `colorHex := "${currentColor}"`,
+                    rust: `let color_hex = "${currentColor}";\nlet color_rgb: (u8,u8,u8) = (${rgb.r}, ${rgb.g}, ${rgb.b});`,
+                    dart: `const colorHex = "${currentColor}";`,
+                    r: `color_hex <- "${currentColor}"`,
+                    matlab: `color_rgb_255 = [${rgb.r}, ${rgb.g}, ${rgb.b}];`,
+                    typescript: `const colorHex: string = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
+                    shell: `COLOR_HEX='${currentColor}'\nCOLOR_RGB="(${rgb.r},${rgb.g},${rgb.b})"`,
+                    powershell: `$colorHex = "${currentColor}"\n$colorRgb = @{ R = ${rgb.r}; G = ${rgb.g}; B = ${rgb.b} }`,
+                    "objective-c": `NSString *colorHex = @"${currentColor}";`,
+                    sql: `DECLARE @color_hex VARCHAR(7)='${currentColor}'; -- RGB: ${rgb.r},${rgb.g},${rgb.b}`,
+                    json: `\n{\n  "hex": "${currentColor}",\n  "rgb": [${rgb.r}, ${rgb.g}, ${rgb.b}]\n}`,
+                    sass: `$my-color: ${currentColor};`
+                };
+                dom.colorOutput.textContent = formats[lang] || `Selected: ${currentColor}`;
+                dom.toolStats.textContent = `${lang.toUpperCase()} snippet for ${currentColor}`;
+            };
+
+            const updateColor = (hex, source = '') => {
+                const parsed = parseColorInput(hex);
+                if (!parsed) { setStatus('Invalid color input.', 'warning'); return; }
+                currentColor = parsed;
+                dom.colorDisplay.style.backgroundColor = currentColor;
+                dom.customColor.value = currentColor;
+                if (source !== 'nameSelect') {
+                    const match = findClosestColor(currentColor);
+                    if (match && match.hex === currentColor) {
+                        dom.colorCategory.value = match.category;
+                        populateColorNames();
+                        dom.colorName.value = currentColor;
+                    }
+                }
+                generateSnippet();
+                updatePngPreview();
+                setStatus('Color updated.', 'success');
+            };
+
+            const applySearch = () => {
+                const parsed = parseColorInput(dom.colorInput.value);
+                if (!parsed) { dom.searchResult.innerHTML = `<div class="alert alert-error">Invalid format. Use #RRGGBB or R,G,B.</div>`; return; }
+                updateColor(parsed, 'search');
+                const closest = findClosestColor(parsed);
+                if (!closest) { dom.searchResult.innerHTML = `<div class="alert alert-warning">Color set, no named match found.</div>`; return; }
+                const swatch = (hex) => `<span style="display:inline-block;width:1.1em;height:1.1em;border:1px solid #666;vertical-align:-0.15em;margin:0 0.25em;border-radius:3px;background:${hex};"></span>`;
+                let html = `<div class="alert alert-success">Set: ${swatch(parsed)}<strong>${parsed}</strong>`;
+                if (closest.hex !== parsed) { html += `<span class="mx-2">|</span>Closest: ${swatch(closest.hex)}<strong>${closest.name}</strong> (${closest.hex})`; }
+                else { html += `<span class="mx-2">|</span>Exact match: <strong>${closest.name}</strong>`; }
+                html += '</div>';
+                dom.searchResult.innerHTML = html;
+            };
+
+            const getContrast = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) > 128 ? '#000' : '#fff';
+
+            const updatePngPreview = () => {
+                const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
+                const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
+                dom.pngPreview.innerHTML = '';
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const previewSize = Math.min(260, Math.max(80, Math.min(width, height)));
+                const scale = Math.min(previewSize / width, previewSize / height);
+                canvas.width = width * scale;
+                canvas.height = height * scale;
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                const rgb = hexToRgb(currentColor);
+                if (canvas.width > 80 && canvas.height > 40 && rgb) {
+                    ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
+                    ctx.font = `${Math.max(10, Math.min(18, canvas.width / 10))}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(currentColor, canvas.width / 2, canvas.height / 2);
+                }
+                canvas.className = 'png-preview';
+                dom.pngPreview.appendChild(canvas);
+            };
+
+            const savePng = () => {
+                const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
+                const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
+                const filename = (dom.pngFilename.value || 'color-swatch').replace(/[^\w-]/g, '_');
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(0, 0, width, height);
+                const rgb = hexToRgb(currentColor);
+                if (rgb) {
+                    ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
+                    ctx.font = `${Math.max(12, Math.min(24, width / 15))}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(currentColor, width / 2, height / 2);
+                }
+                const link = document.createElement('a');
+                link.download = `${filename}-${currentColor.substring(1)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                setStatus(`PNG saved as ${link.download}`, 'success');
+            };
+
+            const copySnippet = () => {
+                const txt = dom.colorOutput.textContent.trim();
+                if (!txt) { setStatus('Nothing to copy.', 'warning'); return; }
+                navigator.clipboard.writeText(txt).then(
+                    () => setStatus('Copied.', 'success'),
+                    () => setStatus('Copy failed.', 'error')
+                );
+            };
+
+            const hookEvents = () => {
+                dom.colorCategory.addEventListener('change', () => { populateColorNames(); setStatus('Category selected.', 'success'); });
+                dom.colorName.addEventListener('change', (e) => { if (e.target.value) updateColor(e.target.value, 'nameSelect'); });
+                dom.languageSelect.addEventListener('change', generateSnippet);
+                dom.customColor.addEventListener('input', (e) => updateColor(e.target.value, 'custom'));
+                dom.eyedropper.addEventListener('click', async () => {
+                    if (!window.EyeDropper) { setStatus('Eyedropper not supported.', 'warning'); return; }
+                    try { const result = await new EyeDropper().open(); updateColor(result.sRGBHex, 'eyedropper'); }
+                    catch (_) { setStatus('Eyedropper cancelled.', 'warning'); }
+                });
+                dom.applySearch.addEventListener('click', applySearch);
+                dom.getCurrentBtn.addEventListener('click', () => { dom.colorInput.value = currentColor; setStatus('Loaded current color into input.', 'info'); });
+                dom.copyBtn.addEventListener('click', copySnippet);
+                dom.savePngBtn.addEventListener('click', savePng);
+                dom.pngWidth.addEventListener('input', updatePngPreview);
+                dom.pngHeight.addEventListener('input', updatePngPreview);
+                dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
+            };
+
+            const cacheDom = () => {
+                dom.colorCategory = document.getElementById('colorCategory');
+                dom.colorName = document.getElementById('colorName');
+                dom.languageSelect = document.getElementById('languageSelect');
+                dom.customColor = document.getElementById('customColorInput');
+                dom.eyedropper = document.getElementById('eyedropperBtn');
+                dom.colorDisplay = document.getElementById('colorDisplay');
+                dom.colorOutput = document.getElementById('colorOutput');
+                dom.colorInput = document.getElementById('colorInput');
+                dom.applySearch = document.getElementById('applySearchBtn');
+                dom.searchResult = document.getElementById('colorSearchResult');
+                dom.getCurrentBtn = document.getElementById('getCurrentColorBtn');
+                dom.pngWidth = document.getElementById('pngWidth');
+                dom.pngHeight = document.getElementById('pngHeight');
+                dom.pngFilename = document.getElementById('pngFilename');
+                dom.pngPreview = document.getElementById('pngPreview');
+                dom.copyBtn = document.getElementById('copyBtn');
+                dom.savePngBtn = document.getElementById('savePngBtn');
+                dom.status = document.getElementById('statusMessage');
+                dom.toolStats = document.getElementById('toolStats');
+                dom.backButton = document.getElementById('backButton');
+            };
+
+            const init = () => {
+                cacheDom();
+                populateCategories();
+                populateLanguages();
+                dom.colorCategory.value = 'All Colors';
+                populateColorNames();
+                hookEvents();
+                updateColor(currentColor, 'init');
+                updatePngPreview();
+                setStatus('Ready', 'success');
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>

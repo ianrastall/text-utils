@@ -1,0 +1,18 @@
+file	&#xf15b
+file-archive-o	&#xf1c6;
+file-audio-o	&#xf1c7;
+file-code-o	&#xf1c9;
+file-excel-o	&#xf1c3;
+file-image-o	&#xf1c5;
+file-movie-o (alias)	&#xf1c8;
+file-o	&#xf016;
+file-pdf-o	&#xf1c1;
+file-photo-o (alias)	&#xf1c5;
+file-picture-o (alias)	&#xf1c5;
+file-powerpoint-o	&#xf1c4;
+file-sound-o (alias)	&#xf1c7;
+file-text	&#xf15c
+file-text-o	&#xf0f6;
+file-video-o	&#xf1c8;
+file-word-o	&#xf1c2;
+file-zip-o (alias)	&#xf1c6;

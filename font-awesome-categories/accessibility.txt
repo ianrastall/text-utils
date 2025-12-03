@@ -1,0 +1,19 @@
+american-sign-language-interpreting	&#xf2a3;
+asl-interpreting (alias)	&#xf2a3;
+assistive-listening-systems	&#xf2a2;
+audio-description	&#xf29e
+blind	&#xf29d
+braille	&#xf2a1;
+cc	&#xf20a
+deaf	&#xf2a4;
+deafness (alias)	&#xf2a4;
+hard-of-hearing (alias)	&#xf2a4;
+low-vision	&#xf2a8;
+question-circle-o	&#xf29c
+sign-language	&#xf2a7;
+signing (alias)	&#xf2a7;
+tty	&#xf1e4;
+universal-access	&#xf29a
+volume-control-phone	&#xf2a0;
+wheelchair	&#xf193;
+wheelchair-alt	&#xf29b

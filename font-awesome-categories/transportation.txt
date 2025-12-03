@@ -1,0 +1,18 @@
+ambulance	&#xf0f9;
+automobile (alias)	&#xf1b9;
+bicycle	&#xf206;
+bus	&#xf207;
+cab (alias)	&#xf1ba
+car	&#xf1b9;
+fighter-jet	&#xf0fb
+motorcycle	&#xf21c
+plane	&#xf072;
+rocket	&#xf135;
+ship	&#xf21a
+space-shuttle	&#xf197;
+subway	&#xf239;
+taxi	&#xf1ba
+train	&#xf238;
+truck	&#xf0d1;
+wheelchair	&#xf193;
+wheelchair-alt	&#xf29b

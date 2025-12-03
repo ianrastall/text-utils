@@ -1,0 +1,53 @@
+angle-double-down	&#xf103;
+angle-double-left	&#xf100;
+angle-double-right	&#xf101;
+angle-double-up	&#xf102;
+angle-down	&#xf107;
+angle-left	&#xf104;
+angle-right	&#xf105;
+angle-up	&#xf106;
+arrow-circle-down	&#xf0ab
+arrow-circle-left	&#xf0a8;
+arrow-circle-o-down	&#xf01a
+arrow-circle-o-left	&#xf190;
+arrow-circle-o-right	&#xf18e
+arrow-circle-o-up	&#xf01b
+arrow-circle-right	&#xf0a9;
+arrow-circle-up	&#xf0aa
+arrow-down	&#xf063;
+arrow-left	&#xf060;
+arrow-right	&#xf061;
+arrow-up	&#xf062;
+arrows	&#xf047;
+arrows-alt	&#xf0b2;
+arrows-h	&#xf07e
+arrows-v	&#xf07d
+caret-down	&#xf0d7;
+caret-left	&#xf0d9;
+caret-right	&#xf0da
+caret-square-o-down	&#xf150;
+caret-square-o-left	&#xf191;
+caret-square-o-right	&#xf152;
+caret-square-o-up	&#xf151;
+caret-up	&#xf0d8;
+chevron-circle-down	&#xf13a
+chevron-circle-left	&#xf137;
+chevron-circle-right	&#xf138;
+chevron-circle-up	&#xf139;
+chevron-down	&#xf078;
+chevron-left	&#xf053;
+chevron-right	&#xf054;
+chevron-up	&#xf077;
+exchange	&#xf0ec
+hand-o-down	&#xf0a7;
+hand-o-left	&#xf0a5;
+hand-o-right	&#xf0a4;
+hand-o-up	&#xf0a6;
+long-arrow-down	&#xf175;
+long-arrow-left	&#xf177;
+long-arrow-right	&#xf178;
+long-arrow-up	&#xf176;
+toggle-down (alias)	&#xf150;
+toggle-left (alias)	&#xf191;
+toggle-right (alias)	&#xf152;
+toggle-up (alias)	&#xf151;

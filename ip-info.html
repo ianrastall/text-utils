@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Info - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .info-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        .info-row {
+            display: grid;
+            grid-template-columns: 160px 1fr auto;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .info-value {
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        .muted {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .section-note {
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .two-col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+        .taglist {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">language</span>
+                        <h2>IP Info</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="refreshBtn" class="btn btn-secondary">
+                            <span class="material-icons">refresh</span>
+                            Refresh
+                        </button>
+                        <button id="copyAllBtn" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy All
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Fetch public IP data, provider details, approximate location, and local device/browser diagnostics.</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><span class="material-icons">public</span>Network</h3>
+                        <div class="info-row">
+                            <span class="info-label">Public IP</span>
+                            <span class="info-value" id="public-ip-val">Loading...</span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="public-ip-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Hostname</span>
+                            <span class="info-value" id="hostname-val">Loading...</span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="hostname-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Provider / ASN</span>
+                            <span class="info-value" id="asn-val">Loading...</span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="asn-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Location</span>
+                            <span class="info-value" id="location-val">Loading...</span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="location-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Lat / Long</span>
+                            <span class="info-value" id="coords-val">Loading...</span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="coords-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Network Type</span>
+                            <span class="info-value" id="network-type-val">Detecting...</span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><span class="material-icons">devices</span>Browser & Device</h3>
+                        <div class="info-row">
+                            <span class="info-label">Browser</span>
+                            <span class="info-value" id="browser-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="browser-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">User Agent</span>
+                            <span class="info-value" id="user-agent-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="user-agent-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Operating System</span>
+                            <span class="info-value" id="os-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="os-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Device Type</span>
+                            <span class="info-value" id="device-type-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="device-type-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Platform</span>
+                            <span class="info-value" id="platform-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Online Status</span>
+                            <span class="info-value" id="online-val"></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><span class="material-icons">settings</span>Technical</h3>
+                        <div class="info-row">
+                            <span class="info-label">Screen</span>
+                            <span class="info-value" id="screen-resolution-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="screen-resolution-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Viewport</span>
+                            <span class="info-value" id="viewport-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Color Depth</span>
+                            <span class="info-value" id="color-depth-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Pixel Ratio</span>
+                            <span class="info-value" id="pixel-ratio-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CPU Threads</span>
+                            <span class="info-value" id="cpu-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Memory (approx)</span>
+                            <span class="info-value" id="memory-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Cookies Enabled</span>
+                            <span class="info-value" id="cookies-enabled-val"></span>
+                            <span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Local Time</span>
+                            <span class="info-value" id="local-time-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="local-time-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Timezone</span>
+                            <span class="info-value" id="timezone-val"></span>
+                            <button class="btn btn-secondary btn-sm copy-btn" data-target="timezone-val"><span class="material-icons" style="font-size: 16px;">content_copy</span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin-top: 1rem;">
+                    <h3><span class="material-icons">list</span>Quick Tags</h3>
+                    <div class="taglist" id="quick-tags"></div>
+                    <p class="section-note">Tags summarize key fields (IP, location, provider, browser, OS) for quick reference.</p>
+                </div>
+
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="toolStats">Awaiting data…</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        'use strict';
+
+        const statusMessage = document.getElementById('statusMessage');
+        const toolStats = document.getElementById('toolStats');
+
+        function setStatus(msg, type = 'success') {
+            statusMessage.textContent = msg;
+            statusMessage.className = type;
+        }
+
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value ?? '';
+        }
+
+        function detectBrowser(ua) {
+            const uaStr = ua.toLowerCase();
+            if (uaStr.includes('edg/')) return 'Edge';
+            if (uaStr.includes('chrome') && !uaStr.includes('edg/')) return 'Chrome';
+            if (uaStr.includes('safari') && !uaStr.includes('chrome')) return 'Safari';
+            if (uaStr.includes('firefox')) return 'Firefox';
+            if (uaStr.includes('opr') || uaStr.includes('opera')) return 'Opera';
+            return 'Unknown';
+        }
+
+        function detectDevice(ua) {
+            const uaStr = ua.toLowerCase();
+            if (/mobi|android|iphone|ipad|ipod/.test(uaStr)) return 'Mobile/Tablet';
+            if (/windows|macintosh|linux/.test(uaStr)) return 'Desktop';
+            return 'Unknown';
+        }
+
+        function detectOS(ua) {
+            const uaStr = ua.toLowerCase();
+            if (uaStr.includes('windows')) return 'Windows';
+            if (uaStr.includes('mac os') || uaStr.includes('macintosh')) return 'macOS';
+            if (uaStr.includes('android')) return 'Android';
+            if (uaStr.includes('iphone') || uaStr.includes('ipad')) return 'iOS';
+            if (uaStr.includes('linux')) return 'Linux';
+            return 'Unknown';
+        }
+
+        function updateLocalInfo() {
+            const ua = navigator.userAgent || '';
+            setText('browser-val', detectBrowser(ua));
+            setText('user-agent-val', ua);
+            setText('os-val', detectOS(ua));
+            setText('device-type-val', detectDevice(ua));
+            setText('platform-val', navigator.platform || 'Unknown');
+            setText('online-val', navigator.onLine ? 'Online' : 'Offline');
+            setText('screen-resolution-val', `${window.screen.width} x ${window.screen.height}`);
+            setText('viewport-val', `${window.innerWidth} x ${window.innerHeight}`);
+            setText('color-depth-val', `${window.screen.colorDepth}-bit`);
+            setText('pixel-ratio-val', window.devicePixelRatio ? window.devicePixelRatio.toFixed(2) : 'Unknown');
+            setText('cpu-val', navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} threads` : 'Unknown');
+            setText('memory-val', navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'Unknown');
+            setText('cookies-enabled-val', navigator.cookieEnabled ? 'Yes' : 'No');
+            setText('local-time-val', new Date().toLocaleString());
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+            setText('timezone-val', tz);
+
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (connection && connection.effectiveType) {
+                setText('network-type-val', `${connection.effectiveType}${connection.saveData ? ' (Data Saver)' : ''}`);
+            } else {
+                setText('network-type-val', 'Unavailable');
+            }
+        }
+
+        function applyIpData(data) {
+            const locationParts = [data.city, data.region, data.country].filter(Boolean).join(', ');
+            const coords = data.latitude && data.longitude ? `${data.latitude}, ${data.longitude}` : (data.lat && data.lon ? `${data.lat}, ${data.lon}` : 'Unavailable');
+            const asn = data.asn || data.org || data.connection || 'Unavailable';
+
+            setText('public-ip-val', data.ip || 'Unavailable');
+            setText('hostname-val', data.hostname || data.reverse || 'Unavailable');
+            setText('asn-val', typeof asn === 'string' ? asn : (asn.org || 'Unavailable'));
+            setText('location-val', locationParts || 'Unavailable');
+            setText('coords-val', coords || 'Unavailable');
+
+            buildTags({
+                ip: data.ip,
+                location: locationParts,
+                provider: typeof asn === 'string' ? asn : (asn.org || ''),
+                browser: document.getElementById('browser-val').textContent,
+                os: document.getElementById('os-val').textContent
+            });
+        }
+
+        async function fetchIpData() {
+            setStatus('Fetching IP info…', 'warning');
+            toolStats.textContent = 'Contacting ipapi.co';
+            const tryIpApi = async () => {
+                const res = await fetch('https://ipapi.co/json/');
+                if (!res.ok) throw new Error(`ipapi.co ${res.status}`);
+                const d = await res.json();
+                return {
+                    ip: d.ip,
+                    city: d.city,
+                    region: d.region,
+                    country: d.country_name,
+                    latitude: d.latitude,
+                    longitude: d.longitude,
+                    asn: d.asn ? `${d.asn} ${d.org || ''}`.trim() : d.org,
+                    hostname: d.hostname
+                };
+            };
+
+            const tryIpWho = async (ip) => {
+                const res = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`);
+                if (!res.ok) throw new Error(`ipwho.is ${res.status}`);
+                const d = await res.json();
+                if (!d.success) throw new Error('ipwho.is returned error');
+                return {
+                    ip: d.ip,
+                    city: d.city,
+                    region: d.region,
+                    country: d.country,
+                    latitude: d.latitude,
+                    longitude: d.longitude,
+                    asn: d.connection ? `${d.connection.asn || ''} ${d.connection.org || ''}`.trim() : '',
+                    hostname: d.hostname || d.connection?.domain
+                };
+            };
+
+            try {
+                let payload;
+                try {
+                    payload = await tryIpApi();
+                } catch (primaryErr) {
+                    console.warn('Primary IP lookup failed, falling back', primaryErr);
+                    toolStats.textContent = 'Primary lookup failed, trying fallback (ipify + ipwho.is)…';
+                    const ipifyRes = await fetch('https://api.ipify.org?format=json');
+                    if (!ipifyRes.ok) throw new Error(`ipify ${ipifyRes.status}`);
+                    const { ip } = await ipifyRes.json();
+                    payload = await tryIpWho(ip);
+                }
+
+                applyIpData(payload);
+                setStatus('IP info updated', 'success');
+                toolStats.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+            } catch (err) {
+                console.error(err);
+                setStatus('Failed to fetch IP info', 'error');
+                toolStats.textContent = 'All lookups failed. Check your connection and try again.';
+            }
+        }
+
+        function buildTags(meta) {
+            const tagContainer = document.getElementById('quick-tags');
+            if (!tagContainer) return;
+            tagContainer.innerHTML = '';
+            const tags = [
+                { label: 'IP', value: meta.ip },
+                { label: 'Location', value: meta.location },
+                { label: 'Provider', value: meta.provider },
+                { label: 'Browser', value: meta.browser },
+                { label: 'OS', value: meta.os }
+            ];
+            tags.filter(t => t.value).forEach(t => {
+                const span = document.createElement('span');
+                span.className = 'chip';
+                span.textContent = `${t.label}: ${t.value}`;
+                tagContainer.appendChild(span);
+            });
+        }
+
+        function copyValue(targetId) {
+            const el = document.getElementById(targetId);
+            if (!el) return;
+            const text = el.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                setStatus('Copied to clipboard', 'success');
+            }).catch(() => setStatus('Copy failed', 'error'));
+        }
+
+        function copyAll() {
+            const fields = [
+                'public-ip-val','hostname-val','asn-val','location-val','coords-val',
+                'browser-val','user-agent-val','os-val','device-type-val','platform-val','online-val',
+                'screen-resolution-val','viewport-val','color-depth-val','pixel-ratio-val','cpu-val','memory-val','cookies-enabled-val','local-time-val','timezone-val'
+            ];
+            const lines = fields.map(id => `${id.replace(/-val$/,'').replace(/-/g,' ')}: ${document.getElementById(id)?.textContent || ''}`);
+            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                setStatus('All info copied', 'success');
+            }).catch(() => setStatus('Copy failed', 'error'));
+        }
+
+        document.getElementById('backButton').addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            updateLocalInfo();
+            fetchIpData();
+        });
+        document.getElementById('copyAllBtn').addEventListener('click', copyAll);
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => copyValue(btn.dataset.target));
+        });
+
+        window.addEventListener('online', () => setText('online-val', 'Online'));
+        window.addEventListener('offline', () => setText('online-val', 'Offline'));
+        window.addEventListener('resize', () => {
+            setText('viewport-val', `${window.innerWidth} x ${window.innerHeight}`);
+        });
+
+        updateLocalInfo();
+        fetchIpData();
+    </script>
+</body>
+</html>

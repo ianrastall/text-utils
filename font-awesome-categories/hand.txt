@@ -1,0 +1,17 @@
+hand-grab-o (alias)	&#xf255;
+hand-lizard-o	&#xf258;
+hand-o-down	&#xf0a7;
+hand-o-left	&#xf0a5;
+hand-o-right	&#xf0a4;
+hand-o-up	&#xf0a6;
+hand-paper-o	&#xf256;
+hand-peace-o	&#xf25b
+hand-pointer-o	&#xf25a
+hand-rock-o	&#xf255;
+hand-scissors-o	&#xf257;
+hand-spock-o	&#xf259;
+hand-stop-o (alias)	&#xf256;
+thumbs-down	&#xf165;
+thumbs-o-down	&#xf088;
+thumbs-o-up	&#xf087;
+thumbs-up	&#xf164;

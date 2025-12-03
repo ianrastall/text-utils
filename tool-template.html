@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Name - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Tool View -->
+            <div id="toolView">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons" id="toolIcon">code</span>
+                        <h2 id="toolName">Tool Name</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="clearAll" class="btn btn-secondary">
+                            <span class="material-icons">delete</span>
+                            Clear
+                        </button>
+                        <button id="copyOutput" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tool-specific options -->
+                <div class="options-panel" id="toolOptions">
+                    <!-- Options will be added here per tool -->
+                </div>
+                
+                <!-- Input/Output -->
+                <div class="io-container">
+                    <div class="io-panel">
+                        <div class="io-label">
+                            <span>Input</span>
+                            <span class="stats" id="inputStats">0 chars</span>
+                        </div>
+                        <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+                    </div>
+                    <div class="io-panel">
+                        <div class="io-label">
+                            <span>Output</span>
+                            <span class="stats" id="outputStats">0 chars</span>
+                        </div>
+                        <textarea id="outputText" class="output" readonly placeholder="Results will appear here..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="toolStats">No operations yet</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        // Common utility functions for all tools
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const inputStats = document.getElementById('inputStats');
+        const outputStats = document.getElementById('outputStats');
+        const statusMessage = document.getElementById('statusMessage');
+        const toolStats = document.getElementById('toolStats');
+        const copyButton = document.getElementById('copyOutput');
+        const clearButton = document.getElementById('clearAll');
+        const backButton = document.getElementById('backButton');
+
+        // Update character/line statistics
+        function updateStats() {
+            const inputLength = inputText.value.length;
+            const outputLength = outputText.value.length;
+            const inputLines = inputText.value.split('\n').length;
+            const outputLines = outputText.value.split('\n').length;
+            
+            inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
+            outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
+        }
+
+        // Copy output to clipboard
+        function copyToClipboard() {
+            if (!outputText.value) return;
+            
+            navigator.clipboard.writeText(outputText.value).then(() => {
+                statusMessage.textContent = 'Copied to clipboard!';
+                statusMessage.className = 'success';
+                setTimeout(() => {
+                    statusMessage.textContent = 'Ready';
+                }, 2000);
+            }).catch(() => {
+                statusMessage.textContent = 'Failed to copy';
+                statusMessage.className = 'error';
+            });
+        }
+
+        // Clear all fields
+        function clearAll() {
+            inputText.value = '';
+            outputText.value = '';
+            updateStats();
+            statusMessage.textContent = 'Cleared';
+            statusMessage.className = 'success';
+            setTimeout(() => {
+                statusMessage.textContent = 'Ready';
+            }, 1500);
+        }
+
+        // Navigate back to home
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Setup common event listeners
+        inputText.addEventListener('input', updateStats);
+        copyButton.addEventListener('click', copyToClipboard);
+        clearButton.addEventListener('click', clearAll);
+        backButton.addEventListener('click', goBack);
+
+        // Initialize stats
+        updateStats();
+
+        // Tool-specific code goes below this line
+        // -------------------------------------------
+    </script>
+</body>
+</html>

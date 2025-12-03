@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+<html lang="en" data-theme="dark">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Font Awesome Chooser - Text Utilities</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .tool-layout {
+
+            display: grid;
+
+            grid-template-columns: 380px 1fr;
+
+            gap: 1.25rem;
+
+        }
+
+        .panel {
+
+            background: var(--bg-tertiary);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 8px;
+
+            padding: 1rem;
+
+        }
+
+        .panel h4 {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 0.5rem;
+
+            margin-bottom: 0.75rem;
+
+            font-size: 1rem;
+
+        }
+
+        .icons-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+
+            gap: 0.75rem;
+
+        }
+
+        .icon-item {
+
+            background: var(--bg-secondary);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 6px;
+
+            aspect-ratio: 1 / 1;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            cursor: pointer;
+
+            transition: all 0.15s;
+
+        }
+
+        .icon-item .fa {
+
+            font-size: 22px;
+
+            color: var(--text-primary);
+
+        }
+
+        .icon-item:hover {
+
+            border-color: var(--accent);
+
+            transform: translateY(-2px);
+
+        }
+
+        .icon-item.active {
+
+            background: var(--accent);
+
+            border-color: var(--accent);
+
+        }
+
+        .icon-item.active .fa {
+
+            color: #fff;
+
+        }
+
+        .code-block {
+
+            background: var(--bg-tertiary);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 6px;
+
+            padding: 1rem;
+
+            min-height: 120px;
+
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+
+            white-space: pre-wrap;
+
+            overflow-x: auto;
+
+        }
+
+        .info-row {
+
+            display: grid;
+
+            grid-template-columns: 140px 1fr;
+
+            gap: 0.35rem;
+
+            padding: 0.25rem 0;
+
+        }
+
+        .info-label {
+
+            color: var(--text-secondary);
+
+            font-size: 0.9rem;
+
+        }
+
+        .info-value {
+
+            word-break: break-word;
+
+        }
+
+        .taglist {
+
+            display: flex;
+
+            gap: 0.35rem;
+
+            flex-wrap: wrap;
+
+        }
+
+        .chip {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 0.35rem;
+
+            padding: 0.25rem 0.5rem;
+
+            background: var(--bg-secondary);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 999px;
+
+            font-size: 0.85rem;
+
+        }
+
+        .option-group {
+
+            margin-bottom: 0.9rem;
+
+        }
+
+        @media (max-width: 1024px) {
+
+            .tool-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <div class="logo">
+
+                <span class="material-icons">text_snippet</span>
+
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+
+                    <span>Text Utilities</span>
+
+                </a>
+
+            </div>
+
+            <div class="controls">
+
+                <div class="accent-selector">
+
+                    <span class="material-icons">palette</span>
+
+                    <select id="accentColor" class="color-dropdown">
+
+                        <option value="#0d9488">Teal</option>
+
+                        <option value="#3b82f6">Blue</option>
+
+                        <option value="#8b5cf6">Purple</option>
+
+                        <option value="#10b981">Emerald</option>
+
+                        <option value="#f59e0b">Amber</option>
+
+                        <option value="#ef4444">Red</option>
+
+                        <option value="#ec4899">Soft Pink</option>
+
+                        <option value="#fb7185">Coral</option>
+
+                        <option value="#60a5fa">Cornflower</option>
+
+                        <option value="#7c3aed">Violet</option>
+
+                    </select>
+
+                </div>
+
+                <button id="themeToggle" class="btn btn-secondary">
+
+                    <span class="material-icons">dark_mode</span>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <main>
+
+            <div class="tool-container">
+
+                <div class="tool-header">
+
+                    <div class="tool-title">
+
+                        <span class="material-icons">code</span>
+
+                        <h2>Font Awesome Chooser</h2>
+
+                    </div>
+
+                    <div class="tool-actions">
+
+                        <button id="backButton" class="btn btn-secondary">
+
+                            <span class="material-icons">arrow_back</span>
+
+                            Back
+
+                        </button>
+
+                        <button id="copyBtn" class="btn btn-secondary">
+
+                            <span class="material-icons">content_copy</span>
+
+                            Copy
+
+                        </button>
+
+                        <button id="clearBtn" class="btn btn-secondary">
+
+                            <span class="material-icons">clear</span>
+
+                            Clear
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <p class="tool-description">Browse Font Awesome icons, filter by name, and generate usage snippets for HTML, CSS, React, and more.</p>
+
+
+
+                <div class="tool-layout">
+
+                    <div class="panel">
+
+                        <h4><span class="material-icons" style="font-size: 20px;">tune</span>Filters</h4>
+
+                        <div class="option-group">
+
+                            <label for="categorySelect">Category</label>
+
+                            <select id="categorySelect">
+
+                                <option value="">-- Select a Category --</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="option-group">
+
+                            <label for="codeFormatSelect">Code Format</label>
+
+                            <select id="codeFormatSelect">
+
+                                <option value="html" selected>HTML</option>
+
+                                <option value="css_before">CSS (::before)</option>
+
+                                <option value="react">React (JSX)</option>
+
+                                <option value="js_dom">JavaScript (DOM)</option>
+
+                                <option value="icon_name">Icon Name</option>
+
+                                <option value="codepoint">Codepoint</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="option-group">
+
+                            <label>Selected Icon</label>
+
+                            <div class="info-row">
+
+                                <span class="info-label">Name</span>
+
+                                <span class="info-value" id="selected-name">None</span>
+
+                            </div>
+
+                            <div class="info-row">
+
+                                <span class="info-label">Codepoint</span>
+
+                                <span class="info-value" id="selected-codepoint">-</span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="option-group">
+
+                            <label>Tags</label>
+
+                            <div class="taglist" id="tagList"></div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="panel" style="display: flex; flex-direction: column; gap: 1rem;">
+
+                        <div>
+
+                            <h4><span class="material-icons" style="font-size: 20px;">apps</span>Icons (<span id="iconCount">0</span>)</h4>
+
+                            <div id="loadingIndicator" class="muted" style="display:none;">Loading...</div>
+
+                            <div id="iconsGrid" class="icons-grid" role="grid" aria-label="Icon Selection Grid">
+
+                                <div id="gridPlaceholder" class="muted" style="grid-column:1/-1; text-align:center;">Select a category to view icons.</div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <h4><span class="material-icons" style="font-size: 20px;">code</span>Snippet</h4>
+
+                            <div class="code-block" id="outputSnippet" aria-live="polite" aria-label="Generated code snippet"></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="status-bar">
+
+                    <div id="statusMessage" class="success">Ready</div>
+
+                    <div id="toolStats">Select a category to start</div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+
+    <script src="js/theme.js"></script>
+
+    <script>
+
+        'use strict';
+
+
+
+        const categorySelect = document.getElementById('categorySelect');
+
+        const codeFormatSelect = document.getElementById('codeFormatSelect');
+
+        const iconsGrid = document.getElementById('iconsGrid');
+
+        const iconCount = document.getElementById('iconCount');
+
+        const outputSnippet = document.getElementById('outputSnippet');
+
+        const statusMessage = document.getElementById('statusMessage');
+
+        const toolStats = document.getElementById('toolStats');
+
+        const selectedName = document.getElementById('selected-name');
+
+        const selectedCodepoint = document.getElementById('selected-codepoint');
+
+        const tagList = document.getElementById('tagList');
+
+
+
+        let currentIcons = [];
+
+        let selectedIcon = null;
+
+
+
+        function setStatus(msg, type = 'success') {
+
+            statusMessage.textContent = msg;
+
+            statusMessage.className = type;
+
+        }
+
+
+
+        function setPlaceholder(text) {
+
+            iconsGrid.innerHTML = `<div class="muted" style="grid-column:1/-1; text-align:center;">${text}</div>`;
+
+        }
+
+
+
+        function loadCategories() {
+
+            const files = [
+
+                'accessibility.txt','brand.txt','chart.txt','currency.txt','directional.txt','file-type.txt','form-control.txt','gender.txt','hand.txt','payment.txt','spinner.txt','text-editor.txt','transportation.txt','video-player.txt','web-application.txt'
+
+            ];
+
+            categorySelect.innerHTML = '<option value="">-- Select a Category --</option>';
+
+            files.sort().forEach(file => {
+
+                const name = file.replace('.txt','').replace(/-/g,' ');
+
+                const option = document.createElement('option');
+
+                option.value = file;
+
+                option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+
+                categorySelect.appendChild(option);
+
+            });
+
+            setStatus('Ready', 'success');
+
+            toolStats.textContent = 'Select a category to start';
+
+        }
+
+
+
+        function loadIcons(file) {
+
+            if (!file) {
+
+                currentIcons = [];
+
+                iconCount.textContent = '0';
+
+                setPlaceholder('Select a category to view icons.');
+
+                return;
+
+            }
+
+            setStatus('Loading icons.', 'warning');
+
+            iconsGrid.innerHTML = '<div class="muted" style="grid-column:1/-1;text-align:center;">Loading…</div>';
+
+            fetch(`font-awesome-categories/${file}`)
+
+                .then(res => { if (!res.ok) throw new Error('Failed to load icons'); return res.text(); })
+
+                .then(text => {
+
+                    currentIcons = text.split(/\r?\n/).filter(Boolean).map(line => {
+
+                        const [name, codepoint] = line.split(/\s+/);
+
+                        return { name, codepoint };
+
+                    });
+
+                    renderIcons();
+
+                    setStatus('Icons loaded', 'success');
+
+                    toolStats.textContent = `${currentIcons.length} icons loaded`;
+
+                })
+
+                .catch(err => {
+
+                    console.error(err);
+
+                    setStatus('Failed to load icons', 'error');
+
+                    setPlaceholder('Unable to load icons.');
+
+                });
+
+        }
+
+
+
+        function renderIcons() {
+
+            iconsGrid.innerHTML = '';
+
+            iconCount.textContent = currentIcons.length;
+
+            if (!currentIcons.length) {
+
+                setPlaceholder('No icons found.');
+
+                return;
+
+            }
+
+            currentIcons.forEach(icon => {
+
+                const btn = document.createElement('button');
+
+                btn.type = 'button';
+
+                btn.className = 'icon-item';
+
+                btn.setAttribute('aria-label', icon.name);
+
+                btn.innerHTML = `<i class="fa fa-${icon.name}" aria-hidden="true"></i>`;
+
+                btn.addEventListener('click', () => selectIcon(icon, btn));
+
+                iconsGrid.appendChild(btn);
+
+            });
+
+        }
+
+
+
+        function selectIcon(icon, btn) {
+
+            iconsGrid.querySelectorAll('.icon-item').forEach(el => el.classList.remove('active'));
+
+            btn.classList.add('active');
+
+            selectedIcon = icon;
+
+            selectedName.textContent = icon.name;
+
+            selectedCodepoint.textContent = icon.codepoint || '-';
+
+            tagList.innerHTML = '';
+
+            ['fa', `fa-${icon.name}`].forEach(tag => {
+
+                const chip = document.createElement('span');
+
+                chip.className = 'chip';
+
+                chip.textContent = tag;
+
+                tagList.appendChild(chip);
+
+            });
+
+            outputSnippet.textContent = buildSnippet(icon);
+
+            setStatus(`Selected ${icon.name}`, 'success');
+
+        }
+
+
+
+        function buildSnippet(icon) {
+
+            switch (codeFormatSelect.value) {
+
+                case 'html':
+
+                    return `<i class="fa fa-${icon.name}" aria-hidden="true"></i>`;
+
+                case 'css_before':
+
+                    return `.icon-${icon.name}::before { content: "\\${(icon.codepoint || '').replace('&#x','').replace(';','')}"; font-family: "FontAwesome"; }`;
+
+                case 'react':
+
+                    return `<i className="fa fa-${icon.name}" aria-hidden="true"></i>`;
+
+                case 'js_dom':
+
+                    return `const icon = document.createElement('i');\nicon.className = 'fa fa-${icon.name}';\nicon.setAttribute('aria-hidden','true');\nelement.appendChild(icon);`;
+
+                case 'icon_name':
+
+                    return icon.name;
+
+                case 'codepoint':
+
+                    return icon.codepoint || '';
+
+                default:
+
+                    return '';
+
+            }
+
+        }
+
+
+
+        function copySnippet() {
+
+            if (!outputSnippet.textContent) {
+
+                setStatus('Nothing to copy', 'warning');
+
+                return;
+
+            }
+
+            navigator.clipboard.writeText(outputSnippet.textContent).then(
+
+                () => setStatus('Copied!', 'success'),
+
+                () => setStatus('Copy failed', 'error')
+
+            );
+
+        }
+
+
+
+        function clearSelection() {
+
+            selectedIcon = null;
+
+            selectedName.textContent = 'None';
+
+            selectedCodepoint.textContent = '-';
+
+            outputSnippet.textContent = '';
+
+            tagList.innerHTML = '';
+
+            iconsGrid.querySelectorAll('.icon-item').forEach(el => el.classList.remove('active'));
+
+            setStatus('Cleared', 'success');
+
+        }
+
+
+
+        document.getElementById('backButton').addEventListener('click', () => window.location.href = 'index.html');
+
+        document.getElementById('copyBtn').addEventListener('click', copySnippet);
+
+        document.getElementById('clearBtn').addEventListener('click', clearSelection);
+
+
+
+        categorySelect.addEventListener('change', (e) => {
+
+            clearSelection();
+
+            loadIcons(e.target.value);
+
+        });
+
+
+
+        codeFormatSelect.addEventListener('change', () => {
+
+            if (selectedIcon) {
+
+                outputSnippet.textContent = buildSnippet(selectedIcon);
+
+            }
+
+        });
+
+
+
+        loadCategories();
+
+    </script>
+
+</body>
+
+</html>
+
+

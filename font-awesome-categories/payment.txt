@@ -1,0 +1,12 @@
+cc-amex	&#xf1f3;
+cc-diners-club	&#xf24c
+cc-discover	&#xf1f2;
+cc-jcb	&#xf24b
+cc-mastercard	&#xf1f1;
+cc-paypal	&#xf1f4;
+cc-stripe	&#xf1f5;
+cc-visa	&#xf1f0;
+credit-card	&#xf09d
+credit-card-alt	&#xf283;
+google-wallet	&#xf1ee
+paypal	&#xf1ed

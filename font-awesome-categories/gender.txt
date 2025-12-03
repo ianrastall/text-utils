@@ -1,0 +1,14 @@
+genderless	&#xf22d
+intersex (alias)	&#xf224;
+mars	&#xf222;
+mars-double	&#xf227;
+mars-stroke	&#xf229;
+mars-stroke-h	&#xf22b
+mars-stroke-v	&#xf22a
+mercury	&#xf223;
+neuter	&#xf22c
+transgender	&#xf224;
+transgender-alt	&#xf225;
+venus	&#xf221;
+venus-double	&#xf226;
+venus-mars	&#xf228;

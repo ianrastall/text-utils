@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 1024px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .panel {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .panel h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+        }
+        .field-note {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .taglist {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+        .output-area {
+            width: 100%;
+            min-height: 200px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            resize: vertical;
+        }
+        .btn-bar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">casino</span>
+                        <h2>Random Number Generator</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="copyBtn" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                        <button id="clearBtn" class="btn btn-secondary">
+                            <span class="material-icons">clear</span>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Generate random numbers with range, quantity, decimals, uniqueness, sorting, and quick presets.</p>
+
+                <div class="tool-grid">
+                    <div class="panel">
+                        <h4><span class="material-icons" style="font-size:20px;">tune</span>Settings</h4>
+                        <form id="randomForm">
+                            <div class="option-grid">
+                                <div class="option-group">
+                                    <label for="minInput">Minimum</label>
+                                    <input type="number" id="minInput" value="1" required>
+                                </div>
+                                <div class="option-group">
+                                    <label for="maxInput">Maximum</label>
+                                    <input type="number" id="maxInput" value="100" required>
+                                </div>
+                                <div class="option-group">
+                                    <label for="quantityInput">Quantity</label>
+                                    <input type="number" id="quantityInput" min="1" max="50000" value="10" required>
+                                </div>
+                            </div>
+                            <p class="field-note">Integers are inclusive [min, max]. Decimals are exclusive of max.</p>
+
+                            <div class="option-grid" style="margin-top: 0.5rem;">
+                                <div class="option-group">
+                                    <label class="form-label">Options</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="floatCheck">
+                                        <label class="form-check-label" for="floatCheck">Allow decimals</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="uniqueCheck">
+                                        <label class="form-check-label" for="uniqueCheck">Unique numbers</label>
+                                    </div>
+                                </div>
+                                <div class="option-group" id="decimalGroup" style="display:none;">
+                                    <label for="decimalInput">Decimal places</label>
+                                    <input type="number" id="decimalInput" min="0" max="15" value="2">
+                                </div>
+                                <div class="option-group">
+                                    <label for="sortSelect">Sorting</label>
+                                    <select id="sortSelect">
+                                        <option value="none">None (generated order)</option>
+                                        <option value="asc">Ascending</option>
+                                        <option value="desc">Descending</option>
+                                    </select>
+                                </div>
+                                <div class="option-group">
+                                    <label for="separatorSelect">Separator</label>
+                                    <select id="separatorSelect">
+                                        <option value=", ">Comma + space</option>
+                                        <option value="\n">Newline</option>
+                                        <option value=" ">Space</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="option-group" style="margin-top: 1rem;">
+                                <label>Presets</label>
+                                <div class="btn-bar">
+                                    <button type="button" class="btn btn-secondary" id="preset-d6">Dice D6</button>
+                                    <button type="button" class="btn btn-secondary" id="preset-d20">Dice D20</button>
+                                    <button type="button" class="btn btn-secondary" id="preset-lotto">Lottery (1-70)</button>
+                                    <button type="button" class="btn btn-secondary" id="preset-powerball">Powerball Quick Pick</button>
+                                    <button type="button" class="btn btn-secondary" id="preset-dnd">D&D Attributes (6×3d6)</button>
+                                </div>
+                            </div>
+
+                            <div class="option-group" style="margin-top: 1rem;">
+                                <button type="submit" id="generateBtn" class="btn btn-primary">
+                                    <span class="material-icons">casino</span>
+                                    <span id="generateBtnText">Generate Numbers</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <div>
+                            <h4><span class="material-icons" style="font-size:20px;">list</span>Generated Numbers</h4>
+                            <textarea id="numberOutput" class="output-area" readonly aria-label="Generated random numbers"></textarea>
+                        </div>
+                        <div class="status-bar">
+                            <div id="statusMessage" class="success">Ready</div>
+                            <div id="toolStats">Awaiting generation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        (() => {
+            'use strict';
+
+            const dom = {};
+            const state = { isProcessing: false };
+
+            const cache = () => {
+                dom.form = document.getElementById('randomForm');
+                dom.min = document.getElementById('minInput');
+                dom.max = document.getElementById('maxInput');
+                dom.qty = document.getElementById('quantityInput');
+                dom.floatCheck = document.getElementById('floatCheck');
+                dom.uniqueCheck = document.getElementById('uniqueCheck');
+                dom.decimalInput = document.getElementById('decimalInput');
+                dom.decimalGroup = document.getElementById('decimalGroup');
+                dom.sortSelect = document.getElementById('sortSelect');
+                dom.separatorSelect = document.getElementById('separatorSelect');
+                dom.output = document.getElementById('numberOutput');
+                dom.generateBtn = document.getElementById('generateBtn');
+                dom.generateBtnText = document.getElementById('generateBtnText');
+                dom.copyBtn = document.getElementById('copyBtn');
+                dom.clearBtn = document.getElementById('clearBtn');
+                dom.status = document.getElementById('statusMessage');
+                dom.stats = document.getElementById('toolStats');
+            };
+
+            const setStatus = (msg, type = 'success') => {
+                dom.status.textContent = msg;
+                dom.status.className = type;
+            };
+
+            const toggleDecimal = () => {
+                const show = dom.floatCheck.checked;
+                dom.decimalGroup.style.display = show ? 'block' : 'none';
+                dom.uniqueCheck.disabled = show;
+                if (show) dom.uniqueCheck.checked = false;
+            };
+
+            const render = () => {
+                dom.generateBtn.disabled = state.isProcessing;
+                if (state.isProcessing) {
+                    dom.generateBtnText.textContent = 'Generating...';
+                } else {
+                    dom.generateBtnText.textContent = 'Generate Numbers';
+                }
+            };
+
+            const validate = (quiet = false) => {
+                const min = Number(dom.min.value);
+                const max = Number(dom.max.value);
+                const qty = Number(dom.qty.value);
+                if (Number.isNaN(min) || Number.isNaN(max) || Number.isNaN(qty)) {
+                    if (!quiet) setStatus('Please enter valid numbers.', 'warning');
+                    return { ok: false, error: 'Invalid input' };
+                }
+                if (min >= max) {
+                    if (!quiet) setStatus('Minimum must be less than maximum.', 'warning');
+                    return { ok: false, error: 'Min must be less than max' };
+                }
+                if (qty < 1) {
+                    if (!quiet) setStatus('Quantity must be at least 1.', 'warning');
+                    return { ok: false, error: 'Quantity too low' };
+                }
+                if (dom.uniqueCheck.checked && !dom.floatCheck.checked) {
+                    const intMin = Math.ceil(min);
+                    const intMax = Math.floor(max);
+                    const rangeSize = intMax - intMin + 1;
+                    if (qty > rangeSize) {
+                        const err = `Cannot generate ${qty} unique integers from a range of ${rangeSize}.`;
+                        if (!quiet) setStatus(err, 'warning');
+                        return { ok: false, error: err };
+                    }
+                }
+                return { ok: true };
+            };
+
+            const shuffle = (arr) => {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            };
+
+            const generate = (e) => {
+                if (e) e.preventDefault();
+                if (state.isProcessing) return;
+                const check = validate();
+                if (!check.ok) {
+                    dom.output.value = check.error || 'Invalid input.';
+                    return;
+                }
+
+                state.isProcessing = true;
+                render();
+
+                setTimeout(() => {
+                    const min = Number(dom.min.value);
+                    const max = Number(dom.max.value);
+                    const qty = Number(dom.qty.value);
+                    const allowFloat = dom.floatCheck.checked;
+                    const decimals = Number(dom.decimalInput.value) || 0;
+                    const unique = dom.uniqueCheck.checked && !allowFloat;
+
+                    let numbers = [];
+                    if (unique) {
+                        const intMin = Math.ceil(min);
+                        const intMax = Math.floor(max);
+                        const range = Array.from({ length: intMax - intMin + 1 }, (_, i) => intMin + i);
+                        numbers = shuffle(range).slice(0, qty);
+                    } else {
+                        for (let i = 0; i < qty; i++) {
+                            if (allowFloat) {
+                                const rand = Math.random() * (max - min) + min;
+                                numbers.push(Number(rand.toFixed(decimals)));
+                            } else {
+                                const intMin = Math.ceil(min);
+                                const intMax = Math.floor(max);
+                                numbers.push(Math.floor(Math.random() * (intMax - intMin + 1)) + intMin);
+                            }
+                        }
+                    }
+
+                    const sort = dom.sortSelect.value;
+                    if (sort === 'asc') numbers.sort((a, b) => a - b);
+                    else if (sort === 'desc') numbers.sort((a, b) => b - a);
+
+                    const separator = dom.separatorSelect.value === '\\n' ? '\n' : dom.separatorSelect.value;
+                    dom.output.value = numbers.join(separator);
+
+                    const msg = `Generated ${numbers.length} number${numbers.length === 1 ? '' : 's'}.`;
+                    setStatus(msg, 'success');
+                    dom.stats.textContent = `Range ${min} to ${max} • ${allowFloat ? 'Decimals' : 'Integers'} • ${sort === 'none' ? 'Unsorted' : (sort === 'asc' ? 'Ascending' : 'Descending')}`;
+
+                    state.isProcessing = false;
+                    render();
+                }, 40);
+            };
+
+            const clearOutput = () => {
+                dom.output.value = '';
+                setStatus('Output cleared.', 'info');
+                dom.stats.textContent = 'Awaiting generation';
+            };
+
+            const copyOutput = () => {
+                if (!dom.output.value) {
+                    setStatus('Nothing to copy.', 'warning');
+                    return;
+                }
+                navigator.clipboard.writeText(dom.output.value).then(
+                    () => setStatus('Copied to clipboard.', 'success'),
+                    () => setStatus('Copy failed.', 'error')
+                );
+            };
+
+            const presets = () => {
+                const apply = (min, max, qty, allowFloat = false, unique = false, sort = 'none') => {
+                    dom.min.value = min;
+                    dom.max.value = max;
+                    dom.qty.value = qty;
+                    dom.floatCheck.checked = allowFloat;
+                    dom.uniqueCheck.checked = unique;
+                    dom.sortSelect.value = sort;
+                    toggleDecimal();
+                    generate();
+                };
+                document.getElementById('preset-d6').addEventListener('click', () => apply(1, 6, 1, false, false));
+                document.getElementById('preset-d20').addEventListener('click', () => apply(1, 20, 1, false, false));
+                document.getElementById('preset-lotto').addEventListener('click', () => apply(1, 70, 5, false, true, 'asc'));
+                document.getElementById('preset-powerball').addEventListener('click', generatePowerball);
+                document.getElementById('preset-dnd').addEventListener('click', generateDnD);
+            };
+
+            const generatePowerball = () => {
+                // 5 unique white balls (1-69), sorted ascending
+                const whites = shuffle(Array.from({ length: 69 }, (_, i) => i + 1)).slice(0, 5).sort((a, b) => a - b);
+                // 1 red Powerball (1-26)
+                const red = Math.floor(Math.random() * 26) + 1;
+                dom.output.value = `${whites.join(' ')} | Powerball: ${red}`;
+                setStatus('Powerball quick pick generated.', 'success');
+                dom.stats.textContent = 'Powerball: 5 white (1-69 unique, sorted) + 1 red (1-26)';
+            };
+
+            const generateDnD = () => {
+                const rollDie = () => Math.floor(Math.random() * 6) + 1;
+                const rolls = Array.from({ length: 6 }, () =>
+                    rollDie() + rollDie() + rollDie()
+                );
+                dom.output.value = rolls.join(' ');
+                setStatus('D&D attributes generated (6×3d6).', 'success');
+                dom.stats.textContent = 'D&D: six sums of 3d6, no labels';
+            };
+
+            const init = () => {
+                cache();
+                toggleDecimal();
+                dom.form.addEventListener('submit', generate);
+                dom.floatCheck.addEventListener('change', toggleDecimal);
+                dom.copyBtn.addEventListener('click', copyOutput);
+                dom.clearBtn.addEventListener('click', clearOutput);
+                document.getElementById('backButton').addEventListener('click', () => window.location.href = 'index.html');
+                ['min', 'max', 'qty'].forEach(key => dom[key].addEventListener('input', () => validate(true)));
+                presets();
+                setStatus('Ready', 'success');
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>

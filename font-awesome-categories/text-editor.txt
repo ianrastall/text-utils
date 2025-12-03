@@ -1,0 +1,49 @@
+align-center	&#xf037;
+align-justify	&#xf039;
+align-left	&#xf036;
+align-right	&#xf038;
+bold	&#xf032;
+chain (alias)	&#xf0c1;
+chain-broken	&#xf127;
+clipboard	&#xf0ea
+columns	&#xf0db
+copy (alias)	&#xf0c5;
+cut (alias)	&#xf0c4;
+dedent (alias)	&#xf03b
+eraser	&#xf12d
+file	&#xf15b
+file-o	&#xf016;
+file-text	&#xf15c
+file-text-o	&#xf0f6;
+files-o	&#xf0c5;
+floppy-o	&#xf0c7;
+font	&#xf031;
+header	&#xf1dc
+indent	&#xf03c
+italic	&#xf033;
+link	&#xf0c1;
+list	&#xf03a
+list-alt	&#xf022;
+list-ol	&#xf0cb
+list-ul	&#xf0ca
+outdent	&#xf03b
+paperclip	&#xf0c6;
+paragraph	&#xf1dd
+paste (alias)	&#xf0ea
+repeat	&#xf01e
+rotate-left (alias)	&#xf0e2;
+rotate-right (alias)	&#xf01e
+save (alias)	&#xf0c7;
+scissors	&#xf0c4;
+strikethrough	&#xf0cc
+subscript	&#xf12c
+superscript	&#xf12b
+table	&#xf0ce
+text-height	&#xf034;
+text-width	&#xf035;
+th	&#xf00a
+th-large	&#xf009;
+th-list	&#xf00b
+underline	&#xf0cd
+undo	&#xf0e2;
+unlink (alias)	&#xf127;

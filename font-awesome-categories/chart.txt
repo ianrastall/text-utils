@@ -1,0 +1,5 @@
+area-chart	&#xf1fe
+bar-chart	&#xf080;
+bar-chart-o (alias)	&#xf080;
+line-chart	&#xf201;
+pie-chart	&#xf200;
