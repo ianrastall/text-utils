@@ -372,7 +372,21 @@ input[type="checkbox"], input[type="radio"] {
     color: var(--text-secondary);
 }
 
-/* Utility Classes */
+.site-footer {
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+
 .hidden {
     display: none !important;
 }
