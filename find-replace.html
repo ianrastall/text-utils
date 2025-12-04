@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find & Replace - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tool-actions {
+            flex-wrap: wrap;
+        }
+
+        .options-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toggle-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .toggle-row label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .hint-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            justify-content: space-between;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .match-info {
+            color: var(--text-secondary);
+            min-height: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .text-area-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .line-numbered-wrapper {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            overflow: hidden;
+        }
+
+        .line-numbers {
+            min-width: 3.5rem;
+            padding: 1rem 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            margin: 0;
+            text-align: right;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            user-select: none;
+            white-space: pre;
+            overflow: hidden;
+        }
+
+        .line-numbered-textarea {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            padding: 1rem;
+            resize: vertical;
+            min-height: 320px;
+        }
+
+        .line-numbered-textarea:focus {
+            outline: none;
+        }
+
+        .text-stats {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">find_replace</span>
+                        <h2>Find & Replace</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="clearAll" class="btn btn-secondary">
+                            <span class="material-icons">delete</span>
+                            Clear
+                        </button>
+                        <button id="copyOutput" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Search through your text with optional regex, swap values in bulk, and keep track of matches with line-numbered input.</p>
+
+                <div class="options-panel">
+                    <div class="options-grid">
+                        <div class="option-group">
+                            <label for="findText">Find</label>
+                            <input type="text" id="findText" placeholder="Text or /regex/">
+                        </div>
+                        <div class="option-group">
+                            <label for="replaceText">Replace With</label>
+                            <input type="text" id="replaceText" placeholder="Replacement text (use $1 or \\1)">
+                        </div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <label for="caseSensitive">
+                            <input type="checkbox" id="caseSensitive">
+                            Case sensitive
+                        </label>
+                        <label for="useRegex">
+                            <input type="checkbox" id="useRegex">
+                            Use regular expression
+                        </label>
+                        <label for="multilineMode">
+                            <input type="checkbox" id="multilineMode" checked>
+                            Multiline (^ and $)
+                        </label>
+                    </div>
+
+                    <div class="hint-text">Tip: In plain text mode, different newline types are matched as a single <code>\n</code>. Use <code>\n</code> in "Replace With" to insert a line break.</div>
+
+                    <div class="action-row">
+                        <div class="button-row">
+                            <button id="replaceAllBtn" class="btn btn-primary">
+                                <span class="material-icons">find_replace</span>
+                                Replace All (Ctrl/Cmd + Enter)
+                            </button>
+                            <button id="revertBtn" class="btn btn-secondary" disabled>
+                                <span class="material-icons">undo</span>
+                                Revert
+                            </button>
+                            <button id="pasteBtn" class="btn btn-secondary">
+                                <span class="material-icons">content_paste</span>
+                                Paste
+                            </button>
+                        </div>
+                        <div id="matchCount" class="match-info" aria-live="polite" aria-atomic="true"></div>
+                    </div>
+                </div>
+
+                <div class="text-area-wrapper">
+                    <div class="io-label">
+                        <span>Text</span>
+                        <span class="stats" id="textStats">0 chars, 0 lines</span>
+                    </div>
+                    <div class="line-numbered-wrapper">
+                        <pre id="lineNumbers" class="line-numbers">1</pre>
+                        <textarea id="inputText" class="line-numbered-textarea" placeholder="Enter or paste text here..." wrap="off" autofocus></textarea>
+                    </div>
+                </div>
+
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="toolStats">No operations yet</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        'use strict';
+
+        // DOM elements
+        const inputText = document.getElementById('inputText');
+        const findInput = document.getElementById('findText');
+        const replaceInput = document.getElementById('replaceText');
+        const caseSensitiveCheckbox = document.getElementById('caseSensitive');
+        const useRegexCheckbox = document.getElementById('useRegex');
+        const multilineModeCheckbox = document.getElementById('multilineMode');
+        const lineNumbers = document.getElementById('lineNumbers');
+        const textStats = document.getElementById('textStats');
+        const matchCountDisplay = document.getElementById('matchCount');
+        const statusMessage = document.getElementById('statusMessage');
+        const toolStats = document.getElementById('toolStats');
+        const replaceAllBtn = document.getElementById('replaceAllBtn');
+        const revertBtn = document.getElementById('revertBtn');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const copyButton = document.getElementById('copyOutput');
+        const clearButton = document.getElementById('clearAll');
+        const backButton = document.getElementById('backButton');
+
+        let previousText = '';
+
+        const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        const debounce = (func, delay = 250) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(null, args), delay);
+            };
+        };
+
+        function showStatus(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.className = type;
+        }
+
+        function updateLineNumbers() {
+            requestAnimationFrame(() => {
+                const totalLines = inputText.value.split('\\n').length || 1;
+                const numbers = Array.from({ length: totalLines }, (_, i) => i + 1).join('\\n');
+                lineNumbers.textContent = numbers;
+            });
+        }
+
+        function updateStats() {
+            const chars = inputText.value.length;
+            const lines = inputText.value.split('\\n').length;
+            textStats.textContent = `${chars} chars, ${lines} lines`;
+        }
+
+        function createRegex() {
+            const findValue = findInput.value;
+            if (!findValue) return null;
+
+            const isCaseSensitive = caseSensitiveCheckbox.checked;
+            const useRegex = useRegexCheckbox.checked;
+            const isMultiline = multilineModeCheckbox.checked;
+            const flags = `g${isCaseSensitive ? '' : 'i'}u${isMultiline ? 'm' : ''}`;
+
+            let pattern;
+            if (useRegex) {
+                pattern = findValue;
+            } else {
+                const normalizedFindValue = findValue.replace(/\\r\\n?/g, '\\n');
+                pattern = escapeRegExp(normalizedFindValue);
+            }
+
+            return new RegExp(pattern, flags);
+        }
+
+        function updateMatchCount() {
+            try {
+                const regex = createRegex();
+                if (!regex) {
+                    matchCountDisplay.textContent = '';
+                    return;
+                }
+                const matches = inputText.value.match(regex);
+                const count = matches ? matches.length : 0;
+                matchCountDisplay.textContent = count === 0
+                    ? 'No matches found.'
+                    : `${count} match${count === 1 ? '' : 'es'} found.`;
+            } catch (error) {
+                if (error instanceof SyntaxError && useRegexCheckbox.checked) {
+                    matchCountDisplay.textContent = 'Invalid regular expression.';
+                    showStatus('Invalid regular expression', 'error');
+                } else {
+                    matchCountDisplay.textContent = `Error: ${error.message}`;
+                    showStatus('Error creating pattern', 'error');
+                }
+            }
+        }
+
+        function performReplaceAll() {
+            if (!findInput.value) {
+                showStatus('The "Find" field cannot be empty.', 'warning');
+                findInput.focus();
+                return;
+            }
+
+            try {
+                const regex = createRegex();
+                if (!regex) return;
+
+                const originalText = inputText.value;
+                const matches = originalText.match(regex);
+                const count = matches ? matches.length : 0;
+
+                if (count === 0) {
+                    matchCountDisplay.textContent = 'No matches found.';
+                    showStatus('No matches found to replace.', 'warning');
+                    return;
+                }
+
+                previousText = originalText;
+
+                const startTime = performance.now();
+                const replaceValue = replaceInput.value
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\r/g, '\r');
+                const finalReplaceValue = replaceValue.replace(/\\(\\d+)/g, '$$$1');
+                const resultText = originalText.replace(regex, finalReplaceValue);
+                const endTime = performance.now();
+
+                inputText.value = resultText;
+                revertBtn.disabled = false;
+                showStatus(`Replaced ${count} occurrence${count === 1 ? '' : 's'}.`, 'success');
+                toolStats.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
+
+                updateLineNumbers();
+                updateStats();
+                updateMatchCount();
+                inputText.focus();
+            } catch (error) {
+                if (error instanceof SyntaxError && useRegexCheckbox.checked) {
+                    showStatus('Invalid regular expression.', 'error');
+                    matchCountDisplay.textContent = 'Invalid regular expression.';
+                } else {
+                    showStatus('An error occurred during replacement.', 'error');
+                    matchCountDisplay.textContent = `Error: ${error.message}`;
+                }
+            }
+        }
+
+        function revertLastChange() {
+            if (!previousText) return;
+            inputText.value = previousText;
+            previousText = '';
+            revertBtn.disabled = true;
+            showStatus('Last replacement reverted.', 'success');
+            updateLineNumbers();
+            updateStats();
+            updateMatchCount();
+        }
+
+        async function pasteText() {
+            try {
+                if (!navigator.clipboard?.readText) {
+                    throw new Error('Clipboard paste not supported or permission denied.');
+                }
+                const text = await navigator.clipboard.readText();
+                inputText.value = text;
+                previousText = '';
+                revertBtn.disabled = true;
+                showStatus('Pasted from clipboard.', 'success');
+                updateLineNumbers();
+                updateStats();
+                updateMatchCount();
+            } catch (error) {
+                showStatus(`Paste failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function copyText() {
+            if (!inputText.value) {
+                showStatus('Nothing to copy.', 'warning');
+                return;
+            }
+            try {
+                if (!navigator.clipboard?.writeText) {
+                    throw new Error('Clipboard copy not supported or permission denied.');
+                }
+                await navigator.clipboard.writeText(inputText.value);
+                showStatus('Copied to clipboard.', 'success');
+            } catch (error) {
+                showStatus(`Copy failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearAll() {
+            inputText.value = '';
+            findInput.value = '';
+            replaceInput.value = '';
+            caseSensitiveCheckbox.checked = false;
+            useRegexCheckbox.checked = false;
+            multilineModeCheckbox.checked = true;
+            previousText = '';
+            revertBtn.disabled = true;
+            matchCountDisplay.textContent = '';
+            toolStats.textContent = 'No operations yet';
+            showStatus('Cleared all fields.', 'success');
+            updateLineNumbers();
+            updateStats();
+            updateMatchCount();
+            inputText.focus();
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        const debouncedUpdate = debounce(() => {
+            updateMatchCount();
+            updateStats();
+        }, 200);
+
+        inputText.addEventListener('input', () => {
+            previousText = '';
+            revertBtn.disabled = true;
+            updateLineNumbers();
+            debouncedUpdate();
+        });
+
+        inputText.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = inputText.scrollTop;
+        });
+
+        findInput.addEventListener('input', debouncedUpdate);
+        caseSensitiveCheckbox.addEventListener('change', updateMatchCount);
+        useRegexCheckbox.addEventListener('change', updateMatchCount);
+        multilineModeCheckbox.addEventListener('change', updateMatchCount);
+
+        replaceAllBtn.addEventListener('click', performReplaceAll);
+        revertBtn.addEventListener('click', revertLastChange);
+        pasteBtn.addEventListener('click', pasteText);
+        copyButton.addEventListener('click', copyText);
+        clearButton.addEventListener('click', clearAll);
+        backButton.addEventListener('click', goBack);
+
+        document.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                event.preventDefault();
+                performReplaceAll();
+            }
+        });
+
+        updateLineNumbers();
+        updateStats();
+        updateMatchCount();
+    </script>
+</body>
+</html>
