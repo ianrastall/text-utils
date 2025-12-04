@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML - Text Utilities</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tool-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .tool-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .tab-bar {
+            display: inline-flex;
+            gap: 0.25rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.25rem;
+            width: fit-content;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .preview-pane {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1rem;
+            min-height: 260px;
+            max-height: 60vh;
+            overflow: auto;
+        }
+
+        .html-pane {
+            width: 100%;
+            min-height: 260px;
+            max-height: 60vh;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            resize: vertical;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+
+        .actions-left,
+        .actions-right {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="material-icons">text_snippet</span>
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown">
+                        <option value="#0d9488">Teal</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#8b5cf6">Purple</option>
+                        <option value="#10b981">Emerald</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#ec4899">Soft Pink</option>
+                        <option value="#fb7185">Coral</option>
+                        <option value="#60a5fa">Cornflower</option>
+                        <option value="#7c3aed">Violet</option>
+                    </select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">transform</span>
+                        <h2>Markdown & HTML Converter</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button id="backButton" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button id="clearAll" class="btn btn-secondary">
+                            <span class="material-icons">delete</span>
+                            Clear
+                        </button>
+                        <button id="copyOutput" class="btn btn-secondary">
+                            <span class="material-icons">content_copy</span>
+                            Copy HTML
+                        </button>
+                    </div>
+                </div>
+
+                <p class="tool-description">Convert between Markdown and HTML with live preview, sanitization, and GFM options.</p>
+
+                <div class="options-panel" id="toolOptions">
+                    <div class="options-grid">
+                        <div class="option-group">
+                            <label for="livePreview">Live Preview</label>
+                            <input type="checkbox" id="livePreview" checked>
+                        </div>
+                        <div class="option-group">
+                            <label for="tables">Tables</label>
+                            <input type="checkbox" id="tables" checked>
+                        </div>
+                        <div class="option-group">
+                            <label for="taskLists">Task Lists</label>
+                            <input type="checkbox" id="taskLists" checked>
+                        </div>
+                        <div class="option-group">
+                            <label for="strikethrough">Strikethrough</label>
+                            <input type="checkbox" id="strikethrough" checked>
+                        </div>
+                        <div class="option-group">
+                            <label for="emoji">Emoji</label>
+                            <input type="checkbox" id="emoji">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-layout">
+                    <div class="panel">
+                        <div class="io-label">
+                            <span>Markdown</span>
+                            <span class="stats" id="mdStats">0 chars, 0 lines</span>
+                        </div>
+                        <textarea id="markdownInput" placeholder="Write Markdown here..."></textarea>
+                        <div class="actions-row">
+                            <div class="actions-left">
+                                <button id="toHtmlBtn" class="btn btn-primary">
+                                    <span class="material-icons">play_arrow</span>
+                                    To HTML
+                                </button>
+                                <button id="copyMdBtn" class="btn btn-secondary">
+                                    <span class="material-icons">content_copy</span>
+                                    Copy MD
+                                </button>
+                            </div>
+                            <div class="actions-right">
+                                <button id="loadSample" class="btn btn-secondary">
+                                    <span class="material-icons">history</span>
+                                    Sample
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="io-label">
+                            <span>HTML</span>
+                            <span class="stats" id="htmlStats">0 chars</span>
+                        </div>
+                        <div class="tab-bar">
+                            <button class="tab-btn active" data-tab="preview">Preview</button>
+                            <button class="tab-btn" data-tab="code">HTML</button>
+                        </div>
+                        <div id="previewPane" class="preview-pane"></div>
+                        <textarea id="htmlOutput" class="html-pane hidden" placeholder="HTML output..."></textarea>
+                        <div class="actions-left">
+                            <button id="toMdBtn" class="btn btn-secondary">
+                                <span class="material-icons">arrow_back</span>
+                                To Markdown
+                            </button>
+                            <button id="copyHtmlBtn" class="btn btn-secondary">
+                                <span class="material-icons">content_copy</span>
+                                Copy HTML
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-bar">
+                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="toolStats">No operations yet</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.3/dist/turndown.min.js"></script>
+    <script src="https://unpkg.com/turndown-plugin-gfm@1.0.2/dist/turndown-plugin-gfm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.11/dist/purify.min.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        'use strict';
+
+        const markdownInput = document.getElementById('markdownInput');
+        const htmlOutput = document.getElementById('htmlOutput');
+        const previewPane = document.getElementById('previewPane');
+        const mdStats = document.getElementById('mdStats');
+        const htmlStats = document.getElementById('htmlStats');
+        const statusMessage = document.getElementById('statusMessage');
+        const toolStats = document.getElementById('toolStats');
+
+        const livePreview = document.getElementById('livePreview');
+        const tables = document.getElementById('tables');
+        const taskLists = document.getElementById('taskLists');
+        const strikethrough = document.getElementById('strikethrough');
+        const emoji = document.getElementById('emoji');
+
+        const toHtmlBtn = document.getElementById('toHtmlBtn');
+        const toMdBtn = document.getElementById('toMdBtn');
+        const copyMdBtn = document.getElementById('copyMdBtn');
+        const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+        const copyButton = document.getElementById('copyOutput');
+        const clearButton = document.getElementById('clearAll');
+        const backButton = document.getElementById('backButton');
+        const loadSampleBtn = document.getElementById('loadSample');
+
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        let showdownConverter;
+        let turndownService;
+
+        function setStatus(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.className = type;
+        }
+
+        function updateStats() {
+            const mdText = markdownInput.value;
+            const htmlText = htmlOutput.value;
+            mdStats.textContent = `${mdText.length} chars, ${mdText.split('\\n').length} lines`;
+            htmlStats.textContent = `${htmlText.length} chars`;
+        }
+
+        function initConverters() {
+            showdownConverter = new showdown.Converter();
+            turndownService = new TurndownService({
+                hr: '---',
+                bulletListMarker: '*',
+                codeBlockStyle: 'fenced'
+            });
+            turndownService.use(turndownPluginGfm.gfm);
+            applyOptions();
+        }
+
+        function applyOptions() {
+            showdownConverter.setOption('tables', tables.checked);
+            showdownConverter.setOption('tasklists', taskLists.checked);
+            showdownConverter.setOption('strikethrough', strikethrough.checked);
+            showdownConverter.setOption('emoji', emoji.checked);
+            showdownConverter.setOption('openLinksInNewWindow', true);
+            showdownConverter.setOption('ghCompatibleHeaderId', true);
+        }
+
+        function convertMarkdownToHtml() {
+            const start = performance.now();
+            try {
+                const rawHtml = showdownConverter.makeHtml(markdownInput.value);
+                const cleanHtml = DOMPurify.sanitize(rawHtml);
+                htmlOutput.value = cleanHtml;
+                previewPane.innerHTML = cleanHtml;
+                setStatus('Converted to HTML', 'success');
+                const end = performance.now();
+                toolStats.textContent = `Processed in ${Math.round(end - start)}ms`;
+                updateStats();
+            } catch (error) {
+                console.error('Markdown conversion error:', error);
+                setStatus('Error converting to HTML', 'error');
+            }
+        }
+
+        function convertHtmlToMarkdown() {
+            const start = performance.now();
+            try {
+                const md = turndownService.turndown(htmlOutput.value);
+                markdownInput.value = md;
+                setStatus('Converted to Markdown', 'success');
+                const end = performance.now();
+                toolStats.textContent = `Processed in ${Math.round(end - start)}ms`;
+                updateStats();
+                if (livePreview.checked) {
+                    convertMarkdownToHtml();
+                }
+            } catch (error) {
+                console.error('HTML to Markdown error:', error);
+                setStatus('Error converting to Markdown', 'error');
+            }
+        }
+
+        async function copyToClipboard(text, successMessage) {
+            if (!text) {
+                setStatus('Nothing to copy', 'warning');
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(text);
+                setStatus(successMessage, 'success');
+            } catch (error) {
+                console.error('Copy failed:', error);
+                setStatus('Copy failed', 'error');
+            }
+        }
+
+        function clearAll() {
+            markdownInput.value = '';
+            htmlOutput.value = '';
+            previewPane.innerHTML = '';
+            setStatus('Cleared', 'success');
+            toolStats.textContent = 'No operations yet';
+            updateStats();
+        }
+
+        function loadSample() {
+            const sample = [
+                '# Welcome!',
+                '',
+                'This is a live Markdown to HTML converter.',
+                '',
+                '- Type Markdown in the left panel.',
+                '- See the rendered HTML in the right panel.',
+                '',
+                '## Features',
+                '- Tables, task lists, strikethrough, and emoji support via options.',
+                '- Secure preview using DOMPurify.',
+                '',
+                '| Feature | Status |',
+                '| --- | --- |',
+                '| Live Preview | Yes |',
+                '| GFM Tables | Yes |',
+                '| Task Lists | Yes |'
+            ].join('\\n');
+            markdownInput.value = sample;
+            convertMarkdownToHtml();
+            updateStats();
+            setStatus('Sample loaded', 'success');
+        }
+
+        function toggleTab(target) {
+            tabButtons.forEach(btn => {
+                const isActive = btn.dataset.tab === target;
+                btn.classList.toggle('active', isActive);
+            });
+            const showPreview = target === 'preview';
+            previewPane.classList.toggle('hidden', !showPreview);
+            htmlOutput.classList.toggle('hidden', showPreview);
+        }
+
+        function handleInputChange() {
+            updateStats();
+            if (livePreview.checked) {
+                convertMarkdownToHtml();
+            }
+        }
+
+        function attachEvents() {
+            markdownInput.addEventListener('input', handleInputChange);
+            htmlOutput.addEventListener('input', updateStats);
+
+            [tables, taskLists, strikethrough, emoji].forEach(box => {
+                box.addEventListener('change', () => {
+                    applyOptions();
+                    if (livePreview.checked) {
+                        convertMarkdownToHtml();
+                    }
+                });
+            });
+
+            livePreview.addEventListener('change', () => {
+                if (livePreview.checked) {
+                    convertMarkdownToHtml();
+                }
+            });
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => toggleTab(btn.dataset.tab));
+            });
+
+            toHtmlBtn.addEventListener('click', convertMarkdownToHtml);
+            toMdBtn.addEventListener('click', convertHtmlToMarkdown);
+            copyMdBtn.addEventListener('click', () => copyToClipboard(markdownInput.value, 'Markdown copied'));
+            copyHtmlBtn.addEventListener('click', () => copyToClipboard(htmlOutput.value, 'HTML copied'));
+            copyButton.addEventListener('click', () => copyToClipboard(htmlOutput.value, 'HTML copied'));
+            clearButton.addEventListener('click', clearAll);
+            backButton.addEventListener('click', () => window.location.href = 'index.html');
+            loadSampleBtn.addEventListener('click', loadSample);
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    convertMarkdownToHtml();
+                }
+            });
+        }
+
+        initConverters();
+        attachEvents();
+        loadSample();
+        updateStats();
+        setStatus('Ready', 'success');
+    </script>
+</body>
+</html>
