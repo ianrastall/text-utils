@@ -83,6 +83,13 @@ header {
     color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.site-network-link .material-icons {
+    font-size: 1.1em;
 }
 
 .site-network-link:hover {
@@ -457,5 +464,14 @@ input[type="checkbox"], input[type="radio"] {
     .site-network {
         position: static;
         transform: none;
+        order: 3;
+        width: 100%;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    header {
+        flex-wrap: wrap;
     }
 }
