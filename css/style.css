@@ -231,6 +231,11 @@ header {
     transition: all 0.2s;
 }
 
+.btn-compact {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+}
+
 .btn-primary {
     background: var(--accent);
     color: white;
@@ -432,6 +437,35 @@ input[type="checkbox"], input[type="radio"] {
 
 .hidden {
     display: none !important;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.pill {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.pill.muted {
+    border-color: var(--border-color);
+    color: var(--text-secondary);
 }
 
 .success {

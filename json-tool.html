@@ -155,7 +155,7 @@
                         <h2>JSON Tool</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary">
+                        <button id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
@@ -163,7 +163,7 @@
                             <span class="material-icons">science</span>
                             Example
                         </button>
-                        <button id="copyOutput" class="btn btn-secondary">
+                        <button id="copyOutput" class="btn btn-secondary btn-compact">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
@@ -257,14 +257,14 @@
                     <div class="io-panel">
                         <div class="io-label">
                             <span>Input JSON</span>
-                            <span class="stats" id="inputStats">0 chars</span>
+                            <span class="stats pill muted" id="inputStats">0 chars</span>
                         </div>
                         <textarea id="inputText" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
                     </div>
                     <div class="io-panel">
                         <div class="io-label">
                             <span id="outputLabel">Formatted Output</span>
-                            <span class="stats" id="outputStats">0 chars</span>
+                            <span class="stats pill muted" id="outputStats">0 chars</span>
                         </div>
                         <textarea id="outputText" class="output" readonly placeholder="Processed output will appear here..."></textarea>
                     </div>
