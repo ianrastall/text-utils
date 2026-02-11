@@ -52,6 +52,7 @@ header {
     padding: 1rem 0;
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 2rem;
+    position: relative;
 }
 
 .logo {
@@ -70,6 +71,22 @@ header {
     display: flex;
     gap: 1rem;
     align-items: center;
+}
+
+.site-network {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.site-network-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.site-network-link:hover {
+    color: var(--accent);
 }
 
 .accent-selector {
@@ -394,7 +411,7 @@ input[type="checkbox"], input[type="radio"] {
     margin-top: 2rem;
     padding: 1.5rem 0;
     border-top: 1px solid var(--border-color);
-    text-align: center;
+    text-align: right;
     color: var(--text-secondary);
     line-height: 1.5;
     font-size: 0.95rem;
@@ -435,5 +452,10 @@ input[type="checkbox"], input[type="radio"] {
         flex-direction: column;
         gap: 1rem;
         align-items: flex-start;
+    }
+
+    .site-network {
+        position: static;
+        transform: none;
     }
 }
