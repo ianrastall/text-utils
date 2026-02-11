@@ -5,6 +5,20 @@
     // DOM Elements
     const themeToggle = document.getElementById('themeToggle');
     const accentColor = document.getElementById('accentColor');
+    const DEFAULT_ACCENT = '#0d9488';
+
+    function normalizeHexColor(color) {
+        if (typeof color !== 'string') {
+            return DEFAULT_ACCENT;
+        }
+
+        const candidate = color.trim();
+        if (/^#[0-9a-fA-F]{6}$/.test(candidate)) {
+            return candidate.toLowerCase();
+        }
+
+        return DEFAULT_ACCENT;
+    }
 
     // Initialize theme and colors on load
     function loadPreferences() {
@@ -18,7 +32,7 @@
         }
         
         // Accent color
-        const savedColor = localStorage.getItem('accentColor') || '#0d9488';
+        const savedColor = normalizeHexColor(localStorage.getItem('accentColor'));
         if (accentColor) {
             accentColor.value = savedColor;
         }
@@ -41,29 +55,26 @@
 
     // Change accent color
     function changeAccentColor(color) {
-        document.documentElement.style.setProperty('--accent', color);
-        const lighter = adjustColor(color, 20);
+        const normalizedColor = normalizeHexColor(color);
+        document.documentElement.style.setProperty('--accent', normalizedColor);
+        const lighter = adjustColor(normalizedColor, 20);
         document.documentElement.style.setProperty('--accent-light', lighter);
-        localStorage.setItem('accentColor', color);
+        localStorage.setItem('accentColor', normalizedColor);
     }
 
     // Adjust color brightness
     function adjustColor(color, amount) {
-        let usePound = false;
-        if (color[0] === "#") {
-            color = color.slice(1);
-            usePound = true;
-        }
-        const num = parseInt(color, 16);
-        let r = (num >> 16) + amount;
-        let b = ((num >> 8) & 0x00FF) + amount;
-        let g = (num & 0x0000FF) + amount;
-        
-        r = Math.min(Math.max(0, r), 255);
-        g = Math.min(Math.max(0, g), 255);
-        b = Math.min(Math.max(0, b), 255);
-        
-        return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+        const normalized = normalizeHexColor(color);
+        const num = parseInt(normalized.slice(1), 16);
+        let red = ((num >> 16) & 0xFF) + amount;
+        let green = ((num >> 8) & 0xFF) + amount;
+        let blue = (num & 0xFF) + amount;
+
+        red = Math.min(Math.max(0, red), 255);
+        green = Math.min(Math.max(0, green), 255);
+        blue = Math.min(Math.max(0, blue), 255);
+
+        return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, '0')}`;
     }
 
     // Setup event listeners
@@ -95,7 +106,8 @@
         adjustColor,
         loadPreferences,
         toggleTheme,
-        changeAccentColor
+        changeAccentColor,
+        normalizeHexColor
     };
 })();
 (function() {

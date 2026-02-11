@@ -31,7 +31,7 @@
                         <option value="#7c3aed">Violet</option>
                     </select>
                 </div>
-                <button id="themeToggle" class="btn btn-secondary">
+                <button id="themeToggle" class="btn btn-secondary" type="button">
                     <span class="material-icons">dark_mode</span>
                 </button>
             </div>
@@ -46,15 +46,15 @@
                         <h2 id="toolName">Case Converter</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary">
+                        <button id="backButton" class="btn btn-secondary" type="button">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="clearAll" class="btn btn-secondary">
+                        <button id="clearAll" class="btn btn-secondary" type="button">
                             <span class="material-icons">delete</span>
                             Clear
                         </button>
-                        <button id="copyOutput" class="btn btn-secondary">
+                        <button id="copyOutput" class="btn btn-secondary" type="button">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
@@ -88,19 +88,19 @@
                             <span>Input</span>
                             <span class="stats" id="inputStats">0 chars</span>
                         </div>
-                        <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+                        <textarea id="inputText" aria-label="Input text for case conversion" placeholder="Paste your text here..."></textarea>
                     </div>
                     <div class="io-panel">
                         <div class="io-label">
                             <span>Output</span>
                             <span class="stats" id="outputStats">0 chars</span>
                         </div>
-                        <textarea id="outputText" class="output" readonly placeholder="Results will appear here..."></textarea>
+                        <textarea id="outputText" aria-label="Converted output text" class="output" readonly placeholder="Results will appear here..."></textarea>
                     </div>
                 </div>
                 
                 <div class="status-bar">
-                    <div id="statusMessage" class="success">Ready</div>
+                    <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
                     <div id="toolStats">No operations yet</div>
                 </div>
             </div>
@@ -120,44 +120,98 @@
         const clearButton = document.getElementById('clearAll');
         const backButton = document.getElementById('backButton');
         const caseTypeSelect = document.getElementById('caseType');
+        const DEFAULT_TOOL_STATS = 'No operations yet';
+        let statusResetTimer = null;
+        let convertDebounceTimer = null;
+
+        function setStatus(message, level = 'success', resetMs = 0) {
+            if (statusResetTimer) {
+                clearTimeout(statusResetTimer);
+                statusResetTimer = null;
+            }
+
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('success', 'warning', 'error');
+            statusMessage.classList.add(level);
+
+            if (resetMs > 0) {
+                statusResetTimer = setTimeout(() => {
+                    statusResetTimer = null;
+                    statusMessage.textContent = 'Ready';
+                    statusMessage.classList.remove('warning', 'error');
+                    statusMessage.classList.add('success');
+                }, resetMs);
+            }
+        }
+
+        function updateCopyButtonState() {
+            copyButton.disabled = !outputText.value;
+        }
 
         // Update character/line statistics
         function updateStats() {
-            const inputLength = inputText.value.length;
-            const outputLength = outputText.value.length;
-            const inputLines = inputText.value.split('\n').length;
-            const outputLines = outputText.value.split('\n').length;
+            const inputValue = inputText.value;
+            const outputValue = outputText.value;
+            const inputLength = inputValue.length;
+            const outputLength = outputValue.length;
+            const inputLines = inputLength ? inputValue.split(/\r?\n/).length : 0;
+            const outputLines = outputLength ? outputValue.split(/\r?\n/).length : 0;
             
             inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
             outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
+            updateCopyButtonState();
+        }
+
+        function fallbackCopy(text) {
+            const helper = document.createElement('textarea');
+            helper.value = text;
+            helper.setAttribute('readonly', '');
+            helper.style.position = 'absolute';
+            helper.style.left = '-9999px';
+            document.body.appendChild(helper);
+            helper.select();
+            helper.setSelectionRange(0, helper.value.length);
+
+            let copied = false;
+            try {
+                copied = document.execCommand('copy');
+            } catch (error) {
+                copied = false;
+            }
+
+            document.body.removeChild(helper);
+            return copied;
         }
 
         // Copy output to clipboard
-        function copyToClipboard() {
+        async function copyToClipboard() {
             if (!outputText.value) return;
-            
-            navigator.clipboard.writeText(outputText.value).then(() => {
-                statusMessage.textContent = 'Copied to clipboard!';
-                statusMessage.className = 'success';
-                setTimeout(() => {
-                    statusMessage.textContent = 'Ready';
-                }, 2000);
-            }).catch(() => {
-                statusMessage.textContent = 'Failed to copy';
-                statusMessage.className = 'error';
-            });
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(outputText.value);
+                } else if (!fallbackCopy(outputText.value)) {
+                    throw new Error('Clipboard unavailable');
+                }
+
+                setStatus('Copied to clipboard!', 'success', 2000);
+            } catch (error) {
+                setStatus('Failed to copy', 'error', 3000);
+            }
         }
 
         // Clear all fields
         function clearAll() {
+            if (convertDebounceTimer) {
+                clearTimeout(convertDebounceTimer);
+                convertDebounceTimer = null;
+            }
             inputText.value = '';
             outputText.value = '';
+            toolStats.textContent = DEFAULT_TOOL_STATS;
             updateStats();
-            statusMessage.textContent = 'Cleared';
-            statusMessage.className = 'success';
-            setTimeout(() => {
-                statusMessage.textContent = 'Ready';
-            }, 1500);
+            setStatus('Cleared', 'success', 1500);
+            inputText.focus();
         }
 
         // Navigate back to home
@@ -175,43 +229,53 @@
         }
 
         function toTitleCase(text) {
-            return text.replace(/\b\w/g, char => char.toUpperCase());
+            return text
+                .toLowerCase()
+                .replace(/\b\w/g, char => char.toUpperCase());
         }
 
         function toSentenceCase(text) {
-            return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+            return text
+                .toLowerCase()
+                .replace(/(^\s*[a-z])|([.!?]\s+[a-z])/g, match => match.toUpperCase());
+        }
+
+        function splitWords(text) {
+            return text
+                .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+                .replace(/[_-]+/g, ' ')
+                .replace(/[^a-zA-Z0-9\s]+/g, ' ')
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+        }
+
+        function capitalizeWord(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }
 
         function toCamelCase(text) {
-            return text
-                .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-                    return index === 0 ? word.toLowerCase() : word.toUpperCase();
-                })
-                .replace(/\s+/g, '')
-                .replace(/[^a-zA-Z0-9]/g, '');
+            const words = splitWords(text);
+            if (!words.length) return '';
+
+            return words[0].toLowerCase() +
+                words.slice(1).map(capitalizeWord).join('');
         }
 
         function toPascalCase(text) {
-            return text
-                .replace(/(?:^\w|[A-Z]|\b\w)/g, word => word.toUpperCase())
-                .replace(/\s+/g, '')
-                .replace(/[^a-zA-Z0-9]/g, '');
+            return splitWords(text).map(capitalizeWord).join('');
         }
 
         function toSnakeCase(text) {
-            return text
-                .replace(/\s+/g, '_')
-                .replace(/([a-z])([A-Z])/g, '$1_$2')
-                .toLowerCase()
-                .replace(/[^a-z0-9_]/g, '');
+            return splitWords(text)
+                .map(word => word.toLowerCase())
+                .join('_');
         }
 
         function toKebabCase(text) {
-            return text
-                .replace(/\s+/g, '-')
-                .replace(/([a-z])([A-Z])/g, '$1-$2')
-                .toLowerCase()
-                .replace(/[^a-z0-9-]/g, '');
+            return splitWords(text)
+                .map(word => word.toLowerCase())
+                .join('-');
         }
 
         function invertCase(text) {
@@ -222,11 +286,18 @@
 
         // Main conversion function
         function convertCase() {
+            if (convertDebounceTimer) {
+                clearTimeout(convertDebounceTimer);
+                convertDebounceTimer = null;
+            }
+
             const input = inputText.value;
             const caseType = caseTypeSelect.value;
             
             if (!input) {
                 outputText.value = '';
+                toolStats.textContent = DEFAULT_TOOL_STATS;
+                setStatus('Ready');
                 updateStats();
                 return;
             }
@@ -270,24 +341,29 @@
                 const endTime = performance.now();
                 
                 outputText.value = result;
-                statusMessage.textContent = 'Success';
-                statusMessage.className = 'success';
+                setStatus('Success');
                 toolStats.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
             } catch (error) {
                 outputText.value = `Error: ${error.message}`;
-                statusMessage.textContent = 'Error';
-                statusMessage.className = 'error';
+                setStatus('Error', 'error');
                 toolStats.textContent = 'Processing failed';
             }
             
             updateStats();
         }
 
+        function scheduleConvertCase() {
+            if (convertDebounceTimer) {
+                clearTimeout(convertDebounceTimer);
+            }
+            convertDebounceTimer = setTimeout(() => {
+                convertDebounceTimer = null;
+                convertCase();
+            }, 120);
+        }
+
         // Setup event listeners
-        inputText.addEventListener('input', () => {
-            updateStats();
-            convertCase();
-        });
+        inputText.addEventListener('input', scheduleConvertCase);
         caseTypeSelect.addEventListener('change', convertCase);
         copyButton.addEventListener('click', copyToClipboard);
         clearButton.addEventListener('click', clearAll);
@@ -295,11 +371,9 @@
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    convertCase();
-                }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && document.activeElement === inputText) {
+                e.preventDefault();
+                convertCase();
             }
         });
 

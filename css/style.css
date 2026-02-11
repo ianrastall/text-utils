@@ -222,6 +222,16 @@ header {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+.btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 /* Tool I/O */
 .io-container {
     display: grid;
@@ -271,6 +281,14 @@ textarea {
 textarea:focus {
     outline: none;
     border-color: var(--accent);
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .output {

@@ -1,0 +1,1461 @@
+# Case Converter Targeted Code Dump
+
+Generated: 2026-02-11 00:54:52 UTC
+Repository: `D:\GitHub\text-utils`
+Target tool: `case-converter.html`
+Output file: `context/code-dump-case-converter.txt`
+
+## Included Files
+- `case-converter.html`
+- `css/style.css`
+- `js/theme.js`
+- `index.html`
+- `sitemap.xml`
+
+## Direct Local Dependencies (from target HTML)
+- `css/style.css`
+- `js/theme.js`
+
+## Incoming References (files that point to the tool)
+- `index.html`
+- `sitemap.xml`
+
+## External Dependencies (from target HTML)
+- `https://fonts.googleapis.com/icon?family=Material+Icons`
+
+## File Dumps
+
+### `case-converter.html`
+
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en" data-theme="dark">
+   3: <head>
+   4:     <meta charset="UTF-8">
+   5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   6:     <title>Case Converter - Text Utilities</title>
+   7:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   8:     <link rel="stylesheet" href="css/style.css">
+   9: </head>
+  10: <body>
+  11:     <div class="container">
+  12:         <header>
+  13:             <div class="logo">
+  14:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  15:                     <span>Text Utilities</span>
+  16:                 </a>
+  17:             </div>
+  18:             <div class="controls">
+  19:                 <div class="accent-selector">
+  20:                     <span class="material-icons">palette</span>
+  21:                     <select id="accentColor" class="color-dropdown">
+  22:                         <option value="#0d9488">Teal</option>
+  23:                         <option value="#3b82f6">Blue</option>
+  24:                         <option value="#8b5cf6">Purple</option>
+  25:                         <option value="#10b981">Emerald</option>
+  26:                         <option value="#f59e0b">Amber</option>
+  27:                         <option value="#ef4444">Red</option>
+  28:                         <option value="#ec4899">Soft Pink</option>
+  29:                         <option value="#fb7185">Coral</option>
+  30:                         <option value="#60a5fa">Cornflower</option>
+  31:                         <option value="#7c3aed">Violet</option>
+  32:                     </select>
+  33:                 </div>
+  34:                 <button id="themeToggle" class="btn btn-secondary">
+  35:                     <span class="material-icons">dark_mode</span>
+  36:                 </button>
+  37:             </div>
+  38:         </header>
+  39: 
+  40:         <main>
+  41:             <!-- Tool View -->
+  42:             <div id="toolView">
+  43:                 <div class="tool-header">
+  44:                     <div class="tool-title">
+  45:                         <span class="material-icons" id="toolIcon">text_format</span>
+  46:                         <h2 id="toolName">Case Converter</h2>
+  47:                     </div>
+  48:                     <div class="tool-actions">
+  49:                         <button id="backButton" class="btn btn-secondary">
+  50:                             <span class="material-icons">arrow_back</span>
+  51:                             Back
+  52:                         </button>
+  53:                         <button id="clearAll" class="btn btn-secondary">
+  54:                             <span class="material-icons">delete</span>
+  55:                             Clear
+  56:                         </button>
+  57:                         <button id="copyOutput" class="btn btn-secondary">
+  58:                             <span class="material-icons">content_copy</span>
+  59:                             Copy
+  60:                         </button>
+  61:                     </div>
+  62:                 </div>
+  63:                 
+  64:                 <!-- Tool-specific options -->
+  65:                 <div class="options-panel" id="toolOptions">
+  66:                     <div class="options-grid">
+  67:                         <div class="option-group">
+  68:                             <label for="caseType">Case Type</label>
+  69:                             <select id="caseType">
+  70:                                 <option value="upper">UPPERCASE</option>
+  71:                                 <option value="lower" selected>lowercase</option>
+  72:                                 <option value="title">Title Case</option>
+  73:                                 <option value="sentence">Sentence case</option>
+  74:                                 <option value="camel">camelCase</option>
+  75:                                 <option value="pascal">PascalCase</option>
+  76:                                 <option value="snake">snake_case</option>
+  77:                                 <option value="kebab">kebab-case</option>
+  78:                                 <option value="invert">InVeRt CaSe</option>
+  79:                             </select>
+  80:                         </div>
+  81:                     </div>
+  82:                 </div>
+  83:                 
+  84:                 <!-- Input/Output -->
+  85:                 <div class="io-container">
+  86:                     <div class="io-panel">
+  87:                         <div class="io-label">
+  88:                             <span>Input</span>
+  89:                             <span class="stats" id="inputStats">0 chars</span>
+  90:                         </div>
+  91:                         <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+  92:                     </div>
+  93:                     <div class="io-panel">
+  94:                         <div class="io-label">
+  95:                             <span>Output</span>
+  96:                             <span class="stats" id="outputStats">0 chars</span>
+  97:                         </div>
+  98:                         <textarea id="outputText" class="output" readonly placeholder="Results will appear here..."></textarea>
+  99:                     </div>
+ 100:                 </div>
+ 101:                 
+ 102:                 <div class="status-bar">
+ 103:                     <div id="statusMessage" class="success">Ready</div>
+ 104:                     <div id="toolStats">No operations yet</div>
+ 105:                 </div>
+ 106:             </div>
+ 107:         </main>
+ 108:     </div>
+ 109: 
+ 110:     <script src="js/theme.js"></script>
+ 111:     <script>
+ 112:         // Common utility functions for all tools
+ 113:         const inputText = document.getElementById('inputText');
+ 114:         const outputText = document.getElementById('outputText');
+ 115:         const inputStats = document.getElementById('inputStats');
+ 116:         const outputStats = document.getElementById('outputStats');
+ 117:         const statusMessage = document.getElementById('statusMessage');
+ 118:         const toolStats = document.getElementById('toolStats');
+ 119:         const copyButton = document.getElementById('copyOutput');
+ 120:         const clearButton = document.getElementById('clearAll');
+ 121:         const backButton = document.getElementById('backButton');
+ 122:         const caseTypeSelect = document.getElementById('caseType');
+ 123: 
+ 124:         // Update character/line statistics
+ 125:         function updateStats() {
+ 126:             const inputLength = inputText.value.length;
+ 127:             const outputLength = outputText.value.length;
+ 128:             const inputLines = inputText.value.split('\n').length;
+ 129:             const outputLines = outputText.value.split('\n').length;
+ 130:             
+ 131:             inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
+ 132:             outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
+ 133:         }
+ 134: 
+ 135:         // Copy output to clipboard
+ 136:         function copyToClipboard() {
+ 137:             if (!outputText.value) return;
+ 138:             
+ 139:             navigator.clipboard.writeText(outputText.value).then(() => {
+ 140:                 statusMessage.textContent = 'Copied to clipboard!';
+ 141:                 statusMessage.className = 'success';
+ 142:                 setTimeout(() => {
+ 143:                     statusMessage.textContent = 'Ready';
+ 144:                 }, 2000);
+ 145:             }).catch(() => {
+ 146:                 statusMessage.textContent = 'Failed to copy';
+ 147:                 statusMessage.className = 'error';
+ 148:             });
+ 149:         }
+ 150: 
+ 151:         // Clear all fields
+ 152:         function clearAll() {
+ 153:             inputText.value = '';
+ 154:             outputText.value = '';
+ 155:             updateStats();
+ 156:             statusMessage.textContent = 'Cleared';
+ 157:             statusMessage.className = 'success';
+ 158:             setTimeout(() => {
+ 159:                 statusMessage.textContent = 'Ready';
+ 160:             }, 1500);
+ 161:         }
+ 162: 
+ 163:         // Navigate back to home
+ 164:         function goBack() {
+ 165:             window.location.href = 'index.html';
+ 166:         }
+ 167: 
+ 168:         // Case conversion functions
+ 169:         function toUpperCase(text) {
+ 170:             return text.toUpperCase();
+ 171:         }
+ 172: 
+ 173:         function toLowerCase(text) {
+ 174:             return text.toLowerCase();
+ 175:         }
+ 176: 
+ 177:         function toTitleCase(text) {
+ 178:             return text.replace(/\b\w/g, char => char.toUpperCase());
+ 179:         }
+ 180: 
+ 181:         function toSentenceCase(text) {
+ 182:             return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+ 183:         }
+ 184: 
+ 185:         function toCamelCase(text) {
+ 186:             return text
+ 187:                 .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+ 188:                     return index === 0 ? word.toLowerCase() : word.toUpperCase();
+ 189:                 })
+ 190:                 .replace(/\s+/g, '')
+ 191:                 .replace(/[^a-zA-Z0-9]/g, '');
+ 192:         }
+ 193: 
+ 194:         function toPascalCase(text) {
+ 195:             return text
+ 196:                 .replace(/(?:^\w|[A-Z]|\b\w)/g, word => word.toUpperCase())
+ 197:                 .replace(/\s+/g, '')
+ 198:                 .replace(/[^a-zA-Z0-9]/g, '');
+ 199:         }
+ 200: 
+ 201:         function toSnakeCase(text) {
+ 202:             return text
+ 203:                 .replace(/\s+/g, '_')
+ 204:                 .replace(/([a-z])([A-Z])/g, '$1_$2')
+ 205:                 .toLowerCase()
+ 206:                 .replace(/[^a-z0-9_]/g, '');
+ 207:         }
+ 208: 
+ 209:         function toKebabCase(text) {
+ 210:             return text
+ 211:                 .replace(/\s+/g, '-')
+ 212:                 .replace(/([a-z])([A-Z])/g, '$1-$2')
+ 213:                 .toLowerCase()
+ 214:                 .replace(/[^a-z0-9-]/g, '');
+ 215:         }
+ 216: 
+ 217:         function invertCase(text) {
+ 218:             return text.split('').map(char => 
+ 219:                 char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase()
+ 220:             ).join('');
+ 221:         }
+ 222: 
+ 223:         // Main conversion function
+ 224:         function convertCase() {
+ 225:             const input = inputText.value;
+ 226:             const caseType = caseTypeSelect.value;
+ 227:             
+ 228:             if (!input) {
+ 229:                 outputText.value = '';
+ 230:                 updateStats();
+ 231:                 return;
+ 232:             }
+ 233: 
+ 234:             try {
+ 235:                 const startTime = performance.now();
+ 236:                 let result = '';
+ 237: 
+ 238:                 switch(caseType) {
+ 239:                     case 'upper':
+ 240:                         result = toUpperCase(input);
+ 241:                         break;
+ 242:                     case 'lower':
+ 243:                         result = toLowerCase(input);
+ 244:                         break;
+ 245:                     case 'title':
+ 246:                         result = toTitleCase(input);
+ 247:                         break;
+ 248:                     case 'sentence':
+ 249:                         result = toSentenceCase(input);
+ 250:                         break;
+ 251:                     case 'camel':
+ 252:                         result = toCamelCase(input);
+ 253:                         break;
+ 254:                     case 'pascal':
+ 255:                         result = toPascalCase(input);
+ 256:                         break;
+ 257:                     case 'snake':
+ 258:                         result = toSnakeCase(input);
+ 259:                         break;
+ 260:                     case 'kebab':
+ 261:                         result = toKebabCase(input);
+ 262:                         break;
+ 263:                     case 'invert':
+ 264:                         result = invertCase(input);
+ 265:                         break;
+ 266:                     default:
+ 267:                         result = input;
+ 268:                 }
+ 269: 
+ 270:                 const endTime = performance.now();
+ 271:                 
+ 272:                 outputText.value = result;
+ 273:                 statusMessage.textContent = 'Success';
+ 274:                 statusMessage.className = 'success';
+ 275:                 toolStats.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
+ 276:             } catch (error) {
+ 277:                 outputText.value = `Error: ${error.message}`;
+ 278:                 statusMessage.textContent = 'Error';
+ 279:                 statusMessage.className = 'error';
+ 280:                 toolStats.textContent = 'Processing failed';
+ 281:             }
+ 282:             
+ 283:             updateStats();
+ 284:         }
+ 285: 
+ 286:         // Setup event listeners
+ 287:         inputText.addEventListener('input', () => {
+ 288:             updateStats();
+ 289:             convertCase();
+ 290:         });
+ 291:         caseTypeSelect.addEventListener('change', convertCase);
+ 292:         copyButton.addEventListener('click', copyToClipboard);
+ 293:         clearButton.addEventListener('click', clearAll);
+ 294:         backButton.addEventListener('click', goBack);
+ 295: 
+ 296:         // Keyboard shortcuts
+ 297:         document.addEventListener('keydown', (e) => {
+ 298:             if (e.ctrlKey || e.metaKey) {
+ 299:                 if (e.key === 'Enter') {
+ 300:                     e.preventDefault();
+ 301:                     convertCase();
+ 302:                 }
+ 303:             }
+ 304:         });
+ 305: 
+ 306:         // Initialize stats
+ 307:         updateStats();
+ 308:     </script>
+ 309:     <footer class="site-footer">
+ 310:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 311:     </footer>
+ 312: </body>
+ 313: </html>
+```
+
+### `css/style.css`
+
+```css
+   1: :root {
+   2:     --bg-primary: #121212;
+   3:     --bg-secondary: #1e1e1e;
+   4:     --bg-tertiary: #252525;
+   5:     --text-primary: #e0e0e0;
+   6:     --text-secondary: #a0a0a0;
+   7:     --border-color: #333;
+   8:     --accent: #0d9488;
+   9:     --accent-light: #14b8a6;
+  10:     --success: #059669;
+  11:     --warning: #d97706;
+  12:     --error: #dc2626;
+  13: }
+  14: 
+  15: [data-theme="light"] {
+  16:     --bg-primary: #ffffff;
+  17:     --bg-secondary: #f8fafc;
+  18:     --bg-tertiary: #f1f5f9;
+  19:     --text-primary: #1e293b;
+  20:     --text-secondary: #64748b;
+  21:     --border-color: #e2e8f0;
+  22:     --accent: #0d9488;
+  23:     --accent-light: #14b8a6;
+  24: }
+  25: 
+  26: * {
+  27:     margin: 0;
+  28:     padding: 0;
+  29:     box-sizing: border-box;
+  30: }
+  31: 
+  32: body {
+  33:     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  34:     background: var(--bg-primary);
+  35:     color: var(--text-primary);
+  36:     line-height: 1.5;
+  37:     min-height: 100vh;
+  38: }
+  39: 
+  40: .container {
+  41:     width: 100%;
+  42:     max-width: none;
+  43:     margin: 0 auto;
+  44:     padding: 1rem 1.5rem;
+  45: }
+  46: 
+  47: /* Header */
+  48: header {
+  49:     display: flex;
+  50:     justify-content: space-between;
+  51:     align-items: center;
+  52:     padding: 1rem 0;
+  53:     border-bottom: 1px solid var(--border-color);
+  54:     margin-bottom: 2rem;
+  55: }
+  56: 
+  57: .logo {
+  58:     display: flex;
+  59:     align-items: center;
+  60:     gap: 0.5rem;
+  61:     font-size: 1.5rem;
+  62:     font-weight: 600;
+  63: }
+  64: 
+  65: .logo span {
+  66:     color: var(--accent);
+  67: }
+  68: 
+  69: .controls {
+  70:     display: flex;
+  71:     gap: 1rem;
+  72:     align-items: center;
+  73: }
+  74: 
+  75: .accent-selector {
+  76:     display: flex;
+  77:     align-items: center;
+  78:     gap: 0.5rem;
+  79: }
+  80: 
+  81: .color-dropdown {
+  82:     padding: 0.25rem 0.5rem;
+  83:     background: var(--bg-secondary);
+  84:     border: 1px solid var(--border-color);
+  85:     border-radius: 4px;
+  86:     color: var(--text-primary);
+  87:     cursor: pointer;
+  88: }
+  89: 
+  90: /* Main Layout */
+  91: .main-grid {
+  92:     display: block;
+  93:     min-height: calc(100vh - 120px);
+  94: }
+  95: 
+  96: /* Sidebar */
+  97: .sidebar {
+  98:     background: var(--bg-secondary);
+  99:     border-radius: 8px;
+ 100:     padding: 1rem;
+ 101:     height: fit-content;
+ 102:     position: sticky;
+ 103:     top: 1rem;
+ 104: }
+ 105: 
+ 106: .search-box {
+ 107:     margin-bottom: 1.5rem;
+ 108: }
+ 109: 
+ 110: .search-box input {
+ 111:     width: 100%;
+ 112:     padding: 0.5rem;
+ 113:     background: var(--bg-tertiary);
+ 114:     border: 1px solid var(--border-color);
+ 115:     border-radius: 4px;
+ 116:     color: var(--text-primary);
+ 117: }
+ 118: 
+ 119: .categories {
+ 120:     display: flex;
+ 121:     flex-direction: column;
+ 122:     gap: 0.5rem;
+ 123: }
+ 124: 
+ 125: .category {
+ 126:     padding: 0.75rem;
+ 127:     border-radius: 4px;
+ 128:     cursor: pointer;
+ 129:     transition: background 0.2s;
+ 130:     display: flex;
+ 131:     align-items: center;
+ 132:     gap: 0.5rem;
+ 133: }
+ 134: 
+ 135: .category:hover {
+ 136:     background: var(--bg-tertiary);
+ 137: }
+ 138: 
+ 139: .category.active {
+ 140:     background: var(--accent);
+ 141:     color: white;
+ 142: }
+ 143: 
+ 144: .recent-tools {
+ 145:     margin-top: 2rem;
+ 146:     padding-top: 1rem;
+ 147:     border-top: 1px solid var(--border-color);
+ 148: }
+ 149: 
+ 150: .recent-tools h4 {
+ 151:     margin-bottom: 0.5rem;
+ 152:     color: var(--text-secondary);
+ 153:     font-size: 0.875rem;
+ 154: }
+ 155: 
+ 156: .tool-chip {
+ 157:     display: inline-block;
+ 158:     background: var(--bg-tertiary);
+ 159:     padding: 0.25rem 0.5rem;
+ 160:     border-radius: 4px;
+ 161:     margin: 0.125rem;
+ 162:     font-size: 0.75rem;
+ 163:     cursor: pointer;
+ 164: }
+ 165: 
+ 166: /* Tool Container */
+ 167: .tool-container {
+ 168:     background: var(--bg-secondary);
+ 169:     border-radius: 8px;
+ 170:     padding: 1.5rem;
+ 171: }
+ 172: 
+ 173: .tool-header {
+ 174:     display: flex;
+ 175:     justify-content: space-between;
+ 176:     align-items: center;
+ 177:     margin-bottom: 1.5rem;
+ 178: }
+ 179: 
+ 180: .tool-title {
+ 181:     display: flex;
+ 182:     align-items: center;
+ 183:     gap: 0.5rem;
+ 184:     font-size: 1.25rem;
+ 185: }
+ 186: 
+ 187: .tool-description {
+ 188:     color: var(--text-secondary);
+ 189:     margin-bottom: 1.5rem;
+ 190:     font-size: 0.95rem;
+ 191: }
+ 192: 
+ 193: .tool-actions {
+ 194:     display: flex;
+ 195:     gap: 0.5rem;
+ 196: }
+ 197: 
+ 198: .btn {
+ 199:     padding: 0.5rem 1rem;
+ 200:     border: none;
+ 201:     border-radius: 4px;
+ 202:     cursor: pointer;
+ 203:     display: inline-flex;
+ 204:     align-items: center;
+ 205:     gap: 0.5rem;
+ 206:     font-size: 0.875rem;
+ 207:     transition: all 0.2s;
+ 208: }
+ 209: 
+ 210: .btn-primary {
+ 211:     background: var(--accent);
+ 212:     color: white;
+ 213: }
+ 214: 
+ 215: .btn-secondary {
+ 216:     background: var(--bg-tertiary);
+ 217:     color: var(--text-primary);
+ 218: }
+ 219: 
+ 220: .btn:hover {
+ 221:     transform: translateY(-1px);
+ 222:     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+ 223: }
+ 224: 
+ 225: /* Tool I/O */
+ 226: .io-container {
+ 227:     display: grid;
+ 228:     grid-template-columns: 1fr 1fr;
+ 229:     gap: 1rem;
+ 230:     margin-bottom: 1rem;
+ 231: }
+ 232: 
+ 233: @media (max-width: 768px) {
+ 234:     .io-container {
+ 235:         grid-template-columns: 1fr;
+ 236:     }
+ 237: }
+ 238: 
+ 239: .io-panel {
+ 240:     display: flex;
+ 241:     flex-direction: column;
+ 242:     gap: 0.5rem;
+ 243: }
+ 244: 
+ 245: .io-label {
+ 246:     display: flex;
+ 247:     justify-content: space-between;
+ 248:     align-items: center;
+ 249:     font-size: 0.875rem;
+ 250:     color: var(--text-secondary);
+ 251: }
+ 252: 
+ 253: .stats {
+ 254:     font-size: 0.75rem;
+ 255: }
+ 256: 
+ 257: textarea {
+ 258:     width: 100%;
+ 259:     min-height: 300px;
+ 260:     padding: 1rem;
+ 261:     background: var(--bg-tertiary);
+ 262:     border: 1px solid var(--border-color);
+ 263:     border-radius: 4px;
+ 264:     color: var(--text-primary);
+ 265:     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+ 266:     font-size: 0.875rem;
+ 267:     line-height: 1.4;
+ 268:     resize: vertical;
+ 269: }
+ 270: 
+ 271: textarea:focus {
+ 272:     outline: none;
+ 273:     border-color: var(--accent);
+ 274: }
+ 275: 
+ 276: .output {
+ 277:     background: var(--bg-primary);
+ 278: }
+ 279: 
+ 280: /* Options Panel */
+ 281: .options-panel {
+ 282:     background: var(--bg-tertiary);
+ 283:     border-radius: 4px;
+ 284:     padding: 1rem;
+ 285:     margin-bottom: 1rem;
+ 286: }
+ 287: 
+ 288: .options-grid {
+ 289:     display: grid;
+ 290:     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+ 291:     gap: 1rem;
+ 292: }
+ 293: 
+ 294: .option-group {
+ 295:     display: flex;
+ 296:     flex-direction: column;
+ 297:     gap: 0.5rem;
+ 298: }
+ 299: 
+ 300: .option-group label {
+ 301:     font-size: 0.875rem;
+ 302:     color: var(--text-secondary);
+ 303: }
+ 304: 
+ 305: select, input[type="range"], input[type="checkbox"], input[type="radio"] {
+ 306:     padding: 0.25rem 0.5rem;
+ 307:     background: var(--bg-secondary);
+ 308:     border: 1px solid var(--border-color);
+ 309:     border-radius: 4px;
+ 310:     color: var(--text-primary);
+ 311: }
+ 312: 
+ 313: input[type="checkbox"], input[type="radio"] {
+ 314:     width: auto;
+ 315:     cursor: pointer;
+ 316: }
+ 317: 
+ 318: /* Status Bar */
+ 319: .status-bar {
+ 320:     display: flex;
+ 321:     justify-content: space-between;
+ 322:     align-items: center;
+ 323:     padding-top: 1rem;
+ 324:     border-top: 1px solid var(--border-color);
+ 325:     font-size: 0.75rem;
+ 326:     color: var(--text-secondary);
+ 327: }
+ 328: 
+ 329: /* Tool Cards (for homepage) */
+ 330: .tool-grid {
+ 331:     display: grid;
+ 332:     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+ 333:     gap: 1rem;
+ 334:     margin-top: 1rem;
+ 335: }
+ 336: 
+ 337: .tool-card {
+ 338:     display: block;
+ 339:     background: var(--bg-tertiary);
+ 340:     border-radius: 8px;
+ 341:     padding: 1.5rem;
+ 342:     cursor: pointer;
+ 343:     transition: all 0.2s;
+ 344:     border: 1px solid transparent;
+ 345:     color: inherit;
+ 346:     text-decoration: none;
+ 347: }
+ 348: 
+ 349: .tool-card:hover {
+ 350:     border-color: var(--accent);
+ 351:     transform: translateY(-2px);
+ 352: }
+ 353: 
+ 354: .tool-icon {
+ 355:     width: 40px;
+ 356:     height: 40px;
+ 357:     background: var(--accent);
+ 358:     border-radius: 8px;
+ 359:     display: flex;
+ 360:     align-items: center;
+ 361:     justify-content: center;
+ 362:     margin-bottom: 1rem;
+ 363:     color: white;
+ 364: }
+ 365: 
+ 366: .tool-card h3 {
+ 367:     margin-bottom: 0.5rem;
+ 368: }
+ 369: 
+ 370: .tool-card p {
+ 371:     font-size: 0.875rem;
+ 372:     color: var(--text-secondary);
+ 373: }
+ 374: 
+ 375: .site-footer {
+ 376:     margin-top: 2rem;
+ 377:     padding: 1.5rem 0;
+ 378:     border-top: 1px solid var(--border-color);
+ 379:     text-align: center;
+ 380:     color: var(--text-secondary);
+ 381:     line-height: 1.5;
+ 382:     font-size: 0.95rem;
+ 383: }
+ 384: 
+ 385: .site-footer p {
+ 386:     margin: 0;
+ 387: }
+ 388: 
+ 389: 
+ 390: .hidden {
+ 391:     display: none !important;
+ 392: }
+ 393: 
+ 394: .success {
+ 395:     color: var(--success);
+ 396: }
+ 397: 
+ 398: .warning {
+ 399:     color: var(--warning);
+ 400: }
+ 401: 
+ 402: .error {
+ 403:     color: var(--error);
+ 404: }
+ 405: 
+ 406: /* Responsive */
+ 407: @media (max-width: 768px) {
+ 408:     .main-grid {
+ 409:         grid-template-columns: 1fr;
+ 410:     }
+ 411:     
+ 412:     .sidebar {
+ 413:         position: static;
+ 414:     }
+ 415:     
+ 416:     .tool-header {
+ 417:         flex-direction: column;
+ 418:         gap: 1rem;
+ 419:         align-items: flex-start;
+ 420:     }
+ 421: }
+```
+
+### `js/theme.js`
+
+```javascript
+   1: // Theme and accent color management
+   2: (function() {
+   3:     'use strict';
+   4: 
+   5:     // DOM Elements
+   6:     const themeToggle = document.getElementById('themeToggle');
+   7:     const accentColor = document.getElementById('accentColor');
+   8: 
+   9:     // Initialize theme and colors on load
+  10:     function loadPreferences() {
+  11:         // Theme
+  12:         const savedTheme = localStorage.getItem('theme') || 'dark';
+  13:         document.documentElement.setAttribute('data-theme', savedTheme);
+  14:         if (themeToggle) {
+  15:             themeToggle.innerHTML = savedTheme === 'dark' ? 
+  16:                 '<span class="material-icons">dark_mode</span>' :
+  17:                 '<span class="material-icons">light_mode</span>';
+  18:         }
+  19:         
+  20:         // Accent color
+  21:         const savedColor = localStorage.getItem('accentColor') || '#0d9488';
+  22:         if (accentColor) {
+  23:             accentColor.value = savedColor;
+  24:         }
+  25:         document.documentElement.style.setProperty('--accent', savedColor);
+  26:         document.documentElement.style.setProperty('--accent-light', adjustColor(savedColor, 20));
+  27:     }
+  28: 
+  29:     // Toggle theme
+  30:     function toggleTheme() {
+  31:         const currentTheme = document.documentElement.getAttribute('data-theme');
+  32:         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  33:         document.documentElement.setAttribute('data-theme', newTheme);
+  34:         localStorage.setItem('theme', newTheme);
+  35:         if (themeToggle) {
+  36:             themeToggle.innerHTML = newTheme === 'dark' ? 
+  37:                 '<span class="material-icons">dark_mode</span>' :
+  38:                 '<span class="material-icons">light_mode</span>';
+  39:         }
+  40:     }
+  41: 
+  42:     // Change accent color
+  43:     function changeAccentColor(color) {
+  44:         document.documentElement.style.setProperty('--accent', color);
+  45:         const lighter = adjustColor(color, 20);
+  46:         document.documentElement.style.setProperty('--accent-light', lighter);
+  47:         localStorage.setItem('accentColor', color);
+  48:     }
+  49: 
+  50:     // Adjust color brightness
+  51:     function adjustColor(color, amount) {
+  52:         let usePound = false;
+  53:         if (color[0] === "#") {
+  54:             color = color.slice(1);
+  55:             usePound = true;
+  56:         }
+  57:         const num = parseInt(color, 16);
+  58:         let r = (num >> 16) + amount;
+  59:         let b = ((num >> 8) & 0x00FF) + amount;
+  60:         let g = (num & 0x0000FF) + amount;
+  61:         
+  62:         r = Math.min(Math.max(0, r), 255);
+  63:         g = Math.min(Math.max(0, g), 255);
+  64:         b = Math.min(Math.max(0, b), 255);
+  65:         
+  66:         return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+  67:     }
+  68: 
+  69:     // Setup event listeners
+  70:     function setupEventListeners() {
+  71:         if (themeToggle) {
+  72:             themeToggle.addEventListener('click', toggleTheme);
+  73:         }
+  74: 
+  75:         if (accentColor) {
+  76:             accentColor.addEventListener('change', (e) => {
+  77:                 changeAccentColor(e.target.value);
+  78:             });
+  79:         }
+  80:     }
+  81: 
+  82:     // Initialize on DOM ready
+  83:     if (document.readyState === 'loading') {
+  84:         document.addEventListener('DOMContentLoaded', () => {
+  85:             loadPreferences();
+  86:             setupEventListeners();
+  87:         });
+  88:     } else {
+  89:         loadPreferences();
+  90:         setupEventListeners();
+  91:     }
+  92: 
+  93:     // Export functions for use in other scripts
+  94:     window.themeUtils = {
+  95:         adjustColor,
+  96:         loadPreferences,
+  97:         toggleTheme,
+  98:         changeAccentColor
+  99:     };
+ 100: })();
+ 101: (function() {
+ 102:     // --- Configuration ---
+ 103:     const STORAGE_KEY = 'holiday_snow_enabled';
+ 104:     const BTN_CLASS = 'btn btn-secondary';
+ 105:     const BTN_ID = 'snowToggle';
+ 106:     // Using innerHTML for the icons. You can adjust the text here.
+ 107:     const BTN_TEXT_ON = '<span class="material-icons">ac_unit</span> Disable Snow';
+ 108:     const BTN_TEXT_OFF = '<span class="material-icons">ac_unit</span> Enable Snow';
+ 109: 
+ 110:     // --- Date Logic (Thanksgiving to Jan 1st) ---
+ 111:     function isHolidaySeason() {
+ 112:         const now = new Date();
+ 113:         const month = now.getMonth(); // 0-11
+ 114:         const date = now.getDate();
+ 115:         
+ 116:         // January 1st
+ 117:         if (month === 0 && date === 1) return true;
+ 118:         
+ 119:         // December (All month)
+ 120:         if (month === 11) return true;
+ 121:         
+ 122:         // November (Post-Thanksgiving)
+ 123:         if (month === 10) {
+ 124:             // Find Thanksgiving (4th Thursday)
+ 125:             const firstOfNov = new Date(now.getFullYear(), 10, 1);
+ 126:             const dayOfWeek = firstOfNov.getDay(); // 0 (Sun) to 6 (Sat)
+ 127:             let daysToFirstThurs = (4 - dayOfWeek + 7) % 7;
+ 128:             const thanksgivingDate = 1 + daysToFirstThurs + 21; 
+ 129:             
+ 130:             return date >= thanksgivingDate;
+ 131:         }
+ 132:         return false;
+ 133:     }
+ 134: 
+ 135:     // Stop execution if not holiday season
+ 136:     if (!isHolidaySeason()) {
+ 137:         // cleanup storage if date passed so it doesn't auto-start next year unexpectedly
+ 138:         localStorage.removeItem(STORAGE_KEY);
+ 139:         return; 
+ 140:     }
+ 141: 
+ 142:     // --- Snow Logic ---
+ 143:     let canvas, ctx, w, h, particles = [], animationId;
+ 144:     
+ 145:     function resize() {
+ 146:         w = canvas.width = window.innerWidth;
+ 147:         h = canvas.height = window.innerHeight;
+ 148:     }
+ 149: 
+ 150:     function createSnow() {
+ 151:         if (!canvas) {
+ 152:             canvas = document.createElement('canvas');
+ 153:             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+ 154:             document.body.appendChild(canvas);
+ 155:             ctx = canvas.getContext('2d');
+ 156:             window.addEventListener('resize', resize);
+ 157:             resize();
+ 158:         }
+ 159:         canvas.style.display = 'block';
+ 160:         
+ 161:         // Initialize particles - "Light Snowfall" settings
+ 162:         particles = [];
+ 163:         // Much lower density: Max 50 flakes, or fewer on mobile
+ 164:         const particleCount = Math.min(window.innerWidth / 10, 50); 
+ 165:         
+ 166:         for (let i = 0; i < particleCount; i++) {
+ 167:             particles.push({
+ 168:                 x: Math.random() * w,
+ 169:                 y: Math.random() * h,
+ 170:                 r: Math.random() * 2 + 1, // Size: 1px to 3px
+ 171:                 d: Math.random() * particleCount, // density factor
+ 172:                 s: Math.random() * 0.5 + 0.2 // Speed: 0.2 to 0.7 (Very slow/gentle)
+ 173:             });
+ 174:         }
+ 175:         
+ 176:         if (!animationId) draw();
+ 177:     }
+ 178: 
+ 179:     function draw() {
+ 180:         ctx.clearRect(0, 0, w, h);
+ 181:         ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; // Slightly more transparent
+ 182:         ctx.beginPath();
+ 183:         for (let i = 0; i < particles.length; i++) {
+ 184:             const p = particles[i];
+ 185:             ctx.moveTo(p.x, p.y);
+ 186:             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+ 187:         }
+ 188:         ctx.fill();
+ 189:         update();
+ 190:         animationId = requestAnimationFrame(draw);
+ 191:     }
+ 192: 
+ 193:     function update() {
+ 194:         for (let i = 0; i < particles.length; i++) {
+ 195:             const p = particles[i];
+ 196:             p.y += p.s;
+ 197:             p.x += Math.sin(p.d) * 0.5; // Gentle sway
+ 198:             p.d += 0.01;
+ 199: 
+ 200:             if (p.y > h) {
+ 201:                 // Reset to top when it hits bottom
+ 202:                 particles[i] = { x: Math.random() * w, y: -10, r: p.r, d: p.d, s: p.s };
+ 203:             }
+ 204:         }
+ 205:     }
+ 206: 
+ 207:     function stopSnow() {
+ 208:         if (canvas) canvas.style.display = 'none';
+ 209:         if (animationId) {
+ 210:             cancelAnimationFrame(animationId);
+ 211:             animationId = null;
+ 212:         }
+ 213:     }
+ 214: 
+ 215:     // --- UI Integration ---
+ 216:     function init() {
+ 217:         const controls = document.querySelector('.controls');
+ 218:         if (!controls) return;
+ 219: 
+ 220:         // Check if button already exists (prevents duplicate if script runs twice)
+ 221:         if (document.getElementById(BTN_ID)) return;
+ 222: 
+ 223:         const btn = document.createElement('button');
+ 224:         btn.className = BTN_CLASS;
+ 225:         btn.id = BTN_ID;
+ 226:         btn.style.marginLeft = '0.5rem';
+ 227:         
+ 228:         // check persistence
+ 229:         let isSnowing = localStorage.getItem(STORAGE_KEY) === 'true';
+ 230: 
+ 231:         // Set initial state
+ 232:         if (isSnowing) {
+ 233:             btn.innerHTML = BTN_TEXT_ON;
+ 234:             createSnow();
+ 235:         } else {
+ 236:             btn.innerHTML = BTN_TEXT_OFF;
+ 237:         }
+ 238: 
+ 239:         btn.addEventListener('click', () => {
+ 240:             isSnowing = !isSnowing;
+ 241:             // Save state to localStorage
+ 242:             localStorage.setItem(STORAGE_KEY, isSnowing);
+ 243:             
+ 244:             if (isSnowing) {
+ 245:                 btn.innerHTML = BTN_TEXT_ON;
+ 246:                 createSnow();
+ 247:             } else {
+ 248:                 btn.innerHTML = BTN_TEXT_OFF;
+ 249:                 stopSnow();
+ 250:             }
+ 251:         });
+ 252: 
+ 253:         // Add button to header
+ 254:         controls.appendChild(btn);
+ 255:     }
+ 256: 
+ 257:     // Run when DOM is ready
+ 258:     if (document.readyState === 'loading') {
+ 259:         document.addEventListener('DOMContentLoaded', init);
+ 260:     } else {
+ 261:         init();
+ 262:     }
+ 263: })();
+```
+
+### `index.html`
+
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en" data-theme="dark">
+   3: <head>
+   4:     <meta charset="UTF-8">
+   5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   6:     <title>Text Utilities</title>
+   7:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   8:     <style>
+   9:         :root {
+  10:             --bg-primary: #121212;
+  11:             --bg-secondary: #1e1e1e;
+  12:             --bg-tertiary: #252525;
+  13:             --text-primary: #e0e0e0;
+  14:             --text-secondary: #a0a0a0;
+  15:             --border-color: #333;
+  16:             --accent: #0d9488;
+  17:             --accent-light: #14b8a6;
+  18:             --success: #059669;
+  19:             --warning: #d97706;
+  20:             --error: #dc2626;
+  21:         }
+  22:         
+  23:         [data-theme="light"] {
+  24:             --bg-primary: #ffffff;
+  25:             --bg-secondary: #f8fafc;
+  26:             --bg-tertiary: #f1f5f9;
+  27:             --text-primary: #1e293b;
+  28:             --text-secondary: #64748b;
+  29:             --border-color: #e2e8f0;
+  30:             --accent: #0d9488;
+  31:             --accent-light: #14b8a6;
+  32:         }
+  33:         
+  34:         * {
+  35:             margin: 0;
+  36:             padding: 0;
+  37:             box-sizing: border-box;
+  38:         }
+  39:         
+  40:         body {
+  41:             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  42:             background: var(--bg-primary);
+  43:             color: var(--text-primary);
+  44:             line-height: 1.5;
+  45:             min-height: 100vh;
+  46:         }
+  47:         
+  48:         .container {
+  49:             max-width: 1400px;
+  50:             margin: 0 auto;
+  51:             padding: 1rem;
+  52:         }
+  53:         
+  54:         header {
+  55:             display: flex;
+  56:             justify-content: space-between;
+  57:             align-items: center;
+  58:             padding: 1rem 0;
+  59:             border-bottom: 1px solid var(--border-color);
+  60:             margin-bottom: 2rem;
+  61:         }
+  62:         
+  63:         .logo {
+  64:             display: flex;
+  65:             align-items: center;
+  66:             gap: 0.5rem;
+  67:             font-size: 1.5rem;
+  68:             font-weight: 600;
+  69:         }
+  70:         
+  71:         .logo span {
+  72:             color: var(--accent);
+  73:         }
+  74:         
+  75:         .controls {
+  76:             display: flex;
+  77:             gap: 1rem;
+  78:             align-items: center;
+  79:         }
+  80:         
+  81:         .accent-selector {
+  82:             display: flex;
+  83:             align-items: center;
+  84:             gap: 0.5rem;
+  85:         }
+  86:         
+  87:         .color-dropdown {
+  88:             padding: 0.25rem 0.5rem;
+  89:             background: var(--bg-secondary);
+  90:             border: 1px solid var(--border-color);
+  91:             border-radius: 4px;
+  92:             color: var(--text-primary);
+  93:             cursor: pointer;
+  94:         }
+  95:         
+  96:         .main-grid {
+  97:             display: block;
+  98:             min-height: calc(100vh - 120px);
+  99:         }
+ 100:         
+ 101:         .sidebar {
+ 102:             background: var(--bg-secondary);
+ 103:             border-radius: 8px;
+ 104:             padding: 1rem;
+ 105:             height: fit-content;
+ 106:             position: sticky;
+ 107:             top: 1rem;
+ 108:         }
+ 109:         
+ 110:         .search-box {
+ 111:             margin-bottom: 1.5rem;
+ 112:         }
+ 113:         
+ 114:         .search-box input {
+ 115:             width: 100%;
+ 116:             padding: 0.5rem;
+ 117:             background: var(--bg-tertiary);
+ 118:             border: 1px solid var(--border-color);
+ 119:             border-radius: 4px;
+ 120:             color: var(--text-primary);
+ 121:         }
+ 122:         
+ 123:         .tool-grid {
+ 124:             display: grid;
+ 125:             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+ 126:             gap: 1rem;
+ 127:             margin-top: 1rem;
+ 128:         }
+ 129:         
+ 130:         .tool-card {
+ 131:             display: block;
+ 132:             background: var(--bg-tertiary);
+ 133:             border-radius: 8px;
+ 134:             padding: 1.5rem;
+ 135:             cursor: pointer;
+ 136:             transition: all 0.2s;
+ 137:             border: 1px solid transparent;
+ 138:             color: inherit;
+ 139:             text-decoration: none;
+ 140:         }
+ 141:         
+ 142:         .tool-card:hover {
+ 143:             border-color: var(--accent);
+ 144:             transform: translateY(-2px);
+ 145:         }
+ 146:         
+ 147:         .tool-icon {
+ 148:             width: 40px;
+ 149:             height: 40px;
+ 150:             background: var(--accent);
+ 151:             border-radius: 8px;
+ 152:             display: flex;
+ 153:             align-items: center;
+ 154:             justify-content: center;
+ 155:             margin-bottom: 1rem;
+ 156:             color: white;
+ 157:         }
+ 158:         
+ 159:         .tool-card h3 {
+ 160:             margin-bottom: 0.5rem;
+ 161:         }
+ 162:         
+ 163:         .tool-card p {
+ 164:             font-size: 0.875rem;
+ 165:             color: var(--text-secondary);
+ 166:         }
+ 167:         
+ 168:         .tool-title {
+ 169:             display: flex;
+ 170:             align-items: center;
+ 171:             gap: 0.5rem;
+ 172:             font-size: 1.25rem;
+ 173:         }
+ 174:         
+ 175:         .tool-actions {
+ 176:             display: flex;
+ 177:             gap: 0.5rem;
+ 178:         }
+ 179:         
+ 180:         .btn {
+ 181:             padding: 0.5rem 1rem;
+ 182:             border: none;
+ 183:             border-radius: 4px;
+ 184:             cursor: pointer;
+ 185:             display: inline-flex;
+ 186:             align-items: center;
+ 187:             gap: 0.5rem;
+ 188:             font-size: 0.875rem;
+ 189:             transition: all 0.2s;
+ 190:         }
+ 191:         
+ 192:         .btn-secondary {
+ 193:             background: var(--bg-tertiary);
+ 194:             color: var(--text-primary);
+ 195:         }
+ 196:         
+ 197:         .btn:hover {
+ 198:             transform: translateY(-1px);
+ 199:             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+ 200:         }
+ 201:         
+ 202:         .tool-header {
+ 203:             display: flex;
+ 204:             justify-content: space-between;
+ 205:             align-items: center;
+ 206:             margin-bottom: 1.5rem;
+ 207:         }
+ 208:         
+ 209:         @media (max-width: 768px) {
+ 210:             .main-grid {
+ 211:                 display: block;
+ 212:             }
+ 213:             .sidebar {
+ 214:                 position: static;
+ 215:             }
+ 216:         }
+ 217:     </style>
+ 218: </head>
+ 219: <body>
+ 220:     <div class="container">
+ 221:         <header>
+ 222:             <div class="logo">
+ 223:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+ 224:                     <span>Text Utilities</span>
+ 225:                 </a>
+ 226:             </div>
+ 227:             <div class="controls">
+ 228:                 <div class="accent-selector">
+ 229:                     <span class="material-icons">palette</span>
+ 230:                     <select id="accentColor" class="color-dropdown">
+ 231:                         <option value="#0d9488">Teal</option>
+ 232:                         <option value="#3b82f6">Blue</option>
+ 233:                         <option value="#8b5cf6">Purple</option>
+ 234:                         <option value="#10b981">Emerald</option>
+ 235:                         <option value="#f59e0b">Amber</option>
+ 236:                         <option value="#ef4444">Red</option>
+ 237:                         <option value="#ec4899">Soft Pink</option>
+ 238:                         <option value="#fb7185">Coral</option>
+ 239:                         <option value="#60a5fa">Cornflower</option>
+ 240:                         <option value="#7c3aed">Violet</option>
+ 241:                     </select>
+ 242:                 </div>
+ 243:                 <button id="themeToggle" class="btn btn-secondary">
+ 244:                     <span class="material-icons">dark_mode</span>
+ 245:                 </button>
+ 246:             </div>
+ 247:         </header>
+ 248: 
+ 249:         <main>
+ 250:             <div id="homeView">
+ 251:                 <div class="tool-grid" id="toolGrid"></div>
+ 252:             </div>
+ 253:         </main>
+ 254:     </div>
+ 255: 
+ 256:     <script>
+ 257: const tools = [
+ 258:     { id: 'case-converter', name: 'Case Converter', icon: 'text_format', category: 'text', description: 'Convert text between different cases' },
+ 259:     { id: 'text-info', name: 'Text Info', icon: 'analytics', category: 'text', description: 'Detailed statistics and readability scores for text' },
+ 260:     { id: 'line-operations', name: 'Line Operations', icon: 'reorder', category: 'text', description: 'Sort, filter, and manipulate lines of text' },
+ 261:     { id: 'find-replace', name: 'Find & Replace', icon: 'find_replace', category: 'text', description: 'Search and replace text with regex support' },
+ 262:     { id: 'font-chooser', name: 'Font Chooser', icon: 'text_fields', category: 'text', description: 'Preview fonts, check contrast, and generate CSS snippets' },
+ 263:     { id: 'ip-info', name: 'IP Info', icon: 'language', category: 'data', description: 'Public IP, provider, location, and device diagnostics' },
+ 264:     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
+ 265:     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
+ 266:     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
+ 267:     { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
+ 268:     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
+ 269:     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
+ 270:     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
+ 271:     { id: 'json-tool', name: 'JSON Tool', icon: 'data_object', category: 'data', description: 'Format, validate, and convert JSON to JSONL format' },
+ 272:     { id: 'sitemap-generator', name: 'XML Sitemap Generator', icon: 'schema', category: 'data', description: 'Crawl (with optional CORS proxy) and build sitemap.xml' }
+ 273: ];
+ 274: 
+ 275: let recentTools = JSON.parse(localStorage.getItem('recentTools') || '[]');
+ 276: const toolGrid = document.getElementById('toolGrid');
+ 277: const accentColor = document.getElementById('accentColor');
+ 278: const themeToggle = document.getElementById('themeToggle');
+ 279: 
+ 280: function renderToolGrid(filter = '', category = 'all') {
+ 281:     toolGrid.innerHTML = '';
+ 282:     const filteredTools = [...tools]
+ 283:         .sort((a, b) => a.name.localeCompare(b.name))
+ 284:         .filter(tool => {
+ 285:         const matchesSearch = tool.name.toLowerCase().includes(filter.toLowerCase()) || tool.description.toLowerCase().includes(filter.toLowerCase());
+ 286:         const matchesCategory = category === 'all' || tool.category === category;
+ 287:         return matchesSearch && matchesCategory;
+ 288:     });
+ 289:     
+ 290:     filteredTools.forEach(tool => {
+ 291:         const card = document.createElement('a');
+ 292:         card.className = 'tool-card';
+ 293:         card.href = `${tool.id}.html`;
+ 294:         card.setAttribute('aria-label', `${tool.name} tool`);
+ 295:         card.innerHTML = `<div class="tool-icon"><span class="material-icons">${tool.icon}</span></div><h3>${tool.name}</h3><p>${tool.description}</p>`;
+ 296:         toolGrid.appendChild(card);
+ 297:     });
+ 298:     
+ 299:     if (filteredTools.length === 0) {
+ 300:         toolGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-secondary)">No tools found</p>';
+ 301:     }
+ 302: }
+ 303: 
+ 304: function updateRecentTools() {
+ 305:     const container = document.getElementById('recentToolsList');
+ 306:     if (!container) return;
+ 307:     container.innerHTML = '';
+ 308:     recentTools.slice(0, 5).forEach(toolId => {
+ 309:         const tool = tools.find(t => t.id === toolId);
+ 310:         if (tool) {
+ 311:             const chip = document.createElement('span');
+ 312:             chip.className = 'tool-chip';
+ 313:             chip.textContent = tool.name;
+ 314:             chip.addEventListener('click', () => window.location.href = `${tool.id}.html`);
+ 315:             container.appendChild(chip);
+ 316:         }
+ 317:     });
+ 318: }
+ 319: 
+ 320: themeToggle.addEventListener('click', () => {
+ 321:     const currentTheme = document.documentElement.getAttribute('data-theme');
+ 322:     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+ 323:     document.documentElement.setAttribute('data-theme', newTheme);
+ 324:     localStorage.setItem('theme', newTheme);
+ 325:     themeToggle.innerHTML = `<span class="material-icons">${newTheme === 'dark' ? 'dark_mode' : 'light_mode'}</span>`;
+ 326: });
+ 327: 
+ 328: accentColor.addEventListener('change', (e) => {
+ 329:     const color = e.target.value;
+ 330:     document.documentElement.style.setProperty('--accent', color);
+ 331:     const r = parseInt(color.slice(1,3), 16) + 20;
+ 332:     const g = parseInt(color.slice(3,5), 16) + 20;
+ 333:     const b = parseInt(color.slice(5,7), 16) + 20;
+ 334:     const lighter = `#${Math.min(r,255).toString(16).padStart(2,'0')}${Math.min(g,255).toString(16).padStart(2,'0')}${Math.min(b,255).toString(16).padStart(2,'0')}`;
+ 335:     document.documentElement.style.setProperty('--accent-light', lighter);
+ 336:     localStorage.setItem('accentColor', color);
+ 337: });
+ 338: 
+ 339: // No search input or filters on this page; always show all tools
+ 340: 
+ 341: // No clear button; keep recent tools untouched
+ 342: 
+ 343: const savedTheme = localStorage.getItem('theme') || 'dark';
+ 344: document.documentElement.setAttribute('data-theme', savedTheme);
+ 345: themeToggle.innerHTML = `<span class="material-icons">${savedTheme === 'dark' ? 'dark_mode' : 'light_mode'}</span>`;
+ 346: 
+ 347: const savedColor = localStorage.getItem('accentColor') || '#0d9488';
+ 348: accentColor.value = savedColor;
+ 349: document.documentElement.style.setProperty('--accent', savedColor);
+ 350: 
+ 351: renderToolGrid();
+ 352: updateRecentTools();
+ 353:     </script>
+ 354:     <footer class="site-footer">
+ 355:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 356:     </footer>
+ 357: </body>
+ 358: </html>
+```
+
+### `sitemap.xml`
+
+```xml
+   1: <?xml version="1.0" encoding="UTF-8"?>
+   2: <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   3:   <url>
+   4:     <loc>https://text-utils.net/</loc>
+   5:   </url>
+   6:   <url>
+   7:     <loc>https://text-utils.net/case-converter.html</loc>
+   8:   </url>
+   9:   <url>
+  10:     <loc>https://text-utils.net/color-chooser.html</loc>
+  11:   </url>
+  12:   <url>
+  13:     <loc>https://text-utils.net/css-unit-converter.html</loc>
+  14:   </url>
+  15:   <url>
+  16:     <loc>https://text-utils.net/find-replace.html</loc>
+  17:   </url>
+  18:   <url>
+  19:     <loc>https://text-utils.net/markdown-html.html</loc>
+  20:   </url>
+  21:   <url>
+  22:     <loc>https://text-utils.net/date-time-info.html</loc>
+  23:   </url>
+  24:   <url>
+  25:     <loc>https://text-utils.net/font-awesome-chooser.html</loc>
+  26:   </url>
+  27:   <url>
+  28:     <loc>https://text-utils.net/font-chooser.html</loc>
+  29:   </url>
+  30:   <url>
+  31:     <loc>https://text-utils.net/google-icons-chooser.html</loc>
+  32:   </url>
+  33:   <url>
+  34:     <loc>https://text-utils.net/hashing-tool.html</loc>
+  35:   </url>
+  36:   <url>
+  37:     <loc>https://text-utils.net/ip-info.html</loc>
+  38:   </url>
+  39:   <url>
+  40:     <loc>https://text-utils.net/json-tool.html</loc>
+  41:   </url>
+  42:   <url>
+  43:     <loc>https://text-utils.net/line-operations.html</loc>
+  44:   </url>
+  45:   <url>
+  46:     <loc>https://text-utils.net/random-numbers.html</loc>
+  47:   </url>
+  48:   <url>
+  49:     <loc>https://text-utils.net/sitemap-generator.html</loc>
+  50:   </url>
+  51:   <url>
+  52:     <loc>https://text-utils.net/text-info.html</loc>
+  53:   </url>
+  54: </urlset>
+```
+
