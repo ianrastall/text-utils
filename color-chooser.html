@@ -45,6 +45,14 @@
         .color-swatch { width: 4rem; height: 2.75rem; border-radius: 6px; border: 1px solid var(--border-color); }
         .search-result { min-height: 48px; }
         .png-preview { display: inline-block; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 0.5rem; }
+        .custom-color-row { align-items: flex-end; }
+        .custom-color-control { display: flex; flex-direction: column; gap: 0.25rem; min-width: 9.25rem; }
+        .custom-color-label { font-size: 0.75rem; color: var(--text-secondary); }
+        .custom-color-help { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.2; }
+        .search-feedback { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; padding: 0.5rem 0.65rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-secondary); }
+        .search-feedback strong { color: var(--text-primary); }
+        .search-feedback .divider { color: var(--text-secondary); }
+        .search-closest-action { margin-left: auto; }
     </style>
 </head>
 <body>
@@ -125,12 +133,19 @@
                             </div>
                         </div>
 
-                        <div class="btn-bar" style="margin-top:0.75rem; align-items:center;">
-                            <input type="color" id="customColorInput" value="#ffffff" title="Choose a custom color" class="color-dropdown" style="width:4rem; height:2.75rem; padding:0;">
+                        <div class="btn-bar custom-color-row" style="margin-top:0.75rem;">
+                            <div class="custom-color-control">
+                                <label for="customColorInput" class="custom-color-label">Custom Color Picker</label>
+                                <input type="color" id="customColorInput" value="#ffffff" title="Choose a custom color" aria-describedby="customColorHelp" class="color-dropdown" style="width:4rem; height:2.75rem; padding:0;">
+                                <span id="customColorHelp" class="custom-color-help">Pick any custom color.</span>
+                            </div>
                             <button type="button" class="btn btn-secondary" id="eyedropperBtn">
                                 <span class="material-icons">colorize</span> Eyedropper
                             </button>
-                            <div id="colorDisplay" class="color-swatch" title="Current color"></div>
+                            <div class="custom-color-control">
+                                <span class="custom-color-label">Current Color</span>
+                                <div id="colorDisplay" class="color-swatch" title="Current color"></div>
+                            </div>
                         </div>
 
                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">search</span>Find by Code</h4>
@@ -159,6 +174,11 @@
                                 <label for="pngFilename">Filename</label>
                                 <input type="text" id="pngFilename" value="color-swatch">
                             </div>
+                        </div>
+                        <div class="btn-bar" style="margin-top:0.75rem;">
+                            <button type="button" id="savePngInlineBtn" class="btn btn-primary">
+                                <span class="material-icons">download</span>Export PNG
+                            </button>
                         </div>
                         <div id="pngPreview" class="png-preview"></div>
                     </div>
@@ -399,6 +419,11 @@
                 }
                 return best;
             };
+            const swatch = (hex) => `<span style="display:inline-block;width:1.1em;height:1.1em;border:1px solid #666;vertical-align:-0.15em;margin:0 0.25em;border-radius:3px;background:${hex};"></span>`;
+            const rgbLabel = (hex) => {
+                const rgb = hexToRgb(hex);
+                return rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : 'n/a';
+            };
 
             const setStatus = (msg, type = 'success') => {
                 dom.status.textContent = msg;
@@ -478,14 +503,20 @@
 
             const applySearch = () => {
                 const parsed = parseColorInput(dom.colorInput.value);
-                if (!parsed) { dom.searchResult.innerHTML = `<div class="alert alert-error">Invalid format. Use #RRGGBB or R,G,B.</div>`; return; }
+                if (!parsed) {
+                    dom.searchResult.innerHTML = '<div class="search-feedback"><strong>Invalid format.</strong> Use #RRGGBB or R,G,B.</div>';
+                    setStatus('Invalid color format.', 'warning');
+                    return;
+                }
                 updateColor(parsed, 'search');
                 const closest = findClosestColor(parsed);
-                if (!closest) { dom.searchResult.innerHTML = `<div class="alert alert-warning">Color set, no named match found.</div>`; return; }
-                const swatch = (hex) => `<span style="display:inline-block;width:1.1em;height:1.1em;border:1px solid #666;vertical-align:-0.15em;margin:0 0.25em;border-radius:3px;background:${hex};"></span>`;
-                let html = `<div class="alert alert-success">Set: ${swatch(parsed)}<strong>${parsed}</strong>`;
-                if (closest.hex !== parsed) { html += `<span class="mx-2">|</span>Closest: ${swatch(closest.hex)}<strong>${closest.name}</strong> (${closest.hex})`; }
-                else { html += `<span class="mx-2">|</span>Exact match: <strong>${closest.name}</strong>`; }
+                if (!closest) { dom.searchResult.innerHTML = '<div class="search-feedback">Color set, no named match found.</div>'; return; }
+                let html = `<div class="search-feedback">Set: ${swatch(parsed)}<strong>${parsed}</strong> (RGB ${rgbLabel(parsed)})`;
+                if (closest.hex !== parsed) {
+                    html += `<span class="divider">|</span>Closest: ${swatch(closest.hex)}<strong>${closest.name}</strong> (${closest.hex}, RGB ${rgbLabel(closest.hex)})`;
+                    html += `<button type="button" class="btn btn-secondary btn-compact search-closest-action" data-role="use-closest" data-hex="${closest.hex}" data-name="${closest.name}"><span class="material-icons" aria-hidden="true">near_me</span>Use Closest</button>`;
+                }
+                else { html += `<span class="divider">|</span>Exact match: <strong>${closest.name}</strong>`; }
                 html += '</div>';
                 dom.searchResult.innerHTML = html;
             };
@@ -562,8 +593,23 @@
                 });
                 dom.applySearch.addEventListener('click', applySearch);
                 dom.getCurrentBtn.addEventListener('click', () => { dom.colorInput.value = currentColor; setStatus('Loaded current color into input.', 'info'); });
+                dom.searchResult.addEventListener('click', (event) => {
+                    const closestButton = event.target.closest('[data-role="use-closest"]');
+                    if (!closestButton) return;
+                    const closestHex = closestButton.getAttribute('data-hex');
+                    const closestName = closestButton.getAttribute('data-name') || 'closest color';
+                    if (!closestHex) return;
+
+                    dom.colorInput.value = closestHex;
+                    updateColor(closestHex, 'closest');
+                    dom.searchResult.innerHTML = `<div class="search-feedback">Applied: ${swatch(closestHex)}<strong>${closestName}</strong> (${closestHex}, RGB ${rgbLabel(closestHex)})</div>`;
+                    setStatus(`Applied closest named color: ${closestName}.`, 'success');
+                });
                 dom.copyBtn.addEventListener('click', copySnippet);
                 dom.savePngBtn.addEventListener('click', savePng);
+                if (dom.savePngInlineBtn) {
+                    dom.savePngInlineBtn.addEventListener('click', savePng);
+                }
                 dom.pngWidth.addEventListener('input', updatePngPreview);
                 dom.pngHeight.addEventListener('input', updatePngPreview);
                 dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
@@ -587,6 +633,7 @@
                 dom.pngPreview = document.getElementById('pngPreview');
                 dom.copyBtn = document.getElementById('copyBtn');
                 dom.savePngBtn = document.getElementById('savePngBtn');
+                dom.savePngInlineBtn = document.getElementById('savePngInlineBtn');
                 dom.status = document.getElementById('statusMessage');
                 dom.toolStats = document.getElementById('toolStats');
                 dom.backButton = document.getElementById('backButton');
