@@ -7,6 +7,7 @@
     --border-color: #333;
     --accent: #0d9488;
     --accent-light: #14b8a6;
+    --accent-rgb: 13, 148, 136;
     --success: #059669;
     --warning: #d97706;
     --error: #dc2626;
@@ -19,8 +20,6 @@
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --border-color: #e2e8f0;
-    --accent: #0d9488;
-    --accent-light: #14b8a6;
 }
 
 * {
@@ -451,7 +450,8 @@ input[type="checkbox"], input[type="radio"] {
     display: none !important;
 }
 
-.visually-hidden {
+.visually-hidden,
+.sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -523,5 +523,17 @@ input[type="checkbox"], input[type="radio"] {
 
     header {
         flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .btn:hover {
+        transform: none !important;
+        box-shadow: none !important;
     }
 }

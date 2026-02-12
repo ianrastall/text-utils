@@ -1,9 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tool Name - Text Utilities</title>
+    <script>
+        (function () {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+                    ? storedTheme
+                    : (prefersLight ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', resolvedTheme);
+
+                const storedAccent = localStorage.getItem('accentColor');
+                let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+                if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+                    normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+                }
+
+                if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+                    const red = parseInt(normalizedAccent.slice(1, 3), 16);
+                    const green = parseInt(normalizedAccent.slice(3, 5), 16);
+                    const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+                    document.documentElement.style.setProperty('--accent', normalizedAccent);
+                    document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+                }
+            } catch (_) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -30,9 +58,9 @@
             <div class="controls">
                 <div class="accent-selector">
                     <span class="material-icons">palette</span>
-                    <select id="accentColor" class="color-dropdown"></select>
+                    <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
                 </div>
-                <button id="themeToggle" class="btn btn-secondary">
+                <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
                     <span class="material-icons">dark_mode</span>
                 </button>
             </div>

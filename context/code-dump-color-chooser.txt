@@ -1,0 +1,1648 @@
+# Color Chooser Targeted Code Dump
+
+Generated: 2026-02-12 08:41:22 UTC
+Repository: `D:\GitHub\text-utils`
+Target tool: `color-chooser.html`
+Output file: `context/code-dump-color-chooser.txt`
+
+## Included Files
+- `color-chooser.html`
+- `css/style.css`
+- `js/theme.js`
+- `index.html`
+- `sitemap.xml`
+
+## Direct Local Dependencies (from target HTML)
+- `css/style.css`
+- `js/theme.js`
+
+## Incoming References (files that point to the tool)
+- `index.html`
+- `sitemap.xml`
+
+## External Dependencies (from target HTML)
+- `https://fonts.googleapis.com/icon?family=Material+Icons`
+
+## File Dumps
+
+### `color-chooser.html`
+
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en" data-theme="dark">
+   3: <head>
+   4:     <meta charset="UTF-8">
+   5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   6:     <title>Color Chooser - Text Utilities</title>
+   7:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   8:     <link rel="stylesheet" href="css/style.css">
+   9:     <style>
+  10:         .tool-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.25rem; }
+  11:         @media (max-width: 1024px) { .tool-grid { grid-template-columns: 1fr; } }
+  12:         .panel { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+  13:         .panel h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 1rem; }
+  14:         .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  15:         .output-block { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; min-height: 200px; white-space: pre-wrap; }
+  16:         .btn-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  17:         .color-swatch { width: 4rem; height: 2.75rem; border-radius: 6px; border: 1px solid var(--border-color); }
+  18:         .search-result { min-height: 48px; }
+  19:         .png-preview { display: inline-block; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 0.5rem; }
+  20:     </style>
+  21: </head>
+  22: <body>
+  23:     <div class="container">
+  24:         <header>
+  25:             <div class="logo">
+  26:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  27:                     <span>Text Utilities</span>
+  28:                 </a>
+  29:             </div>
+  30:             <nav class="site-network" aria-label="Network sites">
+  31:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  32:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+  33:                     <span>Chess Nerd</span>
+  34:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  35:                 </a>
+  36:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  37:                     <img src="img/github.png" class="site-network-icon" alt="">
+  38:                     <span>GitHub</span>
+  39:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  40:                 </a>
+  41:             </nav>
+  42:             <div class="controls">
+  43:                 <div class="accent-selector">
+  44:                     <span class="material-icons">palette</span>
+  45:                     <select id="accentColor" class="color-dropdown"></select>
+  46:                 </div>
+  47:                 <button id="themeToggle" class="btn btn-secondary">
+  48:                     <span class="material-icons">dark_mode</span>
+  49:                 </button>
+  50:             </div>
+  51:         </header>
+  52: 
+  53:         <main>
+  54:             <div class="tool-container">
+  55:                 <div class="tool-header">
+  56:                     <div class="tool-title">
+  57:                         <span class="material-icons">palette</span>
+  58:                         <h2>Color Chooser</h2>
+  59:                     </div>
+  60:                     <div class="tool-actions">
+  61:                         <button id="backButton" class="btn btn-secondary btn-compact">
+  62:                             <span class="material-icons">arrow_back</span>
+  63:                             Back
+  64:                         </button>
+  65:                         <button id="copyBtn" class="btn btn-secondary">
+  66:                             <span class="material-icons">content_copy</span>
+  67:                             Copy
+  68:                         </button>
+  69:                         <button id="savePngBtn" class="btn btn-secondary">
+  70:                             <span class="material-icons">save</span>
+  71:                             Save PNG
+  72:                         </button>
+  73:                     </div>
+  74:                 </div>
+  75: 
+  76:                 <p class="tool-description">Pick named or custom colors, see matches, and grab ready-to-use snippets or PNG swatches.</p>
+  77: 
+  78:                 <div class="tool-grid">
+  79:                     <div class="panel">
+  80:                         <h4><span class="material-icons" style="font-size:20px;">tune</span>Selection</h4>
+  81:                         <div class="option-grid">
+  82:                             <div class="option-group">
+  83:                                 <label for="colorCategory">Category</label>
+  84:                                 <select id="colorCategory">
+  85:                                     <option value="">-- Select Category --</option>
+  86:                                 </select>
+  87:                             </div>
+  88:                             <div class="option-group">
+  89:                                 <label for="colorName">Named Color</label>
+  90:                                 <select id="colorName">
+  91:                                     <option value="">-- Select Color --</option>
+  92:                                 </select>
+  93:                             </div>
+  94:                             <div class="option-group">
+  95:                                 <label for="languageSelect">Code Format</label>
+  96:                                 <select id="languageSelect"></select>
+  97:                             </div>
+  98:                         </div>
+  99: 
+ 100:                         <div class="btn-bar" style="margin-top:0.75rem; align-items:center;">
+ 101:                             <input type="color" id="customColorInput" value="#ffffff" title="Choose a custom color" class="color-dropdown" style="width:4rem; height:2.75rem; padding:0;">
+ 102:                             <button type="button" class="btn btn-secondary" id="eyedropperBtn">
+ 103:                                 <span class="material-icons">colorize</span> Eyedropper
+ 104:                             </button>
+ 105:                             <div id="colorDisplay" class="color-swatch" title="Current color"></div>
+ 106:                         </div>
+ 107: 
+ 108:                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">search</span>Find by Code</h4>
+ 109:                         <div class="btn-bar" style="align-items:center;">
+ 110:                             <button type="button" id="getCurrentColorBtn" class="btn btn-secondary">
+ 111:                                 <span class="material-icons">format_color_fill</span>Use Current
+ 112:                             </button>
+ 113:                             <input type="text" id="colorInput" placeholder="#FF0000 or 255,0,0" style="flex:1; min-width:200px;">
+ 114:                             <button type="button" id="applySearchBtn" class="btn btn-primary">
+ 115:                                 <span class="material-icons">check</span>Apply
+ 116:                             </button>
+ 117:                         </div>
+ 118:                         <div id="colorSearchResult" class="search-result" aria-live="polite"></div>
+ 119: 
+ 120:                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">image</span>PNG Export</h4>
+ 121:                         <div class="option-grid">
+ 122:                             <div class="option-group">
+ 123:                                 <label for="pngWidth">Width (px)</label>
+ 124:                                 <input type="number" id="pngWidth" value="200" min="10" max="2000">
+ 125:                             </div>
+ 126:                             <div class="option-group">
+ 127:                                 <label for="pngHeight">Height (px)</label>
+ 128:                                 <input type="number" id="pngHeight" value="200" min="10" max="2000">
+ 129:                             </div>
+ 130:                             <div class="option-group">
+ 131:                                 <label for="pngFilename">Filename</label>
+ 132:                                 <input type="text" id="pngFilename" value="color-swatch">
+ 133:                             </div>
+ 134:                         </div>
+ 135:                         <div id="pngPreview" class="png-preview"></div>
+ 136:                     </div>
+ 137: 
+ 138:                     <div class="panel" style="display:flex; flex-direction:column; gap:0.75rem;">
+ 139:                         <div>
+ 140:                             <h4><span class="material-icons" style="font-size:20px;">code</span>Snippet</h4>
+ 141:                             <div class="output-block" id="colorOutput" aria-live="polite"></div>
+ 142:                         </div>
+ 143:                         <div class="status-bar">
+ 144:                             <div id="statusMessage" class="success">Ready</div>
+ 145:                             <div id="toolStats">Awaiting selection</div>
+ 146:                         </div>
+ 147:                     </div>
+ 148:                 </div>
+ 149:             </div>
+ 150:         </main>
+ 151:     </div>
+ 152: 
+ 153:     <script src="js/theme.js"></script>
+ 154:     <script>
+ 155:         (() => {
+ 156:             'use strict';
+ 157: 
+ 158:             const namedColors = {
+ 159:                 AliceBlue: '#F0F8FF',
+ 160:                 AntiqueWhite: '#FAEBD7',
+ 161:                 Aqua: '#00FFFF',
+ 162:                 Aquamarine: '#7FFFD4',
+ 163:                 Azure: '#F0FFFF',
+ 164:                 Beige: '#F5F5DC',
+ 165:                 Bisque: '#FFE4C4',
+ 166:                 Black: '#000000',
+ 167:                 BlanchedAlmond: '#FFEBCD',
+ 168:                 Blue: '#0000FF',
+ 169:                 BlueViolet: '#8A2BE2',
+ 170:                 Brown: '#A52A2A',
+ 171:                 BurlyWood: '#DEB887',
+ 172:                 CadetBlue: '#5F9EA0',
+ 173:                 Chartreuse: '#7FFF00',
+ 174:                 Chocolate: '#D2691E',
+ 175:                 Coral: '#FF7F50',
+ 176:                 CornflowerBlue: '#6495ED',
+ 177:                 Cornsilk: '#FFF8DC',
+ 178:                 Crimson: '#DC143C',
+ 179:                 Cyan: '#00FFFF',
+ 180:                 DarkBlue: '#00008B',
+ 181:                 DarkCyan: '#008B8B',
+ 182:                 DarkGoldenRod: '#B8860B',
+ 183:                 DarkGray: '#A9A9A9',
+ 184:                 DarkGrey: '#A9A9A9',
+ 185:                 DarkGreen: '#006400',
+ 186:                 DarkKhaki: '#BDB76B',
+ 187:                 DarkMagenta: '#8B008B',
+ 188:                 DarkOliveGreen: '#556B2F',
+ 189:                 DarkOrange: '#FF8C00',
+ 190:                 DarkOrchid: '#9932CC',
+ 191:                 DarkRed: '#8B0000',
+ 192:                 DarkSalmon: '#E9967A',
+ 193:                 DarkSeaGreen: '#8FBC8F',
+ 194:                 DarkSlateBlue: '#483D8B',
+ 195:                 DarkSlateGray: '#2F4F4F',
+ 196:                 DarkSlateGrey: '#2F4F4F',
+ 197:                 DarkTurquoise: '#00CED1',
+ 198:                 DarkViolet: '#9400D3',
+ 199:                 DeepPink: '#FF1493',
+ 200:                 DeepSkyBlue: '#00BFFF',
+ 201:                 DimGray: '#696969',
+ 202:                 DimGrey: '#696969',
+ 203:                 DodgerBlue: '#1E90FF',
+ 204:                 FireBrick: '#B22222',
+ 205:                 FloralWhite: '#FFFAF0',
+ 206:                 ForestGreen: '#228B22',
+ 207:                 Fuchsia: '#FF00FF',
+ 208:                 Gainsboro: '#DCDCDC',
+ 209:                 GhostWhite: '#F8F8FF',
+ 210:                 Gold: '#FFD700',
+ 211:                 GoldenRod: '#DAA520',
+ 212:                 Gray: '#808080',
+ 213:                 Grey: '#808080',
+ 214:                 Green: '#008000',
+ 215:                 GreenYellow: '#ADFF2F',
+ 216:                 HoneyDew: '#F0FFF0',
+ 217:                 HotPink: '#FF69B4',
+ 218:                 IndianRed: '#CD5C5C',
+ 219:                 Indigo: '#4B0082',
+ 220:                 Ivory: '#FFFFF0',
+ 221:                 Khaki: '#F0E68C',
+ 222:                 Lavender: '#E6E6FA',
+ 223:                 LavenderBlush: '#FFF0F5',
+ 224:                 LawnGreen: '#7CFC00',
+ 225:                 LemonChiffon: '#FFFACD',
+ 226:                 LightBlue: '#ADD8E6',
+ 227:                 LightCoral: '#F08080',
+ 228:                 LightCyan: '#E0FFFF',
+ 229:                 LightGoldenRodYellow: '#FAFAD2',
+ 230:                 LightGray: '#D3D3D3',
+ 231:                 LightGrey: '#D3D3D3',
+ 232:                 LightGreen: '#90EE90',
+ 233:                 LightPink: '#FFB6C1',
+ 234:                 LightSalmon: '#FFA07A',
+ 235:                 LightSeaGreen: '#20B2AA',
+ 236:                 LightSkyBlue: '#87CEFA',
+ 237:                 LightSlateGray: '#778899',
+ 238:                 LightSlateGrey: '#778899',
+ 239:                 LightSteelBlue: '#B0C4DE',
+ 240:                 LightYellow: '#FFFFE0',
+ 241:                 Lime: '#00FF00',
+ 242:                 LimeGreen: '#32CD32',
+ 243:                 Linen: '#FAF0E6',
+ 244:                 Magenta: '#FF00FF',
+ 245:                 Maroon: '#800000',
+ 246:                 MediumAquaMarine: '#66CDAA',
+ 247:                 MediumBlue: '#0000CD',
+ 248:                 MediumOrchid: '#BA55D3',
+ 249:                 MediumPurple: '#9370DB',
+ 250:                 MediumSeaGreen: '#3CB371',
+ 251:                 MediumSlateBlue: '#7B68EE',
+ 252:                 MediumSpringGreen: '#00FA9A',
+ 253:                 MediumTurquoise: '#48D1CC',
+ 254:                 MediumVioletRed: '#C71585',
+ 255:                 MidnightBlue: '#191970',
+ 256:                 MintCream: '#F5FFFA',
+ 257:                 MistyRose: '#FFE4E1',
+ 258:                 Moccasin: '#FFE4B5',
+ 259:                 NavajoWhite: '#FFDEAD',
+ 260:                 Navy: '#000080',
+ 261:                 OldLace: '#FDF5E6',
+ 262:                 Olive: '#808000',
+ 263:                 OliveDrab: '#6B8E23',
+ 264:                 Orange: '#FFA500',
+ 265:                 OrangeRed: '#FF4500',
+ 266:                 Orchid: '#DA70D6',
+ 267:                 PaleGoldenRod: '#EEE8AA',
+ 268:                 PaleGreen: '#98FB98',
+ 269:                 PaleTurquoise: '#AFEEEE',
+ 270:                 PaleVioletRed: '#DB7093',
+ 271:                 PapayaWhip: '#FFEFD5',
+ 272:                 PeachPuff: '#FFDAB9',
+ 273:                 Peru: '#CD853F',
+ 274:                 Pink: '#FFC0CB',
+ 275:                 Plum: '#DDA0DD',
+ 276:                 PowderBlue: '#B0E0E6',
+ 277:                 Purple: '#800080',
+ 278:                 RebeccaPurple: '#663399',
+ 279:                 Red: '#FF0000',
+ 280:                 RosyBrown: '#BC8F8F',
+ 281:                 RoyalBlue: '#4169E1',
+ 282:                 SaddleBrown: '#8B4513',
+ 283:                 Salmon: '#FA8072',
+ 284:                 SandyBrown: '#F4A460',
+ 285:                 SeaGreen: '#2E8B57',
+ 286:                 SeaShell: '#FFF5EE',
+ 287:                 Sienna: '#A0522D',
+ 288:                 Silver: '#C0C0C0',
+ 289:                 SkyBlue: '#87CEEB',
+ 290:                 SlateBlue: '#6A5ACD',
+ 291:                 SlateGray: '#708090',
+ 292:                 SlateGrey: '#708090',
+ 293:                 Snow: '#FFFAFA',
+ 294:                 SpringGreen: '#00FF7F',
+ 295:                 SteelBlue: '#4682B4',
+ 296:                 Tan: '#D2B48C',
+ 297:                 Teal: '#008080',
+ 298:                 Thistle: '#D8BFD8',
+ 299:                 Tomato: '#FF6347',
+ 300:                 Turquoise: '#40E0D0',
+ 301:                 Violet: '#EE82EE',
+ 302:                 Wheat: '#F5DEB3',
+ 303:                 White: '#FFFFFF',
+ 304:                 WhiteSmoke: '#F5F5F5',
+ 305:                 Yellow: '#FFFF00',
+ 306:                 YellowGreen: '#9ACD32'
+ 307:             };
+ 308: 
+ 309:             const buildCategory = (names) => names.reduce((acc, name) => {
+ 310:                 if (namedColors[name]) acc[name] = namedColors[name];
+ 311:                 return acc;
+ 312:             }, {});
+ 313: 
+ 314:             const colors = {
+ 315:                 "All Colors": namedColors,
+ 316:                 "Reds & Pinks": buildCategory(['Red', 'DarkRed', 'FireBrick', 'Crimson', 'IndianRed', 'LightCoral', 'Salmon', 'DarkSalmon', 'LightSalmon', 'Tomato', 'OrangeRed', 'Coral', 'LightPink', 'Pink', 'HotPink', 'DeepPink', 'PaleVioletRed', 'MediumVioletRed']),
+ 317:                 "Oranges & Browns": buildCategory(['Orange', 'DarkOrange', 'Peru', 'Chocolate', 'SaddleBrown', 'Sienna', 'Brown', 'RosyBrown', 'SandyBrown', 'GoldenRod', 'DarkGoldenRod', 'BurlyWood', 'Tan', 'Bisque', 'Moccasin', 'NavajoWhite', 'PeachPuff', 'PapayaWhip', 'BlanchedAlmond', 'Wheat']),
+ 318:                 "Yellows & Golds": buildCategory(['Yellow', 'LightYellow', 'LemonChiffon', 'LightGoldenRodYellow', 'PaleGoldenRod', 'Gold', 'Khaki', 'DarkKhaki', 'Cornsilk']),
+ 319:                 "Greens": buildCategory(['Green', 'DarkGreen', 'ForestGreen', 'SeaGreen', 'MediumSeaGreen', 'DarkSeaGreen', 'PaleGreen', 'LightGreen', 'Lime', 'LimeGreen', 'SpringGreen', 'MediumSpringGreen', 'Chartreuse', 'LawnGreen', 'Olive', 'OliveDrab', 'DarkOliveGreen', 'YellowGreen', 'GreenYellow']),
+ 320:                 "Cyans & Aquas": buildCategory(['Aqua', 'Cyan', 'LightCyan', 'DarkCyan', 'Teal', 'Turquoise', 'MediumTurquoise', 'LightSeaGreen', 'MediumAquaMarine', 'Aquamarine', 'PaleTurquoise', 'DarkTurquoise', 'CadetBlue']),
+ 321:                 "Blues": buildCategory(['Blue', 'MediumBlue', 'DarkBlue', 'Navy', 'MidnightBlue', 'RoyalBlue', 'CornflowerBlue', 'DodgerBlue', 'DeepSkyBlue', 'SkyBlue', 'LightSkyBlue', 'SteelBlue', 'LightSteelBlue', 'PowderBlue', 'AliceBlue', 'LightBlue', 'SlateBlue', 'MediumSlateBlue', 'DarkSlateBlue']),
+ 322:                 "Purples": buildCategory(['Purple', 'Indigo', 'DarkMagenta', 'DarkOrchid', 'DarkViolet', 'BlueViolet', 'MediumOrchid', 'MediumPurple', 'Orchid', 'Violet', 'Plum', 'Thistle', 'RebeccaPurple', 'Magenta', 'Fuchsia']),
+ 323:                 "Whites & Pastels": buildCategory(['White', 'Snow', 'HoneyDew', 'MintCream', 'Azure', 'GhostWhite', 'WhiteSmoke', 'FloralWhite', 'Ivory', 'SeaShell', 'Beige', 'OldLace', 'AntiqueWhite', 'Lavender', 'LavenderBlush', 'MistyRose', 'Linen']),
+ 324:                 "Grays & Blacks": buildCategory(['Black', 'DimGray', 'DimGrey', 'Gray', 'Grey', 'DarkGray', 'DarkGrey', 'LightGray', 'LightGrey', 'Gainsboro', 'Silver', 'SlateGray', 'SlateGrey', 'LightSlateGray', 'LightSlateGrey', 'DarkSlateGray', 'DarkSlateGrey'])
+ 325:             };
+ 326: 
+ 327:             const nameToCategory = {};
+ 328:             Object.entries(colors).forEach(([category, palette]) => {
+ 329:                 if (category === 'All Colors') return;
+ 330:                 Object.keys(palette).forEach((name) => {
+ 331:                     if (!nameToCategory[name]) nameToCategory[name] = category;
+ 332:                 });
+ 333:             });
+ 334:             const languages = { "css": "CSS", "javascript": "JavaScript", "python": "Python", "java": "Java", "csharp": "C#", "php": "PHP", "ruby": "Ruby", "swift": "Swift", "kotlin": "Kotlin", "c++": "C++", "go": "Go", "r": "R", "matlab": "MATLAB", "typescript": "TypeScript", "shell": "Shell", "objective-c": "Objective-C", "html": "HTML", "json": "JSON", "sql": "SQL", "rust": "Rust", "dart": "Dart", "sass": "Sass", "c": "C", "powershell": "PowerShell" };
+ 335:             let currentColor = '#FFFFFF';
+ 336: 
+ 337:             const dom = {};
+ 338: 
+ 339:             const hexToRgb = (hex) => {
+ 340:                 let h = hex.replace('#', '');
+ 341:                 if (h.length === 3) h = h.split('').map(c => c + c).join('');
+ 342:                 if (h.length !== 6) return null;
+ 343:                 const v = parseInt(h, 16);
+ 344:                 if (Number.isNaN(v)) return null;
+ 345:                 return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
+ 346:             };
+ 347:             const rgbToHex = (r, g, b) => '#' + [r, g, b].map(c => Math.round(c).toString(16).padStart(2, '0')).join('').toUpperCase();
+ 348:             const parseColorInput = (input) => {
+ 349:                 const val = input.trim();
+ 350:                 if (/^#?([0-9a-fA-F]{3}){1,2}$/.test(val)) return val.startsWith('#') ? val.toUpperCase() : '#' + val.toUpperCase();
+ 351:                 const rgbMatch = val.match(/^(?:rgba?\(?)?\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)?$/);
+ 352:                 if (rgbMatch) {
+ 353:                     const [r, g, b] = rgbMatch.slice(1).map(Number);
+ 354:                     if ([r, g, b].every(c => c >= 0 && c <= 255)) return rgbToHex(r, g, b);
+ 355:                 }
+ 356:                 return null;
+ 357:             };
+ 358:             const findClosestColor = (targetHex) => {
+ 359:                 const targetRgb = hexToRgb(targetHex);
+ 360:                 if (!targetRgb) return null;
+ 361:                 let best = null;
+ 362:                 let min = Infinity;
+ 363:                 for (const [name, hex] of Object.entries(namedColors)) {
+ 364:                     const rgb = hexToRgb(hex);
+ 365:                     if (!rgb) continue;
+ 366:                     const d = Math.sqrt((rgb.r - targetRgb.r) ** 2 + (rgb.g - targetRgb.g) ** 2 + (rgb.b - targetRgb.b) ** 2);
+ 367:                     if (d < min) {
+ 368:                         min = d;
+ 369:                         best = { name, hex: hex.toUpperCase(), category: nameToCategory[name] || 'All Colors' };
+ 370:                     }
+ 371:                 }
+ 372:                 return best;
+ 373:             };
+ 374: 
+ 375:             const setStatus = (msg, type = 'success') => {
+ 376:                 dom.status.textContent = msg;
+ 377:                 dom.status.className = type;
+ 378:             };
+ 379: 
+ 380:             const populateCategories = () => {
+ 381:                 const options = ['<option value="">-- Select Category --</option>']
+ 382:                     .concat(Object.keys(colors).map(c => `<option value="${c}">${c}</option>`));
+ 383:                 dom.colorCategory.innerHTML = options.join('');
+ 384:             };
+ 385:             const populateColorNames = () => {
+ 386:                 const cat = dom.colorCategory.value || 'All Colors';
+ 387:                 const palette = colors[cat] || {};
+ 388:                 const list = Object.entries(palette).sort((a, b) => a[0].localeCompare(b[0]));
+ 389:                 dom.colorName.innerHTML = '<option value="">-- Select Color --</option>' + list.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
+ 390:             };
+ 391:             const populateLanguages = () => {
+ 392:                 dom.languageSelect.innerHTML = Object.entries(languages).sort((a, b) => a[1].localeCompare(b[1]))
+ 393:                     .map(([code, label]) => `<option value="${code}">${label}</option>`).join('');
+ 394:                 dom.languageSelect.value = 'css';
+ 395:             };
+ 396: 
+ 397:             const generateSnippet = () => {
+ 398:                 const lang = dom.languageSelect.value;
+ 399:                 const rgb = hexToRgb(currentColor);
+ 400:                 if (!rgb) { dom.colorOutput.textContent = 'Invalid color.'; return; }
+ 401:                 const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+ 402:                 const formats = {
+ 403:                     css: `color: ${currentColor};\n/* or */\ncolor: ${rgbString};`,
+ 404:                     html: `<div style="color:${currentColor};">Example</div>`,
+ 405:                     javascript: `const colorHex = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
+ 406:                     python: `color_hex = '${currentColor}'\ncolor_rgb = (${rgb.r}, ${rgb.g}, ${rgb.b})`,
+ 407:                     php: `$colorHex = '${currentColor}';\n$colorRGB = ['r' => ${rgb.r}, 'g' => ${rgb.g}, 'b' => ${rgb.b}];`,
+ 408:                     java: `String colorHex = "${currentColor}";\n// Color.decode("${currentColor}")`,
+ 409:                     csharp: `string colorHex = "${currentColor}";\n// ColorTranslator.FromHtml("${currentColor}")`,
+ 410:                     ruby: `color_hex = '${currentColor}'\ncolor_rgb = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} }`,
+ 411:                     swift: `let colorHex = "${currentColor}" // convert to UIColor as needed`,
+ 412:                     kotlin: `val colorHex = "${currentColor}" // Color.parseColor(colorHex)`,
+ 413:                     "c++": `std::string colorHex = "${currentColor}";\nint rgb[3] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
+ 414:                     c: `const char* color_hex = "${currentColor}";\nunsigned char rgb[] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
+ 415:                     go: `colorHex := "${currentColor}"`,
+ 416:                     rust: `let color_hex = "${currentColor}";\nlet color_rgb: (u8,u8,u8) = (${rgb.r}, ${rgb.g}, ${rgb.b});`,
+ 417:                     dart: `const colorHex = "${currentColor}";`,
+ 418:                     r: `color_hex <- "${currentColor}"`,
+ 419:                     matlab: `color_rgb_255 = [${rgb.r}, ${rgb.g}, ${rgb.b}];`,
+ 420:                     typescript: `const colorHex: string = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
+ 421:                     shell: `COLOR_HEX='${currentColor}'\nCOLOR_RGB="(${rgb.r},${rgb.g},${rgb.b})"`,
+ 422:                     powershell: `$colorHex = "${currentColor}"\n$colorRgb = @{ R = ${rgb.r}; G = ${rgb.g}; B = ${rgb.b} }`,
+ 423:                     "objective-c": `NSString *colorHex = @"${currentColor}";`,
+ 424:                     sql: `DECLARE @color_hex VARCHAR(7)='${currentColor}'; -- RGB: ${rgb.r},${rgb.g},${rgb.b}`,
+ 425:                     json: `\n{\n  "hex": "${currentColor}",\n  "rgb": [${rgb.r}, ${rgb.g}, ${rgb.b}]\n}`,
+ 426:                     sass: `$my-color: ${currentColor};`
+ 427:                 };
+ 428:                 dom.colorOutput.textContent = formats[lang] || `Selected: ${currentColor}`;
+ 429:                 dom.toolStats.textContent = `${lang.toUpperCase()} snippet for ${currentColor}`;
+ 430:             };
+ 431: 
+ 432:             const updateColor = (hex, source = '') => {
+ 433:                 const parsed = parseColorInput(hex);
+ 434:                 if (!parsed) { setStatus('Invalid color input.', 'warning'); return; }
+ 435:                 currentColor = parsed;
+ 436:                 dom.colorDisplay.style.backgroundColor = currentColor;
+ 437:                 dom.customColor.value = currentColor;
+ 438:                 if (source !== 'nameSelect') {
+ 439:                     const match = findClosestColor(currentColor);
+ 440:                     if (match && match.hex === currentColor) {
+ 441:                         dom.colorCategory.value = match.category;
+ 442:                         populateColorNames();
+ 443:                         dom.colorName.value = currentColor;
+ 444:                     }
+ 445:                 }
+ 446:                 generateSnippet();
+ 447:                 updatePngPreview();
+ 448:                 setStatus('Color updated.', 'success');
+ 449:             };
+ 450: 
+ 451:             const applySearch = () => {
+ 452:                 const parsed = parseColorInput(dom.colorInput.value);
+ 453:                 if (!parsed) { dom.searchResult.innerHTML = `<div class="alert alert-error">Invalid format. Use #RRGGBB or R,G,B.</div>`; return; }
+ 454:                 updateColor(parsed, 'search');
+ 455:                 const closest = findClosestColor(parsed);
+ 456:                 if (!closest) { dom.searchResult.innerHTML = `<div class="alert alert-warning">Color set, no named match found.</div>`; return; }
+ 457:                 const swatch = (hex) => `<span style="display:inline-block;width:1.1em;height:1.1em;border:1px solid #666;vertical-align:-0.15em;margin:0 0.25em;border-radius:3px;background:${hex};"></span>`;
+ 458:                 let html = `<div class="alert alert-success">Set: ${swatch(parsed)}<strong>${parsed}</strong>`;
+ 459:                 if (closest.hex !== parsed) { html += `<span class="mx-2">|</span>Closest: ${swatch(closest.hex)}<strong>${closest.name}</strong> (${closest.hex})`; }
+ 460:                 else { html += `<span class="mx-2">|</span>Exact match: <strong>${closest.name}</strong>`; }
+ 461:                 html += '</div>';
+ 462:                 dom.searchResult.innerHTML = html;
+ 463:             };
+ 464: 
+ 465:             const getContrast = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) > 128 ? '#000' : '#fff';
+ 466: 
+ 467:             const updatePngPreview = () => {
+ 468:                 const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
+ 469:                 const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
+ 470:                 dom.pngPreview.innerHTML = '';
+ 471:                 const canvas = document.createElement('canvas');
+ 472:                 const ctx = canvas.getContext('2d');
+ 473:                 const previewSize = Math.min(260, Math.max(80, Math.min(width, height)));
+ 474:                 const scale = Math.min(previewSize / width, previewSize / height);
+ 475:                 canvas.width = width * scale;
+ 476:                 canvas.height = height * scale;
+ 477:                 ctx.fillStyle = currentColor;
+ 478:                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+ 479:                 const rgb = hexToRgb(currentColor);
+ 480:                 if (canvas.width > 80 && canvas.height > 40 && rgb) {
+ 481:                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
+ 482:                     ctx.font = `${Math.max(10, Math.min(18, canvas.width / 10))}px sans-serif`;
+ 483:                     ctx.textAlign = 'center';
+ 484:                     ctx.textBaseline = 'middle';
+ 485:                     ctx.fillText(currentColor, canvas.width / 2, canvas.height / 2);
+ 486:                 }
+ 487:                 canvas.className = 'png-preview';
+ 488:                 dom.pngPreview.appendChild(canvas);
+ 489:             };
+ 490: 
+ 491:             const savePng = () => {
+ 492:                 const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
+ 493:                 const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
+ 494:                 const filename = (dom.pngFilename.value || 'color-swatch').replace(/[^\w-]/g, '_');
+ 495:                 const canvas = document.createElement('canvas');
+ 496:                 canvas.width = width;
+ 497:                 canvas.height = height;
+ 498:                 const ctx = canvas.getContext('2d');
+ 499:                 ctx.fillStyle = currentColor;
+ 500:                 ctx.fillRect(0, 0, width, height);
+ 501:                 const rgb = hexToRgb(currentColor);
+ 502:                 if (rgb) {
+ 503:                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
+ 504:                     ctx.font = `${Math.max(12, Math.min(24, width / 15))}px sans-serif`;
+ 505:                     ctx.textAlign = 'center';
+ 506:                     ctx.textBaseline = 'middle';
+ 507:                     ctx.fillText(currentColor, width / 2, height / 2);
+ 508:                 }
+ 509:                 const link = document.createElement('a');
+ 510:                 link.download = `${filename}-${currentColor.substring(1)}.png`;
+ 511:                 link.href = canvas.toDataURL('image/png');
+ 512:                 link.click();
+ 513:                 setStatus(`PNG saved as ${link.download}`, 'success');
+ 514:             };
+ 515: 
+ 516:             const copySnippet = () => {
+ 517:                 const txt = dom.colorOutput.textContent.trim();
+ 518:                 if (!txt) { setStatus('Nothing to copy.', 'warning'); return; }
+ 519:                 navigator.clipboard.writeText(txt).then(
+ 520:                     () => setStatus('Copied.', 'success'),
+ 521:                     () => setStatus('Copy failed.', 'error')
+ 522:                 );
+ 523:             };
+ 524: 
+ 525:             const hookEvents = () => {
+ 526:                 dom.colorCategory.addEventListener('change', () => { populateColorNames(); setStatus('Category selected.', 'success'); });
+ 527:                 dom.colorName.addEventListener('change', (e) => { if (e.target.value) updateColor(e.target.value, 'nameSelect'); });
+ 528:                 dom.languageSelect.addEventListener('change', generateSnippet);
+ 529:                 dom.customColor.addEventListener('input', (e) => updateColor(e.target.value, 'custom'));
+ 530:                 dom.eyedropper.addEventListener('click', async () => {
+ 531:                     if (!window.EyeDropper) { setStatus('Eyedropper not supported.', 'warning'); return; }
+ 532:                     try { const result = await new EyeDropper().open(); updateColor(result.sRGBHex, 'eyedropper'); }
+ 533:                     catch (_) { setStatus('Eyedropper cancelled.', 'warning'); }
+ 534:                 });
+ 535:                 dom.applySearch.addEventListener('click', applySearch);
+ 536:                 dom.getCurrentBtn.addEventListener('click', () => { dom.colorInput.value = currentColor; setStatus('Loaded current color into input.', 'info'); });
+ 537:                 dom.copyBtn.addEventListener('click', copySnippet);
+ 538:                 dom.savePngBtn.addEventListener('click', savePng);
+ 539:                 dom.pngWidth.addEventListener('input', updatePngPreview);
+ 540:                 dom.pngHeight.addEventListener('input', updatePngPreview);
+ 541:                 dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
+ 542:             };
+ 543: 
+ 544:             const cacheDom = () => {
+ 545:                 dom.colorCategory = document.getElementById('colorCategory');
+ 546:                 dom.colorName = document.getElementById('colorName');
+ 547:                 dom.languageSelect = document.getElementById('languageSelect');
+ 548:                 dom.customColor = document.getElementById('customColorInput');
+ 549:                 dom.eyedropper = document.getElementById('eyedropperBtn');
+ 550:                 dom.colorDisplay = document.getElementById('colorDisplay');
+ 551:                 dom.colorOutput = document.getElementById('colorOutput');
+ 552:                 dom.colorInput = document.getElementById('colorInput');
+ 553:                 dom.applySearch = document.getElementById('applySearchBtn');
+ 554:                 dom.searchResult = document.getElementById('colorSearchResult');
+ 555:                 dom.getCurrentBtn = document.getElementById('getCurrentColorBtn');
+ 556:                 dom.pngWidth = document.getElementById('pngWidth');
+ 557:                 dom.pngHeight = document.getElementById('pngHeight');
+ 558:                 dom.pngFilename = document.getElementById('pngFilename');
+ 559:                 dom.pngPreview = document.getElementById('pngPreview');
+ 560:                 dom.copyBtn = document.getElementById('copyBtn');
+ 561:                 dom.savePngBtn = document.getElementById('savePngBtn');
+ 562:                 dom.status = document.getElementById('statusMessage');
+ 563:                 dom.toolStats = document.getElementById('toolStats');
+ 564:                 dom.backButton = document.getElementById('backButton');
+ 565:             };
+ 566: 
+ 567:             const init = () => {
+ 568:                 cacheDom();
+ 569:                 populateCategories();
+ 570:                 populateLanguages();
+ 571:                 dom.colorCategory.value = 'All Colors';
+ 572:                 populateColorNames();
+ 573:                 hookEvents();
+ 574:                 updateColor(currentColor, 'init');
+ 575:                 updatePngPreview();
+ 576:                 setStatus('Ready', 'success');
+ 577:             };
+ 578: 
+ 579:             if (document.readyState === 'loading') {
+ 580:                 document.addEventListener('DOMContentLoaded', init);
+ 581:             } else {
+ 582:                 init();
+ 583:             }
+ 584:         })();
+ 585:     </script>
+ 586:     <footer class="site-footer">
+ 587:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 588:     </footer>
+ 589: </body>
+ 590: </html>
+```
+
+### `css/style.css`
+
+```css
+   1: :root {
+   2:     --bg-primary: #121212;
+   3:     --bg-secondary: #1e1e1e;
+   4:     --bg-tertiary: #252525;
+   5:     --text-primary: #e0e0e0;
+   6:     --text-secondary: #a0a0a0;
+   7:     --border-color: #333;
+   8:     --accent: #0d9488;
+   9:     --accent-light: #14b8a6;
+  10:     --success: #059669;
+  11:     --warning: #d97706;
+  12:     --error: #dc2626;
+  13: }
+  14: 
+  15: [data-theme="light"] {
+  16:     --bg-primary: #ffffff;
+  17:     --bg-secondary: #f8fafc;
+  18:     --bg-tertiary: #f1f5f9;
+  19:     --text-primary: #1e293b;
+  20:     --text-secondary: #64748b;
+  21:     --border-color: #e2e8f0;
+  22:     --accent: #0d9488;
+  23:     --accent-light: #14b8a6;
+  24: }
+  25: 
+  26: * {
+  27:     margin: 0;
+  28:     padding: 0;
+  29:     box-sizing: border-box;
+  30: }
+  31: 
+  32: body {
+  33:     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  34:     background: var(--bg-primary);
+  35:     color: var(--text-primary);
+  36:     line-height: 1.5;
+  37:     min-height: 100vh;
+  38: }
+  39: 
+  40: .container {
+  41:     width: 100%;
+  42:     max-width: none;
+  43:     margin: 0 auto;
+  44:     padding: 1rem 1.5rem;
+  45: }
+  46: 
+  47: /* Header */
+  48: header {
+  49:     display: flex;
+  50:     justify-content: space-between;
+  51:     align-items: center;
+  52:     padding: 1rem 0;
+  53:     border-bottom: 1px solid var(--border-color);
+  54:     margin-bottom: 2rem;
+  55:     position: relative;
+  56: }
+  57: 
+  58: .logo {
+  59:     display: flex;
+  60:     align-items: center;
+  61:     gap: 0.5rem;
+  62:     font-size: 1.5rem;
+  63:     font-weight: 600;
+  64: }
+  65: 
+  66: .logo span {
+  67:     color: var(--accent);
+  68: }
+  69: 
+  70: .controls {
+  71:     display: flex;
+  72:     gap: 1rem;
+  73:     align-items: center;
+  74: }
+  75: 
+  76: .site-network {
+  77:     position: absolute;
+  78:     left: 50%;
+  79:     transform: translateX(-50%);
+  80:     display: flex;
+  81:     flex-direction: column;
+  82:     gap: 0.25rem;
+  83:     align-items: flex-start;
+  84: }
+  85: 
+  86: .site-network-link {
+  87:     color: var(--text-secondary);
+  88:     text-decoration: none;
+  89:     font-size: 0.9rem;
+  90:     display: inline-flex;
+  91:     align-items: center;
+  92:     gap: 0.25rem;
+  93:     line-height: 1.2;
+  94: }
+  95: 
+  96: .site-network-link .material-icons {
+  97:     font-size: 1rem;
+  98: }
+  99: 
+ 100: .site-network-icon {
+ 101:     width: 1rem;
+ 102:     height: 1rem;
+ 103:     object-fit: contain;
+ 104:     flex: 0 0 auto;
+ 105: }
+ 106: 
+ 107: .site-network-link:hover {
+ 108:     color: var(--accent);
+ 109: }
+ 110: 
+ 111: .accent-selector {
+ 112:     display: flex;
+ 113:     align-items: center;
+ 114:     gap: 0.5rem;
+ 115: }
+ 116: 
+ 117: .color-dropdown {
+ 118:     padding: 0.25rem 0.5rem;
+ 119:     background: var(--bg-secondary);
+ 120:     border: 1px solid var(--border-color);
+ 121:     border-radius: 4px;
+ 122:     color: var(--text-primary);
+ 123:     cursor: pointer;
+ 124: }
+ 125: 
+ 126: /* Main Layout */
+ 127: .main-grid {
+ 128:     display: block;
+ 129:     min-height: calc(100vh - 120px);
+ 130: }
+ 131: 
+ 132: /* Sidebar */
+ 133: .sidebar {
+ 134:     background: var(--bg-secondary);
+ 135:     border-radius: 8px;
+ 136:     padding: 1rem;
+ 137:     height: fit-content;
+ 138:     position: sticky;
+ 139:     top: 1rem;
+ 140: }
+ 141: 
+ 142: .search-box {
+ 143:     margin-bottom: 1.5rem;
+ 144: }
+ 145: 
+ 146: .search-box input {
+ 147:     width: 100%;
+ 148:     padding: 0.5rem;
+ 149:     background: var(--bg-tertiary);
+ 150:     border: 1px solid var(--border-color);
+ 151:     border-radius: 4px;
+ 152:     color: var(--text-primary);
+ 153: }
+ 154: 
+ 155: .categories {
+ 156:     display: flex;
+ 157:     flex-direction: column;
+ 158:     gap: 0.5rem;
+ 159: }
+ 160: 
+ 161: .category {
+ 162:     padding: 0.75rem;
+ 163:     border-radius: 4px;
+ 164:     cursor: pointer;
+ 165:     transition: background 0.2s;
+ 166:     display: flex;
+ 167:     align-items: center;
+ 168:     gap: 0.5rem;
+ 169: }
+ 170: 
+ 171: .category:hover {
+ 172:     background: var(--bg-tertiary);
+ 173: }
+ 174: 
+ 175: .category.active {
+ 176:     background: var(--accent);
+ 177:     color: white;
+ 178: }
+ 179: 
+ 180: .recent-tools {
+ 181:     margin-top: 2rem;
+ 182:     padding-top: 1rem;
+ 183:     border-top: 1px solid var(--border-color);
+ 184: }
+ 185: 
+ 186: .recent-tools h4 {
+ 187:     margin-bottom: 0.5rem;
+ 188:     color: var(--text-secondary);
+ 189:     font-size: 0.875rem;
+ 190: }
+ 191: 
+ 192: .tool-chip {
+ 193:     display: inline-block;
+ 194:     background: var(--bg-tertiary);
+ 195:     padding: 0.25rem 0.5rem;
+ 196:     border-radius: 4px;
+ 197:     margin: 0.125rem;
+ 198:     font-size: 0.75rem;
+ 199:     cursor: pointer;
+ 200: }
+ 201: 
+ 202: /* Tool Container */
+ 203: .tool-container {
+ 204:     background: var(--bg-secondary);
+ 205:     border-radius: 8px;
+ 206:     padding: 1.5rem;
+ 207: }
+ 208: 
+ 209: .tool-header {
+ 210:     display: flex;
+ 211:     justify-content: space-between;
+ 212:     align-items: center;
+ 213:     margin-bottom: 1.5rem;
+ 214: }
+ 215: 
+ 216: .tool-title {
+ 217:     display: flex;
+ 218:     align-items: center;
+ 219:     gap: 0.5rem;
+ 220:     font-size: 1.25rem;
+ 221: }
+ 222: 
+ 223: .tool-description {
+ 224:     color: var(--text-secondary);
+ 225:     margin-bottom: 1.5rem;
+ 226:     font-size: 0.95rem;
+ 227: }
+ 228: 
+ 229: .tool-actions {
+ 230:     display: flex;
+ 231:     gap: 0.5rem;
+ 232: }
+ 233: 
+ 234: .btn {
+ 235:     padding: 0.5rem 1rem;
+ 236:     border: none;
+ 237:     border-radius: 4px;
+ 238:     cursor: pointer;
+ 239:     display: inline-flex;
+ 240:     align-items: center;
+ 241:     gap: 0.5rem;
+ 242:     font-size: 0.875rem;
+ 243:     transition: all 0.2s;
+ 244: }
+ 245: 
+ 246: .btn-compact {
+ 247:     padding: 0.35rem 0.75rem;
+ 248:     font-size: 0.85rem;
+ 249: }
+ 250: 
+ 251: .btn-primary {
+ 252:     background: var(--accent);
+ 253:     color: white;
+ 254: }
+ 255: 
+ 256: .btn-secondary {
+ 257:     background: var(--bg-tertiary);
+ 258:     color: var(--text-primary);
+ 259: }
+ 260: 
+ 261: .btn:hover {
+ 262:     transform: translateY(-1px);
+ 263:     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+ 264: }
+ 265: 
+ 266: .btn:disabled {
+ 267:     opacity: 0.55;
+ 268:     cursor: not-allowed;
+ 269: }
+ 270: 
+ 271: .btn:disabled:hover {
+ 272:     transform: none;
+ 273:     box-shadow: none;
+ 274: }
+ 275: 
+ 276: /* Tool I/O */
+ 277: .io-container {
+ 278:     display: grid;
+ 279:     grid-template-columns: 1fr 1fr;
+ 280:     gap: 1rem;
+ 281:     margin-bottom: 1rem;
+ 282: }
+ 283: 
+ 284: @media (max-width: 768px) {
+ 285:     .io-container {
+ 286:         grid-template-columns: 1fr;
+ 287:     }
+ 288: }
+ 289: 
+ 290: .io-panel {
+ 291:     display: flex;
+ 292:     flex-direction: column;
+ 293:     gap: 0.5rem;
+ 294: }
+ 295: 
+ 296: .io-label {
+ 297:     display: flex;
+ 298:     justify-content: space-between;
+ 299:     align-items: center;
+ 300:     font-size: 0.875rem;
+ 301:     color: var(--text-secondary);
+ 302: }
+ 303: 
+ 304: .stats {
+ 305:     font-size: 0.75rem;
+ 306: }
+ 307: 
+ 308: textarea {
+ 309:     width: 100%;
+ 310:     min-height: 300px;
+ 311:     padding: 1rem;
+ 312:     background: var(--bg-tertiary);
+ 313:     border: 1px solid var(--border-color);
+ 314:     border-radius: 4px;
+ 315:     color: var(--text-primary);
+ 316:     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+ 317:     font-size: 0.875rem;
+ 318:     line-height: 1.4;
+ 319:     resize: vertical;
+ 320: }
+ 321: 
+ 322: textarea:focus {
+ 323:     outline: none;
+ 324:     border-color: var(--accent);
+ 325: }
+ 326: 
+ 327: button:focus-visible,
+ 328: select:focus-visible,
+ 329: input:focus-visible,
+ 330: textarea:focus-visible {
+ 331:     outline: 2px solid var(--accent);
+ 332:     outline-offset: 2px;
+ 333: }
+ 334: 
+ 335: .output {
+ 336:     background: var(--bg-primary);
+ 337: }
+ 338: 
+ 339: /* Options Panel */
+ 340: .options-panel {
+ 341:     background: var(--bg-tertiary);
+ 342:     border-radius: 4px;
+ 343:     padding: 1rem;
+ 344:     margin-bottom: 1rem;
+ 345: }
+ 346: 
+ 347: .options-grid {
+ 348:     display: grid;
+ 349:     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+ 350:     gap: 1rem;
+ 351: }
+ 352: 
+ 353: .option-group {
+ 354:     display: flex;
+ 355:     flex-direction: column;
+ 356:     gap: 0.5rem;
+ 357: }
+ 358: 
+ 359: .option-group label {
+ 360:     font-size: 0.875rem;
+ 361:     color: var(--text-secondary);
+ 362: }
+ 363: 
+ 364: select, input[type="range"], input[type="checkbox"], input[type="radio"] {
+ 365:     padding: 0.25rem 0.5rem;
+ 366:     background: var(--bg-secondary);
+ 367:     border: 1px solid var(--border-color);
+ 368:     border-radius: 4px;
+ 369:     color: var(--text-primary);
+ 370: }
+ 371: 
+ 372: input[type="checkbox"], input[type="radio"] {
+ 373:     width: auto;
+ 374:     cursor: pointer;
+ 375: }
+ 376: 
+ 377: /* Status Bar */
+ 378: .status-bar {
+ 379:     display: flex;
+ 380:     justify-content: space-between;
+ 381:     align-items: center;
+ 382:     padding-top: 1rem;
+ 383:     border-top: 1px solid var(--border-color);
+ 384:     font-size: 0.75rem;
+ 385:     color: var(--text-secondary);
+ 386: }
+ 387: 
+ 388: /* Tool Cards (for homepage) */
+ 389: .tool-grid {
+ 390:     display: grid;
+ 391:     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+ 392:     gap: 1rem;
+ 393:     margin-top: 1rem;
+ 394: }
+ 395: 
+ 396: .tool-card {
+ 397:     display: block;
+ 398:     background: var(--bg-tertiary);
+ 399:     border-radius: 8px;
+ 400:     padding: 1.5rem;
+ 401:     cursor: pointer;
+ 402:     transition: all 0.2s;
+ 403:     border: 1px solid transparent;
+ 404:     color: inherit;
+ 405:     text-decoration: none;
+ 406: }
+ 407: 
+ 408: .tool-card:hover {
+ 409:     border-color: var(--accent);
+ 410:     transform: translateY(-2px);
+ 411: }
+ 412: 
+ 413: .tool-icon {
+ 414:     width: 40px;
+ 415:     height: 40px;
+ 416:     background: var(--accent);
+ 417:     border-radius: 8px;
+ 418:     display: flex;
+ 419:     align-items: center;
+ 420:     justify-content: center;
+ 421:     margin-bottom: 1rem;
+ 422:     color: white;
+ 423: }
+ 424: 
+ 425: .tool-card h3 {
+ 426:     margin-bottom: 0.5rem;
+ 427: }
+ 428: 
+ 429: .tool-card p {
+ 430:     font-size: 0.875rem;
+ 431:     color: var(--text-secondary);
+ 432: }
+ 433: 
+ 434: .site-footer {
+ 435:     margin-top: 2rem;
+ 436:     padding: 1.5rem 0;
+ 437:     border-top: 1px solid var(--border-color);
+ 438:     text-align: center;
+ 439:     color: var(--text-secondary);
+ 440:     line-height: 1.5;
+ 441:     font-size: 0.95rem;
+ 442: }
+ 443: 
+ 444: .site-footer p {
+ 445:     margin: 0;
+ 446:     text-align: center;
+ 447: }
+ 448: 
+ 449: 
+ 450: .hidden {
+ 451:     display: none !important;
+ 452: }
+ 453: 
+ 454: .visually-hidden {
+ 455:     position: absolute;
+ 456:     width: 1px;
+ 457:     height: 1px;
+ 458:     padding: 0;
+ 459:     margin: -1px;
+ 460:     overflow: hidden;
+ 461:     clip: rect(0, 0, 0, 0);
+ 462:     white-space: nowrap;
+ 463:     border: 0;
+ 464: }
+ 465: 
+ 466: .pill {
+ 467:     padding: 0.35rem 0.75rem;
+ 468:     border-radius: 999px;
+ 469:     border: 1px solid var(--accent);
+ 470:     background: var(--bg-tertiary);
+ 471:     color: var(--text-primary);
+ 472:     font-size: 0.85rem;
+ 473:     display: inline-flex;
+ 474:     align-items: center;
+ 475:     gap: 0.25rem;
+ 476: }
+ 477: 
+ 478: .pill.muted {
+ 479:     border-color: var(--border-color);
+ 480:     color: var(--text-secondary);
+ 481: }
+ 482: 
+ 483: .success {
+ 484:     color: var(--success);
+ 485: }
+ 486: 
+ 487: .warning {
+ 488:     color: var(--warning);
+ 489: }
+ 490: 
+ 491: .error {
+ 492:     color: var(--error);
+ 493: }
+ 494: 
+ 495: /* Responsive */
+ 496: @media (max-width: 768px) {
+ 497:     .main-grid {
+ 498:         grid-template-columns: 1fr;
+ 499:     }
+ 500:     
+ 501:     .sidebar {
+ 502:         position: static;
+ 503:     }
+ 504:     
+ 505:     .tool-header {
+ 506:         flex-direction: column;
+ 507:         gap: 1rem;
+ 508:         align-items: flex-start;
+ 509:     }
+ 510: 
+ 511:     .site-network {
+ 512:         position: static;
+ 513:         transform: none;
+ 514:         order: 3;
+ 515:         width: 100%;
+ 516:         margin-top: 1rem;
+ 517:         display: flex;
+ 518:         flex-direction: column;
+ 519:         gap: 0.35rem;
+ 520:         justify-content: center;
+ 521:         align-items: center;
+ 522:     }
+ 523: 
+ 524:     header {
+ 525:         flex-wrap: wrap;
+ 526:     }
+ 527: }
+```
+
+### `js/theme.js`
+
+```javascript
+   1: // Theme and accent color management
+   2: (function() {
+   3:     'use strict';
+   4: 
+   5:     const ACCENT_PALETTE = [
+   6:         { value: '#0d9488', label: 'Teal' },
+   7:         { value: '#3b82f6', label: 'Blue' },
+   8:         { value: '#8b5cf6', label: 'Purple' },
+   9:         { value: '#10b981', label: 'Emerald' },
+  10:         { value: '#f59e0b', label: 'Amber' },
+  11:         { value: '#ef4444', label: 'Red' },
+  12:         { value: '#ec4899', label: 'Soft Pink' },
+  13:         { value: '#fb7185', label: 'Coral' },
+  14:         { value: '#5f9ea0', label: 'Cadet Blue' },
+  15:         { value: '#6495ed', label: 'Cornflower' },
+  16:         { value: '#deb887', label: 'Burlywood' },
+  17:         { value: '#60a5fa', label: 'Cornflower Blue' },
+  18:         { value: '#7c3aed', label: 'Violet' }
+  19:     ];
+  20:     const DEFAULT_ACCENT = '#0d9488';
+  21: 
+  22:     const themeToggle = document.getElementById('themeToggle');
+  23:     const accentColor = document.getElementById('accentColor');
+  24: 
+  25:     function normalizeHexColor(color) {
+  26:         if (typeof color !== 'string') {
+  27:             return DEFAULT_ACCENT;
+  28:         }
+  29: 
+  30:         const candidate = color.trim();
+  31:         if (/^#[0-9a-fA-F]{6}$/.test(candidate)) {
+  32:             return candidate.toLowerCase();
+  33:         }
+  34: 
+  35:         return DEFAULT_ACCENT;
+  36:     }
+  37: 
+  38:     function adjustColor(color, amount) {
+  39:         const normalized = normalizeHexColor(color).slice(1);
+  40:         const parsed = parseInt(normalized, 16);
+  41: 
+  42:         if (Number.isNaN(parsed)) {
+  43:             return color;
+  44:         }
+  45: 
+  46:         let red = ((parsed >> 16) & 0xFF) + amount;
+  47:         let green = ((parsed >> 8) & 0xFF) + amount;
+  48:         let blue = (parsed & 0xFF) + amount;
+  49: 
+  50:         red = Math.min(Math.max(0, red), 255);
+  51:         green = Math.min(Math.max(0, green), 255);
+  52:         blue = Math.min(Math.max(0, blue), 255);
+  53: 
+  54:         return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, '0')}`;
+  55:     }
+  56: 
+  57:     function applyAccent(color) {
+  58:         const normalized = normalizeHexColor(color);
+  59:         document.documentElement.style.setProperty('--accent', normalized);
+  60:         document.documentElement.style.setProperty('--accent-light', adjustColor(normalized, 20));
+  61:         return normalized;
+  62:     }
+  63: 
+  64:     function populateAccentDropdown(selectedColor) {
+  65:         if (!accentColor) {
+  66:             return;
+  67:         }
+  68: 
+  69:         accentColor.innerHTML = '';
+  70: 
+  71:         ACCENT_PALETTE.forEach(({ value, label }) => {
+  72:             const option = document.createElement('option');
+  73:             option.value = value;
+  74:             option.textContent = label;
+  75:             accentColor.appendChild(option);
+  76:         });
+  77: 
+  78:         const normalizedSelected = normalizeHexColor(selectedColor);
+  79:         const hasSavedColor = ACCENT_PALETTE.some(
+  80:             ({ value }) => value.toLowerCase() === normalizedSelected
+  81:         );
+  82: 
+  83:         if (!hasSavedColor) {
+  84:             const customOption = document.createElement('option');
+  85:             customOption.value = normalizedSelected;
+  86:             customOption.textContent = 'Custom';
+  87:             accentColor.appendChild(customOption);
+  88:         }
+  89: 
+  90:         accentColor.value = normalizedSelected;
+  91:     }
+  92: 
+  93:     function updateThemeToggleIcon(theme) {
+  94:         if (!themeToggle) {
+  95:             return;
+  96:         }
+  97: 
+  98:         themeToggle.innerHTML = theme === 'dark'
+  99:             ? '<span class="material-icons">dark_mode</span>'
+ 100:             : '<span class="material-icons">light_mode</span>';
+ 101:     }
+ 102: 
+ 103:     function loadPreferences() {
+ 104:         const storedTheme = localStorage.getItem('theme');
+ 105:         const savedTheme = storedTheme === 'light' ? 'light' : 'dark';
+ 106:         document.documentElement.setAttribute('data-theme', savedTheme);
+ 107:         updateThemeToggleIcon(savedTheme);
+ 108: 
+ 109:         const storedColor = localStorage.getItem('accentColor');
+ 110:         const savedColor = normalizeHexColor(storedColor || DEFAULT_ACCENT);
+ 111:         const appliedColor = applyAccent(savedColor);
+ 112:         populateAccentDropdown(appliedColor);
+ 113:     }
+ 114: 
+ 115:     function toggleTheme() {
+ 116:         const currentTheme = document.documentElement.getAttribute('data-theme');
+ 117:         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+ 118:         document.documentElement.setAttribute('data-theme', newTheme);
+ 119:         localStorage.setItem('theme', newTheme);
+ 120:         updateThemeToggleIcon(newTheme);
+ 121:     }
+ 122: 
+ 123:     function changeAccentColor(color) {
+ 124:         const normalized = applyAccent(color);
+ 125:         localStorage.setItem('accentColor', normalized);
+ 126:         if (accentColor && accentColor.value !== normalized) {
+ 127:             accentColor.value = normalized;
+ 128:         }
+ 129:     }
+ 130: 
+ 131:     function setupEventListeners() {
+ 132:         if (themeToggle) {
+ 133:             themeToggle.addEventListener('click', toggleTheme);
+ 134:         }
+ 135: 
+ 136:         if (accentColor) {
+ 137:             accentColor.addEventListener('change', (event) => {
+ 138:                 changeAccentColor(event.target.value);
+ 139:             });
+ 140:         }
+ 141:     }
+ 142: 
+ 143:     if (document.readyState === 'loading') {
+ 144:         document.addEventListener('DOMContentLoaded', () => {
+ 145:             loadPreferences();
+ 146:             setupEventListeners();
+ 147:         });
+ 148:     } else {
+ 149:         loadPreferences();
+ 150:         setupEventListeners();
+ 151:     }
+ 152: 
+ 153:     window.themeUtils = {
+ 154:         adjustColor,
+ 155:         loadPreferences,
+ 156:         toggleTheme,
+ 157:         changeAccentColor,
+ 158:         normalizeHexColor
+ 159:     };
+ 160: })();
+ 161: 
+ 162: (function() {
+ 163:     // --- Configuration ---
+ 164:     const STORAGE_KEY = 'holiday_snow_enabled';
+ 165:     const BTN_CLASS = 'btn btn-secondary';
+ 166:     const BTN_ID = 'snowToggle';
+ 167:     // Using innerHTML for the icons. You can adjust the text here.
+ 168:     const BTN_TEXT_ON = '<span class="material-icons">ac_unit</span> Disable Snow';
+ 169:     const BTN_TEXT_OFF = '<span class="material-icons">ac_unit</span> Enable Snow';
+ 170: 
+ 171:     // --- Date Logic (Thanksgiving to Jan 1st) ---
+ 172:     function isHolidaySeason() {
+ 173:         const now = new Date();
+ 174:         const month = now.getMonth(); // 0-11
+ 175:         const date = now.getDate();
+ 176: 
+ 177:         // January 1st
+ 178:         if (month === 0 && date === 1) return true;
+ 179: 
+ 180:         // December (All month)
+ 181:         if (month === 11) return true;
+ 182: 
+ 183:         // November (Post-Thanksgiving)
+ 184:         if (month === 10) {
+ 185:             // Find Thanksgiving (4th Thursday)
+ 186:             const firstOfNov = new Date(now.getFullYear(), 10, 1);
+ 187:             const dayOfWeek = firstOfNov.getDay(); // 0 (Sun) to 6 (Sat)
+ 188:             let daysToFirstThurs = (4 - dayOfWeek + 7) % 7;
+ 189:             const thanksgivingDate = 1 + daysToFirstThurs + 21;
+ 190: 
+ 191:             return date >= thanksgivingDate;
+ 192:         }
+ 193:         return false;
+ 194:     }
+ 195: 
+ 196:     // Stop execution if not holiday season
+ 197:     if (!isHolidaySeason()) {
+ 198:         // cleanup storage if date passed so it doesn't auto-start next year unexpectedly
+ 199:         localStorage.removeItem(STORAGE_KEY);
+ 200:         return;
+ 201:     }
+ 202: 
+ 203:     // --- Snow Logic ---
+ 204:     let canvas, ctx, w, h, particles = [], animationId;
+ 205: 
+ 206:     function resize() {
+ 207:         w = canvas.width = window.innerWidth;
+ 208:         h = canvas.height = window.innerHeight;
+ 209:     }
+ 210: 
+ 211:     function createSnow() {
+ 212:         if (!canvas) {
+ 213:             canvas = document.createElement('canvas');
+ 214:             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+ 215:             document.body.appendChild(canvas);
+ 216:             ctx = canvas.getContext('2d');
+ 217:             window.addEventListener('resize', resize);
+ 218:             resize();
+ 219:         }
+ 220:         canvas.style.display = 'block';
+ 221: 
+ 222:         // Initialize particles - "Light Snowfall" settings
+ 223:         particles = [];
+ 224:         // Much lower density: Max 50 flakes, or fewer on mobile
+ 225:         const particleCount = Math.min(window.innerWidth / 10, 50);
+ 226: 
+ 227:         for (let i = 0; i < particleCount; i++) {
+ 228:             particles.push({
+ 229:                 x: Math.random() * w,
+ 230:                 y: Math.random() * h,
+ 231:                 r: Math.random() * 2 + 1, // Size: 1px to 3px
+ 232:                 d: Math.random() * particleCount, // density factor
+ 233:                 s: Math.random() * 0.5 + 0.2 // Speed: 0.2 to 0.7 (Very slow/gentle)
+ 234:             });
+ 235:         }
+ 236: 
+ 237:         if (!animationId) draw();
+ 238:     }
+ 239: 
+ 240:     function draw() {
+ 241:         ctx.clearRect(0, 0, w, h);
+ 242:         ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; // Slightly more transparent
+ 243:         ctx.beginPath();
+ 244:         for (let i = 0; i < particles.length; i++) {
+ 245:             const p = particles[i];
+ 246:             ctx.moveTo(p.x, p.y);
+ 247:             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+ 248:         }
+ 249:         ctx.fill();
+ 250:         update();
+ 251:         animationId = requestAnimationFrame(draw);
+ 252:     }
+ 253: 
+ 254:     function update() {
+ 255:         for (let i = 0; i < particles.length; i++) {
+ 256:             const p = particles[i];
+ 257:             p.y += p.s;
+ 258:             p.x += Math.sin(p.d) * 0.5; // Gentle sway
+ 259:             p.d += 0.01;
+ 260: 
+ 261:             if (p.y > h) {
+ 262:                 // Reset to top when it hits bottom
+ 263:                 particles[i] = { x: Math.random() * w, y: -10, r: p.r, d: p.d, s: p.s };
+ 264:             }
+ 265:         }
+ 266:     }
+ 267: 
+ 268:     function stopSnow() {
+ 269:         if (canvas) canvas.style.display = 'none';
+ 270:         if (animationId) {
+ 271:             cancelAnimationFrame(animationId);
+ 272:             animationId = null;
+ 273:         }
+ 274:     }
+ 275: 
+ 276:     // --- UI Integration ---
+ 277:     function init() {
+ 278:         const controls = document.querySelector('.controls');
+ 279:         if (!controls) return;
+ 280: 
+ 281:         // Check if button already exists (prevents duplicate if script runs twice)
+ 282:         if (document.getElementById(BTN_ID)) return;
+ 283: 
+ 284:         const btn = document.createElement('button');
+ 285:         btn.className = BTN_CLASS;
+ 286:         btn.id = BTN_ID;
+ 287:         btn.style.marginLeft = '0.5rem';
+ 288: 
+ 289:         // check persistence
+ 290:         let isSnowing = localStorage.getItem(STORAGE_KEY) === 'true';
+ 291: 
+ 292:         // Set initial state
+ 293:         if (isSnowing) {
+ 294:             btn.innerHTML = BTN_TEXT_ON;
+ 295:             createSnow();
+ 296:         } else {
+ 297:             btn.innerHTML = BTN_TEXT_OFF;
+ 298:         }
+ 299: 
+ 300:         btn.addEventListener('click', () => {
+ 301:             isSnowing = !isSnowing;
+ 302:             // Save state to localStorage
+ 303:             localStorage.setItem(STORAGE_KEY, isSnowing);
+ 304: 
+ 305:             if (isSnowing) {
+ 306:                 btn.innerHTML = BTN_TEXT_ON;
+ 307:                 createSnow();
+ 308:             } else {
+ 309:                 btn.innerHTML = BTN_TEXT_OFF;
+ 310:                 stopSnow();
+ 311:             }
+ 312:         });
+ 313: 
+ 314:         // Add button to header
+ 315:         controls.appendChild(btn);
+ 316:     }
+ 317: 
+ 318:     // Run when DOM is ready
+ 319:     if (document.readyState === 'loading') {
+ 320:         document.addEventListener('DOMContentLoaded', init);
+ 321:     } else {
+ 322:         init();
+ 323:     }
+ 324: })();
+```
+
+### `index.html`
+
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en" data-theme="dark">
+   3: <head>
+   4:     <meta charset="UTF-8">
+   5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   6:     <title>Text Utilities</title>
+   7:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   8:     <link rel="stylesheet" href="css/style.css">
+   9: </head>
+  10: <body>
+  11:     <div class="container">
+  12:         <header>
+  13:             <div class="logo">
+  14:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  15:                     <span>Text Utilities</span>
+  16:                 </a>
+  17:             </div>
+  18:             <nav class="site-network" aria-label="Network sites">
+  19:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  20:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+  21:                     <span>Chess Nerd</span>
+  22:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  23:                 </a>
+  24:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  25:                     <img src="img/github.png" class="site-network-icon" alt="">
+  26:                     <span>GitHub</span>
+  27:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  28:                 </a>
+  29:             </nav>
+  30:             <div class="controls">
+  31:                 <div class="accent-selector">
+  32:                     <span class="material-icons">palette</span>
+  33:                     <select id="accentColor" class="color-dropdown"></select>
+  34:                 </div>
+  35:                 <button id="themeToggle" class="btn btn-secondary" type="button">
+  36:                     <span class="material-icons">dark_mode</span>
+  37:                 </button>
+  38:             </div>
+  39:         </header>
+  40: 
+  41:         <main>
+  42:             <div id="homeView">
+  43:                 <div class="tool-grid" id="toolGrid"></div>
+  44:             </div>
+  45:         </main>
+  46:     </div>
+  47: 
+  48:     <script src="js/theme.js"></script>
+  49:     <script>
+  50: const tools = [
+  51:     { id: 'case-converter', name: 'Case Converter', icon: 'text_format', category: 'text', description: 'Convert text between different cases' },
+  52:     { id: 'text-info', name: 'Text Info', icon: 'analytics', category: 'text', description: 'Detailed statistics and readability scores for text' },
+  53:     { id: 'line-operations', name: 'Line Operations', icon: 'reorder', category: 'text', description: 'Sort, filter, and manipulate lines of text' },
+  54:     { id: 'find-replace', name: 'Find & Replace', icon: 'find_replace', category: 'text', description: 'Search and replace text with regex support' },
+  55:     { id: 'font-chooser', name: 'Font Chooser', icon: 'text_fields', category: 'text', description: 'Preview fonts, check contrast, and generate CSS snippets' },
+  56:     { id: 'ip-info', name: 'IP Info', icon: 'language', category: 'data', description: 'Public IP, provider, location, and device diagnostics' },
+  57:     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
+  58:     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
+  59:     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
+  60:     { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
+  61:     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
+  62:     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
+  63:     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
+  64:     { id: 'json-tool', name: 'JSON Tool', icon: 'data_object', category: 'data', description: 'Format, validate, and convert JSON to JSONL format' },
+  65:     { id: 'sitemap-generator', name: 'XML Sitemap Generator', icon: 'schema', category: 'data', description: 'Crawl (with optional CORS proxy) and build sitemap.xml' }
+  66: ];
+  67: 
+  68: const toolGrid = document.getElementById('toolGrid');
+  69: 
+  70: function renderToolGrid(filter = '', category = 'all') {
+  71:     toolGrid.innerHTML = '';
+  72:     const filteredTools = [...tools]
+  73:         .sort((a, b) => a.name.localeCompare(b.name))
+  74:         .filter(tool => {
+  75:         const matchesSearch = tool.name.toLowerCase().includes(filter.toLowerCase()) || tool.description.toLowerCase().includes(filter.toLowerCase());
+  76:         const matchesCategory = category === 'all' || tool.category === category;
+  77:         return matchesSearch && matchesCategory;
+  78:     });
+  79:     
+  80:     filteredTools.forEach(tool => {
+  81:         const card = document.createElement('a');
+  82:         card.className = 'tool-card';
+  83:         card.href = `${tool.id}.html`;
+  84:         card.setAttribute('aria-label', `${tool.name} tool`);
+  85:         card.innerHTML = `<div class="tool-icon"><span class="material-icons">${tool.icon}</span></div><h3>${tool.name}</h3><p>${tool.description}</p>`;
+  86:         toolGrid.appendChild(card);
+  87:     });
+  88:     
+  89:     if (filteredTools.length === 0) {
+  90:         toolGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-secondary)">No tools found</p>';
+  91:     }
+  92: }
+  93: 
+  94: // No search input or filters on this page; always show all tools
+  95: 
+  96: renderToolGrid();
+  97:     </script>
+  98:     <footer class="site-footer">
+  99:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 100:     </footer>
+ 101: </body>
+ 102: </html>
+```
+
+### `sitemap.xml`
+
+```xml
+   1: <?xml version="1.0" encoding="UTF-8"?>
+   2: <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   3:   <url>
+   4:     <loc>https://text-utils.net/</loc>
+   5:   </url>
+   6:   <url>
+   7:     <loc>https://text-utils.net/case-converter.html</loc>
+   8:   </url>
+   9:   <url>
+  10:     <loc>https://text-utils.net/color-chooser.html</loc>
+  11:   </url>
+  12:   <url>
+  13:     <loc>https://text-utils.net/css-unit-converter.html</loc>
+  14:   </url>
+  15:   <url>
+  16:     <loc>https://text-utils.net/find-replace.html</loc>
+  17:   </url>
+  18:   <url>
+  19:     <loc>https://text-utils.net/markdown-html.html</loc>
+  20:   </url>
+  21:   <url>
+  22:     <loc>https://text-utils.net/date-time-info.html</loc>
+  23:   </url>
+  24:   <url>
+  25:     <loc>https://text-utils.net/font-awesome-chooser.html</loc>
+  26:   </url>
+  27:   <url>
+  28:     <loc>https://text-utils.net/font-chooser.html</loc>
+  29:   </url>
+  30:   <url>
+  31:     <loc>https://text-utils.net/google-icons-chooser.html</loc>
+  32:   </url>
+  33:   <url>
+  34:     <loc>https://text-utils.net/hashing-tool.html</loc>
+  35:   </url>
+  36:   <url>
+  37:     <loc>https://text-utils.net/ip-info.html</loc>
+  38:   </url>
+  39:   <url>
+  40:     <loc>https://text-utils.net/json-tool.html</loc>
+  41:   </url>
+  42:   <url>
+  43:     <loc>https://text-utils.net/line-operations.html</loc>
+  44:   </url>
+  45:   <url>
+  46:     <loc>https://text-utils.net/random-numbers.html</loc>
+  47:   </url>
+  48:   <url>
+  49:     <loc>https://text-utils.net/sitemap-generator.html</loc>
+  50:   </url>
+  51:   <url>
+  52:     <loc>https://text-utils.net/text-info.html</loc>
+  53:   </url>
+  54: </urlset>
+```
