@@ -505,6 +505,9 @@
                         dom.colorName.value = currentColor;
                     }
                 }
+                if (source !== 'search' && source !== 'closest') {
+                    dom.searchResult.innerHTML = '';
+                }
                 generateSnippet();
                 updatePngPreview();
                 setStatus('Color updated.', 'success');
@@ -650,6 +653,9 @@
 
             const init = () => {
                 cacheDom();
+                if (!window.EyeDropper && dom.eyedropper) {
+                    dom.eyedropper.style.display = 'none';
+                }
                 populateCategories();
                 populateLanguages();
                 dom.colorCategory.value = 'All Colors';

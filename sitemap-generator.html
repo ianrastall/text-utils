@@ -465,7 +465,10 @@
                 progress({ visited: visitedCount, enqueued: enqueuedCount, found: foundCount });
 
                 while (queue.length > 0) {
-                    if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+                    if (signal?.aborted) {
+                        notify('Crawl stopped by user. Generating sitemap from collected URLs...', 'warning');
+                        break;
+                    }
                     if (entries.length >= options.maxPages) {
                         notify(`Reached the page limit (${options.maxPages}).`, 'warning');
                         break;
@@ -485,6 +488,10 @@
                     try {
                         response = await fetch(requestUrl, { mode: 'cors', redirect: 'follow', signal });
                     } catch (error) {
+                        if (error?.name === 'AbortError') {
+                            notify('Crawl stopped by user.', 'warning');
+                            break;
+                        }
                         const suggestion = !options.corsProxy ? ' Try using a CORS proxy.' : '';
                         notify(`Failed to fetch ${url}: ${error?.message || 'Unknown error'}.${suggestion}`, 'warning');
                         continue;
@@ -505,7 +512,11 @@
                     let responseText = '';
                     try {
                         responseText = await response.text();
-                    } catch {
+                    } catch (error) {
+                        if (error?.name === 'AbortError' || signal?.aborted) {
+                            notify('Crawl stopped by user.', 'warning');
+                            break;
+                        }
                         notify(`Failed to read response from ${url}`, 'warning');
                         continue;
                     }
@@ -540,8 +551,6 @@
                         }
                     }
                 }
-
-                if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
 
                 return entries
                     .filter((entry, index, self) => self.findIndex(other => other.loc === entry.loc) === index)
