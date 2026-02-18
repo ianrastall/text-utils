@@ -5,10 +5,10 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag{dataLayer.pusharguments;}
-  gtag'js', new Date;
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  gtag'config', 'G-0V2F0V7FWB';
+  gtag('config', 'G-0V2F0V7FWB');
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -267,9 +267,17 @@
         }
 
         function toTitleCase(text) {
+            const smallWords = /^(a|an|the|and|but|or|for|nor|on|at|to|from|by|in|of)$/i;
+            let firstWordSeen = false;
             return text
                 .toLowerCase()
-                .replace(/\b\w/g, char => char.toUpperCase());
+                .replace(/\b\w+\b/g, word => {
+                    if (firstWordSeen && smallWords.test(word)) {
+                        return word;
+                    }
+                    firstWordSeen = true;
+                    return word.charAt(0).toUpperCase() + word.slice(1);
+                });
         }
 
         function toSentenceCase(text) {

@@ -5,10 +5,10 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag{dataLayer.pusharguments;}
-  gtag'js', new Date;
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  gtag'config', 'G-0V2F0V7FWB';
+  gtag('config', 'G-0V2F0V7FWB');
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -181,6 +181,12 @@
         const outputStats = document.getElementById('outputStats');
         
         const HASH_ALGORITHMS = ['md5', 'sha1', 'sha256', 'sha384', 'sha512', 'crc32'];
+        const hasSecureWebCrypto = window.isSecureContext && window.crypto && window.crypto.subtle;
+
+        if (!hasSecureWebCrypto) {
+            statusMessage.textContent = 'Warning: Hashing features require HTTPS or localhost.';
+            statusMessage.className = 'warning';
+        }
 
         // --- Modern, UTF-8 Safe Base64/Base64-URL ---
         const encodeBase64 = (text, isUrlSafe = false) => {
@@ -527,6 +533,7 @@
 
             const algoMap = {'SHA1':'SHA-1', 'SHA256':'SHA-256', 'SHA384':'SHA-384', 'SHA512':'SHA-512'};
             if (!algoMap[algoUpper]) throw new Error('Unsupported hash algorithm');
+            if (!hasSecureWebCrypto) throw new Error('Hashing features require HTTPS or localhost.');
 
             const data = new TextEncoder().encode(text);
             const hashBuffer = await crypto.subtle.digest(algoMap[algoUpper], data);
