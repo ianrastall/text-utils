@@ -552,9 +552,7 @@
                     }
                 }
 
-                return entries
-                    .filter((entry, index, self) => self.findIndex(other => other.loc === entry.loc) === index)
-                    .sort((a, b) => a.loc.localeCompare(b.loc));
+                return entries.sort((a, b) => a.loc.localeCompare(b.loc));
             };
 
             const parsePriority = () => {

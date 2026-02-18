@@ -271,7 +271,7 @@
             
             return text.split('\n').map(line => {
                 let firstWordSeen = false;
-                return line.toLowerCase().replace(/\b\w+\b/g, word => {
+                return line.toLowerCase().replace(/\b\w+(?:'\w+)?/g, word => {
                     if (!firstWordSeen) {
                         firstWordSeen = true;
                         return word.charAt(0).toUpperCase() + word.slice(1);
