@@ -550,7 +550,8 @@
                 const rgb = hexToRgb(currentColor);
                 if (canvas.width > 80 && canvas.height > 40 && rgb) {
                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
-                    ctx.font = `${Math.max(10, Math.min(18, canvas.width / 10))}px sans-serif`;
+                    const previewFontSize = Math.max(10, canvas.width / 10);
+                    ctx.font = `${previewFontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(currentColor, canvas.width / 2, canvas.height / 2);
@@ -572,7 +573,8 @@
                 const rgb = hexToRgb(currentColor);
                 if (rgb) {
                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
-                    ctx.font = `${Math.max(12, Math.min(24, width / 15))}px sans-serif`;
+                    const exportFontSize = Math.max(12, width / 12);
+                    ctx.font = `${exportFontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(currentColor, width / 2, height / 2);

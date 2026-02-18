@@ -386,6 +386,7 @@
                 const includeQuery = options.includeQuery;
                 const collapseIndex = options.collapseIndex;
                 const stayOnHost = options.stayOnHost !== undefined ? options.stayOnHost : true;
+                let baseUrl = currentUrl;
 
                 const addCandidate = (raw) => {
                     if (!raw) return;
@@ -396,7 +397,7 @@
                     if (blocked.some(p => lower.startsWith(p))) return;
                     let resolved;
                     try {
-                        resolved = new URL(trimmed, currentUrl);
+                        resolved = new URL(trimmed, baseUrl);
                     } catch {
                         return;
                     }
@@ -409,6 +410,14 @@
                 try {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
+                    const baseTag = doc.querySelector('base[href]');
+                    if (baseTag) {
+                        try {
+                            baseUrl = new URL(baseTag.getAttribute('href'), currentUrl).href;
+                        } catch {
+                            baseUrl = currentUrl;
+                        }
+                    }
                     doc.querySelectorAll('a[href], area[href]').forEach(el => addCandidate(el.getAttribute('href')));
                     doc.querySelectorAll('link[rel="canonical"][href], link[rel="alternate"][href]').forEach(el => addCandidate(el.getAttribute('href')));
                 } catch {
@@ -484,17 +493,34 @@
                     const requestUrl = options.corsProxy ? buildRequestUrl(url, options.corsProxy) : url;
                     notify(`Fetching: ${url}${options.corsProxy ? ' (via proxy)' : ''}`, 'info');
 
+                    const fetchController = new AbortController();
+                    const timeoutId = setTimeout(() => fetchController.abort(), 10000);
+                    const onUserAbort = () => fetchController.abort();
+                    if (signal) signal.addEventListener('abort', onUserAbort);
+
                     let response;
                     try {
-                        response = await fetch(requestUrl, { mode: 'cors', redirect: 'follow', signal });
+                        response = await fetch(requestUrl, {
+                            mode: 'cors',
+                            redirect: 'follow',
+                            signal: fetchController.signal
+                        });
                     } catch (error) {
                         if (error?.name === 'AbortError') {
-                            notify('Crawl stopped by user.', 'warning');
-                            break;
+                            if (signal?.aborted) {
+                                notify('Crawl stopped by user.', 'warning');
+                                break;
+                            } else {
+                                notify(`Timeout fetching ${url}`, 'warning');
+                                continue;
+                            }
                         }
                         const suggestion = !options.corsProxy ? ' Try using a CORS proxy.' : '';
                         notify(`Failed to fetch ${url}: ${error?.message || 'Unknown error'}.${suggestion}`, 'warning');
                         continue;
+                    } finally {
+                        clearTimeout(timeoutId);
+                        if (signal) signal.removeEventListener('abort', onUserAbort);
                     }
 
                     if (response.status !== 200) {
