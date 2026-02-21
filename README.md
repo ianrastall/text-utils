@@ -13,7 +13,7 @@ The dashboard (`index.html`) currently exposes these tools:
 | Case Converter | `case-converter.html` | Text | Convert text between different letter cases. |
 | Text Info | `text-info.html` | Text | Show detailed text metrics and readability info. |
 | Line Operations | `line-operations.html` | Text | Sort, filter, and transform lines of text. |
-| Find & Replace | `find-replace.html` | Text | Search and replace text with regex support. |
+| Find and Replace | `find-replace.html` | Text | Search and replace text with regex support. |
 | Font Chooser | `font-chooser.html` | Text | Preview fonts, contrast, and CSS snippets. |
 | IP Info | `ip-info.html` | Data | Show public IP, provider, location, and device details. |
 | Font Awesome Chooser | `font-awesome-chooser.html` | Data | Browse Font Awesome icons and generate snippets. |
@@ -29,12 +29,12 @@ The dashboard (`index.html`) currently exposes these tools:
 ## Run Locally (Recommended)
 
 This project is static HTML/CSS/JS, so there is no build step.  
-Run a local server from the repo root instead of opening files directly cnfile://`.
+Run a local server from the repo root instead of opening files directly with `file://`.
 
 ### Python 3
 
 ```powershell
-cd <path-to-repo>/text-utils
+cd d:\GitHub\text-utils
 python -m http.server 8000
 ```
 
