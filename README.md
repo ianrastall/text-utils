@@ -29,7 +29,7 @@ The dashboard (`index.html`) currently exposes these tools:
 ## Run Locally (Recommended)
 
 This project is static HTML/CSS/JS, so there is no build step.  
-Run a local server from the repo root instead of opening files directly with `file://`.
+Run a local server from the repo root instead of opening files directly cnfile://`.
 
 ### Python 3
 
