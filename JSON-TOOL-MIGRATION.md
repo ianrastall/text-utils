@@ -69,7 +69,7 @@ The JSON Tool has been successfully created as a comprehensive standalone tool, 
 
 **Output Example**:
 ```
-? Valid JSON
+✓ Valid JSON
 
 Type: Object
 Objects: 4
@@ -124,11 +124,17 @@ const modeInfo = {
 
 ### Error Panel with Position Detection
 ```javascript
-function showError(error) {
-    const posMatch = message.match(/position (\d+)/i);
+function showError(error, sourceText) {
+    const ffLineColMatch = message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+    if (ffLineColMatch) {
+        message += `\n\nLocation: Line ${ffLineColMatch[1]}, Column ${ffLineColMatch[2]}`;
+        return;
+    }
+
+    const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
     if (posMatch) {
-        const pos = parseInt(posMatch[1]);
-        const lines = inputText.value.substring(0, pos).split('\n');
+        const pos = parseInt(posMatch[1], 10);
+        const lines = sourceText.substring(0, pos).split('\n');
         const line = lines.length;
         const col = lines[lines.length - 1].length + 1;
         message += `\n\nLocation: Line ${line}, Column ${col}`;
@@ -415,8 +421,8 @@ Shows users metrics about their JSON:
 ### Client-Side Only
 - All processing in browser
 - No data sent to servers
-- No tracking or analytics
-- Complete privacy
+- JSON payloads are not sent to third-party APIs
+- Google Analytics is present for page-level traffic analytics
 
 ### Safe Error Handling
 - Errors don't expose system info
@@ -444,7 +450,7 @@ Shows users metrics about their JSON:
 - [x] Error on empty array
 - [x] Each line is valid JSON
 - [x] Nested objects handled
-- [x] Statistics show line count
+- [x] Statistics panel updates correctly
 - [x] Large arrays process correctly
 
 ### Validate Mode

@@ -197,15 +197,15 @@
                         <h2>Google Icons Chooser</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="copyBtn" class="btn btn-secondary">
+                        <button type="button" id="copyBtn" class="btn btn-secondary">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
-                        <button id="clearBtn" class="btn btn-secondary">
+                        <button type="button" id="clearBtn" class="btn btn-secondary">
                             <span class="material-icons">clear</span>
                             Clear
                         </button>
@@ -327,7 +327,13 @@
             };
 
             const setPlaceholder = (text) => {
-                iconsGrid.innerHTML = `<div class="muted" style="grid-column:1/-1; text-align:center;">${text}</div>`;
+                iconsGrid.innerHTML = '';
+                const placeholder = document.createElement('div');
+                placeholder.className = 'muted';
+                placeholder.style.gridColumn = '1 / -1';
+                placeholder.style.textAlign = 'center';
+                placeholder.textContent = text;
+                iconsGrid.appendChild(placeholder);
                 iconCount.textContent = '0';
             };
 
@@ -468,7 +474,7 @@
                     setStatus('Nothing to copy.', 'warning');
                     return;
                 }
-                navigator.clipboard.writeText(outputSnippet.textContent).then(
+                window.textUtilsClipboardWrite(outputSnippet.textContent).then(
                     () => setStatus('Copied!', 'success'),
                     () => setStatus('Copy failed.', 'error')
                 );

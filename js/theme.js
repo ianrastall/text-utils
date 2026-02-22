@@ -24,6 +24,47 @@ var textUtilsStorage = window.__textUtilsStorage || {
 };
 window.__textUtilsStorage = textUtilsStorage;
 
+if (typeof window.textUtilsClipboardWrite !== 'function') {
+    window.textUtilsClipboardWrite = async function textUtilsClipboardWrite(value) {
+        const text = String(value ?? '');
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            return navigator.clipboard.writeText(text);
+        }
+
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.setAttribute('aria-hidden', 'true');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '-9999px';
+        textarea.style.opacity = '0';
+
+        const previousActive = document.activeElement;
+
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+
+        let copied = false;
+        try {
+            copied = typeof document.execCommand === 'function'
+                && document.execCommand('copy');
+        } finally {
+            textarea.remove();
+            if (previousActive && typeof previousActive.focus === 'function') {
+                previousActive.focus();
+            }
+        }
+
+        if (!copied) {
+            throw new Error('Clipboard copy unavailable');
+        }
+    };
+}
+
 (function() {
     'use strict';
 

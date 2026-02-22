@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Backward-compatible wrapper for the Color Chooser context dump."""
+"""Convenience wrapper for generating the Case Converter context dump."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from tool_context_dump import run
 if __name__ == "__main__":
     raise SystemExit(
         run(
-            default_tool="color-chooser",
-            default_output=Path("context/code-dump-color-chooser.txt"),
+            default_tool="case-converter",
+            default_output=Path("context/code-dump-case-converter.txt"),
         )
     )

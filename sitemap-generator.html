@@ -108,19 +108,19 @@
                         <h2>XML Sitemap Generator</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="clearOutput" class="btn btn-secondary" disabled>
+                        <button type="button" id="clearOutput" class="btn btn-secondary" disabled>
                             <span class="material-icons">clear</span>
                             Clear
                         </button>
-                        <button id="copyBtn" class="btn btn-secondary" disabled>
+                        <button type="button" id="copyBtn" class="btn btn-secondary" disabled>
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
-                        <button id="downloadBtn" class="btn btn-primary" disabled>
+                        <button type="button" id="downloadBtn" class="btn btn-primary" disabled>
                             <span class="material-icons">download</span>
                             Download
                         </button>
@@ -285,7 +285,13 @@
             const addStatus = (msg, tone = 'info') => {
                 const li = document.createElement('li');
                 li.className = `status-item ${tone}`;
-                li.innerHTML = `<span class="status-badge ${tone}">${tone}</span><span>${msg}</span>`;
+                const badge = document.createElement('span');
+                badge.className = `status-badge ${tone}`;
+                badge.textContent = tone;
+                const text = document.createElement('span');
+                text.textContent = msg;
+                li.appendChild(badge);
+                li.appendChild(text);
                 dom.statusList.appendChild(li);
                 dom.statusList.scrollTop = dom.statusList.scrollHeight;
             };
@@ -702,7 +708,7 @@
                     setStatus('Nothing to copy.', 'warning');
                     return;
                 }
-                navigator.clipboard.writeText(dom.output.value).then(
+                window.textUtilsClipboardWrite(dom.output.value).then(
                     () => setStatus('Copied to clipboard.', 'success'),
                     () => setStatus('Copy failed. Browser blocked access.', 'error')
                 );

@@ -259,15 +259,15 @@
                         <h2>Font Chooser</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="resetButton" class="btn btn-secondary">
+                        <button type="button" id="resetButton" class="btn btn-secondary">
                             <span class="material-icons">refresh</span>
                             Reset
                         </button>
-                        <button id="copyCssButton" class="btn btn-secondary">
+                        <button type="button" id="copyCssButton" class="btn btn-secondary">
                             <span class="material-icons">content_copy</span>
                             Copy CSS
                         </button>
@@ -405,19 +405,19 @@
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                                 <h4 style="margin: 0; display: flex; align-items: center; gap: 0.35rem;"><span class="material-icons" style="font-size: 20px;">code</span>Production CSS</h4>
                                 <div class="code-tabs" role="tablist">
-                                    <button class="code-tab active" data-code-tab="css" aria-label="CSS">CSS</button>
-                                    <button class="code-tab" data-code-tab="import" aria-label="Import">@import</button>
-                                    <button class="code-tab" data-code-tab="scss" aria-label="SCSS">SCSS</button>
+                                    <button type="button" class="code-tab active" data-code-tab="css" aria-label="CSS">CSS</button>
+                                    <button type="button" class="code-tab" data-code-tab="import" aria-label="Import">@import</button>
+                                    <button type="button" class="code-tab" data-code-tab="scss" aria-label="SCSS">SCSS</button>
                                 </div>
                             </div>
                             <div class="code-panel active" data-code-panel="css">
-                                <pre class="code-block"><button class="btn btn-secondary btn-sm copy-chip" data-copy-target="cssCode"><span class="material-icons" style="font-size: 14px;">content_copy</span></button><code id="cssCode"></code></pre>
+                                <pre class="code-block"><button type="button" class="btn btn-secondary btn-sm copy-chip" data-copy-target="cssCode"><span class="material-icons" style="font-size: 14px;">content_copy</span></button><code id="cssCode"></code></pre>
                             </div>
                             <div class="code-panel" data-code-panel="import">
-                                <pre class="code-block"><button class="btn btn-secondary btn-sm copy-chip" data-copy-target="importCode"><span class="material-icons" style="font-size: 14px;">content_copy</span></button><code id="importCode"></code></pre>
+                                <pre class="code-block"><button type="button" class="btn btn-secondary btn-sm copy-chip" data-copy-target="importCode"><span class="material-icons" style="font-size: 14px;">content_copy</span></button><code id="importCode"></code></pre>
                             </div>
                             <div class="code-panel" data-code-panel="scss">
-                                <pre class="code-block"><button class="btn btn-secondary btn-sm copy-chip" data-copy-target="scssCode"><span class="material-icons" style="font-size: 14px;">content_copy</span></button><code id="scssCode"></code></pre>
+                                <pre class="code-block"><button type="button" class="btn btn-secondary btn-sm copy-chip" data-copy-target="scssCode"><span class="material-icons" style="font-size: 14px;">content_copy</span></button><code id="scssCode"></code></pre>
                             </div>
                         </div>
                     </div>
@@ -667,7 +667,10 @@
             if (mode === 'custom') {
                 customTextContainer.style.display = 'block';
                 samples.custom = customTextEl.value;
-                previewContentEl.innerHTML = `<p>${samples.custom || 'Enter your custom text...'}</p>`;
+                previewContentEl.innerHTML = '';
+                const paragraph = document.createElement('p');
+                paragraph.textContent = samples.custom || 'Enter your custom text...';
+                previewContentEl.appendChild(paragraph);
             } else {
                 customTextContainer.style.display = 'none';
                 previewContentEl.innerHTML = samples[mode];
@@ -717,7 +720,7 @@
         function copyBlock(id) {
             const el = document.getElementById(id);
             if (!el) return;
-            navigator.clipboard.writeText(el.textContent).then(() => {
+            window.textUtilsClipboardWrite(el.textContent).then(() => {
                 setStatus('Copied to clipboard!', 'success');
             }).catch(() => setStatus('Copy failed', 'error'));
         }

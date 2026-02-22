@@ -83,15 +83,15 @@
                         <h2>Hashing Tool</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="copyOutput" class="btn btn-secondary btn-compact">
+                        <button type="button" id="copyOutput" class="btn btn-secondary btn-compact">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
-                        <button id="transformBtn" class="btn btn-primary">
+                        <button type="button" id="transformBtn" class="btn btn-primary">
                             <span class="material-icons">sync_alt</span>
                             Transform
                         </button>
@@ -549,8 +549,10 @@
         function updateStats() {
             const input = textArea.value;
             const output = outputArea.value;
-            inputStats.textContent = `${input.length} chars, ${input.split('\n').length} lines`;
-            outputStats.textContent = `${output.length} chars, ${output.split('\n').length} lines`;
+            const inputLines = input.length === 0 ? 0 : input.split('\n').length;
+            const outputLines = output.length === 0 ? 0 : output.split('\n').length;
+            inputStats.textContent = `${input.length} chars, ${inputLines} lines`;
+            outputStats.textContent = `${output.length} chars, ${outputLines} lines`;
         }
 
         // --- Event Listeners ---
@@ -567,7 +569,7 @@
                 showStatus('Nothing to copy.', 'warning');
                 return;
             }
-            navigator.clipboard.writeText(outputArea.value).then(
+            window.textUtilsClipboardWrite(outputArea.value).then(
                 () => showStatus('Result copied to clipboard!', 'success'),
                 () => showStatus('Copy failed.', 'error')
             );

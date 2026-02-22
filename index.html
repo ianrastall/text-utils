@@ -119,12 +119,33 @@ function renderToolGrid(filter = '', category = 'all') {
         card.className = 'tool-card';
         card.href = `${tool.id}.html`;
         card.setAttribute('aria-label', `${tool.name} tool`);
-        card.innerHTML = `<div class="tool-icon"><span class="material-icons">${tool.icon}</span></div><h3>${tool.name}</h3><p>${tool.description}</p>`;
+
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'tool-icon';
+        const icon = document.createElement('span');
+        icon.className = 'material-icons';
+        icon.textContent = tool.icon;
+        iconContainer.appendChild(icon);
+
+        const title = document.createElement('h3');
+        title.textContent = tool.name;
+
+        const description = document.createElement('p');
+        description.textContent = tool.description;
+
+        card.appendChild(iconContainer);
+        card.appendChild(title);
+        card.appendChild(description);
         toolGrid.appendChild(card);
     });
     
     if (filteredTools.length === 0) {
-        toolGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-secondary)">No tools found</p>';
+        const emptyState = document.createElement('p');
+        emptyState.textContent = 'No tools found';
+        emptyState.style.gridColumn = '1 / -1';
+        emptyState.style.textAlign = 'center';
+        emptyState.style.color = 'var(--text-secondary)';
+        toolGrid.appendChild(emptyState);
     }
 }
 

@@ -1,702 +1,729 @@
-# Color Chooser Targeted Code Dump
+# LLM Context Pack: Color Chooser
 
-Generated: 2026-02-12 18:40:55 UTC
+This generated file is designed as a context bundle for LLM prompts.
+It contains full source text for files directly associated with the tool, plus extracted sections from broader docs that reference the tool.
+Every included block is wrapped with explicit BEGIN/END markers for reliable chunking.
+
+Generated: 2026-02-22 00:59:35 UTC
 Repository: `D:\GitHub\text-utils`
-Target tool: `color-chooser.html`
+Tool slug: `color-chooser`
+Tool page: `color-chooser.html`
 Output file: `context/code-dump-color-chooser.txt`
 
-## Included Files
+## Discovery Summary
+- Full files included: 8
+- Direct local dependencies: 3
+- Incoming code references: 3
+- Direct tool docs (full): 2
+- Cross-file text excerpts: 2
+- External dependencies in tool page: 4
+
+## Included Full Files
 - `color-chooser.html`
 - `css/style.css`
-- `js/theme.js`
 - `index.html`
-- `sitemap.xml`
-
-## Direct Local Dependencies (from target HTML)
-- `css/style.css`
 - `js/theme.js`
-
-## Incoming References (files that point to the tool)
-- `index.html`
+- `scripts/code-dump-color-chooser.py`
 - `sitemap.xml`
+- `color_chooser_consolidated_issues.txt`
+- `docs/doc-color-chooser.md`
 
-## External Dependencies (from target HTML)
+## External Dependencies
+- `https://chessnerd.net`
 - `https://fonts.googleapis.com/icon?family=Material+Icons`
+- `https://github.com/ianrastall/text-utils`
+- `https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB`
 
-## File Dumps
+## Full File Dumps
 
-### `color-chooser.html`
-
+----- BEGIN FILE: color-chooser.html -----
 ```html
    1: <!DOCTYPE html>
    2: <html lang="en">
    3: <head>
-   4:     <meta charset="UTF-8">
-   5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   6:     <title>Color Chooser - Text Utilities</title>
-   7:     <script>
-   8:         (function () {
-   9:             try {
-  10:                 const storedTheme = localStorage.getItem('theme');
-  11:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-  12:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
-  13:                     ? storedTheme
-  14:                     : (prefersLight ? 'light' : 'dark');
-  15:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
-  16: 
-  17:                 const storedAccent = localStorage.getItem('accentColor');
-  18:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
-  19:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
-  20:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
-  21:                 }
-  22: 
-  23:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
-  24:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
-  25:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
-  26:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
-  27:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
-  28:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
-  29:                 }
-  30:             } catch (_) {
-  31:                 document.documentElement.setAttribute('data-theme', 'dark');
-  32:             }
-  33:         })();
-  34:     </script>
-  35:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  36:     <link rel="stylesheet" href="css/style.css">
-  37:     <style>
-  38:         .tool-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.25rem; }
-  39:         @media (max-width: 1024px) { .tool-grid { grid-template-columns: 1fr; } }
-  40:         .panel { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
-  41:         .panel h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 1rem; }
-  42:         .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
-  43:         .output-block { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; min-height: 200px; white-space: pre-wrap; }
-  44:         .btn-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  45:         .color-swatch { width: 4rem; height: 2.75rem; border-radius: 6px; border: 1px solid var(--border-color); }
-  46:         .search-result { min-height: 48px; }
-  47:         .png-preview { display: inline-block; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 0.5rem; }
-  48:         .custom-color-row { align-items: flex-end; }
-  49:         .custom-color-control { display: flex; flex-direction: column; gap: 0.25rem; min-width: 9.25rem; }
-  50:         .custom-color-label { font-size: 0.75rem; color: var(--text-secondary); }
-  51:         .custom-color-help { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.2; }
-  52:         .search-feedback { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; padding: 0.5rem 0.65rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-secondary); }
-  53:         .search-feedback strong { color: var(--text-primary); }
-  54:         .search-feedback .divider { color: var(--text-secondary); }
-  55:         .search-closest-action { margin-left: auto; }
-  56:     </style>
-  57: </head>
-  58: <body>
-  59:     <div class="container">
-  60:         <header>
-  61:             <div class="logo">
-  62:                 <a href="index.html" style="color: inherit; text-decoration: none;">
-  63:                     <span>Text Utilities</span>
-  64:                 </a>
-  65:             </div>
-  66:             <nav class="site-network" aria-label="Network sites">
-  67:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
-  68:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
-  69:                     <span>Chess Nerd</span>
-  70:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
-  71:                 </a>
-  72:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
-  73:                     <img src="img/github.png" class="site-network-icon" alt="">
-  74:                     <span>GitHub</span>
-  75:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
-  76:                 </a>
-  77:             </nav>
-  78:             <div class="controls">
-  79:                 <div class="accent-selector">
-  80:                     <span class="material-icons">palette</span>
-  81:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
-  82:                 </div>
-  83:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
-  84:                     <span class="material-icons">dark_mode</span>
-  85:                 </button>
-  86:             </div>
-  87:         </header>
-  88: 
-  89:         <main>
-  90:             <div class="tool-container">
-  91:                 <div class="tool-header">
-  92:                     <div class="tool-title">
-  93:                         <span class="material-icons">palette</span>
-  94:                         <h2>Color Chooser</h2>
-  95:                     </div>
-  96:                     <div class="tool-actions">
-  97:                         <button id="backButton" class="btn btn-secondary btn-compact">
-  98:                             <span class="material-icons">arrow_back</span>
-  99:                             Back
- 100:                         </button>
- 101:                         <button id="copyBtn" class="btn btn-secondary">
- 102:                             <span class="material-icons">content_copy</span>
- 103:                             Copy
- 104:                         </button>
- 105:                         <button id="savePngBtn" class="btn btn-secondary">
- 106:                             <span class="material-icons">save</span>
- 107:                             Save PNG
- 108:                         </button>
- 109:                     </div>
- 110:                 </div>
- 111: 
- 112:                 <p class="tool-description">Pick named or custom colors, see matches, and grab ready-to-use snippets or PNG swatches.</p>
- 113: 
- 114:                 <div class="tool-grid">
- 115:                     <div class="panel">
- 116:                         <h4><span class="material-icons" style="font-size:20px;">tune</span>Selection</h4>
- 117:                         <div class="option-grid">
- 118:                             <div class="option-group">
- 119:                                 <label for="colorCategory">Category</label>
- 120:                                 <select id="colorCategory">
- 121:                                     <option value="">-- Select Category --</option>
- 122:                                 </select>
- 123:                             </div>
- 124:                             <div class="option-group">
- 125:                                 <label for="colorName">Named Color</label>
- 126:                                 <select id="colorName">
- 127:                                     <option value="">-- Select Color --</option>
- 128:                                 </select>
- 129:                             </div>
- 130:                             <div class="option-group">
- 131:                                 <label for="languageSelect">Code Format</label>
- 132:                                 <select id="languageSelect"></select>
- 133:                             </div>
- 134:                         </div>
- 135: 
- 136:                         <div class="btn-bar custom-color-row" style="margin-top:0.75rem;">
- 137:                             <div class="custom-color-control">
- 138:                                 <label for="customColorInput" class="custom-color-label">Custom Color Picker</label>
- 139:                                 <input type="color" id="customColorInput" value="#ffffff" title="Choose a custom color" aria-describedby="customColorHelp" class="color-dropdown" style="width:4rem; height:2.75rem; padding:0;">
- 140:                                 <span id="customColorHelp" class="custom-color-help">Pick any custom color.</span>
- 141:                             </div>
- 142:                             <button type="button" class="btn btn-secondary" id="eyedropperBtn">
- 143:                                 <span class="material-icons">colorize</span> Eyedropper
- 144:                             </button>
- 145:                             <div class="custom-color-control">
- 146:                                 <span class="custom-color-label">Current Color</span>
- 147:                                 <div id="colorDisplay" class="color-swatch" title="Current color"></div>
- 148:                             </div>
- 149:                         </div>
- 150: 
- 151:                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">search</span>Find by Code</h4>
- 152:                         <div class="btn-bar" style="align-items:center;">
- 153:                             <button type="button" id="getCurrentColorBtn" class="btn btn-secondary">
- 154:                                 <span class="material-icons">format_color_fill</span>Use Current
- 155:                             </button>
- 156:                             <input type="text" id="colorInput" placeholder="#FF0000 or 255,0,0" style="flex:1; min-width:200px;">
- 157:                             <button type="button" id="applySearchBtn" class="btn btn-primary">
- 158:                                 <span class="material-icons">check</span>Apply
- 159:                             </button>
- 160:                         </div>
- 161:                         <div id="colorSearchResult" class="search-result" aria-live="polite"></div>
- 162: 
- 163:                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">image</span>PNG Export</h4>
- 164:                         <div class="option-grid">
- 165:                             <div class="option-group">
- 166:                                 <label for="pngWidth">Width (px)</label>
- 167:                                 <input type="number" id="pngWidth" value="200" min="10" max="2000">
- 168:                             </div>
- 169:                             <div class="option-group">
- 170:                                 <label for="pngHeight">Height (px)</label>
- 171:                                 <input type="number" id="pngHeight" value="200" min="10" max="2000">
- 172:                             </div>
- 173:                             <div class="option-group">
- 174:                                 <label for="pngFilename">Filename</label>
- 175:                                 <input type="text" id="pngFilename" value="color-swatch">
- 176:                             </div>
- 177:                         </div>
- 178:                         <div class="btn-bar" style="margin-top:0.75rem;">
- 179:                             <button type="button" id="savePngInlineBtn" class="btn btn-primary">
- 180:                                 <span class="material-icons">download</span>Export PNG
- 181:                             </button>
- 182:                         </div>
- 183:                         <div id="pngPreview" class="png-preview"></div>
- 184:                     </div>
- 185: 
- 186:                     <div class="panel" style="display:flex; flex-direction:column; gap:0.75rem;">
- 187:                         <div>
- 188:                             <h4><span class="material-icons" style="font-size:20px;">code</span>Snippet</h4>
- 189:                             <div class="output-block" id="colorOutput" aria-live="polite"></div>
- 190:                         </div>
- 191:                         <div class="status-bar">
- 192:                             <div id="statusMessage" class="success">Ready</div>
- 193:                             <div id="toolStats">Awaiting selection</div>
- 194:                         </div>
- 195:                     </div>
- 196:                 </div>
- 197:             </div>
- 198:         </main>
- 199:     </div>
- 200: 
- 201:     <script src="js/theme.js"></script>
- 202:     <script>
- 203:         (() => {
- 204:             'use strict';
- 205: 
- 206:             const namedColors = {
- 207:                 AliceBlue: '#F0F8FF',
- 208:                 AntiqueWhite: '#FAEBD7',
- 209:                 Aqua: '#00FFFF',
- 210:                 Aquamarine: '#7FFFD4',
- 211:                 Azure: '#F0FFFF',
- 212:                 Beige: '#F5F5DC',
- 213:                 Bisque: '#FFE4C4',
- 214:                 Black: '#000000',
- 215:                 BlanchedAlmond: '#FFEBCD',
- 216:                 Blue: '#0000FF',
- 217:                 BlueViolet: '#8A2BE2',
- 218:                 Brown: '#A52A2A',
- 219:                 BurlyWood: '#DEB887',
- 220:                 CadetBlue: '#5F9EA0',
- 221:                 Chartreuse: '#7FFF00',
- 222:                 Chocolate: '#D2691E',
- 223:                 Coral: '#FF7F50',
- 224:                 CornflowerBlue: '#6495ED',
- 225:                 Cornsilk: '#FFF8DC',
- 226:                 Crimson: '#DC143C',
- 227:                 Cyan: '#00FFFF',
- 228:                 DarkBlue: '#00008B',
- 229:                 DarkCyan: '#008B8B',
- 230:                 DarkGoldenRod: '#B8860B',
- 231:                 DarkGray: '#A9A9A9',
- 232:                 DarkGrey: '#A9A9A9',
- 233:                 DarkGreen: '#006400',
- 234:                 DarkKhaki: '#BDB76B',
- 235:                 DarkMagenta: '#8B008B',
- 236:                 DarkOliveGreen: '#556B2F',
- 237:                 DarkOrange: '#FF8C00',
- 238:                 DarkOrchid: '#9932CC',
- 239:                 DarkRed: '#8B0000',
- 240:                 DarkSalmon: '#E9967A',
- 241:                 DarkSeaGreen: '#8FBC8F',
- 242:                 DarkSlateBlue: '#483D8B',
- 243:                 DarkSlateGray: '#2F4F4F',
- 244:                 DarkSlateGrey: '#2F4F4F',
- 245:                 DarkTurquoise: '#00CED1',
- 246:                 DarkViolet: '#9400D3',
- 247:                 DeepPink: '#FF1493',
- 248:                 DeepSkyBlue: '#00BFFF',
- 249:                 DimGray: '#696969',
- 250:                 DimGrey: '#696969',
- 251:                 DodgerBlue: '#1E90FF',
- 252:                 FireBrick: '#B22222',
- 253:                 FloralWhite: '#FFFAF0',
- 254:                 ForestGreen: '#228B22',
- 255:                 Fuchsia: '#FF00FF',
- 256:                 Gainsboro: '#DCDCDC',
- 257:                 GhostWhite: '#F8F8FF',
- 258:                 Gold: '#FFD700',
- 259:                 GoldenRod: '#DAA520',
- 260:                 Gray: '#808080',
- 261:                 Grey: '#808080',
- 262:                 Green: '#008000',
- 263:                 GreenYellow: '#ADFF2F',
- 264:                 HoneyDew: '#F0FFF0',
- 265:                 HotPink: '#FF69B4',
- 266:                 IndianRed: '#CD5C5C',
- 267:                 Indigo: '#4B0082',
- 268:                 Ivory: '#FFFFF0',
- 269:                 Khaki: '#F0E68C',
- 270:                 Lavender: '#E6E6FA',
- 271:                 LavenderBlush: '#FFF0F5',
- 272:                 LawnGreen: '#7CFC00',
- 273:                 LemonChiffon: '#FFFACD',
- 274:                 LightBlue: '#ADD8E6',
- 275:                 LightCoral: '#F08080',
- 276:                 LightCyan: '#E0FFFF',
- 277:                 LightGoldenRodYellow: '#FAFAD2',
- 278:                 LightGray: '#D3D3D3',
- 279:                 LightGrey: '#D3D3D3',
- 280:                 LightGreen: '#90EE90',
- 281:                 LightPink: '#FFB6C1',
- 282:                 LightSalmon: '#FFA07A',
- 283:                 LightSeaGreen: '#20B2AA',
- 284:                 LightSkyBlue: '#87CEFA',
- 285:                 LightSlateGray: '#778899',
- 286:                 LightSlateGrey: '#778899',
- 287:                 LightSteelBlue: '#B0C4DE',
- 288:                 LightYellow: '#FFFFE0',
- 289:                 Lime: '#00FF00',
- 290:                 LimeGreen: '#32CD32',
- 291:                 Linen: '#FAF0E6',
- 292:                 Magenta: '#FF00FF',
- 293:                 Maroon: '#800000',
- 294:                 MediumAquaMarine: '#66CDAA',
- 295:                 MediumBlue: '#0000CD',
- 296:                 MediumOrchid: '#BA55D3',
- 297:                 MediumPurple: '#9370DB',
- 298:                 MediumSeaGreen: '#3CB371',
- 299:                 MediumSlateBlue: '#7B68EE',
- 300:                 MediumSpringGreen: '#00FA9A',
- 301:                 MediumTurquoise: '#48D1CC',
- 302:                 MediumVioletRed: '#C71585',
- 303:                 MidnightBlue: '#191970',
- 304:                 MintCream: '#F5FFFA',
- 305:                 MistyRose: '#FFE4E1',
- 306:                 Moccasin: '#FFE4B5',
- 307:                 NavajoWhite: '#FFDEAD',
- 308:                 Navy: '#000080',
- 309:                 OldLace: '#FDF5E6',
- 310:                 Olive: '#808000',
- 311:                 OliveDrab: '#6B8E23',
- 312:                 Orange: '#FFA500',
- 313:                 OrangeRed: '#FF4500',
- 314:                 Orchid: '#DA70D6',
- 315:                 PaleGoldenRod: '#EEE8AA',
- 316:                 PaleGreen: '#98FB98',
- 317:                 PaleTurquoise: '#AFEEEE',
- 318:                 PaleVioletRed: '#DB7093',
- 319:                 PapayaWhip: '#FFEFD5',
- 320:                 PeachPuff: '#FFDAB9',
- 321:                 Peru: '#CD853F',
- 322:                 Pink: '#FFC0CB',
- 323:                 Plum: '#DDA0DD',
- 324:                 PowderBlue: '#B0E0E6',
- 325:                 Purple: '#800080',
- 326:                 RebeccaPurple: '#663399',
- 327:                 Red: '#FF0000',
- 328:                 RosyBrown: '#BC8F8F',
- 329:                 RoyalBlue: '#4169E1',
- 330:                 SaddleBrown: '#8B4513',
- 331:                 Salmon: '#FA8072',
- 332:                 SandyBrown: '#F4A460',
- 333:                 SeaGreen: '#2E8B57',
- 334:                 SeaShell: '#FFF5EE',
- 335:                 Sienna: '#A0522D',
- 336:                 Silver: '#C0C0C0',
- 337:                 SkyBlue: '#87CEEB',
- 338:                 SlateBlue: '#6A5ACD',
- 339:                 SlateGray: '#708090',
- 340:                 SlateGrey: '#708090',
- 341:                 Snow: '#FFFAFA',
- 342:                 SpringGreen: '#00FF7F',
- 343:                 SteelBlue: '#4682B4',
- 344:                 Tan: '#D2B48C',
- 345:                 Teal: '#008080',
- 346:                 Thistle: '#D8BFD8',
- 347:                 Tomato: '#FF6347',
- 348:                 Turquoise: '#40E0D0',
- 349:                 Violet: '#EE82EE',
- 350:                 Wheat: '#F5DEB3',
- 351:                 White: '#FFFFFF',
- 352:                 WhiteSmoke: '#F5F5F5',
- 353:                 Yellow: '#FFFF00',
- 354:                 YellowGreen: '#9ACD32'
- 355:             };
- 356: 
- 357:             const buildCategory = (names) => names.reduce((acc, name) => {
- 358:                 if (namedColors[name]) acc[name] = namedColors[name];
- 359:                 return acc;
- 360:             }, {});
- 361: 
- 362:             const colors = {
- 363:                 "All Colors": namedColors,
- 364:                 "Reds & Pinks": buildCategory(['Red', 'DarkRed', 'FireBrick', 'Crimson', 'IndianRed', 'LightCoral', 'Salmon', 'DarkSalmon', 'LightSalmon', 'Tomato', 'OrangeRed', 'Coral', 'LightPink', 'Pink', 'HotPink', 'DeepPink', 'PaleVioletRed', 'MediumVioletRed']),
- 365:                 "Oranges & Browns": buildCategory(['Orange', 'DarkOrange', 'Peru', 'Chocolate', 'SaddleBrown', 'Sienna', 'Brown', 'RosyBrown', 'SandyBrown', 'GoldenRod', 'DarkGoldenRod', 'BurlyWood', 'Tan', 'Bisque', 'Moccasin', 'NavajoWhite', 'PeachPuff', 'PapayaWhip', 'BlanchedAlmond', 'Wheat']),
- 366:                 "Yellows & Golds": buildCategory(['Yellow', 'LightYellow', 'LemonChiffon', 'LightGoldenRodYellow', 'PaleGoldenRod', 'Gold', 'Khaki', 'DarkKhaki', 'Cornsilk']),
- 367:                 "Greens": buildCategory(['Green', 'DarkGreen', 'ForestGreen', 'SeaGreen', 'MediumSeaGreen', 'DarkSeaGreen', 'PaleGreen', 'LightGreen', 'Lime', 'LimeGreen', 'SpringGreen', 'MediumSpringGreen', 'Chartreuse', 'LawnGreen', 'Olive', 'OliveDrab', 'DarkOliveGreen', 'YellowGreen', 'GreenYellow']),
- 368:                 "Cyans & Aquas": buildCategory(['Aqua', 'Cyan', 'LightCyan', 'DarkCyan', 'Teal', 'Turquoise', 'MediumTurquoise', 'LightSeaGreen', 'MediumAquaMarine', 'Aquamarine', 'PaleTurquoise', 'DarkTurquoise', 'CadetBlue']),
- 369:                 "Blues": buildCategory(['Blue', 'MediumBlue', 'DarkBlue', 'Navy', 'MidnightBlue', 'RoyalBlue', 'CornflowerBlue', 'DodgerBlue', 'DeepSkyBlue', 'SkyBlue', 'LightSkyBlue', 'SteelBlue', 'LightSteelBlue', 'PowderBlue', 'AliceBlue', 'LightBlue', 'SlateBlue', 'MediumSlateBlue', 'DarkSlateBlue']),
- 370:                 "Purples": buildCategory(['Purple', 'Indigo', 'DarkMagenta', 'DarkOrchid', 'DarkViolet', 'BlueViolet', 'MediumOrchid', 'MediumPurple', 'Orchid', 'Violet', 'Plum', 'Thistle', 'RebeccaPurple', 'Magenta', 'Fuchsia']),
- 371:                 "Whites & Pastels": buildCategory(['White', 'Snow', 'HoneyDew', 'MintCream', 'Azure', 'GhostWhite', 'WhiteSmoke', 'FloralWhite', 'Ivory', 'SeaShell', 'Beige', 'OldLace', 'AntiqueWhite', 'Lavender', 'LavenderBlush', 'MistyRose', 'Linen']),
- 372:                 "Grays & Blacks": buildCategory(['Black', 'DimGray', 'DimGrey', 'Gray', 'Grey', 'DarkGray', 'DarkGrey', 'LightGray', 'LightGrey', 'Gainsboro', 'Silver', 'SlateGray', 'SlateGrey', 'LightSlateGray', 'LightSlateGrey', 'DarkSlateGray', 'DarkSlateGrey'])
- 373:             };
- 374: 
- 375:             const nameToCategory = {};
- 376:             Object.entries(colors).forEach(([category, palette]) => {
- 377:                 if (category === 'All Colors') return;
- 378:                 Object.keys(palette).forEach((name) => {
- 379:                     if (!nameToCategory[name]) nameToCategory[name] = category;
- 380:                 });
- 381:             });
- 382:             const languages = { "css": "CSS", "javascript": "JavaScript", "python": "Python", "java": "Java", "csharp": "C#", "php": "PHP", "ruby": "Ruby", "swift": "Swift", "kotlin": "Kotlin", "c++": "C++", "go": "Go", "r": "R", "matlab": "MATLAB", "typescript": "TypeScript", "shell": "Shell", "objective-c": "Objective-C", "html": "HTML", "json": "JSON", "sql": "SQL", "rust": "Rust", "dart": "Dart", "sass": "Sass", "c": "C", "powershell": "PowerShell" };
- 383:             let currentColor = '#FFFFFF';
- 384: 
- 385:             const dom = {};
- 386: 
- 387:             const hexToRgb = (hex) => {
- 388:                 let h = hex.replace('#', '');
- 389:                 if (h.length === 3) h = h.split('').map(c => c + c).join('');
- 390:                 if (h.length !== 6) return null;
- 391:                 const v = parseInt(h, 16);
- 392:                 if (Number.isNaN(v)) return null;
- 393:                 return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
- 394:             };
- 395:             const rgbToHex = (r, g, b) => '#' + [r, g, b].map(c => Math.round(c).toString(16).padStart(2, '0')).join('').toUpperCase();
- 396:             const parseColorInput = (input) => {
- 397:                 const val = input.trim();
- 398:                 if (/^#?([0-9a-fA-F]{3}){1,2}$/.test(val)) return val.startsWith('#') ? val.toUpperCase() : '#' + val.toUpperCase();
- 399:                 const rgbMatch = val.match(/^(?:rgba?\(?)?\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)?$/);
- 400:                 if (rgbMatch) {
- 401:                     const [r, g, b] = rgbMatch.slice(1).map(Number);
- 402:                     if ([r, g, b].every(c => c >= 0 && c <= 255)) return rgbToHex(r, g, b);
- 403:                 }
- 404:                 return null;
- 405:             };
- 406:             const findClosestColor = (targetHex) => {
- 407:                 const targetRgb = hexToRgb(targetHex);
- 408:                 if (!targetRgb) return null;
- 409:                 let best = null;
- 410:                 let min = Infinity;
- 411:                 for (const [name, hex] of Object.entries(namedColors)) {
- 412:                     const rgb = hexToRgb(hex);
- 413:                     if (!rgb) continue;
- 414:                     const d = Math.sqrt((rgb.r - targetRgb.r) ** 2 + (rgb.g - targetRgb.g) ** 2 + (rgb.b - targetRgb.b) ** 2);
- 415:                     if (d < min) {
- 416:                         min = d;
- 417:                         best = { name, hex: hex.toUpperCase(), category: nameToCategory[name] || 'All Colors' };
- 418:                     }
- 419:                 }
- 420:                 return best;
- 421:             };
- 422:             const swatch = (hex) => `<span style="display:inline-block;width:1.1em;height:1.1em;border:1px solid #666;vertical-align:-0.15em;margin:0 0.25em;border-radius:3px;background:${hex};"></span>`;
- 423:             const rgbLabel = (hex) => {
- 424:                 const rgb = hexToRgb(hex);
- 425:                 return rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : 'n/a';
- 426:             };
- 427: 
- 428:             const setStatus = (msg, type = 'success') => {
- 429:                 dom.status.textContent = msg;
- 430:                 dom.status.className = type;
- 431:             };
- 432: 
- 433:             const populateCategories = () => {
- 434:                 const options = ['<option value="">-- Select Category --</option>']
- 435:                     .concat(Object.keys(colors).map(c => `<option value="${c}">${c}</option>`));
- 436:                 dom.colorCategory.innerHTML = options.join('');
- 437:             };
- 438:             const populateColorNames = () => {
- 439:                 const cat = dom.colorCategory.value || 'All Colors';
- 440:                 const palette = colors[cat] || {};
- 441:                 const list = Object.entries(palette).sort((a, b) => a[0].localeCompare(b[0]));
- 442:                 dom.colorName.innerHTML = '<option value="">-- Select Color --</option>' + list.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
- 443:             };
- 444:             const populateLanguages = () => {
- 445:                 dom.languageSelect.innerHTML = Object.entries(languages).sort((a, b) => a[1].localeCompare(b[1]))
- 446:                     .map(([code, label]) => `<option value="${code}">${label}</option>`).join('');
- 447:                 dom.languageSelect.value = 'css';
- 448:             };
- 449: 
- 450:             const generateSnippet = () => {
- 451:                 const lang = dom.languageSelect.value;
- 452:                 const rgb = hexToRgb(currentColor);
- 453:                 if (!rgb) { dom.colorOutput.textContent = 'Invalid color.'; return; }
- 454:                 const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
- 455:                 const formats = {
- 456:                     css: `color: ${currentColor};\n/* or */\ncolor: ${rgbString};`,
- 457:                     html: `<div style="color:${currentColor};">Example</div>`,
- 458:                     javascript: `const colorHex = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
- 459:                     python: `color_hex = '${currentColor}'\ncolor_rgb = (${rgb.r}, ${rgb.g}, ${rgb.b})`,
- 460:                     php: `$colorHex = '${currentColor}';\n$colorRGB = ['r' => ${rgb.r}, 'g' => ${rgb.g}, 'b' => ${rgb.b}];`,
- 461:                     java: `String colorHex = "${currentColor}";\n// Color.decode("${currentColor}")`,
- 462:                     csharp: `string colorHex = "${currentColor}";\n// ColorTranslator.FromHtml("${currentColor}")`,
- 463:                     ruby: `color_hex = '${currentColor}'\ncolor_rgb = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} }`,
- 464:                     swift: `let colorHex = "${currentColor}" // convert to UIColor as needed`,
- 465:                     kotlin: `val colorHex = "${currentColor}" // Color.parseColor(colorHex)`,
- 466:                     "c++": `std::string colorHex = "${currentColor}";\nint rgb[3] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
- 467:                     c: `const char* color_hex = "${currentColor}";\nunsigned char rgb[] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
- 468:                     go: `colorHex := "${currentColor}"`,
- 469:                     rust: `let color_hex = "${currentColor}";\nlet color_rgb: (u8,u8,u8) = (${rgb.r}, ${rgb.g}, ${rgb.b});`,
- 470:                     dart: `const colorHex = "${currentColor}";`,
- 471:                     r: `color_hex <- "${currentColor}"`,
- 472:                     matlab: `color_rgb_255 = [${rgb.r}, ${rgb.g}, ${rgb.b}];`,
- 473:                     typescript: `const colorHex: string = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
- 474:                     shell: `COLOR_HEX='${currentColor}'\nCOLOR_RGB="(${rgb.r},${rgb.g},${rgb.b})"`,
- 475:                     powershell: `$colorHex = "${currentColor}"\n$colorRgb = @{ R = ${rgb.r}; G = ${rgb.g}; B = ${rgb.b} }`,
- 476:                     "objective-c": `NSString *colorHex = @"${currentColor}";`,
- 477:                     sql: `DECLARE @color_hex VARCHAR(7)='${currentColor}'; -- RGB: ${rgb.r},${rgb.g},${rgb.b}`,
- 478:                     json: `\n{\n  "hex": "${currentColor}",\n  "rgb": [${rgb.r}, ${rgb.g}, ${rgb.b}]\n}`,
- 479:                     sass: `$my-color: ${currentColor};`
- 480:                 };
- 481:                 dom.colorOutput.textContent = formats[lang] || `Selected: ${currentColor}`;
- 482:                 dom.toolStats.textContent = `${lang.toUpperCase()} snippet for ${currentColor}`;
- 483:             };
- 484: 
- 485:             const updateColor = (hex, source = '') => {
- 486:                 const parsed = parseColorInput(hex);
- 487:                 if (!parsed) { setStatus('Invalid color input.', 'warning'); return; }
- 488:                 currentColor = parsed;
- 489:                 dom.colorDisplay.style.backgroundColor = currentColor;
- 490:                 dom.customColor.value = currentColor;
- 491:                 if (source !== 'nameSelect') {
- 492:                     const match = findClosestColor(currentColor);
- 493:                     if (match && match.hex === currentColor) {
- 494:                         dom.colorCategory.value = match.category;
- 495:                         populateColorNames();
- 496:                         dom.colorName.value = currentColor;
- 497:                     }
- 498:                 }
- 499:                 generateSnippet();
- 500:                 updatePngPreview();
- 501:                 setStatus('Color updated.', 'success');
- 502:             };
- 503: 
- 504:             const applySearch = () => {
- 505:                 const parsed = parseColorInput(dom.colorInput.value);
- 506:                 if (!parsed) {
- 507:                     dom.searchResult.innerHTML = '<div class="search-feedback"><strong>Invalid format.</strong> Use #RRGGBB or R,G,B.</div>';
- 508:                     setStatus('Invalid color format.', 'warning');
- 509:                     return;
+   4: <!-- Google tag gtag.js -->
+   5: <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+   6: <script>
+   7:   window.dataLayer = window.dataLayer || [];
+   8:   function gtag(){dataLayer.push(arguments);}
+   9:   gtag('js', new Date());
+  10: 
+  11:   gtag('config', 'G-0V2F0V7FWB');
+  12: </script>
+  13:     <meta charset="UTF-8">
+  14:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  15:     <title>Color Chooser - Text Utilities</title>
+  16:     <script>
+  17:         (function () {
+  18:             try {
+  19:                 const storedTheme = localStorage.getItem('theme');
+  20:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  21:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+  22:                     ? storedTheme
+  23:                     : (prefersLight ? 'light' : 'dark');
+  24:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
+  25: 
+  26:                 const storedAccent = localStorage.getItem('accentColor');
+  27:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+  28:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+  29:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+  30:                 }
+  31: 
+  32:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+  33:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
+  34:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
+  35:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+  36:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
+  37:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+  38:                 }
+  39:             } catch (_) {
+  40:                 document.documentElement.setAttribute('data-theme', 'dark');
+  41:             }
+  42:         })();
+  43:     </script>
+  44:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  45:     <link rel="stylesheet" href="css/style.css">
+  46:     <style>
+  47:         .tool-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.25rem; }
+  48:         @media (max-width: 1024px) { .tool-grid { grid-template-columns: 1fr; } }
+  49:         .panel { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+  50:         .panel h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 1rem; }
+  51:         .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  52:         .output-block { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; min-height: 200px; white-space: pre-wrap; }
+  53:         .btn-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  54:         .color-swatch { width: 4rem; height: 2.75rem; border-radius: 6px; border: 1px solid var(--border-color); }
+  55:         .search-result { min-height: 48px; }
+  56:         .png-preview { display: inline-block; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 0.5rem; }
+  57:         .custom-color-row { align-items: flex-end; }
+  58:         .custom-color-control { display: flex; flex-direction: column; gap: 0.25rem; min-width: 9.25rem; }
+  59:         .custom-color-label { font-size: 0.75rem; color: var(--text-secondary); }
+  60:         .custom-color-help { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.2; }
+  61:         .search-feedback { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; padding: 0.5rem 0.65rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-secondary); }
+  62:         .search-feedback strong { color: var(--text-primary); }
+  63:         .search-feedback .divider { color: var(--text-secondary); }
+  64:         .search-closest-action { margin-left: auto; }
+  65:     </style>
+  66: </head>
+  67: <body>
+  68:     <div class="container">
+  69:         <header>
+  70:             <div class="logo">
+  71:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  72:                     <span>Text Utilities</span>
+  73:                 </a>
+  74:             </div>
+  75:             <nav class="site-network" aria-label="Network sites">
+  76:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  77:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+  78:                     <span>Chess Nerd</span>
+  79:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  80:                 </a>
+  81:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  82:                     <img src="img/github.png" class="site-network-icon" alt="">
+  83:                     <span>GitHub</span>
+  84:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  85:                 </a>
+  86:             </nav>
+  87:             <div class="controls">
+  88:                 <div class="accent-selector">
+  89:                     <span class="material-icons">palette</span>
+  90:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+  91:                 </div>
+  92:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+  93:                     <span class="material-icons">dark_mode</span>
+  94:                 </button>
+  95:             </div>
+  96:         </header>
+  97: 
+  98:         <main>
+  99:             <div class="tool-container">
+ 100:                 <div class="tool-header">
+ 101:                     <div class="tool-title">
+ 102:                         <span class="material-icons">palette</span>
+ 103:                         <h2>Color Chooser</h2>
+ 104:                     </div>
+ 105:                     <div class="tool-actions">
+ 106:                         <button type="button" id="backButton" class="btn btn-secondary btn-compact">
+ 107:                             <span class="material-icons">arrow_back</span>
+ 108:                             Back
+ 109:                         </button>
+ 110:                         <button type="button" id="copyBtn" class="btn btn-secondary">
+ 111:                             <span class="material-icons">content_copy</span>
+ 112:                             Copy
+ 113:                         </button>
+ 114:                         <button type="button" id="savePngBtn" class="btn btn-secondary">
+ 115:                             <span class="material-icons">save</span>
+ 116:                             Save PNG
+ 117:                         </button>
+ 118:                     </div>
+ 119:                 </div>
+ 120: 
+ 121:                 <p class="tool-description">Pick named or custom colors, see matches, and grab ready-to-use snippets or PNG swatches.</p>
+ 122: 
+ 123:                 <div class="tool-grid">
+ 124:                     <div class="panel">
+ 125:                         <h4><span class="material-icons" style="font-size:20px;">tune</span>Selection</h4>
+ 126:                         <div class="option-grid">
+ 127:                             <div class="option-group">
+ 128:                                 <label for="colorCategory">Category</label>
+ 129:                                 <select id="colorCategory">
+ 130:                                     <option value="">-- Select Category --</option>
+ 131:                                 </select>
+ 132:                             </div>
+ 133:                             <div class="option-group">
+ 134:                                 <label for="colorName">Named Color</label>
+ 135:                                 <select id="colorName">
+ 136:                                     <option value="">-- Select Color --</option>
+ 137:                                 </select>
+ 138:                             </div>
+ 139:                             <div class="option-group">
+ 140:                                 <label for="languageSelect">Code Format</label>
+ 141:                                 <select id="languageSelect"></select>
+ 142:                             </div>
+ 143:                         </div>
+ 144: 
+ 145:                         <div class="btn-bar custom-color-row" style="margin-top:0.75rem;">
+ 146:                             <div class="custom-color-control">
+ 147:                                 <label for="customColorInput" class="custom-color-label">Custom Color Picker</label>
+ 148:                                 <input type="color" id="customColorInput" value="#ffffff" title="Choose a custom color" aria-describedby="customColorHelp" class="color-dropdown" style="width:4rem; height:2.75rem; padding:0;">
+ 149:                                 <span id="customColorHelp" class="custom-color-help">Pick any custom color.</span>
+ 150:                             </div>
+ 151:                             <button type="button" class="btn btn-secondary" id="eyedropperBtn">
+ 152:                                 <span class="material-icons">colorize</span> Eyedropper
+ 153:                             </button>
+ 154:                             <div class="custom-color-control">
+ 155:                                 <span class="custom-color-label">Current Color</span>
+ 156:                                 <div id="colorDisplay" class="color-swatch" title="Current color"></div>
+ 157:                             </div>
+ 158:                         </div>
+ 159: 
+ 160:                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">search</span>Find by Code</h4>
+ 161:                         <div class="btn-bar" style="align-items:center;">
+ 162:                             <button type="button" id="getCurrentColorBtn" class="btn btn-secondary">
+ 163:                                 <span class="material-icons">format_color_fill</span>Use Current
+ 164:                             </button>
+ 165:                             <input type="text" id="colorInput" placeholder="#FF0000 or 255,0,0" style="flex:1; min-width:200px;">
+ 166:                             <button type="button" id="applySearchBtn" class="btn btn-primary">
+ 167:                                 <span class="material-icons">check</span>Apply
+ 168:                             </button>
+ 169:                         </div>
+ 170:                         <div id="colorSearchResult" class="search-result" aria-live="polite"></div>
+ 171: 
+ 172:                         <h4 style="margin-top:1rem;"><span class="material-icons" style="font-size:20px;">image</span>PNG Export</h4>
+ 173:                         <div class="option-grid">
+ 174:                             <div class="option-group">
+ 175:                                 <label for="pngWidth">Width (px)</label>
+ 176:                                 <input type="number" id="pngWidth" value="200" min="10" max="2000">
+ 177:                             </div>
+ 178:                             <div class="option-group">
+ 179:                                 <label for="pngHeight">Height (px)</label>
+ 180:                                 <input type="number" id="pngHeight" value="200" min="10" max="2000">
+ 181:                             </div>
+ 182:                             <div class="option-group">
+ 183:                                 <label for="pngFilename">Filename</label>
+ 184:                                 <input type="text" id="pngFilename" value="color-swatch">
+ 185:                             </div>
+ 186:                         </div>
+ 187:                         <div class="btn-bar" style="margin-top:0.75rem;">
+ 188:                             <button type="button" id="savePngInlineBtn" class="btn btn-primary">
+ 189:                                 <span class="material-icons">download</span>Export PNG
+ 190:                             </button>
+ 191:                         </div>
+ 192:                         <div id="pngPreview" class="png-preview"></div>
+ 193:                     </div>
+ 194: 
+ 195:                     <div class="panel" style="display:flex; flex-direction:column; gap:0.75rem;">
+ 196:                         <div>
+ 197:                             <h4><span class="material-icons" style="font-size:20px;">code</span>Snippet</h4>
+ 198:                             <div class="output-block" id="colorOutput" aria-live="polite"></div>
+ 199:                         </div>
+ 200:                         <div class="status-bar">
+ 201:                             <div id="statusMessage" class="success">Ready</div>
+ 202:                             <div id="toolStats">Awaiting selection</div>
+ 203:                         </div>
+ 204:                     </div>
+ 205:                 </div>
+ 206:             </div>
+ 207:         </main>
+ 208:     </div>
+ 209: 
+ 210:     <script src="js/theme.js"></script>
+ 211:     <script>
+ 212:         (() => {
+ 213:             'use strict';
+ 214: 
+ 215:             const namedColors = {
+ 216:                 AliceBlue: '#F0F8FF',
+ 217:                 AntiqueWhite: '#FAEBD7',
+ 218:                 Aqua: '#00FFFF',
+ 219:                 Aquamarine: '#7FFFD4',
+ 220:                 Azure: '#F0FFFF',
+ 221:                 Beige: '#F5F5DC',
+ 222:                 Bisque: '#FFE4C4',
+ 223:                 Black: '#000000',
+ 224:                 BlanchedAlmond: '#FFEBCD',
+ 225:                 Blue: '#0000FF',
+ 226:                 BlueViolet: '#8A2BE2',
+ 227:                 Brown: '#A52A2A',
+ 228:                 BurlyWood: '#DEB887',
+ 229:                 CadetBlue: '#5F9EA0',
+ 230:                 Chartreuse: '#7FFF00',
+ 231:                 Chocolate: '#D2691E',
+ 232:                 Coral: '#FF7F50',
+ 233:                 CornflowerBlue: '#6495ED',
+ 234:                 Cornsilk: '#FFF8DC',
+ 235:                 Crimson: '#DC143C',
+ 236:                 Cyan: '#00FFFF',
+ 237:                 DarkBlue: '#00008B',
+ 238:                 DarkCyan: '#008B8B',
+ 239:                 DarkGoldenRod: '#B8860B',
+ 240:                 DarkGray: '#A9A9A9',
+ 241:                 DarkGrey: '#A9A9A9',
+ 242:                 DarkGreen: '#006400',
+ 243:                 DarkKhaki: '#BDB76B',
+ 244:                 DarkMagenta: '#8B008B',
+ 245:                 DarkOliveGreen: '#556B2F',
+ 246:                 DarkOrange: '#FF8C00',
+ 247:                 DarkOrchid: '#9932CC',
+ 248:                 DarkRed: '#8B0000',
+ 249:                 DarkSalmon: '#E9967A',
+ 250:                 DarkSeaGreen: '#8FBC8F',
+ 251:                 DarkSlateBlue: '#483D8B',
+ 252:                 DarkSlateGray: '#2F4F4F',
+ 253:                 DarkSlateGrey: '#2F4F4F',
+ 254:                 DarkTurquoise: '#00CED1',
+ 255:                 DarkViolet: '#9400D3',
+ 256:                 DeepPink: '#FF1493',
+ 257:                 DeepSkyBlue: '#00BFFF',
+ 258:                 DimGray: '#696969',
+ 259:                 DimGrey: '#696969',
+ 260:                 DodgerBlue: '#1E90FF',
+ 261:                 FireBrick: '#B22222',
+ 262:                 FloralWhite: '#FFFAF0',
+ 263:                 ForestGreen: '#228B22',
+ 264:                 Fuchsia: '#FF00FF',
+ 265:                 Gainsboro: '#DCDCDC',
+ 266:                 GhostWhite: '#F8F8FF',
+ 267:                 Gold: '#FFD700',
+ 268:                 GoldenRod: '#DAA520',
+ 269:                 Gray: '#808080',
+ 270:                 Grey: '#808080',
+ 271:                 Green: '#008000',
+ 272:                 GreenYellow: '#ADFF2F',
+ 273:                 HoneyDew: '#F0FFF0',
+ 274:                 HotPink: '#FF69B4',
+ 275:                 IndianRed: '#CD5C5C',
+ 276:                 Indigo: '#4B0082',
+ 277:                 Ivory: '#FFFFF0',
+ 278:                 Khaki: '#F0E68C',
+ 279:                 Lavender: '#E6E6FA',
+ 280:                 LavenderBlush: '#FFF0F5',
+ 281:                 LawnGreen: '#7CFC00',
+ 282:                 LemonChiffon: '#FFFACD',
+ 283:                 LightBlue: '#ADD8E6',
+ 284:                 LightCoral: '#F08080',
+ 285:                 LightCyan: '#E0FFFF',
+ 286:                 LightGoldenRodYellow: '#FAFAD2',
+ 287:                 LightGray: '#D3D3D3',
+ 288:                 LightGrey: '#D3D3D3',
+ 289:                 LightGreen: '#90EE90',
+ 290:                 LightPink: '#FFB6C1',
+ 291:                 LightSalmon: '#FFA07A',
+ 292:                 LightSeaGreen: '#20B2AA',
+ 293:                 LightSkyBlue: '#87CEFA',
+ 294:                 LightSlateGray: '#778899',
+ 295:                 LightSlateGrey: '#778899',
+ 296:                 LightSteelBlue: '#B0C4DE',
+ 297:                 LightYellow: '#FFFFE0',
+ 298:                 Lime: '#00FF00',
+ 299:                 LimeGreen: '#32CD32',
+ 300:                 Linen: '#FAF0E6',
+ 301:                 Magenta: '#FF00FF',
+ 302:                 Maroon: '#800000',
+ 303:                 MediumAquaMarine: '#66CDAA',
+ 304:                 MediumBlue: '#0000CD',
+ 305:                 MediumOrchid: '#BA55D3',
+ 306:                 MediumPurple: '#9370DB',
+ 307:                 MediumSeaGreen: '#3CB371',
+ 308:                 MediumSlateBlue: '#7B68EE',
+ 309:                 MediumSpringGreen: '#00FA9A',
+ 310:                 MediumTurquoise: '#48D1CC',
+ 311:                 MediumVioletRed: '#C71585',
+ 312:                 MidnightBlue: '#191970',
+ 313:                 MintCream: '#F5FFFA',
+ 314:                 MistyRose: '#FFE4E1',
+ 315:                 Moccasin: '#FFE4B5',
+ 316:                 NavajoWhite: '#FFDEAD',
+ 317:                 Navy: '#000080',
+ 318:                 OldLace: '#FDF5E6',
+ 319:                 Olive: '#808000',
+ 320:                 OliveDrab: '#6B8E23',
+ 321:                 Orange: '#FFA500',
+ 322:                 OrangeRed: '#FF4500',
+ 323:                 Orchid: '#DA70D6',
+ 324:                 PaleGoldenRod: '#EEE8AA',
+ 325:                 PaleGreen: '#98FB98',
+ 326:                 PaleTurquoise: '#AFEEEE',
+ 327:                 PaleVioletRed: '#DB7093',
+ 328:                 PapayaWhip: '#FFEFD5',
+ 329:                 PeachPuff: '#FFDAB9',
+ 330:                 Peru: '#CD853F',
+ 331:                 Pink: '#FFC0CB',
+ 332:                 Plum: '#DDA0DD',
+ 333:                 PowderBlue: '#B0E0E6',
+ 334:                 Purple: '#800080',
+ 335:                 RebeccaPurple: '#663399',
+ 336:                 Red: '#FF0000',
+ 337:                 RosyBrown: '#BC8F8F',
+ 338:                 RoyalBlue: '#4169E1',
+ 339:                 SaddleBrown: '#8B4513',
+ 340:                 Salmon: '#FA8072',
+ 341:                 SandyBrown: '#F4A460',
+ 342:                 SeaGreen: '#2E8B57',
+ 343:                 SeaShell: '#FFF5EE',
+ 344:                 Sienna: '#A0522D',
+ 345:                 Silver: '#C0C0C0',
+ 346:                 SkyBlue: '#87CEEB',
+ 347:                 SlateBlue: '#6A5ACD',
+ 348:                 SlateGray: '#708090',
+ 349:                 SlateGrey: '#708090',
+ 350:                 Snow: '#FFFAFA',
+ 351:                 SpringGreen: '#00FF7F',
+ 352:                 SteelBlue: '#4682B4',
+ 353:                 Tan: '#D2B48C',
+ 354:                 Teal: '#008080',
+ 355:                 Thistle: '#D8BFD8',
+ 356:                 Tomato: '#FF6347',
+ 357:                 Turquoise: '#40E0D0',
+ 358:                 Violet: '#EE82EE',
+ 359:                 Wheat: '#F5DEB3',
+ 360:                 White: '#FFFFFF',
+ 361:                 WhiteSmoke: '#F5F5F5',
+ 362:                 Yellow: '#FFFF00',
+ 363:                 YellowGreen: '#9ACD32'
+ 364:             };
+ 365: 
+ 366:             const buildCategory = (names) => names.reduce((acc, name) => {
+ 367:                 if (namedColors[name]) acc[name] = namedColors[name];
+ 368:                 return acc;
+ 369:             }, {});
+ 370: 
+ 371:             const colors = {
+ 372:                 "All Colors": namedColors,
+ 373:                 "Reds & Pinks": buildCategory(['Red', 'DarkRed', 'FireBrick', 'Crimson', 'IndianRed', 'LightCoral', 'Salmon', 'DarkSalmon', 'LightSalmon', 'Tomato', 'OrangeRed', 'Coral', 'LightPink', 'Pink', 'HotPink', 'DeepPink', 'PaleVioletRed', 'MediumVioletRed']),
+ 374:                 "Oranges & Browns": buildCategory(['Orange', 'DarkOrange', 'Peru', 'Chocolate', 'SaddleBrown', 'Sienna', 'Brown', 'RosyBrown', 'SandyBrown', 'GoldenRod', 'DarkGoldenRod', 'BurlyWood', 'Tan', 'Bisque', 'Moccasin', 'NavajoWhite', 'PeachPuff', 'PapayaWhip', 'BlanchedAlmond', 'Wheat']),
+ 375:                 "Yellows & Golds": buildCategory(['Yellow', 'LightYellow', 'LemonChiffon', 'LightGoldenRodYellow', 'PaleGoldenRod', 'Gold', 'Khaki', 'DarkKhaki', 'Cornsilk']),
+ 376:                 "Greens": buildCategory(['Green', 'DarkGreen', 'ForestGreen', 'SeaGreen', 'MediumSeaGreen', 'DarkSeaGreen', 'PaleGreen', 'LightGreen', 'Lime', 'LimeGreen', 'SpringGreen', 'MediumSpringGreen', 'Chartreuse', 'LawnGreen', 'Olive', 'OliveDrab', 'DarkOliveGreen', 'YellowGreen', 'GreenYellow']),
+ 377:                 "Cyans & Aquas": buildCategory(['Aqua', 'Cyan', 'LightCyan', 'DarkCyan', 'Teal', 'Turquoise', 'MediumTurquoise', 'LightSeaGreen', 'MediumAquaMarine', 'Aquamarine', 'PaleTurquoise', 'DarkTurquoise', 'CadetBlue']),
+ 378:                 "Blues": buildCategory(['Blue', 'MediumBlue', 'DarkBlue', 'Navy', 'MidnightBlue', 'RoyalBlue', 'CornflowerBlue', 'DodgerBlue', 'DeepSkyBlue', 'SkyBlue', 'LightSkyBlue', 'SteelBlue', 'LightSteelBlue', 'PowderBlue', 'AliceBlue', 'LightBlue', 'SlateBlue', 'MediumSlateBlue', 'DarkSlateBlue']),
+ 379:                 "Purples": buildCategory(['Purple', 'Indigo', 'DarkMagenta', 'DarkOrchid', 'DarkViolet', 'BlueViolet', 'MediumOrchid', 'MediumPurple', 'Orchid', 'Violet', 'Plum', 'Thistle', 'RebeccaPurple', 'Magenta', 'Fuchsia']),
+ 380:                 "Whites & Pastels": buildCategory(['White', 'Snow', 'HoneyDew', 'MintCream', 'Azure', 'GhostWhite', 'WhiteSmoke', 'FloralWhite', 'Ivory', 'SeaShell', 'Beige', 'OldLace', 'AntiqueWhite', 'Lavender', 'LavenderBlush', 'MistyRose', 'Linen']),
+ 381:                 "Grays & Blacks": buildCategory(['Black', 'DimGray', 'DimGrey', 'Gray', 'Grey', 'DarkGray', 'DarkGrey', 'LightGray', 'LightGrey', 'Gainsboro', 'Silver', 'SlateGray', 'SlateGrey', 'LightSlateGray', 'LightSlateGrey', 'DarkSlateGray', 'DarkSlateGrey'])
+ 382:             };
+ 383: 
+ 384:             const nameToCategory = {};
+ 385:             Object.entries(colors).forEach(([category, palette]) => {
+ 386:                 if (category === 'All Colors') return;
+ 387:                 Object.keys(palette).forEach((name) => {
+ 388:                     if (!nameToCategory[name]) nameToCategory[name] = category;
+ 389:                 });
+ 390:             });
+ 391:             const languages = { "css": "CSS", "javascript": "JavaScript", "python": "Python", "java": "Java", "csharp": "C#", "php": "PHP", "ruby": "Ruby", "swift": "Swift", "kotlin": "Kotlin", "c++": "C++", "go": "Go", "r": "R", "matlab": "MATLAB", "typescript": "TypeScript", "shell": "Shell", "objective-c": "Objective-C", "html": "HTML", "json": "JSON", "sql": "SQL", "rust": "Rust", "dart": "Dart", "sass": "Sass", "c": "C", "powershell": "PowerShell" };
+ 392:             let currentColor = '#FFFFFF';
+ 393: 
+ 394:             const dom = {};
+ 395: 
+ 396:             const hexToRgb = (hex) => {
+ 397:                 let h = hex.replace('#', '');
+ 398:                 if (h.length === 3) h = h.split('').map(c => c + c).join('');
+ 399:                 if (h.length !== 6) return null;
+ 400:                 const v = parseInt(h, 16);
+ 401:                 if (Number.isNaN(v)) return null;
+ 402:                 return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
+ 403:             };
+ 404:             const rgbToHex = (r, g, b) => '#' + [r, g, b].map(c => Math.round(c).toString(16).padStart(2, '0')).join('').toUpperCase();
+ 405:             const parseColorInput = (input) => {
+ 406:                 const val = input.trim();
+ 407:                 if (/^#?([0-9a-fA-F]{3}){1,2}$/.test(val)) return val.startsWith('#') ? val.toUpperCase() : '#' + val.toUpperCase();
+ 408:                 const rgbMatch = val.match(/^(?:rgba?\(?)?\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)?$/);
+ 409:                 if (rgbMatch) {
+ 410:                     const [r, g, b] = rgbMatch.slice(1).map(Number);
+ 411:                     if ([r, g, b].every(c => c >= 0 && c <= 255)) return rgbToHex(r, g, b);
+ 412:                 }
+ 413:                 return null;
+ 414:             };
+ 415:             const findClosestColor = (targetHex) => {
+ 416:                 const targetRgb = hexToRgb(targetHex);
+ 417:                 if (!targetRgb) return null;
+ 418:                 let best = null;
+ 419:                 let min = Infinity;
+ 420:                 for (const [name, hex] of Object.entries(namedColors)) {
+ 421:                     const rgb = hexToRgb(hex);
+ 422:                     if (!rgb) continue;
+ 423:                     const d = Math.sqrt((rgb.r - targetRgb.r) ** 2 + (rgb.g - targetRgb.g) ** 2 + (rgb.b - targetRgb.b) ** 2);
+ 424:                     if (d < min) {
+ 425:                         min = d;
+ 426:                         best = { name, hex: hex.toUpperCase(), category: nameToCategory[name] || 'All Colors' };
+ 427:                     }
+ 428:                 }
+ 429:                 return best;
+ 430:             };
+ 431:             const swatch = (hex) => `<span style="display:inline-block;width:1.1em;height:1.1em;border:1px solid #666;vertical-align:-0.15em;margin:0 0.25em;border-radius:3px;background:${hex};"></span>`;
+ 432:             const rgbLabel = (hex) => {
+ 433:                 const rgb = hexToRgb(hex);
+ 434:                 return rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : 'n/a';
+ 435:             };
+ 436: 
+ 437:             const setStatus = (msg, type = 'success') => {
+ 438:                 dom.status.textContent = msg;
+ 439:                 dom.status.className = type;
+ 440:             };
+ 441: 
+ 442:             const populateCategories = () => {
+ 443:                 const options = ['<option value="">-- Select Category --</option>']
+ 444:                     .concat(Object.keys(colors).map(c => `<option value="${c}">${c}</option>`));
+ 445:                 dom.colorCategory.innerHTML = options.join('');
+ 446:             };
+ 447:             const populateColorNames = () => {
+ 448:                 const cat = dom.colorCategory.value || 'All Colors';
+ 449:                 const palette = colors[cat] || {};
+ 450:                 const list = Object.entries(palette).sort((a, b) => a[0].localeCompare(b[0]));
+ 451:                 dom.colorName.innerHTML = '<option value="">-- Select Color --</option>' + list.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
+ 452:             };
+ 453:             const populateLanguages = () => {
+ 454:                 dom.languageSelect.innerHTML = Object.entries(languages).sort((a, b) => a[1].localeCompare(b[1]))
+ 455:                     .map(([code, label]) => `<option value="${code}">${label}</option>`).join('');
+ 456:                 dom.languageSelect.value = 'css';
+ 457:             };
+ 458: 
+ 459:             const generateSnippet = () => {
+ 460:                 const lang = dom.languageSelect.value;
+ 461:                 const rgb = hexToRgb(currentColor);
+ 462:                 if (!rgb) { dom.colorOutput.textContent = 'Invalid color.'; return; }
+ 463:                 const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+ 464:                 const formats = {
+ 465:                     css: `color: ${currentColor};\n/* or */\ncolor: ${rgbString};`,
+ 466:                     html: `<div style="color:${currentColor};">Example</div>`,
+ 467:                     javascript: `const colorHex = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
+ 468:                     python: `color_hex = '${currentColor}'\ncolor_rgb = (${rgb.r}, ${rgb.g}, ${rgb.b})`,
+ 469:                     php: `$colorHex = '${currentColor}';\n$colorRGB = ['r' => ${rgb.r}, 'g' => ${rgb.g}, 'b' => ${rgb.b}];`,
+ 470:                     java: `String colorHex = "${currentColor}";\n// Color.decode("${currentColor}")`,
+ 471:                     csharp: `string colorHex = "${currentColor}";\n// ColorTranslator.FromHtml("${currentColor}")`,
+ 472:                     ruby: `color_hex = '${currentColor}'\ncolor_rgb = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} }`,
+ 473:                     swift: `let colorHex = "${currentColor}" // convert to UIColor as needed`,
+ 474:                     kotlin: `val colorHex = "${currentColor}" // Color.parseColor(colorHex)`,
+ 475:                     "c++": `std::string colorHex = "${currentColor}";\nint rgb[3] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
+ 476:                     c: `const char* color_hex = "${currentColor}";\nunsigned char rgb[] = {${rgb.r}, ${rgb.g}, ${rgb.b}};`,
+ 477:                     go: `colorHex := "${currentColor}"`,
+ 478:                     rust: `let color_hex = "${currentColor}";\nlet color_rgb: (u8,u8,u8) = (${rgb.r}, ${rgb.g}, ${rgb.b});`,
+ 479:                     dart: `const colorHex = "${currentColor}";`,
+ 480:                     r: `color_hex <- "${currentColor}"`,
+ 481:                     matlab: `color_rgb_255 = [${rgb.r}, ${rgb.g}, ${rgb.b}];`,
+ 482:                     typescript: `const colorHex: string = '${currentColor}';\nconst colorRGB = { r: ${rgb.r}, g: ${rgb.g}, b: ${rgb.b} };`,
+ 483:                     shell: `COLOR_HEX='${currentColor}'\nCOLOR_RGB="(${rgb.r},${rgb.g},${rgb.b})"`,
+ 484:                     powershell: `$colorHex = "${currentColor}"\n$colorRgb = @{ R = ${rgb.r}; G = ${rgb.g}; B = ${rgb.b} }`,
+ 485:                     "objective-c": `NSString *colorHex = @"${currentColor}";`,
+ 486:                     sql: `DECLARE @color_hex VARCHAR(7)='${currentColor}'; -- RGB: ${rgb.r},${rgb.g},${rgb.b}`,
+ 487:                     json: `\n{\n  "hex": "${currentColor}",\n  "rgb": [${rgb.r}, ${rgb.g}, ${rgb.b}]\n}`,
+ 488:                     sass: `$my-color: ${currentColor};`
+ 489:                 };
+ 490:                 dom.colorOutput.textContent = formats[lang] || `Selected: ${currentColor}`;
+ 491:                 dom.toolStats.textContent = `${lang.toUpperCase()} snippet for ${currentColor}`;
+ 492:             };
+ 493: 
+ 494:             const updateColor = (hex, source = '') => {
+ 495:                 const parsed = parseColorInput(hex);
+ 496:                 if (!parsed) { setStatus('Invalid color input.', 'warning'); return; }
+ 497:                 currentColor = parsed;
+ 498:                 dom.colorDisplay.style.backgroundColor = currentColor;
+ 499:                 dom.customColor.value = currentColor;
+ 500:                 if (source !== 'nameSelect') {
+ 501:                     const match = findClosestColor(currentColor);
+ 502:                     if (match && match.hex === currentColor) {
+ 503:                         dom.colorCategory.value = match.category;
+ 504:                         populateColorNames();
+ 505:                         dom.colorName.value = currentColor;
+ 506:                     }
+ 507:                 }
+ 508:                 if (source !== 'search' && source !== 'closest') {
+ 509:                     dom.searchResult.innerHTML = '';
  510:                 }
- 511:                 updateColor(parsed, 'search');
- 512:                 const closest = findClosestColor(parsed);
- 513:                 if (!closest) { dom.searchResult.innerHTML = '<div class="search-feedback">Color set, no named match found.</div>'; return; }
- 514:                 let html = `<div class="search-feedback">Set: ${swatch(parsed)}<strong>${parsed}</strong> (RGB ${rgbLabel(parsed)})`;
- 515:                 if (closest.hex !== parsed) {
- 516:                     html += `<span class="divider">|</span>Closest: ${swatch(closest.hex)}<strong>${closest.name}</strong> (${closest.hex}, RGB ${rgbLabel(closest.hex)})`;
- 517:                     html += `<button type="button" class="btn btn-secondary btn-compact search-closest-action" data-role="use-closest" data-hex="${closest.hex}" data-name="${closest.name}"><span class="material-icons" aria-hidden="true">near_me</span>Use Closest</button>`;
- 518:                 }
- 519:                 else { html += `<span class="divider">|</span>Exact match: <strong>${closest.name}</strong>`; }
- 520:                 html += '</div>';
- 521:                 dom.searchResult.innerHTML = html;
- 522:             };
- 523: 
- 524:             const getContrast = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) > 128 ? '#000' : '#fff';
- 525: 
- 526:             const updatePngPreview = () => {
- 527:                 const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
- 528:                 const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
- 529:                 dom.pngPreview.innerHTML = '';
- 530:                 const canvas = document.createElement('canvas');
- 531:                 const ctx = canvas.getContext('2d');
- 532:                 const previewSize = Math.min(260, Math.max(80, Math.min(width, height)));
- 533:                 const scale = Math.min(previewSize / width, previewSize / height);
- 534:                 canvas.width = width * scale;
- 535:                 canvas.height = height * scale;
- 536:                 ctx.fillStyle = currentColor;
- 537:                 ctx.fillRect(0, 0, canvas.width, canvas.height);
- 538:                 const rgb = hexToRgb(currentColor);
- 539:                 if (canvas.width > 80 && canvas.height > 40 && rgb) {
- 540:                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
- 541:                     ctx.font = `${Math.max(10, Math.min(18, canvas.width / 10))}px sans-serif`;
- 542:                     ctx.textAlign = 'center';
- 543:                     ctx.textBaseline = 'middle';
- 544:                     ctx.fillText(currentColor, canvas.width / 2, canvas.height / 2);
- 545:                 }
- 546:                 canvas.className = 'png-preview';
- 547:                 dom.pngPreview.appendChild(canvas);
- 548:             };
- 549: 
- 550:             const savePng = () => {
- 551:                 const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
- 552:                 const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
- 553:                 const filename = (dom.pngFilename.value || 'color-swatch').replace(/[^\w-]/g, '_');
- 554:                 const canvas = document.createElement('canvas');
- 555:                 canvas.width = width;
- 556:                 canvas.height = height;
- 557:                 const ctx = canvas.getContext('2d');
- 558:                 ctx.fillStyle = currentColor;
- 559:                 ctx.fillRect(0, 0, width, height);
- 560:                 const rgb = hexToRgb(currentColor);
- 561:                 if (rgb) {
- 562:                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
- 563:                     ctx.font = `${Math.max(12, Math.min(24, width / 15))}px sans-serif`;
- 564:                     ctx.textAlign = 'center';
- 565:                     ctx.textBaseline = 'middle';
- 566:                     ctx.fillText(currentColor, width / 2, height / 2);
- 567:                 }
- 568:                 const link = document.createElement('a');
- 569:                 link.download = `${filename}-${currentColor.substring(1)}.png`;
- 570:                 link.href = canvas.toDataURL('image/png');
- 571:                 link.click();
- 572:                 setStatus(`PNG saved as ${link.download}`, 'success');
- 573:             };
- 574: 
- 575:             const copySnippet = () => {
- 576:                 const txt = dom.colorOutput.textContent.trim();
- 577:                 if (!txt) { setStatus('Nothing to copy.', 'warning'); return; }
- 578:                 navigator.clipboard.writeText(txt).then(
- 579:                     () => setStatus('Copied.', 'success'),
- 580:                     () => setStatus('Copy failed.', 'error')
- 581:                 );
- 582:             };
- 583: 
- 584:             const hookEvents = () => {
- 585:                 dom.colorCategory.addEventListener('change', () => { populateColorNames(); setStatus('Category selected.', 'success'); });
- 586:                 dom.colorName.addEventListener('change', (e) => { if (e.target.value) updateColor(e.target.value, 'nameSelect'); });
- 587:                 dom.languageSelect.addEventListener('change', generateSnippet);
- 588:                 dom.customColor.addEventListener('input', (e) => updateColor(e.target.value, 'custom'));
- 589:                 dom.eyedropper.addEventListener('click', async () => {
- 590:                     if (!window.EyeDropper) { setStatus('Eyedropper not supported.', 'warning'); return; }
- 591:                     try { const result = await new EyeDropper().open(); updateColor(result.sRGBHex, 'eyedropper'); }
- 592:                     catch (_) { setStatus('Eyedropper cancelled.', 'warning'); }
- 593:                 });
- 594:                 dom.applySearch.addEventListener('click', applySearch);
- 595:                 dom.getCurrentBtn.addEventListener('click', () => { dom.colorInput.value = currentColor; setStatus('Loaded current color into input.', 'info'); });
- 596:                 dom.searchResult.addEventListener('click', (event) => {
- 597:                     const closestButton = event.target.closest('[data-role="use-closest"]');
- 598:                     if (!closestButton) return;
- 599:                     const closestHex = closestButton.getAttribute('data-hex');
- 600:                     const closestName = closestButton.getAttribute('data-name') || 'closest color';
- 601:                     if (!closestHex) return;
- 602: 
- 603:                     dom.colorInput.value = closestHex;
- 604:                     updateColor(closestHex, 'closest');
- 605:                     dom.searchResult.innerHTML = `<div class="search-feedback">Applied: ${swatch(closestHex)}<strong>${closestName}</strong> (${closestHex}, RGB ${rgbLabel(closestHex)})</div>`;
- 606:                     setStatus(`Applied closest named color: ${closestName}.`, 'success');
+ 511:                 generateSnippet();
+ 512:                 updatePngPreview();
+ 513:                 setStatus('Color updated.', 'success');
+ 514:             };
+ 515: 
+ 516:             const applySearch = () => {
+ 517:                 const parsed = parseColorInput(dom.colorInput.value);
+ 518:                 if (!parsed) {
+ 519:                     dom.searchResult.innerHTML = '<div class="search-feedback"><strong>Invalid format.</strong> Use #RRGGBB or R,G,B.</div>';
+ 520:                     setStatus('Invalid color format.', 'warning');
+ 521:                     return;
+ 522:                 }
+ 523:                 updateColor(parsed, 'search');
+ 524:                 const closest = findClosestColor(parsed);
+ 525:                 if (!closest) { dom.searchResult.innerHTML = '<div class="search-feedback">Color set, no named match found.</div>'; return; }
+ 526:                 let html = `<div class="search-feedback">Set: ${swatch(parsed)}<strong>${parsed}</strong> (RGB ${rgbLabel(parsed)})`;
+ 527:                 if (closest.hex !== parsed) {
+ 528:                     html += `<span class="divider">|</span>Closest: ${swatch(closest.hex)}<strong>${closest.name}</strong> (${closest.hex}, RGB ${rgbLabel(closest.hex)})`;
+ 529:                     html += `<button type="button" class="btn btn-secondary btn-compact search-closest-action" data-role="use-closest" data-hex="${closest.hex}" data-name="${closest.name}"><span class="material-icons" aria-hidden="true">near_me</span>Use Closest</button>`;
+ 530:                 }
+ 531:                 else { html += `<span class="divider">|</span>Exact match: <strong>${closest.name}</strong>`; }
+ 532:                 html += '</div>';
+ 533:                 dom.searchResult.innerHTML = html;
+ 534:             };
+ 535: 
+ 536:             const getContrast = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) > 128 ? '#000' : '#fff';
+ 537: 
+ 538:             const updatePngPreview = () => {
+ 539:                 const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
+ 540:                 const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
+ 541:                 dom.pngPreview.innerHTML = '';
+ 542:                 const canvas = document.createElement('canvas');
+ 543:                 const ctx = canvas.getContext('2d');
+ 544:                 const previewSize = Math.min(260, Math.max(80, Math.min(width, height)));
+ 545:                 const scale = Math.min(previewSize / width, previewSize / height);
+ 546:                 canvas.width = width * scale;
+ 547:                 canvas.height = height * scale;
+ 548:                 ctx.fillStyle = currentColor;
+ 549:                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+ 550:                 const rgb = hexToRgb(currentColor);
+ 551:                 if (canvas.width > 80 && canvas.height > 40 && rgb) {
+ 552:                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
+ 553:                     const previewFontSize = Math.max(10, canvas.width / 10);
+ 554:                     ctx.font = `${previewFontSize}px sans-serif`;
+ 555:                     ctx.textAlign = 'center';
+ 556:                     ctx.textBaseline = 'middle';
+ 557:                     ctx.fillText(currentColor, canvas.width / 2, canvas.height / 2);
+ 558:                 }
+ 559:                 canvas.className = 'png-preview';
+ 560:                 dom.pngPreview.appendChild(canvas);
+ 561:             };
+ 562: 
+ 563:             const savePng = () => {
+ 564:                 const width = Math.max(10, Math.min(2000, parseInt(dom.pngWidth.value) || 200));
+ 565:                 const height = Math.max(10, Math.min(2000, parseInt(dom.pngHeight.value) || 200));
+ 566:                 const filename = (dom.pngFilename.value || 'color-swatch').replace(/[^\w-]/g, '_');
+ 567:                 const canvas = document.createElement('canvas');
+ 568:                 canvas.width = width;
+ 569:                 canvas.height = height;
+ 570:                 const ctx = canvas.getContext('2d');
+ 571:                 ctx.fillStyle = currentColor;
+ 572:                 ctx.fillRect(0, 0, width, height);
+ 573:                 const rgb = hexToRgb(currentColor);
+ 574:                 if (rgb) {
+ 575:                     ctx.fillStyle = getContrast(rgb.r, rgb.g, rgb.b);
+ 576:                     const exportFontSize = Math.max(12, width / 12);
+ 577:                     ctx.font = `${exportFontSize}px sans-serif`;
+ 578:                     ctx.textAlign = 'center';
+ 579:                     ctx.textBaseline = 'middle';
+ 580:                     ctx.fillText(currentColor, width / 2, height / 2);
+ 581:                 }
+ 582:                 const link = document.createElement('a');
+ 583:                 link.download = `${filename}-${currentColor.substring(1)}.png`;
+ 584:                 link.href = canvas.toDataURL('image/png');
+ 585:                 link.click();
+ 586:                 setStatus(`PNG saved as ${link.download}`, 'success');
+ 587:             };
+ 588: 
+ 589:             const copySnippet = () => {
+ 590:                 const txt = dom.colorOutput.textContent.trim();
+ 591:                 if (!txt) { setStatus('Nothing to copy.', 'warning'); return; }
+ 592:                 window.textUtilsClipboardWrite(txt).then(
+ 593:                     () => setStatus('Copied.', 'success'),
+ 594:                     () => setStatus('Copy failed.', 'error')
+ 595:                 );
+ 596:             };
+ 597: 
+ 598:             const hookEvents = () => {
+ 599:                 dom.colorCategory.addEventListener('change', () => { populateColorNames(); setStatus('Category selected.', 'success'); });
+ 600:                 dom.colorName.addEventListener('change', (e) => { if (e.target.value) updateColor(e.target.value, 'nameSelect'); });
+ 601:                 dom.languageSelect.addEventListener('change', generateSnippet);
+ 602:                 dom.customColor.addEventListener('input', (e) => updateColor(e.target.value, 'custom'));
+ 603:                 dom.eyedropper.addEventListener('click', async () => {
+ 604:                     if (!window.EyeDropper) { setStatus('Eyedropper not supported.', 'warning'); return; }
+ 605:                     try { const result = await new EyeDropper().open(); updateColor(result.sRGBHex, 'eyedropper'); }
+ 606:                     catch (_) { setStatus('Eyedropper cancelled.', 'warning'); }
  607:                 });
- 608:                 dom.copyBtn.addEventListener('click', copySnippet);
- 609:                 dom.savePngBtn.addEventListener('click', savePng);
- 610:                 if (dom.savePngInlineBtn) {
- 611:                     dom.savePngInlineBtn.addEventListener('click', savePng);
- 612:                 }
- 613:                 dom.pngWidth.addEventListener('input', updatePngPreview);
- 614:                 dom.pngHeight.addEventListener('input', updatePngPreview);
- 615:                 dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
- 616:             };
- 617: 
- 618:             const cacheDom = () => {
- 619:                 dom.colorCategory = document.getElementById('colorCategory');
- 620:                 dom.colorName = document.getElementById('colorName');
- 621:                 dom.languageSelect = document.getElementById('languageSelect');
- 622:                 dom.customColor = document.getElementById('customColorInput');
- 623:                 dom.eyedropper = document.getElementById('eyedropperBtn');
- 624:                 dom.colorDisplay = document.getElementById('colorDisplay');
- 625:                 dom.colorOutput = document.getElementById('colorOutput');
- 626:                 dom.colorInput = document.getElementById('colorInput');
- 627:                 dom.applySearch = document.getElementById('applySearchBtn');
- 628:                 dom.searchResult = document.getElementById('colorSearchResult');
- 629:                 dom.getCurrentBtn = document.getElementById('getCurrentColorBtn');
- 630:                 dom.pngWidth = document.getElementById('pngWidth');
- 631:                 dom.pngHeight = document.getElementById('pngHeight');
- 632:                 dom.pngFilename = document.getElementById('pngFilename');
- 633:                 dom.pngPreview = document.getElementById('pngPreview');
- 634:                 dom.copyBtn = document.getElementById('copyBtn');
- 635:                 dom.savePngBtn = document.getElementById('savePngBtn');
- 636:                 dom.savePngInlineBtn = document.getElementById('savePngInlineBtn');
- 637:                 dom.status = document.getElementById('statusMessage');
- 638:                 dom.toolStats = document.getElementById('toolStats');
- 639:                 dom.backButton = document.getElementById('backButton');
- 640:             };
- 641: 
- 642:             const init = () => {
- 643:                 cacheDom();
- 644:                 populateCategories();
- 645:                 populateLanguages();
- 646:                 dom.colorCategory.value = 'All Colors';
- 647:                 populateColorNames();
- 648:                 hookEvents();
- 649:                 updateColor(currentColor, 'init');
- 650:                 updatePngPreview();
- 651:                 setStatus('Ready', 'success');
- 652:             };
- 653: 
- 654:             if (document.readyState === 'loading') {
- 655:                 document.addEventListener('DOMContentLoaded', init);
- 656:             } else {
- 657:                 init();
- 658:             }
- 659:         })();
- 660:     </script>
- 661:     <footer class="site-footer">
- 662:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
- 663:     </footer>
- 664: </body>
- 665: </html>
+ 608:                 dom.applySearch.addEventListener('click', applySearch);
+ 609:                 dom.getCurrentBtn.addEventListener('click', () => { dom.colorInput.value = currentColor; setStatus('Loaded current color into input.', 'info'); });
+ 610:                 dom.searchResult.addEventListener('click', (event) => {
+ 611:                     const closestButton = event.target.closest('[data-role="use-closest"]');
+ 612:                     if (!closestButton) return;
+ 613:                     const closestHex = closestButton.getAttribute('data-hex');
+ 614:                     const closestName = closestButton.getAttribute('data-name') || 'closest color';
+ 615:                     if (!closestHex) return;
+ 616: 
+ 617:                     dom.colorInput.value = closestHex;
+ 618:                     updateColor(closestHex, 'closest');
+ 619:                     dom.searchResult.innerHTML = `<div class="search-feedback">Applied: ${swatch(closestHex)}<strong>${closestName}</strong> (${closestHex}, RGB ${rgbLabel(closestHex)})</div>`;
+ 620:                     setStatus(`Applied closest named color: ${closestName}.`, 'success');
+ 621:                 });
+ 622:                 dom.copyBtn.addEventListener('click', copySnippet);
+ 623:                 dom.savePngBtn.addEventListener('click', savePng);
+ 624:                 if (dom.savePngInlineBtn) {
+ 625:                     dom.savePngInlineBtn.addEventListener('click', savePng);
+ 626:                 }
+ 627:                 dom.pngWidth.addEventListener('input', updatePngPreview);
+ 628:                 dom.pngHeight.addEventListener('input', updatePngPreview);
+ 629:                 dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
+ 630:             };
+ 631: 
+ 632:             const cacheDom = () => {
+ 633:                 dom.colorCategory = document.getElementById('colorCategory');
+ 634:                 dom.colorName = document.getElementById('colorName');
+ 635:                 dom.languageSelect = document.getElementById('languageSelect');
+ 636:                 dom.customColor = document.getElementById('customColorInput');
+ 637:                 dom.eyedropper = document.getElementById('eyedropperBtn');
+ 638:                 dom.colorDisplay = document.getElementById('colorDisplay');
+ 639:                 dom.colorOutput = document.getElementById('colorOutput');
+ 640:                 dom.colorInput = document.getElementById('colorInput');
+ 641:                 dom.applySearch = document.getElementById('applySearchBtn');
+ 642:                 dom.searchResult = document.getElementById('colorSearchResult');
+ 643:                 dom.getCurrentBtn = document.getElementById('getCurrentColorBtn');
+ 644:                 dom.pngWidth = document.getElementById('pngWidth');
+ 645:                 dom.pngHeight = document.getElementById('pngHeight');
+ 646:                 dom.pngFilename = document.getElementById('pngFilename');
+ 647:                 dom.pngPreview = document.getElementById('pngPreview');
+ 648:                 dom.copyBtn = document.getElementById('copyBtn');
+ 649:                 dom.savePngBtn = document.getElementById('savePngBtn');
+ 650:                 dom.savePngInlineBtn = document.getElementById('savePngInlineBtn');
+ 651:                 dom.status = document.getElementById('statusMessage');
+ 652:                 dom.toolStats = document.getElementById('toolStats');
+ 653:                 dom.backButton = document.getElementById('backButton');
+ 654:             };
+ 655: 
+ 656:             const init = () => {
+ 657:                 cacheDom();
+ 658:                 if (!window.EyeDropper && dom.eyedropper) {
+ 659:                     dom.eyedropper.style.display = 'none';
+ 660:                 }
+ 661:                 populateCategories();
+ 662:                 populateLanguages();
+ 663:                 dom.colorCategory.value = 'All Colors';
+ 664:                 populateColorNames();
+ 665:                 hookEvents();
+ 666:                 updateColor(currentColor, 'init');
+ 667:                 updatePngPreview();
+ 668:                 setStatus('Ready', 'success');
+ 669:             };
+ 670: 
+ 671:             if (document.readyState === 'loading') {
+ 672:                 document.addEventListener('DOMContentLoaded', init);
+ 673:             } else {
+ 674:                 init();
+ 675:             }
+ 676:         })();
+ 677:     </script>
+ 678:     <footer class="site-footer">
+ 679:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 680:     </footer>
+ 681: </body>
+ 682: </html>
 ```
+----- END FILE: color-chooser.html -----
 
-### `css/style.css`
-
+----- BEGIN FILE: css/style.css -----
 ```css
    1: :root {
    2:     --bg-primary: #121212;
@@ -1339,9 +1366,174 @@ Output file: `context/code-dump-color-chooser.txt`
  639:     }
  640: }
 ```
+----- END FILE: css/style.css -----
 
-### `js/theme.js`
+----- BEGIN FILE: index.html -----
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en">
+   3: <head>
+   4: <!-- Google tag gtag.js -->
+   5: <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+   6: <script>
+   7:   window.dataLayer = window.dataLayer || [];
+   8:   function gtag(){dataLayer.push(arguments);}
+   9:   gtag('js', new Date());
+  10: 
+  11:   gtag('config', 'G-0V2F0V7FWB');
+  12: </script>
+  13:     <meta charset="UTF-8">
+  14:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  15:     <title>Text Utilities</title>
+  16:     <script>
+  17:         (function () {
+  18:             try {
+  19:                 const storedTheme = localStorage.getItem('theme');
+  20:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  21:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+  22:                     ? storedTheme
+  23:                     : (prefersLight ? 'light' : 'dark');
+  24:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
+  25: 
+  26:                 const storedAccent = localStorage.getItem('accentColor');
+  27:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+  28:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+  29:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+  30:                 }
+  31: 
+  32:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+  33:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
+  34:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
+  35:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+  36:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
+  37:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+  38:                 }
+  39:             } catch (_) {
+  40:                 document.documentElement.setAttribute('data-theme', 'dark');
+  41:             }
+  42:         })();
+  43:     </script>
+  44:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  45:     <link rel="stylesheet" href="css/style.css">
+  46: </head>
+  47: <body>
+  48:     <div class="container">
+  49:         <header>
+  50:             <div class="logo">
+  51:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  52:                     <span>Text Utilities</span>
+  53:                 </a>
+  54:             </div>
+  55:             <nav class="site-network" aria-label="Network sites">
+  56:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  57:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+  58:                     <span>Chess Nerd</span>
+  59:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  60:                 </a>
+  61:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  62:                     <img src="img/github.png" class="site-network-icon" alt="">
+  63:                     <span>GitHub</span>
+  64:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  65:                 </a>
+  66:             </nav>
+  67:             <div class="controls">
+  68:                 <div class="accent-selector">
+  69:                     <span class="material-icons">palette</span>
+  70:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+  71:                 </div>
+  72:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+  73:                     <span class="material-icons">dark_mode</span>
+  74:                 </button>
+  75:             </div>
+  76:         </header>
+  77: 
+  78:         <main>
+  79:             <div id="homeView">
+  80:                 <div class="tool-grid" id="toolGrid"></div>
+  81:             </div>
+  82:         </main>
+  83:     </div>
+  84: 
+  85:     <script src="js/theme.js"></script>
+  86:     <script>
+  87: const tools = [
+  88:     { id: 'case-converter', name: 'Case Converter', icon: 'text_format', category: 'text', description: 'Convert text between different cases' },
+  89:     { id: 'text-info', name: 'Text Info', icon: 'analytics', category: 'text', description: 'Detailed statistics and readability scores for text' },
+  90:     { id: 'line-operations', name: 'Line Operations', icon: 'reorder', category: 'text', description: 'Sort, filter, and manipulate lines of text' },
+  91:     { id: 'find-replace', name: 'Find & Replace', icon: 'find_replace', category: 'text', description: 'Search and replace text with regex support' },
+  92:     { id: 'font-chooser', name: 'Font Chooser', icon: 'text_fields', category: 'text', description: 'Preview fonts, check contrast, and generate CSS snippets' },
+  93:     { id: 'ip-info', name: 'IP Info', icon: 'language', category: 'data', description: 'Public IP, provider, location, and device diagnostics' },
+  94:     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
+  95:     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
+  96:     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
+  97:     { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
+  98:     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
+  99:     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
+ 100:     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
+ 101:     { id: 'json-tool', name: 'JSON Tool', icon: 'data_object', category: 'data', description: 'Format, validate, and convert JSON to JSONL format' },
+ 102:     { id: 'sitemap-generator', name: 'XML Sitemap Generator', icon: 'schema', category: 'data', description: 'Crawl (with optional CORS proxy) and build sitemap.xml' }
+ 103: ];
+ 104: 
+ 105: const toolGrid = document.getElementById('toolGrid');
+ 106: 
+ 107: function renderToolGrid(filter = '', category = 'all') {
+ 108:     toolGrid.innerHTML = '';
+ 109:     const filteredTools = [...tools]
+ 110:         .sort((a, b) => a.name.localeCompare(b.name))
+ 111:         .filter(tool => {
+ 112:         const matchesSearch = tool.name.toLowerCase().includes(filter.toLowerCase()) || tool.description.toLowerCase().includes(filter.toLowerCase());
+ 113:         const matchesCategory = category === 'all' || tool.category === category;
+ 114:         return matchesSearch && matchesCategory;
+ 115:     });
+ 116:     
+ 117:     filteredTools.forEach(tool => {
+ 118:         const card = document.createElement('a');
+ 119:         card.className = 'tool-card';
+ 120:         card.href = `${tool.id}.html`;
+ 121:         card.setAttribute('aria-label', `${tool.name} tool`);
+ 122: 
+ 123:         const iconContainer = document.createElement('div');
+ 124:         iconContainer.className = 'tool-icon';
+ 125:         const icon = document.createElement('span');
+ 126:         icon.className = 'material-icons';
+ 127:         icon.textContent = tool.icon;
+ 128:         iconContainer.appendChild(icon);
+ 129: 
+ 130:         const title = document.createElement('h3');
+ 131:         title.textContent = tool.name;
+ 132: 
+ 133:         const description = document.createElement('p');
+ 134:         description.textContent = tool.description;
+ 135: 
+ 136:         card.appendChild(iconContainer);
+ 137:         card.appendChild(title);
+ 138:         card.appendChild(description);
+ 139:         toolGrid.appendChild(card);
+ 140:     });
+ 141:     
+ 142:     if (filteredTools.length === 0) {
+ 143:         const emptyState = document.createElement('p');
+ 144:         emptyState.textContent = 'No tools found';
+ 145:         emptyState.style.gridColumn = '1 / -1';
+ 146:         emptyState.style.textAlign = 'center';
+ 147:         emptyState.style.color = 'var(--text-secondary)';
+ 148:         toolGrid.appendChild(emptyState);
+ 149:     }
+ 150: }
+ 151: 
+ 152: // No search input or filters on this page; always show all tools
+ 153: 
+ 154: renderToolGrid();
+ 155:     </script>
+ 156:     <footer class="site-footer">
+ 157:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 158:     </footer>
+ 159: </body>
+ 160: </html>
+```
+----- END FILE: index.html -----
 
+----- BEGIN FILE: js/theme.js -----
 ```javascript
    1: // Theme and accent color management
    2: var textUtilsStorage = window.__textUtilsStorage || {
@@ -1369,687 +1561,1467 @@ Output file: `context/code-dump-color-chooser.txt`
   24: };
   25: window.__textUtilsStorage = textUtilsStorage;
   26: 
-  27: (function() {
-  28:     'use strict';
-  29: 
-  30:     if (window.__textUtilsThemeModuleLoaded) {
-  31:         return;
-  32:     }
-  33:     window.__textUtilsThemeModuleLoaded = true;
+  27: if (typeof window.textUtilsClipboardWrite !== 'function') {
+  28:     window.textUtilsClipboardWrite = async function textUtilsClipboardWrite(value) {
+  29:         const text = String(value ?? '');
+  30: 
+  31:         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+  32:             return navigator.clipboard.writeText(text);
+  33:         }
   34: 
-  35:     const ACCENT_PALETTE = [
-  36:         { value: '#0d9488', label: 'Teal' },
-  37:         { value: '#3b82f6', label: 'Blue' },
-  38:         { value: '#8b5cf6', label: 'Purple' },
-  39:         { value: '#10b981', label: 'Emerald' },
-  40:         { value: '#f59e0b', label: 'Amber' },
-  41:         { value: '#ef4444', label: 'Red' },
-  42:         { value: '#ec4899', label: 'Soft Pink' },
-  43:         { value: '#fb7185', label: 'Coral' },
-  44:         { value: '#5f9ea0', label: 'Cadet Blue' },
-  45:         { value: '#6495ed', label: 'Cornflower' },
-  46:         { value: '#deb887', label: 'Burlywood' },
-  47:         { value: '#60a5fa', label: 'Sky Blue' },
-  48:         { value: '#7c3aed', label: 'Violet' }
-  49:     ];
-  50:     const DEFAULT_ACCENT = '#0d9488';
-  51: 
-  52:     let themeToggle = null;
-  53:     let accentColor = null;
-  54: 
-  55:     function captureControls() {
-  56:         themeToggle = document.getElementById('themeToggle');
-  57:         accentColor = document.getElementById('accentColor');
-  58: 
-  59:         if (themeToggle) {
-  60:             themeToggle.type = 'button';
-  61:         }
-  62: 
-  63:         if (accentColor && !accentColor.getAttribute('aria-label')) {
-  64:             accentColor.setAttribute('aria-label', 'Accent color');
-  65:         }
-  66:     }
+  35:         const textarea = document.createElement('textarea');
+  36:         textarea.value = text;
+  37:         textarea.setAttribute('readonly', '');
+  38:         textarea.setAttribute('aria-hidden', 'true');
+  39:         textarea.style.position = 'fixed';
+  40:         textarea.style.top = '0';
+  41:         textarea.style.left = '-9999px';
+  42:         textarea.style.opacity = '0';
+  43: 
+  44:         const previousActive = document.activeElement;
+  45: 
+  46:         document.body.appendChild(textarea);
+  47:         textarea.focus();
+  48:         textarea.select();
+  49:         textarea.setSelectionRange(0, textarea.value.length);
+  50: 
+  51:         let copied = false;
+  52:         try {
+  53:             copied = typeof document.execCommand === 'function'
+  54:                 && document.execCommand('copy');
+  55:         } finally {
+  56:             textarea.remove();
+  57:             if (previousActive && typeof previousActive.focus === 'function') {
+  58:                 previousActive.focus();
+  59:             }
+  60:         }
+  61: 
+  62:         if (!copied) {
+  63:             throw new Error('Clipboard copy unavailable');
+  64:         }
+  65:     };
+  66: }
   67: 
-  68:     function normalizeHexColor(color) {
-  69:         if (typeof color !== 'string') {
-  70:             return DEFAULT_ACCENT;
-  71:         }
-  72: 
-  73:         let candidate = color.trim().toLowerCase();
-  74:         if (/^#[0-9a-f]{3}$/.test(candidate)) {
-  75:             candidate = `#${candidate[1]}${candidate[1]}${candidate[2]}${candidate[2]}${candidate[3]}${candidate[3]}`;
-  76:         }
-  77: 
-  78:         if (/^#[0-9a-f]{6}$/.test(candidate)) {
-  79:             return candidate;
-  80:         }
-  81: 
-  82:         return DEFAULT_ACCENT;
-  83:     }
-  84: 
-  85:     function hexToRgbTuple(hex) {
-  86:         const normalized = normalizeHexColor(hex).slice(1);
-  87:         const red = parseInt(normalized.slice(0, 2), 16);
-  88:         const green = parseInt(normalized.slice(2, 4), 16);
-  89:         const blue = parseInt(normalized.slice(4, 6), 16);
-  90:         return `${red}, ${green}, ${blue}`;
-  91:     }
-  92: 
-  93:     function adjustColor(color, amount) {
-  94:         const normalized = normalizeHexColor(color).slice(1);
-  95:         const parsed = parseInt(normalized, 16);
-  96: 
-  97:         if (Number.isNaN(parsed)) {
-  98:             return DEFAULT_ACCENT;
-  99:         }
- 100: 
- 101:         let red = ((parsed >> 16) & 0xFF) + amount;
- 102:         let green = ((parsed >> 8) & 0xFF) + amount;
- 103:         let blue = (parsed & 0xFF) + amount;
- 104: 
- 105:         red = Math.min(Math.max(0, red), 255);
- 106:         green = Math.min(Math.max(0, green), 255);
- 107:         blue = Math.min(Math.max(0, blue), 255);
- 108: 
- 109:         return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, '0')}`;
- 110:     }
- 111: 
- 112:     function applyAccent(color) {
- 113:         const normalized = normalizeHexColor(color);
- 114:         document.documentElement.style.setProperty('--accent', normalized);
- 115:         document.documentElement.style.setProperty('--accent-light', adjustColor(normalized, 20));
- 116:         document.documentElement.style.setProperty('--accent-rgb', hexToRgbTuple(normalized));
- 117:         return normalized;
- 118:     }
- 119: 
- 120:     function ensureAccentOptionExists(value) {
- 121:         if (!accentColor) {
- 122:             return;
- 123:         }
- 124: 
- 125:         const normalized = normalizeHexColor(value);
- 126:         if (accentColor.querySelector(`option[value="${normalized}"]`)) {
- 127:             return;
- 128:         }
- 129: 
- 130:         const customOption = document.createElement('option');
- 131:         customOption.value = normalized;
- 132:         customOption.textContent = `Custom (${normalized})`;
- 133:         accentColor.appendChild(customOption);
- 134:     }
- 135: 
- 136:     function populateAccentDropdown(selectedColor) {
- 137:         if (!accentColor) {
- 138:             return;
- 139:         }
- 140: 
- 141:         accentColor.replaceChildren();
- 142: 
- 143:         ACCENT_PALETTE.forEach(({ value, label }) => {
- 144:             const option = document.createElement('option');
- 145:             option.value = value;
- 146:             option.textContent = label;
- 147:             accentColor.appendChild(option);
- 148:         });
- 149: 
- 150:         const normalizedSelected = normalizeHexColor(selectedColor);
- 151:         const hasSavedColor = ACCENT_PALETTE.some(
- 152:             ({ value }) => value.toLowerCase() === normalizedSelected
- 153:         );
- 154: 
- 155:         if (!hasSavedColor) {
- 156:             ensureAccentOptionExists(normalizedSelected);
- 157:         }
- 158: 
- 159:         accentColor.value = normalizedSelected;
- 160:     }
- 161: 
- 162:     function updateThemeToggleIcon(theme) {
- 163:         if (!themeToggle) {
- 164:             return;
- 165:         }
- 166: 
- 167:         const icon = document.createElement('span');
- 168:         icon.className = 'material-icons';
- 169:         icon.setAttribute('aria-hidden', 'true');
- 170:         icon.textContent = theme === 'dark' ? 'dark_mode' : 'light_mode';
- 171: 
- 172:         themeToggle.replaceChildren(icon);
- 173: 
- 174:         const isDark = theme === 'dark';
- 175:         themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
- 176:         themeToggle.setAttribute('title', isDark ? 'Dark mode' : 'Light mode');
- 177:         themeToggle.setAttribute(
- 178:             'aria-label',
- 179:             isDark ? 'Switch to light theme' : 'Switch to dark theme'
- 180:         );
- 181:     }
- 182: 
- 183:     function getDefaultTheme() {
- 184:         const prefersLight = window.matchMedia
- 185:             && window.matchMedia('(prefers-color-scheme: light)').matches;
- 186:         return prefersLight ? 'light' : 'dark';
- 187:     }
- 188: 
- 189:     function loadPreferences() {
- 190:         const storedTheme = textUtilsStorage.get('theme');
- 191:         const savedTheme = storedTheme === 'light' || storedTheme === 'dark'
- 192:             ? storedTheme
- 193:             : getDefaultTheme();
- 194: 
- 195:         document.documentElement.setAttribute('data-theme', savedTheme);
- 196:         updateThemeToggleIcon(savedTheme);
- 197: 
- 198:         const storedColor = textUtilsStorage.get('accentColor');
- 199:         const savedColor = normalizeHexColor(storedColor || DEFAULT_ACCENT);
- 200:         const appliedColor = applyAccent(savedColor);
- 201:         populateAccentDropdown(appliedColor);
- 202:     }
- 203: 
- 204:     function toggleTheme() {
- 205:         const currentTheme = document.documentElement.getAttribute('data-theme');
- 206:         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
- 207:         document.documentElement.setAttribute('data-theme', newTheme);
- 208:         textUtilsStorage.set('theme', newTheme);
- 209:         updateThemeToggleIcon(newTheme);
- 210:     }
- 211: 
- 212:     function changeAccentColor(color) {
- 213:         const normalized = applyAccent(color);
- 214:         textUtilsStorage.set('accentColor', normalized);
- 215:         if (accentColor) {
- 216:             ensureAccentOptionExists(normalized);
- 217:             accentColor.value = normalized;
- 218:         }
- 219:     }
- 220: 
- 221:     function setupEventListeners() {
- 222:         if (themeToggle && themeToggle.dataset.themeBound !== '1') {
- 223:             themeToggle.addEventListener('click', toggleTheme);
- 224:             themeToggle.dataset.themeBound = '1';
- 225:         }
- 226: 
- 227:         if (accentColor && accentColor.dataset.accentBound !== '1') {
- 228:             accentColor.addEventListener('change', (event) => {
- 229:                 changeAccentColor(event.target.value);
- 230:             });
- 231:             accentColor.dataset.accentBound = '1';
- 232:         }
- 233:     }
- 234: 
- 235:     function init() {
- 236:         captureControls();
- 237:         loadPreferences();
- 238:         setupEventListeners();
- 239:     }
- 240: 
- 241:     if (document.readyState === 'loading') {
- 242:         document.addEventListener('DOMContentLoaded', init);
- 243:     } else {
- 244:         init();
- 245:     }
- 246: 
- 247:     window.themeUtils = {
- 248:         adjustColor,
- 249:         applyAccent,
- 250:         normalizeHexColor,
- 251:         toggleTheme() {
- 252:             captureControls();
- 253:             toggleTheme();
- 254:         },
- 255:         changeAccentColor(color) {
- 256:             captureControls();
- 257:             changeAccentColor(color);
- 258:         },
- 259:         loadPreferences() {
- 260:             captureControls();
- 261:             loadPreferences();
- 262:         }
- 263:     };
- 264: })();
- 265: 
- 266: (function() {
- 267:     'use strict';
- 268: 
- 269:     if (window.__textUtilsSnowModuleLoaded) {
- 270:         return;
- 271:     }
- 272:     window.__textUtilsSnowModuleLoaded = true;
- 273: 
- 274:     const STORAGE_KEY = 'holiday_snow_enabled';
- 275:     const BTN_CLASS = 'btn btn-secondary';
- 276:     const BTN_ID = 'snowToggle';
- 277: 
- 278:     let canvas = null;
- 279:     let ctx = null;
- 280:     let width = 0;
- 281:     let height = 0;
- 282:     let particles = [];
- 283:     let animationId = null;
- 284:     let isSnowing = false;
- 285:     let resizeAttached = false;
- 286: 
- 287:     function isHolidaySeason() {
- 288:         const now = new Date();
- 289:         const month = now.getMonth();
- 290:         const date = now.getDate();
- 291: 
- 292:         if (month === 0 && date === 1) {
- 293:             return true;
- 294:         }
- 295: 
- 296:         if (month === 11) {
- 297:             return true;
- 298:         }
- 299: 
- 300:         if (month === 10) {
- 301:             const firstOfNovember = new Date(now.getFullYear(), 10, 1);
- 302:             const firstDay = firstOfNovember.getDay();
- 303:             const daysToFirstThursday = (4 - firstDay + 7) % 7;
- 304:             const thanksgivingDate = 1 + daysToFirstThursday + 21;
- 305:             return date >= thanksgivingDate;
- 306:         }
- 307: 
- 308:         return false;
- 309:     }
- 310: 
- 311:     if (!isHolidaySeason()) {
- 312:         return;
- 313:     }
- 314: 
- 315:     function resize() {
- 316:         if (!canvas || !ctx) {
- 317:             return;
- 318:         }
- 319: 
- 320:         const dpr = window.devicePixelRatio || 1;
- 321:         width = window.innerWidth;
- 322:         height = window.innerHeight;
- 323: 
- 324:         canvas.width = Math.floor(width * dpr);
- 325:         canvas.height = Math.floor(height * dpr);
- 326:         canvas.style.width = '100%';
- 327:         canvas.style.height = '100%';
- 328:         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
- 329:     }
- 330: 
- 331:     function buildParticles() {
- 332:         const particleCount = Math.min(Math.floor(window.innerWidth / 10), 50);
- 333:         particles = [];
- 334: 
- 335:         for (let index = 0; index < particleCount; index++) {
- 336:             particles.push({
- 337:                 x: Math.random() * width,
- 338:                 y: Math.random() * height,
- 339:                 r: 1 + Math.random() * 2.5,
- 340:                 v: 0.4 + Math.random() * 1.2,
- 341:                 drift: (Math.random() * 2 - 1) * 0.5
- 342:             });
- 343:         }
- 344:     }
- 345: 
- 346:     function draw() {
- 347:         if (!isSnowing || !ctx) {
- 348:             return;
- 349:         }
- 350: 
- 351:         ctx.clearRect(0, 0, width, height);
- 352: 
- 353:         const theme = document.documentElement.getAttribute('data-theme');
- 354:         ctx.fillStyle = theme === 'light'
- 355:             ? 'rgba(0, 0, 0, 0.25)'
- 356:             : 'rgba(255, 255, 255, 0.65)';
- 357: 
- 358:         for (const particle of particles) {
- 359:             ctx.beginPath();
- 360:             ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
- 361:             ctx.fill();
- 362: 
- 363:             particle.y += particle.v;
- 364:             particle.x += particle.drift;
- 365: 
- 366:             if (particle.y > height + 5) {
- 367:                 particle.y = -5;
- 368:                 particle.x = Math.random() * width;
- 369:             }
- 370: 
- 371:             if (particle.x < -5) {
- 372:                 particle.x = width + 5;
- 373:             } else if (particle.x > width + 5) {
- 374:                 particle.x = -5;
- 375:             }
- 376:         }
- 377: 
- 378:         animationId = requestAnimationFrame(draw);
- 379:     }
- 380: 
- 381:     function startSnow() {
- 382:         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
- 383:             isSnowing = false;
- 384:             return;
- 385:         }
- 386: 
- 387:         isSnowing = true;
- 388: 
- 389:         if (!canvas) {
- 390:             canvas = document.createElement('canvas');
- 391:             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;';
- 392:             document.body.appendChild(canvas);
- 393:             ctx = canvas.getContext('2d');
- 394:         }
- 395: 
- 396:         if (!resizeAttached) {
- 397:             window.addEventListener('resize', resize, { passive: true });
- 398:             resizeAttached = true;
- 399:         }
- 400: 
- 401:         resize();
- 402:         buildParticles();
- 403: 
- 404:         if (!animationId) {
- 405:             animationId = requestAnimationFrame(draw);
- 406:         }
- 407:     }
- 408: 
- 409:     function stopSnow() {
- 410:         isSnowing = false;
- 411: 
- 412:         if (animationId) {
- 413:             cancelAnimationFrame(animationId);
- 414:             animationId = null;
- 415:         }
- 416: 
- 417:         particles = [];
- 418: 
- 419:         if (resizeAttached) {
- 420:             window.removeEventListener('resize', resize);
- 421:             resizeAttached = false;
- 422:         }
- 423: 
- 424:         if (canvas) {
- 425:             canvas.remove();
- 426:             canvas = null;
- 427:             ctx = null;
- 428:         }
- 429:     }
- 430: 
- 431:     function handleVisibilityChange() {
- 432:         if (!isSnowing) {
- 433:             return;
- 434:         }
- 435: 
- 436:         if (document.hidden) {
- 437:             if (animationId) {
- 438:                 cancelAnimationFrame(animationId);
- 439:                 animationId = null;
- 440:             }
- 441:         } else if (!animationId) {
- 442:             animationId = requestAnimationFrame(draw);
- 443:         }
- 444:     }
- 445: 
- 446:     function updateSnowButtonState(button, snowEnabled) {
- 447:         const icon = document.createElement('span');
- 448:         icon.className = 'material-icons';
- 449:         icon.setAttribute('aria-hidden', 'true');
- 450:         icon.textContent = 'ac_unit';
- 451: 
- 452:         button.replaceChildren(
- 453:             icon,
- 454:             document.createTextNode(snowEnabled ? ' Disable Snow' : ' Enable Snow')
- 455:         );
- 456: 
- 457:         button.setAttribute('aria-pressed', snowEnabled ? 'true' : 'false');
- 458:         button.setAttribute(
- 459:             'aria-label',
- 460:             snowEnabled ? 'Disable snow effect' : 'Enable snow effect'
- 461:         );
- 462:     }
- 463: 
- 464:     function createSnowButton() {
- 465:         const controls = document.querySelector('.controls');
- 466:         if (!controls) {
- 467:             return null;
- 468:         }
- 469: 
- 470:         const existingButton = document.getElementById(BTN_ID);
- 471:         if (existingButton) {
- 472:             return existingButton;
- 473:         }
- 474: 
- 475:         const button = document.createElement('button');
- 476:         button.className = BTN_CLASS;
- 477:         button.id = BTN_ID;
- 478:         button.type = 'button';
- 479:         button.style.marginLeft = '0.5rem';
- 480:         controls.appendChild(button);
- 481:         return button;
- 482:     }
- 483: 
- 484:     function init() {
- 485:         document.addEventListener('visibilitychange', handleVisibilityChange);
- 486: 
- 487:         const persistedState = textUtilsStorage.get(STORAGE_KEY) === 'true';
- 488:         if (persistedState) {
- 489:             startSnow();
- 490:         }
- 491: 
- 492:         const button = createSnowButton();
- 493:         if (!button) {
- 494:             return;
- 495:         }
- 496: 
- 497:         updateSnowButtonState(button, isSnowing);
- 498:         button.addEventListener('click', () => {
- 499:             if (isSnowing) {
- 500:                 stopSnow();
- 501:             } else {
- 502:                 startSnow();
- 503:             }
- 504: 
- 505:             textUtilsStorage.set(STORAGE_KEY, isSnowing ? 'true' : 'false');
- 506:             updateSnowButtonState(button, isSnowing);
- 507:         });
- 508:     }
- 509: 
- 510:     if (document.readyState === 'loading') {
- 511:         document.addEventListener('DOMContentLoaded', init);
- 512:     } else {
- 513:         init();
- 514:     }
- 515: })();
-```
-
-### `index.html`
-
-```html
-   1: <!DOCTYPE html>
-   2: <html lang="en">
-   3: <head>
-   4:     <meta charset="UTF-8">
-   5:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   6:     <title>Text Utilities</title>
-   7:     <script>
-   8:         (function () {
-   9:             try {
-  10:                 const storedTheme = localStorage.getItem('theme');
-  11:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-  12:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
-  13:                     ? storedTheme
-  14:                     : (prefersLight ? 'light' : 'dark');
-  15:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
-  16: 
-  17:                 const storedAccent = localStorage.getItem('accentColor');
-  18:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
-  19:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
-  20:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
-  21:                 }
-  22: 
-  23:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
-  24:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
-  25:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
-  26:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
-  27:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
-  28:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
-  29:                 }
-  30:             } catch (_) {
-  31:                 document.documentElement.setAttribute('data-theme', 'dark');
-  32:             }
-  33:         })();
-  34:     </script>
-  35:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  36:     <link rel="stylesheet" href="css/style.css">
-  37: </head>
-  38: <body>
-  39:     <div class="container">
-  40:         <header>
-  41:             <div class="logo">
-  42:                 <a href="index.html" style="color: inherit; text-decoration: none;">
-  43:                     <span>Text Utilities</span>
-  44:                 </a>
-  45:             </div>
-  46:             <nav class="site-network" aria-label="Network sites">
-  47:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
-  48:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
-  49:                     <span>Chess Nerd</span>
-  50:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
-  51:                 </a>
-  52:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
-  53:                     <img src="img/github.png" class="site-network-icon" alt="">
-  54:                     <span>GitHub</span>
-  55:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
-  56:                 </a>
-  57:             </nav>
-  58:             <div class="controls">
-  59:                 <div class="accent-selector">
-  60:                     <span class="material-icons">palette</span>
-  61:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
-  62:                 </div>
-  63:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
-  64:                     <span class="material-icons">dark_mode</span>
-  65:                 </button>
-  66:             </div>
-  67:         </header>
-  68: 
-  69:         <main>
-  70:             <div id="homeView">
-  71:                 <div class="tool-grid" id="toolGrid"></div>
-  72:             </div>
-  73:         </main>
-  74:     </div>
+  68: (function() {
+  69:     'use strict';
+  70: 
+  71:     if (window.__textUtilsThemeModuleLoaded) {
+  72:         return;
+  73:     }
+  74:     window.__textUtilsThemeModuleLoaded = true;
   75: 
-  76:     <script src="js/theme.js"></script>
-  77:     <script>
-  78: const tools = [
-  79:     { id: 'case-converter', name: 'Case Converter', icon: 'text_format', category: 'text', description: 'Convert text between different cases' },
-  80:     { id: 'text-info', name: 'Text Info', icon: 'analytics', category: 'text', description: 'Detailed statistics and readability scores for text' },
-  81:     { id: 'line-operations', name: 'Line Operations', icon: 'reorder', category: 'text', description: 'Sort, filter, and manipulate lines of text' },
-  82:     { id: 'find-replace', name: 'Find & Replace', icon: 'find_replace', category: 'text', description: 'Search and replace text with regex support' },
-  83:     { id: 'font-chooser', name: 'Font Chooser', icon: 'text_fields', category: 'text', description: 'Preview fonts, check contrast, and generate CSS snippets' },
-  84:     { id: 'ip-info', name: 'IP Info', icon: 'language', category: 'data', description: 'Public IP, provider, location, and device diagnostics' },
-  85:     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
-  86:     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
-  87:     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
-  88:     { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
-  89:     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
-  90:     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
-  91:     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
-  92:     { id: 'json-tool', name: 'JSON Tool', icon: 'data_object', category: 'data', description: 'Format, validate, and convert JSON to JSONL format' },
-  93:     { id: 'sitemap-generator', name: 'XML Sitemap Generator', icon: 'schema', category: 'data', description: 'Crawl (with optional CORS proxy) and build sitemap.xml' }
-  94: ];
+  76:     const ACCENT_PALETTE = [
+  77:         { value: '#0d9488', label: 'Teal' },
+  78:         { value: '#3b82f6', label: 'Blue' },
+  79:         { value: '#8b5cf6', label: 'Purple' },
+  80:         { value: '#10b981', label: 'Emerald' },
+  81:         { value: '#f59e0b', label: 'Amber' },
+  82:         { value: '#ef4444', label: 'Red' },
+  83:         { value: '#ec4899', label: 'Soft Pink' },
+  84:         { value: '#fb7185', label: 'Coral' },
+  85:         { value: '#5f9ea0', label: 'Cadet Blue' },
+  86:         { value: '#6495ed', label: 'Cornflower' },
+  87:         { value: '#deb887', label: 'Burlywood' },
+  88:         { value: '#60a5fa', label: 'Sky Blue' },
+  89:         { value: '#7c3aed', label: 'Violet' }
+  90:     ];
+  91:     const DEFAULT_ACCENT = '#0d9488';
+  92: 
+  93:     let themeToggle = null;
+  94:     let accentColor = null;
   95: 
-  96: const toolGrid = document.getElementById('toolGrid');
-  97: 
-  98: function renderToolGrid(filter = '', category = 'all') {
-  99:     toolGrid.innerHTML = '';
- 100:     const filteredTools = [...tools]
- 101:         .sort((a, b) => a.name.localeCompare(b.name))
- 102:         .filter(tool => {
- 103:         const matchesSearch = tool.name.toLowerCase().includes(filter.toLowerCase()) || tool.description.toLowerCase().includes(filter.toLowerCase());
- 104:         const matchesCategory = category === 'all' || tool.category === category;
- 105:         return matchesSearch && matchesCategory;
- 106:     });
- 107:     
- 108:     filteredTools.forEach(tool => {
- 109:         const card = document.createElement('a');
- 110:         card.className = 'tool-card';
- 111:         card.href = `${tool.id}.html`;
- 112:         card.setAttribute('aria-label', `${tool.name} tool`);
- 113:         card.innerHTML = `<div class="tool-icon"><span class="material-icons">${tool.icon}</span></div><h3>${tool.name}</h3><p>${tool.description}</p>`;
- 114:         toolGrid.appendChild(card);
- 115:     });
- 116:     
- 117:     if (filteredTools.length === 0) {
- 118:         toolGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-secondary)">No tools found</p>';
- 119:     }
- 120: }
- 121: 
- 122: // No search input or filters on this page; always show all tools
- 123: 
- 124: renderToolGrid();
- 125:     </script>
- 126:     <footer class="site-footer">
- 127:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
- 128:     </footer>
- 129: </body>
- 130: </html>
+  96:     function captureControls() {
+  97:         themeToggle = document.getElementById('themeToggle');
+  98:         accentColor = document.getElementById('accentColor');
+  99: 
+ 100:         if (themeToggle) {
+ 101:             themeToggle.type = 'button';
+ 102:         }
+ 103: 
+ 104:         if (accentColor && !accentColor.getAttribute('aria-label')) {
+ 105:             accentColor.setAttribute('aria-label', 'Accent color');
+ 106:         }
+ 107:     }
+ 108: 
+ 109:     function normalizeHexColor(color) {
+ 110:         if (typeof color !== 'string') {
+ 111:             return DEFAULT_ACCENT;
+ 112:         }
+ 113: 
+ 114:         let candidate = color.trim().toLowerCase();
+ 115:         if (/^#[0-9a-f]{3}$/.test(candidate)) {
+ 116:             candidate = `#${candidate[1]}${candidate[1]}${candidate[2]}${candidate[2]}${candidate[3]}${candidate[3]}`;
+ 117:         }
+ 118: 
+ 119:         if (/^#[0-9a-f]{6}$/.test(candidate)) {
+ 120:             return candidate;
+ 121:         }
+ 122: 
+ 123:         return DEFAULT_ACCENT;
+ 124:     }
+ 125: 
+ 126:     function hexToRgbTuple(hex) {
+ 127:         const normalized = normalizeHexColor(hex).slice(1);
+ 128:         const red = parseInt(normalized.slice(0, 2), 16);
+ 129:         const green = parseInt(normalized.slice(2, 4), 16);
+ 130:         const blue = parseInt(normalized.slice(4, 6), 16);
+ 131:         return `${red}, ${green}, ${blue}`;
+ 132:     }
+ 133: 
+ 134:     function adjustColor(color, amount) {
+ 135:         const normalized = normalizeHexColor(color).slice(1);
+ 136:         const parsed = parseInt(normalized, 16);
+ 137: 
+ 138:         if (Number.isNaN(parsed)) {
+ 139:             return DEFAULT_ACCENT;
+ 140:         }
+ 141: 
+ 142:         let red = ((parsed >> 16) & 0xFF) + amount;
+ 143:         let green = ((parsed >> 8) & 0xFF) + amount;
+ 144:         let blue = (parsed & 0xFF) + amount;
+ 145: 
+ 146:         red = Math.min(Math.max(0, red), 255);
+ 147:         green = Math.min(Math.max(0, green), 255);
+ 148:         blue = Math.min(Math.max(0, blue), 255);
+ 149: 
+ 150:         return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, '0')}`;
+ 151:     }
+ 152: 
+ 153:     function applyAccent(color) {
+ 154:         const normalized = normalizeHexColor(color);
+ 155:         document.documentElement.style.setProperty('--accent', normalized);
+ 156:         document.documentElement.style.setProperty('--accent-light', adjustColor(normalized, 20));
+ 157:         document.documentElement.style.setProperty('--accent-rgb', hexToRgbTuple(normalized));
+ 158:         return normalized;
+ 159:     }
+ 160: 
+ 161:     function ensureAccentOptionExists(value) {
+ 162:         if (!accentColor) {
+ 163:             return;
+ 164:         }
+ 165: 
+ 166:         const normalized = normalizeHexColor(value);
+ 167:         if (accentColor.querySelector(`option[value="${normalized}"]`)) {
+ 168:             return;
+ 169:         }
+ 170: 
+ 171:         const customOption = document.createElement('option');
+ 172:         customOption.value = normalized;
+ 173:         customOption.textContent = `Custom (${normalized})`;
+ 174:         accentColor.appendChild(customOption);
+ 175:     }
+ 176: 
+ 177:     function populateAccentDropdown(selectedColor) {
+ 178:         if (!accentColor) {
+ 179:             return;
+ 180:         }
+ 181: 
+ 182:         accentColor.replaceChildren();
+ 183: 
+ 184:         ACCENT_PALETTE.forEach(({ value, label }) => {
+ 185:             const option = document.createElement('option');
+ 186:             option.value = value;
+ 187:             option.textContent = label;
+ 188:             accentColor.appendChild(option);
+ 189:         });
+ 190: 
+ 191:         const normalizedSelected = normalizeHexColor(selectedColor);
+ 192:         const hasSavedColor = ACCENT_PALETTE.some(
+ 193:             ({ value }) => value.toLowerCase() === normalizedSelected
+ 194:         );
+ 195: 
+ 196:         if (!hasSavedColor) {
+ 197:             ensureAccentOptionExists(normalizedSelected);
+ 198:         }
+ 199: 
+ 200:         accentColor.value = normalizedSelected;
+ 201:     }
+ 202: 
+ 203:     function updateThemeToggleIcon(theme) {
+ 204:         if (!themeToggle) {
+ 205:             return;
+ 206:         }
+ 207: 
+ 208:         const icon = document.createElement('span');
+ 209:         icon.className = 'material-icons';
+ 210:         icon.setAttribute('aria-hidden', 'true');
+ 211:         icon.textContent = theme === 'dark' ? 'dark_mode' : 'light_mode';
+ 212: 
+ 213:         themeToggle.replaceChildren(icon);
+ 214: 
+ 215:         const isDark = theme === 'dark';
+ 216:         themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+ 217:         themeToggle.setAttribute('title', isDark ? 'Dark mode' : 'Light mode');
+ 218:         themeToggle.setAttribute(
+ 219:             'aria-label',
+ 220:             isDark ? 'Switch to light theme' : 'Switch to dark theme'
+ 221:         );
+ 222:     }
+ 223: 
+ 224:     function getDefaultTheme() {
+ 225:         const prefersLight = window.matchMedia
+ 226:             && window.matchMedia('(prefers-color-scheme: light)').matches;
+ 227:         return prefersLight ? 'light' : 'dark';
+ 228:     }
+ 229: 
+ 230:     function loadPreferences() {
+ 231:         const storedTheme = textUtilsStorage.get('theme');
+ 232:         const savedTheme = storedTheme === 'light' || storedTheme === 'dark'
+ 233:             ? storedTheme
+ 234:             : getDefaultTheme();
+ 235: 
+ 236:         document.documentElement.setAttribute('data-theme', savedTheme);
+ 237:         updateThemeToggleIcon(savedTheme);
+ 238: 
+ 239:         const storedColor = textUtilsStorage.get('accentColor');
+ 240:         const savedColor = normalizeHexColor(storedColor || DEFAULT_ACCENT);
+ 241:         const appliedColor = applyAccent(savedColor);
+ 242:         populateAccentDropdown(appliedColor);
+ 243:     }
+ 244: 
+ 245:     function toggleTheme() {
+ 246:         const currentTheme = document.documentElement.getAttribute('data-theme');
+ 247:         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+ 248:         document.documentElement.setAttribute('data-theme', newTheme);
+ 249:         textUtilsStorage.set('theme', newTheme);
+ 250:         updateThemeToggleIcon(newTheme);
+ 251:     }
+ 252: 
+ 253:     function changeAccentColor(color) {
+ 254:         const normalized = applyAccent(color);
+ 255:         textUtilsStorage.set('accentColor', normalized);
+ 256:         if (accentColor) {
+ 257:             ensureAccentOptionExists(normalized);
+ 258:             accentColor.value = normalized;
+ 259:         }
+ 260:     }
+ 261: 
+ 262:     function setupEventListeners() {
+ 263:         if (themeToggle && themeToggle.dataset.themeBound !== '1') {
+ 264:             themeToggle.addEventListener('click', toggleTheme);
+ 265:             themeToggle.dataset.themeBound = '1';
+ 266:         }
+ 267: 
+ 268:         if (accentColor && accentColor.dataset.accentBound !== '1') {
+ 269:             accentColor.addEventListener('change', (event) => {
+ 270:                 changeAccentColor(event.target.value);
+ 271:             });
+ 272:             accentColor.dataset.accentBound = '1';
+ 273:         }
+ 274:     }
+ 275: 
+ 276:     function init() {
+ 277:         captureControls();
+ 278:         loadPreferences();
+ 279:         setupEventListeners();
+ 280:     }
+ 281: 
+ 282:     if (document.readyState === 'loading') {
+ 283:         document.addEventListener('DOMContentLoaded', init);
+ 284:     } else {
+ 285:         init();
+ 286:     }
+ 287: 
+ 288:     window.themeUtils = {
+ 289:         adjustColor,
+ 290:         applyAccent,
+ 291:         normalizeHexColor,
+ 292:         toggleTheme() {
+ 293:             captureControls();
+ 294:             toggleTheme();
+ 295:         },
+ 296:         changeAccentColor(color) {
+ 297:             captureControls();
+ 298:             changeAccentColor(color);
+ 299:         },
+ 300:         loadPreferences() {
+ 301:             captureControls();
+ 302:             loadPreferences();
+ 303:         }
+ 304:     };
+ 305: })();
+ 306: 
+ 307: (function() {
+ 308:     'use strict';
+ 309: 
+ 310:     if (window.__textUtilsSnowModuleLoaded) {
+ 311:         return;
+ 312:     }
+ 313:     window.__textUtilsSnowModuleLoaded = true;
+ 314: 
+ 315:     const STORAGE_KEY = 'holiday_snow_enabled';
+ 316:     const BTN_CLASS = 'btn btn-secondary';
+ 317:     const BTN_ID = 'snowToggle';
+ 318: 
+ 319:     let canvas = null;
+ 320:     let ctx = null;
+ 321:     let width = 0;
+ 322:     let height = 0;
+ 323:     let particles = [];
+ 324:     let animationId = null;
+ 325:     let isSnowing = false;
+ 326:     let resizeAttached = false;
+ 327: 
+ 328:     function isHolidaySeason() {
+ 329:         const now = new Date();
+ 330:         const month = now.getMonth();
+ 331:         const date = now.getDate();
+ 332: 
+ 333:         if (month === 0 && date === 1) {
+ 334:             return true;
+ 335:         }
+ 336: 
+ 337:         if (month === 11) {
+ 338:             return true;
+ 339:         }
+ 340: 
+ 341:         if (month === 10) {
+ 342:             const firstOfNovember = new Date(now.getFullYear(), 10, 1);
+ 343:             const firstDay = firstOfNovember.getDay();
+ 344:             const daysToFirstThursday = (4 - firstDay + 7) % 7;
+ 345:             const thanksgivingDate = 1 + daysToFirstThursday + 21;
+ 346:             return date >= thanksgivingDate;
+ 347:         }
+ 348: 
+ 349:         return false;
+ 350:     }
+ 351: 
+ 352:     if (!isHolidaySeason()) {
+ 353:         return;
+ 354:     }
+ 355: 
+ 356:     function resize() {
+ 357:         if (!canvas || !ctx) {
+ 358:             return;
+ 359:         }
+ 360: 
+ 361:         const dpr = window.devicePixelRatio || 1;
+ 362:         width = window.innerWidth;
+ 363:         height = window.innerHeight;
+ 364: 
+ 365:         canvas.width = Math.floor(width * dpr);
+ 366:         canvas.height = Math.floor(height * dpr);
+ 367:         canvas.style.width = '100%';
+ 368:         canvas.style.height = '100%';
+ 369:         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+ 370:     }
+ 371: 
+ 372:     function buildParticles() {
+ 373:         const particleCount = Math.min(Math.floor(window.innerWidth / 10), 50);
+ 374:         particles = [];
+ 375: 
+ 376:         for (let index = 0; index < particleCount; index++) {
+ 377:             particles.push({
+ 378:                 x: Math.random() * width,
+ 379:                 y: Math.random() * height,
+ 380:                 r: 1 + Math.random() * 2.5,
+ 381:                 v: 0.4 + Math.random() * 1.2,
+ 382:                 drift: (Math.random() * 2 - 1) * 0.5
+ 383:             });
+ 384:         }
+ 385:     }
+ 386: 
+ 387:     function draw() {
+ 388:         if (!isSnowing || !ctx) {
+ 389:             return;
+ 390:         }
+ 391: 
+ 392:         ctx.clearRect(0, 0, width, height);
+ 393: 
+ 394:         const theme = document.documentElement.getAttribute('data-theme');
+ 395:         ctx.fillStyle = theme === 'light'
+ 396:             ? 'rgba(0, 0, 0, 0.25)'
+ 397:             : 'rgba(255, 255, 255, 0.65)';
+ 398: 
+ 399:         for (const particle of particles) {
+ 400:             ctx.beginPath();
+ 401:             ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
+ 402:             ctx.fill();
+ 403: 
+ 404:             particle.y += particle.v;
+ 405:             particle.x += particle.drift;
+ 406: 
+ 407:             if (particle.y > height + 5) {
+ 408:                 particle.y = -5;
+ 409:                 particle.x = Math.random() * width;
+ 410:             }
+ 411: 
+ 412:             if (particle.x < -5) {
+ 413:                 particle.x = width + 5;
+ 414:             } else if (particle.x > width + 5) {
+ 415:                 particle.x = -5;
+ 416:             }
+ 417:         }
+ 418: 
+ 419:         animationId = requestAnimationFrame(draw);
+ 420:     }
+ 421: 
+ 422:     function startSnow() {
+ 423:         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+ 424:             isSnowing = false;
+ 425:             return;
+ 426:         }
+ 427: 
+ 428:         isSnowing = true;
+ 429: 
+ 430:         if (!canvas) {
+ 431:             canvas = document.createElement('canvas');
+ 432:             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;';
+ 433:             document.body.appendChild(canvas);
+ 434:             ctx = canvas.getContext('2d');
+ 435:         }
+ 436: 
+ 437:         if (!resizeAttached) {
+ 438:             window.addEventListener('resize', resize, { passive: true });
+ 439:             resizeAttached = true;
+ 440:         }
+ 441: 
+ 442:         resize();
+ 443:         buildParticles();
+ 444: 
+ 445:         if (!animationId) {
+ 446:             animationId = requestAnimationFrame(draw);
+ 447:         }
+ 448:     }
+ 449: 
+ 450:     function stopSnow() {
+ 451:         isSnowing = false;
+ 452: 
+ 453:         if (animationId) {
+ 454:             cancelAnimationFrame(animationId);
+ 455:             animationId = null;
+ 456:         }
+ 457: 
+ 458:         particles = [];
+ 459: 
+ 460:         if (resizeAttached) {
+ 461:             window.removeEventListener('resize', resize);
+ 462:             resizeAttached = false;
+ 463:         }
+ 464: 
+ 465:         if (canvas) {
+ 466:             canvas.remove();
+ 467:             canvas = null;
+ 468:             ctx = null;
+ 469:         }
+ 470:     }
+ 471: 
+ 472:     function handleVisibilityChange() {
+ 473:         if (!isSnowing) {
+ 474:             return;
+ 475:         }
+ 476: 
+ 477:         if (document.hidden) {
+ 478:             if (animationId) {
+ 479:                 cancelAnimationFrame(animationId);
+ 480:                 animationId = null;
+ 481:             }
+ 482:         } else if (!animationId) {
+ 483:             animationId = requestAnimationFrame(draw);
+ 484:         }
+ 485:     }
+ 486: 
+ 487:     function updateSnowButtonState(button, snowEnabled) {
+ 488:         const icon = document.createElement('span');
+ 489:         icon.className = 'material-icons';
+ 490:         icon.setAttribute('aria-hidden', 'true');
+ 491:         icon.textContent = 'ac_unit';
+ 492: 
+ 493:         button.replaceChildren(
+ 494:             icon,
+ 495:             document.createTextNode(snowEnabled ? ' Disable Snow' : ' Enable Snow')
+ 496:         );
+ 497: 
+ 498:         button.setAttribute('aria-pressed', snowEnabled ? 'true' : 'false');
+ 499:         button.setAttribute(
+ 500:             'aria-label',
+ 501:             snowEnabled ? 'Disable snow effect' : 'Enable snow effect'
+ 502:         );
+ 503:     }
+ 504: 
+ 505:     function createSnowButton() {
+ 506:         const controls = document.querySelector('.controls');
+ 507:         if (!controls) {
+ 508:             return null;
+ 509:         }
+ 510: 
+ 511:         const existingButton = document.getElementById(BTN_ID);
+ 512:         if (existingButton) {
+ 513:             return existingButton;
+ 514:         }
+ 515: 
+ 516:         const button = document.createElement('button');
+ 517:         button.className = BTN_CLASS;
+ 518:         button.id = BTN_ID;
+ 519:         button.type = 'button';
+ 520:         button.style.marginLeft = '0.5rem';
+ 521:         controls.appendChild(button);
+ 522:         return button;
+ 523:     }
+ 524: 
+ 525:     function init() {
+ 526:         document.addEventListener('visibilitychange', handleVisibilityChange);
+ 527: 
+ 528:         const persistedState = textUtilsStorage.get(STORAGE_KEY) === 'true';
+ 529:         if (persistedState) {
+ 530:             startSnow();
+ 531:         }
+ 532: 
+ 533:         const button = createSnowButton();
+ 534:         if (!button) {
+ 535:             return;
+ 536:         }
+ 537: 
+ 538:         updateSnowButtonState(button, isSnowing);
+ 539:         button.addEventListener('click', () => {
+ 540:             if (isSnowing) {
+ 541:                 stopSnow();
+ 542:             } else {
+ 543:                 startSnow();
+ 544:             }
+ 545: 
+ 546:             textUtilsStorage.set(STORAGE_KEY, isSnowing ? 'true' : 'false');
+ 547:             updateSnowButtonState(button, isSnowing);
+ 548:         });
+ 549:     }
+ 550: 
+ 551:     if (document.readyState === 'loading') {
+ 552:         document.addEventListener('DOMContentLoaded', init);
+ 553:     } else {
+ 554:         init();
+ 555:     }
+ 556: })();
 ```
+----- END FILE: js/theme.js -----
 
-### `sitemap.xml`
+----- BEGIN FILE: scripts/code-dump-color-chooser.py -----
+```python
+   1: #!/usr/bin/env python3
+   2: """Backward-compatible wrapper for the Color Chooser context dump."""
+   3: 
+   4: from __future__ import annotations
+   5: 
+   6: from pathlib import Path
+   7: 
+   8: from tool_context_dump import run
+   9: 
+  10: 
+  11: if __name__ == "__main__":
+  12:     raise SystemExit(
+  13:         run(
+  14:             default_tool="color-chooser",
+  15:             default_output=Path("context/code-dump-color-chooser.txt"),
+  16:         )
+  17:     )
+```
+----- END FILE: scripts/code-dump-color-chooser.py -----
 
+----- BEGIN FILE: sitemap.xml -----
 ```xml
    1: <?xml version="1.0" encoding="UTF-8"?>
    2: <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    3:   <url>
    4:     <loc>https://text-utils.net/</loc>
-   5:   </url>
-   6:   <url>
-   7:     <loc>https://text-utils.net/case-converter.html</loc>
+   5:     <lastmod>2026-02-18</lastmod>
+   6:     <changefreq>weekly</changefreq>
+   7:     <priority>1.0</priority>
    8:   </url>
-   9:   <url>
-  10:     <loc>https://text-utils.net/color-chooser.html</loc>
-  11:   </url>
-  12:   <url>
-  13:     <loc>https://text-utils.net/css-unit-converter.html</loc>
-  14:   </url>
-  15:   <url>
-  16:     <loc>https://text-utils.net/find-replace.html</loc>
-  17:   </url>
-  18:   <url>
-  19:     <loc>https://text-utils.net/markdown-html.html</loc>
-  20:   </url>
-  21:   <url>
-  22:     <loc>https://text-utils.net/date-time-info.html</loc>
-  23:   </url>
-  24:   <url>
-  25:     <loc>https://text-utils.net/font-awesome-chooser.html</loc>
-  26:   </url>
-  27:   <url>
-  28:     <loc>https://text-utils.net/font-chooser.html</loc>
-  29:   </url>
-  30:   <url>
-  31:     <loc>https://text-utils.net/google-icons-chooser.html</loc>
-  32:   </url>
-  33:   <url>
-  34:     <loc>https://text-utils.net/hashing-tool.html</loc>
-  35:   </url>
-  36:   <url>
-  37:     <loc>https://text-utils.net/ip-info.html</loc>
-  38:   </url>
-  39:   <url>
-  40:     <loc>https://text-utils.net/json-tool.html</loc>
-  41:   </url>
-  42:   <url>
-  43:     <loc>https://text-utils.net/line-operations.html</loc>
-  44:   </url>
-  45:   <url>
-  46:     <loc>https://text-utils.net/random-numbers.html</loc>
-  47:   </url>
-  48:   <url>
-  49:     <loc>https://text-utils.net/sitemap-generator.html</loc>
-  50:   </url>
-  51:   <url>
-  52:     <loc>https://text-utils.net/text-info.html</loc>
-  53:   </url>
-  54: </urlset>
+   9: 
+  10:   <url>
+  11:     <loc>https://text-utils.net/case-converter.html</loc>
+  12:     <lastmod>2026-02-18</lastmod>
+  13:     <changefreq>monthly</changefreq>
+  14:     <priority>0.8</priority>
+  15:   </url>
+  16:   <url>
+  17:     <loc>https://text-utils.net/color-chooser.html</loc>
+  18:     <lastmod>2026-02-18</lastmod>
+  19:     <changefreq>monthly</changefreq>
+  20:     <priority>0.8</priority>
+  21:   </url>
+  22:   <url>
+  23:     <loc>https://text-utils.net/css-unit-converter.html</loc>
+  24:     <lastmod>2026-02-18</lastmod>
+  25:     <changefreq>monthly</changefreq>
+  26:     <priority>0.8</priority>
+  27:   </url>
+  28:   <url>
+  29:     <loc>https://text-utils.net/date-time-info.html</loc>
+  30:     <lastmod>2026-02-18</lastmod>
+  31:     <changefreq>monthly</changefreq>
+  32:     <priority>0.8</priority>
+  33:   </url>
+  34:   <url>
+  35:     <loc>https://text-utils.net/find-replace.html</loc>
+  36:     <lastmod>2026-02-18</lastmod>
+  37:     <changefreq>monthly</changefreq>
+  38:     <priority>0.8</priority>
+  39:   </url>
+  40:   <url>
+  41:     <loc>https://text-utils.net/font-awesome-chooser.html</loc>
+  42:     <lastmod>2026-02-18</lastmod>
+  43:     <changefreq>monthly</changefreq>
+  44:     <priority>0.8</priority>
+  45:   </url>
+  46:   <url>
+  47:     <loc>https://text-utils.net/font-chooser.html</loc>
+  48:     <lastmod>2026-02-18</lastmod>
+  49:     <changefreq>monthly</changefreq>
+  50:     <priority>0.8</priority>
+  51:   </url>
+  52:   <url>
+  53:     <loc>https://text-utils.net/google-icons-chooser.html</loc>
+  54:     <lastmod>2026-02-18</lastmod>
+  55:     <changefreq>monthly</changefreq>
+  56:     <priority>0.8</priority>
+  57:   </url>
+  58:   <url>
+  59:     <loc>https://text-utils.net/hashing-tool.html</loc>
+  60:     <lastmod>2026-02-18</lastmod>
+  61:     <changefreq>monthly</changefreq>
+  62:     <priority>0.8</priority>
+  63:   </url>
+  64:   <url>
+  65:     <loc>https://text-utils.net/ip-info.html</loc>
+  66:     <lastmod>2026-02-18</lastmod>
+  67:     <changefreq>monthly</changefreq>
+  68:     <priority>0.8</priority>
+  69:   </url>
+  70:   <url>
+  71:     <loc>https://text-utils.net/json-tool.html</loc>
+  72:     <lastmod>2026-02-18</lastmod>
+  73:     <changefreq>monthly</changefreq>
+  74:     <priority>0.8</priority>
+  75:   </url>
+  76:   <url>
+  77:     <loc>https://text-utils.net/line-operations.html</loc>
+  78:     <lastmod>2026-02-18</lastmod>
+  79:     <changefreq>monthly</changefreq>
+  80:     <priority>0.8</priority>
+  81:   </url>
+  82:   <url>
+  83:     <loc>https://text-utils.net/random-numbers.html</loc>
+  84:     <lastmod>2026-02-18</lastmod>
+  85:     <changefreq>monthly</changefreq>
+  86:     <priority>0.8</priority>
+  87:   </url>
+  88:   <url>
+  89:     <loc>https://text-utils.net/sitemap-generator.html</loc>
+  90:     <lastmod>2026-02-18</lastmod>
+  91:     <changefreq>monthly</changefreq>
+  92:     <priority>0.8</priority>
+  93:   </url>
+  94:   <url>
+  95:     <loc>https://text-utils.net/text-info.html</loc>
+  96:     <lastmod>2026-02-18</lastmod>
+  97:     <changefreq>monthly</changefreq>
+  98:     <priority>0.8</priority>
+  99:   </url>
+ 100: </urlset>
 ```
+----- END FILE: sitemap.xml -----
+
+----- BEGIN FILE: color_chooser_consolidated_issues.txt -----
+```text
+   1: ﻿Color Chooser Code Review - Consolidated Issues
+   2: Generated: February 12, 2026
+   3: This document consolidates findings from 10 independent LLM code reviews (ChatGPT, 
+   4: Claude, DeepSeek, Gemini, Grok, Kimi, Meta, Mistral, Perplexity, Qwen, and Z.ai).
+   5: 
+   6: Executive Summary
+   7: Total unique issues identified: 40+
+   8: Severity
+   9: Count
+  10: Must Fix
+  11: Impact
+  12: 🔴 Critical
+  13: 8
+  14: Immediately
+  15: Feature breaks/data loss
+  16: 🟠 High
+  17: 12
+  18: This sprint
+  19: Memory leaks/UX 
+  20: degradation
+  21: 🟡 Medium
+  22: 13
+  23: Next sprint
+  24: Robustness/performance
+  25: ⚪ Low
+  26: 15
+  27: Tech debt 
+  28: backlog
+  29: Code 
+  30: quality/maintenance
+  31: 
+  32: 🔴 Critical Issues (Fix Immediately)
+  33: 1. DOM Element References Captured Too Early
+  34: Location: js/theme.js, lines 16-17
+  35: Identified by: ChatGPT, Claude, Grok, Qwen, Z.ai (5 reviewers)
+  36: Impact: Complete feature failure if script loads in <head>
+  37: Problem: Element handles are captured at IIFE evaluation time, before DOM exists. 
+  38: The documentation falsely claims the script works whether loaded in <head> or <body>.
+  39: Fix: Move element selection inside the DOM-ready callback or make functions query 
+  40: elements on each use.
+  41: 
+  42: 2. CSS Syntax Error - Orphaned Closing Brace
+  43: Location: css/style.css, line 42
+  44: Identified by: DeepSeek, Z.ai (2 reviewers)
+  45: Impact: All CSS rules after this point are ignored, breaking layout
+  46: Problem: Stray closing brace } appears before the body rule with no matching opening 
+  47: brace.
+  48: Fix: Remove the orphaned closing brace.
+  49: 
+  50: 3. Malformed External Resource URLs
+  51: Location: index.html, lines 7 and 15
+  52: Identified by: Qwen (1 reviewer)
+  53: Impact: Analytics fails silently, Material Icons won't load → broken UI
+  54: Problem: Trailing spaces in Google Analytics and Material Icons URLs break resource 
+  55: loading.
+  56: Fix: Remove trailing spaces from both URL attributes.
+  57: 
+  58: 4. Unprotected localStorage Operations
+  59: Location: js/theme.js, multiple locations
+  60: Identified by: ChatGPT, Kimi, Z.ai (3 reviewers)
+  61: Impact: Script crashes in private browsing, when storage is disabled, or quota 
+  62: exceeded
+  63: Problem: localStorage access can throw exceptions but has no error handling.
+  64: Fix: Wrap all localStorage operations in try-catch blocks or create safe wrapper 
+  65: functions.
+  66: 
+  67: 5. Holiday Snow Destructively Erases User Preference
+  68: Location: js/theme.js, snow IIFE
+  69: Identified by: DeepSeek (1 reviewer)
+  70: Impact: User snow preference permanently deleted outside holiday season
+  71: Problem: When outside holiday season, localStorage.removeItem() unconditionally 
+  72: deletes the user's saved preference on every page load.
+  73: Fix: Do not remove the stored key - simply exit without creating snow UI. Preserve 
+  74: preference for when season returns.
+  75: 
+  76: 6. XSS via innerHTML with Unsanitized Data
+  77: Location: js/theme.js, updateThemeToggleIcon() and snow button
+  78: Identified by: ChatGPT, Kimi, Qwen (3 reviewers)
+  79: Impact: Potential XSS attack vector if localStorage compromised
+  80: Problem: innerHTML is used to update UI with values that could theoretically come 
+  81: from localStorage, creating XSS risk.
+  82: Fix: Use textContent and safe DOM methods like createElement() and appendChild() 
+  83: instead of innerHTML.
+  84: 
+  85: 7. Missing Null Checks in Core Functions
+  86: Location: js/theme.js, populateAccentDropdown() and updateThemeToggleIcon()
+  87: Identified by: Mistral (1 reviewer)
+  88: Impact: Script crashes if DOM elements missing
+  89: Problem: Functions try to access element properties without checking if elements exist 
+  90: first.
+  91: Fix: Add early return guards: if (!accentColor) return; at function start.
+  92: 
+  93: 8. Race Condition in Snow Module Initialization
+  94: Location: js/theme.js, snow IIFE
+  95: Identified by: Kimi (1 reviewer)
+  96: Impact: Snow module may fail if main theme module modifies DOM during 
+  97: DOMContentLoaded
+  98: Problem: Both IIFEs check readyState independently, creating potential timing issues.
+  99: Fix: Coordinate initialization or use MutationObserver for robust element detection.
+ 100: 
+ 101: 🟠 High Severity Issues
+ 102: 9. Memory Leak - Resize Event Listener Never Removed
+ 103: Location: js/theme.js, snow module createSnow() and stopSnow()
+ 104: Identified by: Claude, Gemini, Kimi, Mistral, Z.ai (5 reviewers)
+ 105: Impact: Accumulating event listeners cause memory leak
+ 106: Problem: Resize listener added when snow starts but never removed when snow 
+ 107: stops. Multiple enable/disable cycles accumulate listeners.
+ 108: Fix: Store listener reference and remove it in stopSnow(): 
+ 109: window.removeEventListener('resize', boundResize)
+ 110: 
+ 111: 10. Critical Accessibility Violations
+ 112: Location: index.html, header controls
+ 113: Identified by: ChatGPT, Grok, Kimi, Qwen, Z.ai (5 reviewers)
+ 114: Impact: WCAG 2.1 violations - unusable for screen reader users
+ 115: Problems: 
+ 116: •	Theme toggle button has no accessible name
+ 117: •	No aria-pressed state for toggle buttons
+ 118: •	Accent dropdown has no label
+ 119: •	No visible focus indicators
+ 120: Fix: Add aria-label attributes, proper labels, aria-pressed states, and visible focus 
+ 121: styles.
+ 122: 
+ 123: 11. Theme Flash on Load (FOUC)
+ 124: Location: index.html and theme.js initialization
+ 125: Identified by: ChatGPT, Claude, DeepSeek, Gemini, Grok, Kimi, Meta, Qwen (8 
+ 126: reviewers)
+ 127: Impact: Jarring visual flash from dark to light theme
+ 128: Problem: HTML hardcodes data-theme="dark" but user may have saved light theme, 
+ 129: causing visible flash before JS runs.
+ 130: Fix: Add tiny inline script in <head> to set theme from localStorage before CSS paints.
+ 131: 
+ 132: 12. Board Colors Don't Sync with Accent
+ 133: Location: css/style.css and js/theme.js
+ 134: Identified by: ChatGPT, Gemini (2 reviewers)
+ 135: Impact: Broken user expectation - changing accent doesn't change board highlights
+ 136: Problem: Board highlight colors are hardcoded in CSS as RGBA values. Changing 
+ 137: accent only affects buttons/logo, not the chessboard.
+ 138: Fix: Use CSS variables for RGB components or calculate RGBA values in JavaScript 
+ 139: from accent color.
+ 140: 
+ 141: 13. Custom Accent Color Cannot Be Selected via Dropdown
+ 142: Location: js/theme.js, changeAccentColor() and populateAccentDropdown()
+ 143: Identified by: DeepSeek, Z.ai (2 reviewers)
+ 144: Impact: UI shows wrong color when custom color selected programmatically
+ 145: Problem: If changeAccentColor() is called with a color not in palette, dropdown.value 
+ 146: assignment fails silently.
+ 147: Fix: Ensure custom option exists in dropdown before setting value, or re-run 
+ 148: populateAccentDropdown().
+ 149: 
+ 150: 14. Silent Failure in adjustColor Function
+ 151: Location: js/theme.js, adjustColor()
+ 152: Identified by: Claude, DeepSeek, Perplexity, Z.ai (4 reviewers)
+ 153: Impact: Invalid colors silently returned, masking configuration errors
+ 154: Problem: If parsing fails, function returns original potentially-invalid color instead of safe 
+ 155: fallback.
+ 156: Fix: Return DEFAULT_ACCENT instead of original color on parse failure.
+ 157: 
+ 158: 15. Holiday Snow Never Activates on Pages Without .controls
+ 159: Location: js/theme.js, snow IIFE init()
+ 160: Identified by: Grok, DeepSeek, Perplexity (3 reviewers)
+ 161: Impact: Snow feature silently fails on pages without header controls
+ 162: Problem: Entire snow restoration logic lives inside init() which exits early if .controls 
+ 163: missing.
+ 164: Fix: Split button creation from snow activation - always restore snow if enabled, create 
+ 165: button only if controls exist.
+ 166: 
+ 167: 16. Snow Effect Button Duplication
+ 168: Location: js/theme.js, snow module init()
+ 169: Identified by: Mistral (1 reviewer)
+ 170: Impact: Multiple snow toggle buttons if script loads twice
+ 171: Problem: No check prevents button from being appended multiple times if script runs 
+ 172: more than once.
+ 173: Fix: Add check: if (document.getElementById(BTN_ID)) return; before creating button.
+ 174: 
+ 175: 17. Snow Effect Date Logic Edge Cases
+ 176: Location: js/theme.js, isHolidaySeason()
+ 177: Identified by: Mistral (1 reviewer)
+ 178: Impact: Snow may enable/disable on wrong days around Thanksgiving
+ 179: Problem: Thanksgiving calculation doesn't handle all edge cases (e.g., when 4th 
+ 180: Thursday falls on 28th or 29th).
+ 181: Fix: Use more robust date calculation or library like date-fns.
+ 182: 
+ 183: 18. Snow Nearly Invisible in Light Theme
+ 184: Location: js/theme.js, snow draw()
+ 185: Identified by: Grok (1 reviewer)
+ 186: Impact: Snow effect not visible in light theme
+ 187: Problem: Snow is hardcoded to white rgba(255,255,255,0.6) which disappears on light 
+ 188: background.
+ 189: Fix: Make snow color theme-aware - use dark particles for light theme.
+ 190: 
+ 191: 19. Incomplete Hex Color Handling
+ 192: Location: js/theme.js, normalizeHexColor()
+ 193: Identified by: Qwen (1 reviewer)
+ 194: Impact: Valid 3-digit hex colors rejected
+ 195: Problem: Function only accepts 6-digit hex, rejecting valid 3-digit shorthand like #abc.
+ 196: Fix: Expand 3-digit hex to 6-digit before validation: #abc → #aabbcc
+ 197: 
+ 198: 20. Theme Preference Ignores System prefers-color-scheme
+ 199: Location: js/theme.js, loadPreferences()
+ 200: Identified by: ChatGPT, Perplexity (2 reviewers)
+ 201: Impact: Poor UX for users with OS-level preference
+ 202: Problem: Theme defaults to dark when no localStorage exists, ignoring 
+ 203: window.matchMedia('(prefers-color-scheme: light)').
+ 204: Fix: Check system preference on first visit: use matchMedia as fallback before 
+ 205: defaulting to dark.
+ 206: 
+ 207: 🟡 Medium Severity Issues
+ 208: 21. Snow Canvas Never Removed from DOM
+ 209: Location: js/theme.js, stopSnow()
+ 210: Identified by: Claude, DeepSeek, Mistral, Z.ai (4 reviewers)
+ 211: Impact: DOM pollution, minor memory waste
+ 212: Problem: Canvas is hidden but never removed, remaining in DOM permanently.
+ 213: Fix: Call canvas.remove() in stopSnow() to fully clean up.
+ 214: 
+ 215: 22. Excessive Z-Index on Snow Canvas
+ 216: Location: js/theme.js, createSnow()
+ 217: Identified by: Claude, Kimi, Mistral (3 reviewers)
+ 218: Impact: Snow appears over modals, tooltips, critical UI
+ 219: Problem: z-index: 9999 is excessive and can conflict with other UI elements.
+ 220: Fix: Use reasonable value like z-index: 100, document in stacking context guide.
+ 221: 
+ 222: 23. No Error Logging for Missing DOM Elements
+ 223: Location: js/theme.js, multiple functions
+ 224: Identified by: Claude, Z.ai (2 reviewers)
+ 225: Impact: Silent failures make debugging difficult
+ 226: Problem: Functions have null checks but don't log when elements are missing.
+ 227: Fix: Add console.warn() statements in null check branches for developer visibility.
+ 228: 
+ 229: 24. Missing type="button" on Theme Toggle
+ 230: Location: index.html, theme toggle button
+ 231: Identified by: Z.ai (1 reviewer)
+ 232: Impact: Button would submit form if placed inside one
+ 233: Problem: Without type="button", button defaults to type="submit".
+ 234: Fix: Add type="button" attribute to button element.
+ 235: 
+ 236: 25. Potential Race Condition with Multiple Script Loads
+ 237: Location: js/theme.js, entire module
+ 238: Identified by: Claude (1 reviewer)
+ 239: Impact: Duplicate event listeners if script loads twice
+ 240: Problem: No guard prevents IIFE from running multiple times.
+ 241: Fix: Add guard: if (window.__themeModuleLoaded) return; at module start.
+ 242: 
+ 243: 26. Snow Canvas Not DPI-Scaled
+ 244: Location: js/theme.js, snow resize()
+ 245: Identified by: ChatGPT (1 reviewer)
+ 246: Impact: Blurry snow on high-DPI displays
+ 247: Problem: Canvas width/height not scaled by devicePixelRatio.
+ 248: Fix: Multiply canvas dimensions by devicePixelRatio and scale context.
+ 249: 
+ 250: 27. Snow Canvas Ignores Page Scroll
+ 251: Location: js/theme.js, snow resize()
+ 252: Identified by: Perplexity (1 reviewer)
+ 253: Impact: Snow appears cut off on long pages
+ 254: Problem: Canvas sized to viewport height, not 
+ 255: document.documentElement.scrollHeight.
+ 256: Fix: Either document limitation (viewport-only) or tie height to scrollHeight.
+ 257: 
+ 258: 28. Inefficient Color Calculation
+ 259: Location: js/theme.js, adjustColor()
+ 260: Identified by: Kimi, Qwen (2 reviewers)
+ 261: Impact: Minor performance impact from repeated parsing
+ 262: Problem: Called on every applyAccent(), parses hex string repeatedly without caching.
+ 263: Fix: Add memoization or cache derived colors.
+ 264: 
+ 265: 29. Snow Performance on Mobile
+ 266: Location: js/theme.js, snow particle creation
+ 267: Identified by: Mistral (1 reviewer)
+ 268: Impact: Resource-intensive on mobile devices
+ 269: Problem: Same particle count on mobile as desktop; can cause performance issues.
+ 270: Fix: Reduce particle count on smaller screens: Math.min(window.innerWidth / 20, 30)
+ 271: 
+ 272: 30. Snow Particle Count Can Be Fractional
+ 273: Location: js/theme.js, snow createSnow()
+ 274: Identified by: ChatGPT (1 reviewer)
+ 275: Impact: Off-by-one behavior in particle creation
+ 276: Problem: window.innerWidth / 10 can be non-integer; loop implicitly rounds.
+ 277: Fix: Explicitly use Math.floor(): const particleCount = 
+ 278: Math.min(Math.floor(window.innerWidth / 10), 50)
+ 279: 
+ 280: 31. Color Lightening Logic Naive
+ 281: Location: js/theme.js, adjustColor()
+ 282: Identified by: Gemini (1 reviewer)
+ 283: Impact: Bright colors can become invisible in light theme
+ 284: Problem: Always adds 20 regardless of theme; in light mode should darken instead.
+ 285: Fix: Make adjustment theme-aware: subtract in light mode, add in dark mode.
+ 286: 
+ 287: 32. Light Theme Hardcodes Accent Values
+ 288: Location: css/style.css, [data-theme="light"]
+ 289: Identified by: Meta, Perplexity, Z.ai (3 reviewers)
+ 290: Impact: Redundant definitions, violates single source of truth
+ 291: Problem: Light theme repeats same accent values as :root; JS overrides make this 
+ 292: redundant.
+ 293: Fix: Remove --accent and --accent-light from [data-theme="light"] block.
+ 294: 
+ 295: 33. Snow Animation Not Paused When Tab Inactive
+ 296: Location: js/theme.js, snow animation loop
+ 297: Identified by: Mistral (1 reviewer)
+ 298: Impact: Wastes resources when tab not visible
+ 299: Problem: Animation continues running even when document.hidden is true.
+ 300: Fix: Use Page Visibility API to pause animation when tab inactive.
+ 301: 
+ 302: ⚪ Low Severity Issues
+ 303: 34. Duplicate Color Names in Palette
+ 304: Location: js/theme.js, ACCENT_PALETTE
+ 305: Identified by: Claude, Kimi, Meta, Perplexity, Z.ai (5 reviewers)
+ 306: Impact: User confusion with similar names
+ 307: Problem: Both "Cornflower" (#6495ed) and "Cornflower Blue" (#60a5fa) appear in 
+ 308: palette.
+ 309: Fix: Rename to distinctive labels or consolidate to one option.
+ 310: 
+ 311: 35. Global Namespace Pollution
+ 312: Location: js/theme.js, window.themeUtils
+ 313: Identified by: ChatGPT, Claude, Meta, Perplexity, Qwen, Z.ai (6 reviewers)
+ 314: Impact: Risk of namespace collision
+ 315: Problem: Utilities exposed on window without check if name already exists.
+ 316: Fix: Use namespaced approach like window.ChessNerd.theme or remove if not 
+ 317: needed.
+ 318: 
+ 319: 36. Missing 'use strict' in Snow IIFE
+ 320: Location: js/theme.js, snow IIFE
+ 321: Identified by: DeepSeek, Qwen (2 reviewers)
+ 322: Impact: May miss silent errors
+ 323: Problem: First IIFE has 'use strict', second does not.
+ 324: Fix: Add 'use strict'; as first line in snow IIFE.
+ 325: 
+ 326: 37. Thanksgiving Date Calculation Unclear
+ 327: Location: js/theme.js, isHolidaySeason()
+ 328: Identified by: Claude, Kimi (2 reviewers)
+ 329: Impact: Hard to verify correctness
+ 330: Problem: Logic is correct but difficult to understand without comments.
+ 331: Fix: Add explanatory comments or use named constants.
+ 332: 
+ 333: 38. Custom Color Persistence Edge Cases
+ 334: Location: js/theme.js, populateAccentDropdown()
+ 335: Identified by: Claude, Grok (2 reviewers)
+ 336: Impact: Minor UX confusion
+ 337: Problem: No clear way for user to remove custom color once added.
+ 338: Fix: Add reset option or automatically remove custom option when palette color 
+ 339: selected.
+ 340: 
+ 341: 39. Insufficient Theme Value Validation
+ 342: Location: js/theme.js, loadPreferences()
+ 343: Identified by: Claude (1 reviewer)
+ 344: Impact: No feedback if invalid value stored
+ 345: Problem: Doesn't validate or sanitize stored theme value, just uses ternary for fallback.
+ 346: Fix: Explicitly validate and log warning if invalid value found, then correct in storage.
+ 347: 
+ 348: 40. No Frame Rate Limiting for Snow
+ 349: Location: js/theme.js, snow draw()
+ 350: Identified by: Claude (1 reviewer)
+ 351: Impact: Unnecessary CPU usage on high refresh rate displays
+ 352: Problem: Animation runs at monitor refresh rate (potentially 120/144Hz) when 30-60 
+ 353: FPS sufficient.
+ 354: Fix: Add frame rate limiting to target 30 FPS.
+ 355: 
+ 356: 41. Motion Effects Don't Respect Reduced Motion Preference
+ 357: Location: css/style.css, button transitions and snow animation
+ 358: Identified by: ChatGPT, Grok (2 reviewers)
+ 359: Impact: Accessibility concern for motion-sensitive users
+ 360: Problem: No prefers-reduced-motion media query to disable animations.
+ 361: Fix: Add @media (prefers-reduced-motion: reduce) rules to disable transitions and 
+ 362: snow.
+ 363: 
+ 364: 42. Dropdown Rebuilt on Every Load
+ 365: Location: js/theme.js, populateAccentDropdown()
+ 366: Identified by: DeepSeek (1 reviewer)
+ 367: Impact: Minor performance hit
+ 368: Problem: Entire dropdown rebuilt every time loadPreferences() runs.
+ 369: Fix: Build palette once, only update selected value and custom option.
+ 370: 
+ 371: 43. Two Unrelated Features in One File
+ 372: Location: js/theme.js
+ 373: Identified by: Grok (1 reviewer)
+ 374: Impact: Reduced maintainability
+ 375: Problem: Theme management and seasonal snow effect are unrelated concerns in 
+ 376: same file.
+ 377: Fix: Split into js/theme.js and js/holiday-snow.js for better separation.
+ 378: 
+ 379: 44. Unconventional Early Return Pattern
+ 380: Location: js/theme.js, snow IIFE
+ 381: Identified by: Z.ai (1 reviewer)
+ 382: Impact: Can confuse readers
+ 383: Problem: Top-level return from IIFE is valid but unusual pattern.
+ 384: Fix: Wrap logic in conditional: if (isHolidaySeason()) { /* all logic */ }
+ 385: 
+ 386: 45. Hardcoded Analytics ID
+ 387: Location: index.html, Google Analytics script
+ 388: Identified by: Z.ai (1 reviewer)
+ 389: Impact: Difficult environment-specific configuration
+ 390: Problem: GA tracking ID hardcoded in markup makes dev/prod separation difficult.
+ 391: Fix: Move to configuration file or use build-time replacement.
+ 392: 
+ 393: 46. Inconsistent Semicolons
+ 394: Location: js/theme.js, throughout
+ 395: Identified by: Kimi (1 reviewer)
+ 396: Impact: Code style inconsistency
+ 397: Problem: Mix of semicolon usage throughout file.
+ 398: Fix: Standardize on using or omitting semicolons consistently.
+ 399: 
+ 400: 47. Magic Numbers in Holiday Logic
+ 401: Location: js/theme.js, isHolidaySeason()
+ 402: Identified by: Kimi (1 reviewer)
+ 403: Impact: Reduces code readability
+ 404: Problem: Month numbers (0, 10, 11) are uncommented.
+ 405: Fix: Use named constants: const MONTHS = { JAN: 0, NOV: 10, DEC: 11 }
+ 406: 
+ 407: 48. Misleading Documentation
+ 408: Location: Documentation/comments
+ 409: Identified by: Claude (1 reviewer)
+ 410: Impact: Developer confusion
+ 411: Problem: Documentation claims script works in <head> when it doesn't due to Issue 
+ 412: #1.
+ 413: Fix: Update documentation to match actual behavior after fixing Issue #1.
+ 414: 
+ 415: 
+ 416: Recommended Fix Priority
+ 417: Immediate (Week 1)
+ 418: •	Fix DOM element timing bug (#1) - enables <head> placement
+ 419: •	Fix CSS syntax error (#2) - restores layout
+ 420: •	Fix malformed URLs (#3) - restores analytics and icons
+ 421: •	Add localStorage error handling (#4) - prevents crashes
+ 422: •	Fix holiday snow preference deletion (#5) - prevents data loss
+ 423: •	Address accessibility violations (#10) - WCAG compliance
+ 424: 
+ 425: Sprint 1 (Week 2-3)
+ 426: •	Fix memory leaks (#9, #21) - resource cleanup
+ 427: •	Fix FOUC (#11) - better UX
+ 428: •	Sync board colors with accent (#12) - feature consistency
+ 429: •	Fix custom color selection (#13) - UI correctness
+ 430: 
+ 431: Sprint 2 (Week 4-5)
+ 432: •	Address remaining high-severity issues (#14-20)
+ 433: •	Fix medium-severity robustness issues (#21-33)
+ 434: 
+ 435: Backlog (Tech Debt)
+ 436: •	Address low-severity issues (#34-48) as capacity allows
+ 437: •	Consider architectural improvements (code splitting, namespace management)
+ 438: 
+ 439: 
+ 440: End of Report
+```
+----- END FILE: color_chooser_consolidated_issues.txt -----
+
+----- BEGIN FILE: docs/doc-color-chooser.md -----
+```markdown
+   1: # Color Chooser Tool: Full Technical Walkthrough
+   2: 
+   3: This document explains how `color-chooser.html` works end to end, with a focus on implementation details and runtime behavior.
+   4: 
+   5: ## Scope
+   6: 
+   7: Primary implementation:
+   8: 
+   9: - `color-chooser.html`
+  10: 
+  11: Shared dependencies and integration points:
+  12: 
+  13: - `js/theme.js`
+  14: - `css/style.css`
+  15: - `index.html`
+  16: - `sitemap.xml`
+  17: 
+  18: ## What the Tool Does
+  19: 
+  20: Color Chooser lets users:
+  21: 
+  22: - pick from named CSS-style colors grouped by category
+  23: - enter custom colors via browser color input, manual code input, or Eyedropper API
+  24: - find closest named color for a custom value
+  25: - generate language-specific color snippets
+  26: - preview and export a PNG swatch with readable foreground text
+  27: 
+  28: ## Page Composition (`color-chooser.html`)
+  29: 
+  30: The page has:
+  31: 
+  32: - shared site shell (header, network links, theme/accent controls, footer)
+  33: - tool layout container and actions (`Back`, `Copy`, `Save PNG`)
+  34: - left panel for selection/search/export controls
+  35: - right panel for snippet output and status
+  36: - inline script (single IIFE) containing all Color Chooser logic
+  37: 
+  38: ### Key Interactive Elements
+  39: 
+  40: Shared header controls:
+  41: 
+  42: - `#themeToggle`
+  43: - `#accentColor`
+  44: 
+  45: Tool controls:
+  46: 
+  47: - `#colorCategory`
+  48: - `#colorName`
+  49: - `#languageSelect`
+  50: - `#customColorInput`
+  51: - `#eyedropperBtn`
+  52: - `#colorDisplay`
+  53: - `#colorInput`
+  54: - `#applySearchBtn`
+  55: - `#getCurrentColorBtn`
+  56: - `#pngWidth`
+  57: - `#pngHeight`
+  58: - `#pngFilename`
+  59: - `#copyBtn`
+  60: - `#savePngBtn`
+  61: - `#backButton`
+  62: 
+  63: Output/status:
+  64: 
+  65: - `#colorOutput`
+  66: - `#colorSearchResult`
+  67: - `#pngPreview`
+  68: - `#statusMessage`
+  69: - `#toolStats`
+  70: 
+  71: ## Runtime Lifecycle
+  72: 
+  73: ### 1. Assets load
+  74: 
+  75: - Material Icons stylesheet from Google Fonts
+  76: - global stylesheet `css/style.css`
+  77: - shared script `js/theme.js`
+  78: - inline Color Chooser script
+  79: 
+  80: ### 2. Shared behavior initializes (`js/theme.js`)
+  81: 
+  82: Theme/accent module:
+  83: 
+  84: - reads and applies `localStorage.theme`
+  85: - reads and applies `localStorage.accentColor`
+  86: - populates accent dropdown values
+  87: - toggles `data-theme` and CSS variables (`--accent`, `--accent-light`)
+  88: 
+  89: Holiday snow module:
+  90: 
+  91: - active only from Thanksgiving window through January 1
+  92: - injects a `#snowToggle` button into `.controls`
+  93: - persists snow setting in `localStorage.holiday_snow_enabled`
+  94: - draws animated snowfall on a fullscreen canvas
+  95: 
+  96: ### 3. Color Chooser initializes
+  97: 
+  98: The inline script runs inside an IIFE and calls `init()` on DOM-ready:
+  99: 
+ 100: 1. cache DOM references (`cacheDom`)
+ 101: 2. populate category and language dropdowns
+ 102: 3. default category to `All Colors`
+ 103: 4. populate color names for selected category
+ 104: 5. wire event listeners (`hookEvents`)
+ 105: 6. apply initial color (`#FFFFFF`) via `updateColor`
+ 106: 7. render PNG preview and set `Ready` status
+ 107: 
+ 108: ## Internal Data Model
+ 109: 
+ 110: ### `namedColors`
+ 111: 
+ 112: - object map: `name -> #RRGGBB`
+ 113: - includes common CSS named colors and some synonyms (`Gray/Grey`, etc.)
+ 114: - keys are canonical names used for dropdown labels and matching
+ 115: 
+ 116: ### Category model
+ 117: 
+ 118: - `buildCategory(names)` creates subset maps from `namedColors`
+ 119: - `colors` defines category buckets:
+ 120:   - `All Colors`
+ 121:   - `Reds & Pinks`
+ 122:   - `Oranges & Browns`
+ 123:   - `Yellows & Golds`
+ 124:   - `Greens`
+ 125:   - `Cyans & Aquas`
+ 126:   - `Blues`
+ 127:   - `Purples`
+ 128:   - `Whites & Pastels`
+ 129:   - `Grays & Blacks`
+ 130: 
+ 131: ### Reverse mapping
+ 132: 
+ 133: - `nameToCategory` maps each color name to first matching non-`All Colors` bucket
+ 134: - used by exact-match synchronization when selecting/searching custom color values
+ 135: 
+ 136: ### Language map
+ 137: 
+ 138: - `languages` maps internal code keys (`css`, `python`, `c++`, etc.) to display labels
+ 139: - dropdown is alphabetically sorted by label
+ 140: - default selected language is `css`
+ 141: 
+ 142: ### Mutable runtime state
+ 143: 
+ 144: - `currentColor` stores selected color string (initial `#FFFFFF`)
+ 145: - `dom` stores element references
+ 146: 
+ 147: No central state library is used; state is DOM-driven plus `currentColor`.
+ 148: 
+ 149: ## Core Algorithms and Functions
+ 150: 
+ 151: ### Color parsing and conversion
+ 152: 
+ 153: `hexToRgb(hex)`:
+ 154: 
+ 155: - accepts `#RGB` and `#RRGGBB`
+ 156: - expands short hex before parsing
+ 157: - returns `{r, g, b}` or `null`
+ 158: 
+ 159: `rgbToHex(r, g, b)`:
+ 160: 
+ 161: - rounds channels and converts to uppercase `#RRGGBB`
+ 162: 
+ 163: `parseColorInput(input)` accepts:
+ 164: 
+ 165: - hex with optional `#` (`RGB` or `RRGGBB`)
+ 166: - comma RGB forms like `255,0,0`
+ 167: - optional loose wrapper like `rgb(255,0,0)` / `rgba(255,0,0)` but alpha is ignored
+ 168: 
+ 169: Rejected values return `null`.
+ 170: 
+ 171: ### Nearest color matching
+ 172: 
+ 173: `findClosestColor(targetHex)`:
+ 174: 
+ 175: - converts target to RGB
+ 176: - iterates all `namedColors`
+ 177: - computes Euclidean distance in RGB space:
+ 178:   - `sqrt((dr^2) + (dg^2) + (db^2))`
+ 179: - returns nearest `{name, hex, category}`
+ 180: 
+ 181: Complexity is linear in number of named colors (`O(n)`), which is small enough for immediate UI response.
+ 182: 
+ 183: ### UI update pipeline
+ 184: 
+ 185: `updateColor(hex, source)`:
+ 186: 
+ 187: 1. parse and validate color
+ 188: 2. set `currentColor`
+ 189: 3. update swatch and color input control
+ 190: 4. if source is not `nameSelect`, try to sync category/name dropdowns for exact named match
+ 191: 5. regenerate snippet
+ 192: 6. refresh PNG preview
+ 193: 7. set success status
+ 194: 
+ 195: ### Snippet generation
+ 196: 
+ 197: `generateSnippet()`:
+ 198: 
+ 199: - reads current language + `currentColor`
+ 200: - derives RGB values
+ 201: - selects template from `formats` map
+ 202: - writes snippet to `#colorOutput`
+ 203: - writes summary to `#toolStats`
+ 204: 
+ 205: Supported templates include CSS, JS/TS, Python, C/C++, C#, Java, Go, Rust, SQL, JSON, Shell, PowerShell, and others.
+ 206: 
+ 207: ### Search workflow
+ 208: 
+ 209: `applySearch()`:
+ 210: 
+ 211: 1. parse value from `#colorInput`
+ 212: 2. on invalid input, show inline error block
+ 213: 3. apply parsed color with `updateColor`
+ 214: 4. compute closest named color
+ 215: 5. render result message showing selected and closest/exact match
+ 216: 
+ 217: ### PNG preview and export
+ 218: 
+ 219: `getContrast(r, g, b)`:
+ 220: 
+ 221: - computes brightness using weighted channels
+ 222: - returns black text for light backgrounds, white text for dark backgrounds
+ 223: 
+ 224: `updatePngPreview()`:
+ 225: 
+ 226: - clamps width/height to `[10, 2000]`
+ 227: - creates a preview canvas scaled to fit roughly `80-260px`
+ 228: - fills with current color
+ 229: - overlays hex text when preview is large enough
+ 230: 
+ 231: `savePng()`:
+ 232: 
+ 233: - creates full-size canvas (not scaled preview)
+ 234: - fills with `currentColor`
+ 235: - overlays readable hex text
+ 236: - sanitizes filename to word chars/hyphen/underscore
+ 237: - triggers download using data URL
+ 238: 
+ 239: ## Event Wiring
+ 240: 
+ 241: The script binds:
+ 242: 
+ 243: - category `change` -> repopulate names
+ 244: - named color `change` -> `updateColor`
+ 245: - language `change` -> regenerate snippet
+ 246: - custom color input `input` -> `updateColor`
+ 247: - Eyedropper click -> browser `EyeDropper` API (if available)
+ 248: - Apply click -> `applySearch`
+ 249: - Use Current click -> copy `currentColor` into search input only
+ 250: - Copy click -> clipboard write of snippet output
+ 251: - Save PNG click -> `savePng`
+ 252: - PNG width/height `input` -> live preview refresh
+ 253: - Back click -> navigate to `index.html`
+ 254: 
+ 255: ## Status and UX Messaging
+ 256: 
+ 257: Status text is written through `setStatus(message, type)` by changing:
+ 258: 
+ 259: - `#statusMessage.textContent`
+ 260: - `#statusMessage.className`
+ 261: 
+ 262: Used status types include:
+ 263: 
+ 264: - `success`
+ 265: - `warning`
+ 266: - `error`
+ 267: - `info`
+ 268: 
+ 269: `css/style.css` defines colors for `success`, `warning`, and `error`. There is no dedicated `.info` class in current shared CSS.
+ 270: 
+ 271: `#toolStats` reports snippet context (for example, `CSS snippet for #FFFFFF`).
+ 272: 
+ 273: ## Site Integration
+ 274: 
+ 275: `index.html`:
+ 276: 
+ 277: - includes metadata entry:
+ 278:   - `id: 'color-chooser'`
+ 279:   - card route resolves to `color-chooser.html`
+ 280: 
+ 281: `sitemap.xml`:
+ 282: 
+ 283: - includes `https://text-utils.net/color-chooser.html`
+ 284: 
+ 285: ## Current Limitations and Edge Cases
+ 286: 
+ 287: - nearest-color logic is RGB-distance based, not perceptual (Lab/DeltaE)
+ 288: - search result HTML uses utility classes (`alert`, `mx-2`) that are not defined in `css/style.css`
+ 289: - color input accepts 3-digit hex values, but browser `<input type="color">` UI is naturally 6-digit-focused
+ 290: - `rgba(...)` parsing path ignores alpha channel entirely
+ 291: - `Use Current` only fills search input; it does not auto-run Apply
+ 292: - clipboard and Eyedropper APIs depend on browser support and secure context
+ 293: - no persistence for selected tool color/language between page loads
+ 294: 
+ 295: ## Extension Points
+ 296: 
+ 297: 1. Add or remove named colors by editing `namedColors`.
+ 298: 2. Adjust category groupings in the `colors` object.
+ 299: 3. Add snippet targets by extending `languages` and `formats`.
+ 300: 4. Replace RGB nearest matching with perceptual color-space matching.
+ 301: 5. Add persistent user preferences (color, language, PNG dimensions) via localStorage.
+ 302: 
+ 303: ## Quick Verification Checklist
+ 304: 
+ 305: - choose category and named color, confirm swatch/snippet update
+ 306: - type custom hex and RGB input, confirm parsing and output
+ 307: - run search with non-exact color, confirm closest match rendering
+ 308: - switch snippet language and verify template change
+ 309: - export PNG with custom dimensions and filename
+ 310: - test theme/accent toggles and seasonal snow button behavior
+ 311: - test in browser without Eyedropper support and confirm graceful warning
+```
+----- END FILE: docs/doc-color-chooser.md -----
+
+## Referenced Text Excerpts
+
+----- BEGIN EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
+```text
+   7: ## Current Tool Set
+   8: 
+   9: The dashboard (`index.html`) currently exposes these tools:
+  10: 
+  11: | Tool | File | Category | Description |
+  12: | --- | --- | --- | --- |
+  13: | Case Converter | `case-converter.html` | Text | Convert text between different letter cases. |
+  14: | Text Info | `text-info.html` | Text | Show detailed text metrics and readability info. |
+  15: | Line Operations | `line-operations.html` | Text | Sort, filter, and transform lines of text. |
+  16: | Find and Replace | `find-replace.html` | Text | Search and replace text with regex support. |
+  17: | Font Chooser | `font-chooser.html` | Text | Preview fonts, contrast, and CSS snippets. |
+  18: | IP Info | `ip-info.html` | Data | Show public IP, provider, location, and device details. |
+  19: | Font Awesome Chooser | `font-awesome-chooser.html` | Data | Browse Font Awesome icons and generate snippets. |
+  20: | Google Icons Chooser | `google-icons-chooser.html` | Data | Browse Material icons and generate snippets. |
+  21: | Color Chooser | `color-chooser.html` | Data | Pick colors, match closest named colors, and export snippets/PNG. |
+  22: | CSS Unit Converter | `css-unit-converter.html` | Convert | Convert CSS units (`px`, `em`, `rem`, `%`, `pt`, `vw`, `vh`). |
+  23: | Date/Time Info | `date-time-info.html` | Data | Display date/time formats, calendar views, and timezone output. |
+  24: | Random Number Generator | `random-numbers.html` | Data | Generate random numbers with range/uniqueness/sorting options. |
+  25: | Hashing Tool | `hashing-tool.html` | Convert | Hash, encode, and decode text with multiple algorithms. |
+  26: | JSON Tool | `json-tool.html` | Data | Format, validate, and convert JSON/JSONL. |
+  27: | XML Sitemap Generator | `sitemap-generator.html` | Data | Crawl a site and generate `sitemap.xml` output. |
+```
+----- END EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
+
+----- BEGIN EXCERPT: README.md | Section: Helper Scripts (lines 95-106) -----
+```text
+  95: ## Helper Scripts
+  96: 
+  97: The repo includes maintenance scripts for targeted context/code dumps:
+  98: 
+  99: - `scripts/code-dump-tool.py` (generic: any tool page via `--tool`)
+ 100: - `scripts/code-dump-case-converter.py` (wrapper for Case Converter)
+ 101: - `scripts/code-dump-color-chooser.py` (wrapper for Color Chooser)
+ 102: - `scripts/code-dump-json-tool.py` (wrapper for JSON Tool)
+ 103: - `scripts/code-dump-case-converter.ps1` (legacy PowerShell workflow)
+ 104: 
+ 105: Outputs are written to the `context/` folder by default.
+```
+----- END EXCERPT: README.md | Section: Helper Scripts (lines 95-106) -----

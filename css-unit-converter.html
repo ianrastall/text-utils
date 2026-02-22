@@ -186,15 +186,15 @@
                         <h2 id="toolName">CSS Unit Converter</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="resetButton" class="btn btn-secondary">
+                        <button type="button" id="resetButton" class="btn btn-secondary">
                             <span class="material-icons">restart_alt</span>
                             Reset
                         </button>
-                        <button id="copyAll" class="btn btn-secondary">
+                        <button type="button" id="copyAll" class="btn btn-secondary">
                             <span class="material-icons">content_copy</span>
                             Copy Results
                         </button>
@@ -367,11 +367,15 @@
             }
 
             function renderEmptyState(message) {
-                dom.resultsList.innerHTML = '<div class="empty-state">' + message + '</div>';
+                dom.resultsList.innerHTML = '';
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.textContent = message;
+                dom.resultsList.appendChild(emptyState);
             }
 
             function copyValue(value, unitLabel) {
-                navigator.clipboard.writeText(value).then(() => {
+                window.textUtilsClipboardWrite(value).then(() => {
                     dom.statusMessage.textContent = 'Copied ' + value + unitLabel + ' to clipboard';
                     dom.statusMessage.className = 'success';
                 }).catch(() => {
@@ -515,7 +519,7 @@
 
                 if (!lines.length) return;
 
-                navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                window.textUtilsClipboardWrite(lines.join('\n')).then(() => {
                     dom.statusMessage.textContent = 'Copied all available results';
                     dom.statusMessage.className = 'success';
                 }).catch(() => {

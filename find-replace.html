@@ -185,15 +185,15 @@
                         <h2>Find & Replace</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="clearAll" class="btn btn-secondary btn-compact">
+                        <button type="button" id="clearAll" class="btn btn-secondary btn-compact">
                             <span class="material-icons">delete</span>
                             Clear
                         </button>
-                        <button id="copyOutput" class="btn btn-secondary btn-compact">
+                        <button type="button" id="copyOutput" class="btn btn-secondary btn-compact">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
@@ -233,15 +233,15 @@
 
                     <div class="action-row">
                         <div class="button-row">
-                            <button id="replaceAllBtn" class="btn btn-primary">
+                            <button type="button" id="replaceAllBtn" class="btn btn-primary">
                                 <span class="material-icons">find_replace</span>
                                 Replace All (Ctrl/Cmd + Enter)
                             </button>
-                            <button id="revertBtn" class="btn btn-secondary" disabled>
+                            <button type="button" id="revertBtn" class="btn btn-secondary" disabled>
                                 <span class="material-icons">undo</span>
                                 Revert
                             </button>
-                            <button id="pasteBtn" class="btn btn-secondary">
+                            <button type="button" id="pasteBtn" class="btn btn-secondary">
                                 <span class="material-icons">content_paste</span>
                                 Paste
                             </button>
@@ -455,7 +455,7 @@
                 if (!navigator.clipboard?.writeText) {
                     throw new Error('Clipboard copy not supported or permission denied.');
                 }
-                await navigator.clipboard.writeText(inputText.value);
+                await window.textUtilsClipboardWrite(inputText.value);
                 showStatus('Copied to clipboard.', 'success');
             } catch (error) {
                 showStatus(`Copy failed: ${error.message}`, 'error');

@@ -84,15 +84,15 @@
                         <h2 id="toolName">Tool Name</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="clearAll" class="btn btn-secondary btn-compact">
+                        <button type="button" id="clearAll" class="btn btn-secondary btn-compact">
                             <span class="material-icons">delete</span>
                             Clear
                         </button>
-                        <button id="copyOutput" class="btn btn-secondary btn-compact">
+                        <button type="button" id="copyOutput" class="btn btn-secondary btn-compact">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
@@ -147,8 +147,8 @@
         function updateStats() {
             const inputLength = inputText.value.length;
             const outputLength = outputText.value.length;
-            const inputLines = inputText.value.split('\n').length;
-            const outputLines = outputText.value.split('\n').length;
+            const inputLines = inputLength === 0 ? 0 : inputText.value.split('\n').length;
+            const outputLines = outputLength === 0 ? 0 : outputText.value.split('\n').length;
             
             inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
             outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
@@ -158,7 +158,7 @@
         function copyToClipboard() {
             if (!outputText.value) return;
             
-            navigator.clipboard.writeText(outputText.value).then(() => {
+            window.textUtilsClipboardWrite(outputText.value).then(() => {
                 statusMessage.textContent = 'Copied to clipboard!';
                 statusMessage.className = 'success';
                 setTimeout(() => {

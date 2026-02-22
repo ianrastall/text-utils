@@ -1,0 +1,4135 @@
+# LLM Context Pack: JSON Tool
+
+This generated file is designed as a context bundle for LLM prompts.
+It contains full source text for files directly associated with the tool, plus extracted sections from broader docs that reference the tool.
+Every included block is wrapped with explicit BEGIN/END markers for reliable chunking.
+
+Generated: 2026-02-22 00:59:35 UTC
+Repository: `D:\GitHub\text-utils`
+Tool slug: `json-tool`
+Tool page: `json-tool.html`
+Output file: `context/code-dump-json-tool.txt`
+
+## Discovery Summary
+- Full files included: 9
+- Direct local dependencies: 3
+- Incoming code references: 4
+- Direct tool docs (full): 2
+- Cross-file text excerpts: 7
+- External dependencies in tool page: 4
+
+## Included Full Files
+- `json-tool.html`
+- `css/style.css`
+- `index.html`
+- `js/theme.js`
+- `scripts/code-dump-json-tool.py`
+- `scripts/tool_context_dump.py`
+- `sitemap.xml`
+- `JSON-TOOL-MIGRATION.md`
+- `docs/doc-json-tool.md`
+
+## External Dependencies
+- `https://chessnerd.net`
+- `https://fonts.googleapis.com/icon?family=Material+Icons`
+- `https://github.com/ianrastall/text-utils`
+- `https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB`
+
+## Full File Dumps
+
+----- BEGIN FILE: json-tool.html -----
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en">
+   3: <head>
+   4: <!-- Google tag gtag.js -->
+   5: <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+   6: <script>
+   7:   window.dataLayer = window.dataLayer || [];
+   8:   function gtag(){dataLayer.push(arguments);}
+   9:   gtag('js', new Date());
+  10: 
+  11:   gtag('config', 'G-0V2F0V7FWB');
+  12: </script>
+  13:     <meta charset="UTF-8">
+  14:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  15:     <title>JSON Tool - Text Utilities</title>
+  16:     <script>
+  17:         (function () {
+  18:             try {
+  19:                 const storedTheme = localStorage.getItem('theme');
+  20:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  21:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+  22:                     ? storedTheme
+  23:                     : (prefersLight ? 'light' : 'dark');
+  24:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
+  25: 
+  26:                 const storedAccent = localStorage.getItem('accentColor');
+  27:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+  28:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+  29:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+  30:                 }
+  31: 
+  32:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+  33:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
+  34:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
+  35:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+  36:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
+  37:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+  38:                 }
+  39:             } catch (_) {
+  40:                 document.documentElement.setAttribute('data-theme', 'dark');
+  41:             }
+  42:         })();
+  43:     </script>
+  44:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  45:     <link rel="stylesheet" href="css/style.css">
+  46:     <style>
+  47:         .mode-tabs {
+  48:             display: flex;
+  49:             gap: 0.5rem;
+  50:             margin-bottom: 1rem;
+  51:             border-bottom: 1px solid var(--border-color);
+  52:         }
+  53: 
+  54:         .mode-tab {
+  55:             padding: 0.75rem 1.5rem;
+  56:             background: transparent;
+  57:             border: none;
+  58:             border-bottom: 2px solid transparent;
+  59:             color: var(--text-secondary);
+  60:             cursor: pointer;
+  61:             font-size: 0.875rem;
+  62:             transition: all 0.2s;
+  63:             display: flex;
+  64:             align-items: center;
+  65:             gap: 0.5rem;
+  66:         }
+  67: 
+  68:         .mode-tab:hover {
+  69:             color: var(--text-primary);
+  70:             background: var(--bg-tertiary);
+  71:         }
+  72: 
+  73:         .mode-tab.active {
+  74:             color: var(--accent);
+  75:             border-bottom-color: var(--accent);
+  76:         }
+  77: 
+  78:         .error-panel {
+  79:             background: var(--bg-tertiary);
+  80:             border-left: 3px solid var(--error);
+  81:             padding: 1rem;
+  82:             margin-bottom: 1rem;
+  83:             border-radius: 4px;
+  84:             display: none;
+  85:         }
+  86: 
+  87:         .error-panel.show {
+  88:             display: block;
+  89:         }
+  90: 
+  91:         .error-title {
+  92:             color: var(--error);
+  93:             font-weight: 600;
+  94:             margin-bottom: 0.5rem;
+  95:             display: flex;
+  96:             align-items: center;
+  97:             gap: 0.5rem;
+  98:         }
+  99: 
+ 100:         .error-message {
+ 101:             color: var(--text-primary);
+ 102:             font-family: 'Monaco', 'Menlo', monospace;
+ 103:             font-size: 0.875rem;
+ 104:         }
+ 105: 
+ 106:         .info-panel {
+ 107:             background: var(--bg-tertiary);
+ 108:             border-left: 3px solid var(--accent);
+ 109:             padding: 1rem;
+ 110:             margin-bottom: 1rem;
+ 111:             border-radius: 4px;
+ 112:             font-size: 0.875rem;
+ 113:             color: var(--text-secondary);
+ 114:         }
+ 115: 
+ 116:         .info-panel h4 {
+ 117:             color: var(--text-primary);
+ 118:             margin-bottom: 0.5rem;
+ 119:             display: flex;
+ 120:             align-items: center;
+ 121:             gap: 0.5rem;
+ 122:         }
+ 123: 
+ 124:         .example-badge {
+ 125:             display: inline-block;
+ 126:             background: var(--accent);
+ 127:             color: white;
+ 128:             padding: 0.125rem 0.5rem;
+ 129:             border-radius: 12px;
+ 130:             font-size: 0.75rem;
+ 131:             margin-left: 0.5rem;
+ 132:         }
+ 133: 
+ 134:         .json-stats {
+ 135:             display: grid;
+ 136:             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ 137:             gap: 1rem;
+ 138:             margin-bottom: 1rem;
+ 139:             padding: 1rem;
+ 140:             background: var(--bg-tertiary);
+ 141:             border-radius: 4px;
+ 142:         }
+ 143: 
+ 144:         .stat-item {
+ 145:             display: flex;
+ 146:             flex-direction: column;
+ 147:             gap: 0.25rem;
+ 148:         }
+ 149: 
+ 150:         .stat-label {
+ 151:             font-size: 0.75rem;
+ 152:             color: var(--text-secondary);
+ 153:             text-transform: uppercase;
+ 154:         }
+ 155: 
+ 156:         .stat-value {
+ 157:             font-size: 1.25rem;
+ 158:             font-weight: 600;
+ 159:             color: var(--text-primary);
+ 160:         }
+ 161:     </style>
+ 162: </head>
+ 163: <body>
+ 164:     <div class="container">
+ 165:         <header>
+ 166:             <div class="logo">
+ 167:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+ 168:                     <span>Text Utilities</span>
+ 169:                 </a>
+ 170:             </div>
+ 171:             <nav class="site-network" aria-label="Network sites">
+ 172:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 173:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+ 174:                     <span>Chess Nerd</span>
+ 175:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 176:                 </a>
+ 177:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 178:                     <img src="img/github.png" class="site-network-icon" alt="">
+ 179:                     <span>GitHub</span>
+ 180:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 181:                 </a>
+ 182:             </nav>
+ 183:             <div class="controls">
+ 184:                 <div class="accent-selector">
+ 185:                     <span class="material-icons">palette</span>
+ 186:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+ 187:                 </div>
+ 188:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+ 189:                     <span class="material-icons">dark_mode</span>
+ 190:                 </button>
+ 191:             </div>
+ 192:         </header>
+ 193: 
+ 194:                 <main>
+ 195:             <div class="tool-container">
+ 196:                 <div class="tool-header">
+ 197:                     <div class="tool-title">
+ 198:                         <span class="material-icons">data_object</span>
+ 199:                         <h2>JSON Tool</h2>
+ 200:                     </div>
+ 201:                     <div class="tool-actions">
+ 202:                         <button id="backButton" class="btn btn-secondary btn-compact" type="button">
+ 203:                             <span class="material-icons">arrow_back</span>
+ 204:                             Back
+ 205:                         </button>
+ 206:                         <button id="exampleBtn" class="btn btn-secondary" type="button">
+ 207:                             <span class="material-icons">science</span>
+ 208:                             Example
+ 209:                         </button>
+ 210:                         <button id="copyOutput" class="btn btn-secondary btn-compact" type="button">
+ 211:                             <span class="material-icons">content_copy</span>
+ 212:                             Copy
+ 213:                         </button>
+ 214:                         <button id="clearBtn" class="btn btn-secondary" type="button">
+ 215:                             <span class="material-icons">clear</span>
+ 216:                             Clear
+ 217:                         </button>
+ 218:                         <button id="processBtn" class="btn btn-primary" type="button">
+ 219:                             <span class="material-icons">play_arrow</span>
+ 220:                             <span id="processLabel">Format</span>
+ 221:                         </button>
+ 222:                     </div>
+ 223:                 </div>
+ 224: 
+ 225:                 <p class="tool-description">Format, validate, and convert JSON to JSONL format</p>
+ 226: 
+ 227:                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
+ 228:                     <button class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" tabindex="0">
+ 229:                         <span class="material-icons">code</span>
+ 230:                         Format JSON
+ 231:                     </button>
+ 232:                     <button class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" tabindex="-1">
+ 233:                         <span class="material-icons">view_list</span>
+ 234:                         JSON to JSONL
+ 235:                     </button>
+ 236:                     <button class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" tabindex="-1">
+ 237:                         <span class="material-icons">check_circle</span>
+ 238:                         Validate Only
+ 239:                     </button>
+ 240:                 </div>
+ 241: 
+ 242:                 <div class="info-panel">
+ 243:                     <h4>
+ 244:                         <span class="material-icons">info</span>
+ 245:                         <span id="infoTitle">JSON Formatting</span>
+ 246:                     </h4>
+ 247:                     <p id="infoText">
+ 248:                         Format and validate JSON with customizable indentation. 
+ 249:                         Automatically detects syntax errors and provides helpful error messages.
+ 250:                     </p>
+ 251:                 </div>
+ 252: 
+ 253:                 <div class="error-panel" id="errorPanel" role="alert" aria-live="assertive" aria-hidden="true">
+ 254:                     <div class="error-title">
+ 255:                         <span class="material-icons">error</span>
+ 256:                         <span>Syntax Error</span>
+ 257:                     </div>
+ 258:                     <div class="error-message" id="errorMessage"></div>
+ 259:                 </div>
+ 260: 
+ 261:                 <div class="json-stats" id="statsPanel" style="display: none;">
+ 262:                     <div class="stat-item">
+ 263:                         <span class="stat-label">Objects</span>
+ 264:                         <span class="stat-value" id="statObjects">0</span>
+ 265:                     </div>
+ 266:                     <div class="stat-item">
+ 267:                         <span class="stat-label">Arrays</span>
+ 268:                         <span class="stat-value" id="statArrays">0</span>
+ 269:                     </div>
+ 270:                     <div class="stat-item">
+ 271:                         <span class="stat-label">Keys</span>
+ 272:                         <span class="stat-value" id="statKeys">0</span>
+ 273:                     </div>
+ 274:                     <div class="stat-item">
+ 275:                         <span class="stat-label">Max Depth</span>
+ 276:                         <span class="stat-value" id="statDepth">0</span>
+ 277:                     </div>
+ 278:                 </div>
+ 279: 
+ 280:                 <div class="options-panel" id="optionsPanel">
+ 281:                     <div class="options-grid">
+ 282:                         <div class="option-group">
+ 283:                             <label for="indentSelect">Indentation</label>
+ 284:                             <select id="indentSelect">
+ 285:                                 <option value="2">2 spaces</option>
+ 286:                                 <option value="4">4 spaces</option>
+ 287:                                 <option value="tab">Tab</option>
+ 288:                                 <option value="0">Minified</option>
+ 289:                             </select>
+ 290:                         </div>
+ 291:                         <div class="option-group">
+ 292:                             <label for="sortKeysCheck">
+ 293:                                 <input type="checkbox" id="sortKeysCheck">
+ 294:                                 Sort object keys alphabetically
+ 295:                             </label>
+ 296:                         </div>
+ 297:                     </div>
+ 298:                 </div>
+ 299: 
+ 300:                 <div class="io-container">
+ 301:                     <div class="io-panel">
+ 302:                         <div class="io-label">
+ 303:                             <span>Input JSON</span>
+ 304:                             <span class="stats pill muted" id="inputStats">0 chars</span>
+ 305:                         </div>
+ 306:                         <textarea id="inputText" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
+ 307:                     </div>
+ 308:                     <div class="io-panel">
+ 309:                         <div class="io-label">
+ 310:                             <span id="outputLabel">Formatted Output</span>
+ 311:                             <span class="stats pill muted" id="outputStats">0 chars</span>
+ 312:                         </div>
+ 313:                         <textarea id="outputText" class="output" readonly placeholder="Processed output will appear here..."></textarea>
+ 314:                     </div>
+ 315:                 </div>
+ 316: 
+ 317:                 <div class="status-bar">
+ 318:                     <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
+ 319:                     <div id="processingTime">No operations yet</div>
+ 320:                 </div>
+ 321:             </div>
+ 322:         </main>
+ 323:     </div>
+ 324: 
+ 325:     <script src="js/theme.js"></script>
+ 326:     <script>
+ 327:         'use strict';
+ 328: 
+ 329:         // DOM Elements
+ 330:         const inputText = document.getElementById('inputText');
+ 331:         const outputText = document.getElementById('outputText');
+ 332:         const processBtn = document.getElementById('processBtn');
+ 333:         const processLabel = document.getElementById('processLabel');
+ 334:         const copyBtn = document.getElementById('copyOutput');
+ 335:         const clearBtn = document.getElementById('clearBtn');
+ 336:         const exampleBtn = document.getElementById('exampleBtn');
+ 337:         const backBtn = document.getElementById('backButton');
+ 338:         const modeTabs = document.querySelectorAll('.mode-tab');
+ 339:         const indentSelect = document.getElementById('indentSelect');
+ 340:         const sortKeysCheck = document.getElementById('sortKeysCheck');
+ 341:         const errorPanel = document.getElementById('errorPanel');
+ 342:         const errorMessage = document.getElementById('errorMessage');
+ 343:         const statsPanel = document.getElementById('statsPanel');
+ 344:         const optionsPanel = document.getElementById('optionsPanel');
+ 345:         const infoTitle = document.getElementById('infoTitle');
+ 346:         const infoText = document.getElementById('infoText');
+ 347:         const outputLabel = document.getElementById('outputLabel');
+ 348:         const statusMessage = document.getElementById('statusMessage');
+ 349:         const processingTime = document.getElementById('processingTime');
+ 350:         const inputStats = document.getElementById('inputStats');
+ 351:         const outputStats = document.getElementById('outputStats');
+ 352:         const statObjects = document.getElementById('statObjects');
+ 353:         const statArrays = document.getElementById('statArrays');
+ 354:         const statKeys = document.getElementById('statKeys');
+ 355:         const statDepth = document.getElementById('statDepth');
+ 356: 
+ 357:         // State
+ 358:         let currentMode = 'format';
+ 359:         const MAX_INPUT_CHARACTERS = 5 * 1024 * 1024;
+ 360:         const MAX_RECURSION_DEPTH = 1000;
+ 361: 
+ 362:         // Mode Information
+ 363:         const modeInfo = {
+ 364:             format: {
+ 365:                 title: 'JSON Formatting',
+ 366:                 text: 'Format and validate JSON with customizable indentation. Automatically detects syntax errors and provides helpful error messages.',
+ 367:                 outputLabel: 'Formatted Output'
+ 368:             },
+ 369:             jsonl: {
+ 370:                 title: 'JSON to JSONL Conversion',
+ 371:                 text: 'Convert JSON arrays to JSON Lines format (JSONL). Each array element becomes a separate line of valid JSON. Perfect for streaming data and big data processing.',
+ 372:                 outputLabel: 'JSONL Output'
+ 373:             },
+ 374:             validate: {
+ 375:                 title: 'JSON Validation',
+ 376:                 text: 'Validate JSON syntax and structure. Shows detailed error messages with line and column numbers. Also provides statistics about your JSON structure.',
+ 377:                 outputLabel: 'Validation Result'
+ 378:             }
+ 379:         };
+ 380: 
+ 381:         // Example JSON
+ 382:         const exampleJSON = {
+ 383:             users: [
+ 384:                 {
+ 385:                     id: 1,
+ 386:                     name: "Alice Johnson",
+ 387:                     email: "alice@example.com",
+ 388:                     age: 28,
+ 389:                     active: true
+ 390:                 },
+ 391:                 {
+ 392:                     id: 2,
+ 393:                     name: "Bob Smith",
+ 394:                     email: "bob@example.com",
+ 395:                     age: 34,
+ 396:                     active: false
+ 397:                 },
+ 398:                 {
+ 399:                     id: 3,
+ 400:                     name: "Carol White",
+ 401:                     email: "carol@example.com",
+ 402:                     age: 31,
+ 403:                     active: true
+ 404:                 }
+ 405:             ],
+ 406:             metadata: {
+ 407:                 total: 3,
+ 408:                 page: 1,
+ 409:                 timestamp: "2024-01-15T10:30:00Z"
+ 410:             }
+ 411:         };
+ 412: 
+ 413:         // Mode switching
+ 414:         function setActiveTab(activeTab) {
+ 415:             modeTabs.forEach(tab => {
+ 416:                 const isActive = tab === activeTab;
+ 417:                 tab.classList.toggle('active', isActive);
+ 418:                 tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+ 419:                 tab.setAttribute('tabindex', isActive ? '0' : '-1');
+ 420:             });
+ 421:         }
+ 422: 
+ 423:         modeTabs.forEach(tab => {
+ 424:             tab.addEventListener('click', () => {
+ 425:                 setActiveTab(tab);
+ 426:                 currentMode = tab.dataset.mode;
+ 427:                 updateModeUI();
+ 428:             });
+ 429:         });
+ 430: 
+ 431:         modeTabs.forEach((tab, index) => {
+ 432:             tab.addEventListener('keydown', event => {
+ 433:                 if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+ 434:                     return;
+ 435:                 }
+ 436: 
+ 437:                 event.preventDefault();
+ 438:                 let nextIndex = index;
+ 439:                 if (event.key === 'ArrowRight') {
+ 440:                     nextIndex = (index + 1) % modeTabs.length;
+ 441:                 } else if (event.key === 'ArrowLeft') {
+ 442:                     nextIndex = (index - 1 + modeTabs.length) % modeTabs.length;
+ 443:                 } else if (event.key === 'Home') {
+ 444:                     nextIndex = 0;
+ 445:                 } else if (event.key === 'End') {
+ 446:                     nextIndex = modeTabs.length - 1;
+ 447:                 }
+ 448: 
+ 449:                 const nextTab = modeTabs[nextIndex];
+ 450:                 nextTab.focus();
+ 451:                 nextTab.click();
+ 452:             });
+ 453:         });
+ 454: 
+ 455:         function updateModeUI() {
+ 456:             const info = modeInfo[currentMode];
+ 457:             if (!info) {
+ 458:                 throw new Error(`Unknown mode: ${currentMode}`);
+ 459:             }
+ 460: 
+ 461:             infoTitle.textContent = info.title;
+ 462:             infoText.textContent = info.text;
+ 463:             outputLabel.textContent = info.outputLabel;
+ 464: 
+ 465:             // Show/hide options panel
+ 466:             optionsPanel.style.display = currentMode === 'format' ? 'block' : 'none';
+ 467: 
+ 468:             // Reset mode-scoped panels so old state is not shown after mode changes.
+ 469:             hideError();
+ 470:             hideStats();
+ 471: 
+ 472:             const processIcon = processBtn.querySelector('.material-icons');
+ 473:             if (currentMode === 'validate') {
+ 474:                 processIcon.textContent = 'check_circle';
+ 475:                 processLabel.textContent = 'Validate';
+ 476:             } else if (currentMode === 'jsonl') {
+ 477:                 processIcon.textContent = 'play_arrow';
+ 478:                 processLabel.textContent = 'Convert';
+ 479:             } else {
+ 480:                 processIcon.textContent = 'play_arrow';
+ 481:                 processLabel.textContent = 'Format';
+ 482:             }
+ 483:         }
+ 484: 
+ 485:         // JSON Processing Functions
+ 486:         function analyzeJSON(obj, depth = 0, stats = null) {
+ 487:             if (depth > MAX_RECURSION_DEPTH) {
+ 488:                 throw new Error(`JSON is nested too deeply to analyze (>${MAX_RECURSION_DEPTH} levels).`);
+ 489:             }
+ 490: 
+ 491:             if (!stats) {
+ 492:                 stats = { objects: 0, arrays: 0, keys: 0, maxDepth: 0 };
+ 493:             }
+ 494:             
+ 495:             stats.maxDepth = Math.max(stats.maxDepth, depth);
+ 496:             
+ 497:             if (Array.isArray(obj)) {
+ 498:                 stats.arrays++;
+ 499:                 obj.forEach(item => analyzeJSON(item, depth + 1, stats));
+ 500:             } else if (obj !== null && typeof obj === 'object') {
+ 501:                 stats.objects++;
+ 502:                 stats.keys += Object.keys(obj).length;
+ 503:                 Object.values(obj).forEach(value => analyzeJSON(value, depth + 1, stats));
+ 504:             }
+ 505:             
+ 506:             return stats;
+ 507:         }
+ 508: 
+ 509:         function displayStats(stats) {
+ 510:             statObjects.textContent = stats.objects;
+ 511:             statArrays.textContent = stats.arrays;
+ 512:             statKeys.textContent = stats.keys;
+ 513:             statDepth.textContent = stats.maxDepth;
+ 514:             statsPanel.style.display = 'grid';
+ 515:         }
+ 516: 
+ 517:         function hideStats() {
+ 518:             statsPanel.style.display = 'none';
+ 519:         }
+ 520: 
+ 521:         function sortObjectKeys(obj, depth = 0) {
+ 522:             if (depth > MAX_RECURSION_DEPTH) {
+ 523:                 throw new Error(`JSON is nested too deeply to sort (>${MAX_RECURSION_DEPTH} levels).`);
+ 524:             }
+ 525: 
+ 526:             if (Array.isArray(obj)) {
+ 527:                 return obj.map(item => sortObjectKeys(item, depth + 1));
+ 528:             } else if (obj !== null && typeof obj === 'object') {
+ 529:                 return Object.keys(obj)
+ 530:                     .sort()
+ 531:                     .reduce((sorted, key) => {
+ 532:                         sorted[key] = sortObjectKeys(obj[key], depth + 1);
+ 533:                         return sorted;
+ 534:                     }, {});
+ 535:             }
+ 536:             return obj;
+ 537:         }
+ 538: 
+ 539:         function formatJSON(input) {
+ 540:             const parsed = JSON.parse(input);
+ 541:             const shouldSort = sortKeysCheck.checked;
+ 542:             const indentValue = indentSelect.value;
+ 543:             
+ 544:             let obj = shouldSort ? sortObjectKeys(parsed, 0) : parsed;
+ 545:             let indent = indentValue === 'tab' ? '\t' : 
+ 546:                         indentValue === '0' ? 0 : 
+ 547:                         parseInt(indentValue);
+ 548:             
+ 549:             const stats = analyzeJSON(obj);
+ 550:             displayStats(stats);
+ 551:             
+ 552:             return JSON.stringify(obj, null, indent);
+ 553:         }
+ 554: 
+ 555:         function convertToJSONL(input) {
+ 556:             const parsed = JSON.parse(input);
+ 557:             
+ 558:             if (!Array.isArray(parsed)) {
+ 559:                 throw new Error('Input must be a JSON array for JSONL conversion. Wrap your object in square brackets [] if needed.');
+ 560:             }
+ 561:             
+ 562:             if (parsed.length === 0) {
+ 563:                 throw new Error('Array is empty. Cannot convert to JSONL.');
+ 564:             }
+ 565:             
+ 566:             const stats = analyzeJSON(parsed);
+ 567:             displayStats(stats);
+ 568:             
+ 569:             return parsed.map(item => JSON.stringify(item)).join('\n');
+ 570:         }
+ 571: 
+ 572:         function validateJSON(input) {
+ 573:             const parsed = JSON.parse(input);
+ 574:             const stats = analyzeJSON(parsed);
+ 575:             displayStats(stats);
+ 576:             
+ 577:             const type = parsed === null ? 'null' :
+ 578:                         Array.isArray(parsed) ? 'Array' :
+ 579:                         typeof parsed === 'object' ? 'Object' :
+ 580:                         typeof parsed;
+ 581:             
+ 582:             return `✓ Valid JSON\n\nType: ${type}\nObjects: ${stats.objects}\nArrays: ${stats.arrays}\nTotal Keys: ${stats.keys}\nMax Depth: ${stats.maxDepth}`;
+ 583:         }
+ 584: 
+ 585:         function showError(error, sourceText) {
+ 586:             errorPanel.classList.add('show');
+ 587:             errorPanel.setAttribute('aria-hidden', 'false');
+ 588:             
+ 589:             // Parse error message for better display
+ 590:             let message = error && error.message ? error.message : String(error);
+ 591:             let locationText = '';
+ 592: 
+ 593:             const ffLineColMatch = message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+ 594:             if (ffLineColMatch) {
+ 595:                 const line = Number(ffLineColMatch[1]);
+ 596:                 const col = Number(ffLineColMatch[2]);
+ 597:                 locationText = `Location: Line ${line}, Column ${col}`;
+ 598:             } else {
+ 599:                 const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
+ 600:                 if (posMatch && typeof sourceText === 'string') {
+ 601:                     const pos = Math.max(0, Math.min(sourceText.length, Number(posMatch[1])));
+ 602:                     const lines = sourceText.substring(0, pos).split('\n');
+ 603:                     const line = lines.length;
+ 604:                     const col = lines[lines.length - 1].length + 1;
+ 605:                     locationText = `Location: Line ${line}, Column ${col}`;
+ 606:                 }
+ 607:             }
+ 608: 
+ 609:             if (locationText && !message.includes(locationText)) {
+ 610:                 message += `\n\n${locationText}`;
+ 611:             }
+ 612:             
+ 613:             errorMessage.textContent = message;
+ 614:             hideStats();
+ 615:         }
+ 616: 
+ 617:         function hideError() {
+ 618:             errorPanel.classList.remove('show');
+ 619:             errorPanel.setAttribute('aria-hidden', 'true');
+ 620:         }
+ 621: 
+ 622:         function processJSON() {
+ 623:             const rawInput = inputText.value;
+ 624: 
+ 625:             if (rawInput.length > MAX_INPUT_CHARACTERS) {
+ 626:                 outputText.value = '';
+ 627:                 hideError();
+ 628:                 hideStats();
+ 629:                 updateStats();
+ 630:                 showStatus('Input too large (max 5MB).', 'error');
+ 631:                 return;
+ 632:             }
+ 633:             
+ 634:             if (!rawInput.trim()) {
+ 635:                 outputText.value = '';
+ 636:                 hideError();
+ 637:                 hideStats();
+ 638:                 updateStats();
+ 639:                 showStatus('Please enter some JSON to process', 'warning');
+ 640:                 return;
+ 641:             }
+ 642: 
+ 643:             hideError();
+ 644:             
+ 645:             try {
+ 646:                 const startTime = performance.now();
+ 647:                 const parseText = rawInput;
+ 648:                 let result;
+ 649:                 
+ 650:                 switch (currentMode) {
+ 651:                     case 'format':
+ 652:                         result = formatJSON(parseText);
+ 653:                         break;
+ 654:                     case 'jsonl':
+ 655:                         result = convertToJSONL(parseText);
+ 656:                         break;
+ 657:                     case 'validate':
+ 658:                         result = validateJSON(parseText);
+ 659:                         break;
+ 660:                     default:
+ 661:                         throw new Error(`Unknown mode: ${currentMode}`);
+ 662:                 }
+ 663:                 
+ 664:                 const endTime = performance.now();
+ 665:                 
+ 666:                 outputText.value = result;
+ 667:                 showStatus('Success!', 'success');
+ 668:                 processingTime.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
+ 669:                 updateStats();
+ 670:                 
+ 671:             } catch (error) {
+ 672:                 console.error('Processing error:', error);
+ 673:                 showError(error, rawInput);
+ 674:                 outputText.value = '';
+ 675:                 const errorMessageText = error && error.message ? error.message : String(error);
+ 676:                 showStatus('Error: ' + errorMessageText, 'error');
+ 677:                 processingTime.textContent = 'Processing failed';
+ 678:             }
+ 679:         }
+ 680: 
+ 681:         function loadExample() {
+ 682:             inputText.value = JSON.stringify(exampleJSON, null, 2);
+ 683:             updateStats();
+ 684:             showStatus('Example loaded', 'success');
+ 685:         }
+ 686: 
+ 687:         function clearAll() {
+ 688:             inputText.value = '';
+ 689:             outputText.value = '';
+ 690:             hideError();
+ 691:             hideStats();
+ 692:             updateStats();
+ 693:             showStatus('Cleared', 'success');
+ 694:         }
+ 695: 
+ 696:         async function copyToClipboard() {
+ 697:             const text = outputText.value;
+ 698:             if (!text) {
+ 699:                 showStatus('Nothing to copy', 'warning');
+ 700:                 return;
+ 701:             }
+ 702: 
+ 703:             try {
+ 704:                 if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+ 705:                     await window.textUtilsClipboardWrite(text);
+ 706:                     showStatus('Copied to clipboard!', 'success');
+ 707:                     return;
+ 708:                 }
+ 709: 
+ 710:                 outputText.focus();
+ 711:                 outputText.select();
+ 712:                 const copied = document.execCommand('copy');
+ 713:                 showStatus(copied ? 'Copied to clipboard!' : 'Copy failed', copied ? 'success' : 'error');
+ 714:             } catch {
+ 715:                 showStatus('Copy failed', 'error');
+ 716:             }
+ 717:         }
+ 718: 
+ 719:         function showStatus(message, type = 'success') {
+ 720:             statusMessage.textContent = message;
+ 721:             statusMessage.className = type;
+ 722:         }
+ 723: 
+ 724:         function updateStats() {
+ 725:             const inputLength = inputText.value.length;
+ 726:             const outputLength = outputText.value.length;
+ 727:             const inputLines = inputLength === 0 ? 0 : inputText.value.split('\n').length;
+ 728:             const outputLines = outputLength === 0 ? 0 : outputText.value.split('\n').length;
+ 729:             
+ 730:             inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
+ 731:             outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
+ 732:         }
+ 733: 
+ 734:         // Event Listeners
+ 735:         processBtn.addEventListener('click', processJSON);
+ 736:         copyBtn.addEventListener('click', copyToClipboard);
+ 737:         clearBtn.addEventListener('click', clearAll);
+ 738:         exampleBtn.addEventListener('click', loadExample);
+ 739:         backBtn.addEventListener('click', () => window.location.href = 'index.html');
+ 740: 
+ 741:         inputText.addEventListener('input', updateStats);
+ 742: 
+ 743:         // Keyboard shortcuts
+ 744:         inputText.addEventListener('keydown', (e) => {
+ 745:             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+ 746:                 e.preventDefault();
+ 747:                 processJSON();
+ 748:             }
+ 749:         });
+ 750: 
+ 751:         // Initialize
+ 752:         updateStats();
+ 753:         const initialTab = Array.from(modeTabs).find(tab => tab.dataset.mode === currentMode);
+ 754:         if (initialTab) {
+ 755:             setActiveTab(initialTab);
+ 756:         }
+ 757:         updateModeUI();
+ 758:     </script>
+ 759:     <footer class="site-footer">
+ 760:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 761:     </footer>
+ 762: </body>
+ 763: </html>
+```
+----- END FILE: json-tool.html -----
+
+----- BEGIN FILE: css/style.css -----
+```css
+   1: :root {
+   2:     --bg-primary: #121212;
+   3:     --bg-secondary: #1e1e1e;
+   4:     --bg-tertiary: #252525;
+   5:     --text-primary: #e0e0e0;
+   6:     --text-secondary: #a0a0a0;
+   7:     --border-color: #333;
+   8:     --accent: #0d9488;
+   9:     --accent-light: #14b8a6;
+  10:     --accent-rgb: 13, 148, 136;
+  11:     --control-icon-filter: invert(1) brightness(1.25);
+  12:     --success: #059669;
+  13:     --warning: #d97706;
+  14:     --error: #dc2626;
+  15:     color-scheme: dark;
+  16: }
+  17: 
+  18: [data-theme="light"] {
+  19:     --bg-primary: #ffffff;
+  20:     --bg-secondary: #f8fafc;
+  21:     --bg-tertiary: #f1f5f9;
+  22:     --text-primary: #1e293b;
+  23:     --text-secondary: #64748b;
+  24:     --border-color: #e2e8f0;
+  25:     --control-icon-filter: none;
+  26:     color-scheme: light;
+  27: }
+  28: 
+  29: * {
+  30:     margin: 0;
+  31:     padding: 0;
+  32:     box-sizing: border-box;
+  33: }
+  34: 
+  35: body {
+  36:     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  37:     background: var(--bg-primary);
+  38:     color: var(--text-primary);
+  39:     line-height: 1.5;
+  40:     min-height: 100vh;
+  41: }
+  42: 
+  43: .container {
+  44:     width: 100%;
+  45:     max-width: none;
+  46:     margin: 0 auto;
+  47:     padding: 1rem 1.5rem;
+  48: }
+  49: 
+  50: /* Header */
+  51: header {
+  52:     display: flex;
+  53:     justify-content: space-between;
+  54:     align-items: center;
+  55:     padding: 1rem 0;
+  56:     border-bottom: 1px solid var(--border-color);
+  57:     margin-bottom: 2rem;
+  58:     position: relative;
+  59: }
+  60: 
+  61: .logo {
+  62:     display: flex;
+  63:     align-items: center;
+  64:     gap: 0.5rem;
+  65:     font-size: 1.5rem;
+  66:     font-weight: 600;
+  67: }
+  68: 
+  69: .logo span {
+  70:     color: var(--accent);
+  71: }
+  72: 
+  73: .controls {
+  74:     display: flex;
+  75:     gap: 1rem;
+  76:     align-items: center;
+  77: }
+  78: 
+  79: .site-network {
+  80:     position: absolute;
+  81:     left: 50%;
+  82:     transform: translateX(-50%);
+  83:     display: flex;
+  84:     flex-direction: column;
+  85:     gap: 0.25rem;
+  86:     align-items: flex-start;
+  87: }
+  88: 
+  89: .site-network-link {
+  90:     color: var(--text-secondary);
+  91:     text-decoration: none;
+  92:     font-size: 0.9rem;
+  93:     display: inline-flex;
+  94:     align-items: center;
+  95:     gap: 0.25rem;
+  96:     line-height: 1.2;
+  97: }
+  98: 
+  99: .site-network-link .material-icons {
+ 100:     font-size: 1rem;
+ 101: }
+ 102: 
+ 103: .site-network-icon {
+ 104:     width: 1rem;
+ 105:     height: 1rem;
+ 106:     object-fit: contain;
+ 107:     flex: 0 0 auto;
+ 108: }
+ 109: 
+ 110: .site-network-link:hover {
+ 111:     color: var(--accent);
+ 112: }
+ 113: 
+ 114: .accent-selector {
+ 115:     display: flex;
+ 116:     align-items: center;
+ 117:     gap: 0.5rem;
+ 118: }
+ 119: 
+ 120: .color-dropdown {
+ 121:     padding: 0.25rem 0.5rem;
+ 122:     background: var(--bg-secondary);
+ 123:     border: 1px solid var(--border-color);
+ 124:     border-radius: 4px;
+ 125:     color: var(--text-primary);
+ 126:     cursor: pointer;
+ 127: }
+ 128: 
+ 129: /* Main Layout */
+ 130: .main-grid {
+ 131:     display: block;
+ 132:     min-height: calc(100vh - 120px);
+ 133: }
+ 134: 
+ 135: /* Sidebar */
+ 136: .sidebar {
+ 137:     background: var(--bg-secondary);
+ 138:     border-radius: 8px;
+ 139:     padding: 1rem;
+ 140:     height: fit-content;
+ 141:     position: sticky;
+ 142:     top: 1rem;
+ 143: }
+ 144: 
+ 145: .search-box {
+ 146:     margin-bottom: 1.5rem;
+ 147: }
+ 148: 
+ 149: .search-box input {
+ 150:     width: 100%;
+ 151:     padding: 0.5rem;
+ 152:     background: var(--bg-tertiary);
+ 153:     border: 1px solid var(--border-color);
+ 154:     border-radius: 4px;
+ 155:     color: var(--text-primary);
+ 156: }
+ 157: 
+ 158: .categories {
+ 159:     display: flex;
+ 160:     flex-direction: column;
+ 161:     gap: 0.5rem;
+ 162: }
+ 163: 
+ 164: .category {
+ 165:     padding: 0.75rem;
+ 166:     border-radius: 4px;
+ 167:     cursor: pointer;
+ 168:     transition: background 0.2s;
+ 169:     display: flex;
+ 170:     align-items: center;
+ 171:     gap: 0.5rem;
+ 172: }
+ 173: 
+ 174: .category:hover {
+ 175:     background: var(--bg-tertiary);
+ 176: }
+ 177: 
+ 178: .category.active {
+ 179:     background: var(--accent);
+ 180:     color: white;
+ 181: }
+ 182: 
+ 183: .recent-tools {
+ 184:     margin-top: 2rem;
+ 185:     padding-top: 1rem;
+ 186:     border-top: 1px solid var(--border-color);
+ 187: }
+ 188: 
+ 189: .recent-tools h4 {
+ 190:     margin-bottom: 0.5rem;
+ 191:     color: var(--text-secondary);
+ 192:     font-size: 0.875rem;
+ 193: }
+ 194: 
+ 195: .tool-chip {
+ 196:     display: inline-block;
+ 197:     background: var(--bg-tertiary);
+ 198:     padding: 0.25rem 0.5rem;
+ 199:     border-radius: 4px;
+ 200:     margin: 0.125rem;
+ 201:     font-size: 0.75rem;
+ 202:     cursor: pointer;
+ 203: }
+ 204: 
+ 205: /* Tool Container */
+ 206: .tool-container {
+ 207:     background: var(--bg-secondary);
+ 208:     border-radius: 8px;
+ 209:     padding: 1.5rem;
+ 210: }
+ 211: 
+ 212: .tool-header {
+ 213:     display: flex;
+ 214:     justify-content: space-between;
+ 215:     align-items: center;
+ 216:     margin-bottom: 1.5rem;
+ 217: }
+ 218: 
+ 219: .tool-title {
+ 220:     display: flex;
+ 221:     align-items: center;
+ 222:     gap: 0.5rem;
+ 223:     font-size: 1.25rem;
+ 224: }
+ 225: 
+ 226: .tool-description {
+ 227:     color: var(--text-secondary);
+ 228:     margin-bottom: 1.5rem;
+ 229:     font-size: 0.95rem;
+ 230: }
+ 231: 
+ 232: .tool-actions {
+ 233:     display: flex;
+ 234:     gap: 0.5rem;
+ 235: }
+ 236: 
+ 237: .btn {
+ 238:     padding: 0.5rem 1rem;
+ 239:     border: none;
+ 240:     border-radius: 4px;
+ 241:     cursor: pointer;
+ 242:     display: inline-flex;
+ 243:     align-items: center;
+ 244:     gap: 0.5rem;
+ 245:     font-size: 0.875rem;
+ 246:     transition: all 0.2s;
+ 247: }
+ 248: 
+ 249: .btn-compact {
+ 250:     padding: 0.35rem 0.75rem;
+ 251:     font-size: 0.85rem;
+ 252: }
+ 253: 
+ 254: .btn-primary {
+ 255:     background: var(--accent);
+ 256:     color: white;
+ 257: }
+ 258: 
+ 259: .btn-secondary {
+ 260:     background: var(--bg-tertiary);
+ 261:     color: var(--text-primary);
+ 262: }
+ 263: 
+ 264: .btn:hover {
+ 265:     transform: translateY(-1px);
+ 266:     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+ 267: }
+ 268: 
+ 269: .btn:disabled {
+ 270:     opacity: 0.55;
+ 271:     cursor: not-allowed;
+ 272: }
+ 273: 
+ 274: .btn:disabled:hover {
+ 275:     transform: none;
+ 276:     box-shadow: none;
+ 277: }
+ 278: 
+ 279: /* Tool I/O */
+ 280: .io-container {
+ 281:     display: grid;
+ 282:     grid-template-columns: 1fr 1fr;
+ 283:     gap: 1rem;
+ 284:     margin-bottom: 1rem;
+ 285: }
+ 286: 
+ 287: @media (max-width: 768px) {
+ 288:     .io-container {
+ 289:         grid-template-columns: 1fr;
+ 290:     }
+ 291: }
+ 292: 
+ 293: .io-panel {
+ 294:     display: flex;
+ 295:     flex-direction: column;
+ 296:     gap: 0.5rem;
+ 297: }
+ 298: 
+ 299: .io-label {
+ 300:     display: flex;
+ 301:     justify-content: space-between;
+ 302:     align-items: center;
+ 303:     font-size: 0.875rem;
+ 304:     color: var(--text-secondary);
+ 305: }
+ 306: 
+ 307: .stats {
+ 308:     font-size: 0.75rem;
+ 309: }
+ 310: 
+ 311: textarea {
+ 312:     width: 100%;
+ 313:     min-height: 300px;
+ 314:     padding: 1rem;
+ 315:     background: var(--bg-tertiary);
+ 316:     border: 1px solid var(--border-color);
+ 317:     border-radius: 4px;
+ 318:     color: var(--text-primary);
+ 319:     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+ 320:     font-size: 0.875rem;
+ 321:     line-height: 1.4;
+ 322:     resize: vertical;
+ 323: }
+ 324: 
+ 325: textarea:focus {
+ 326:     outline: none;
+ 327:     border-color: var(--accent);
+ 328: }
+ 329: 
+ 330: button:focus-visible,
+ 331: select:focus-visible,
+ 332: input:focus-visible,
+ 333: textarea:focus-visible {
+ 334:     outline: 2px solid var(--accent);
+ 335:     outline-offset: 2px;
+ 336: }
+ 337: 
+ 338: .output {
+ 339:     background: var(--bg-primary);
+ 340: }
+ 341: 
+ 342: /* Options Panel */
+ 343: .options-panel {
+ 344:     background: var(--bg-tertiary);
+ 345:     border-radius: 4px;
+ 346:     padding: 1rem;
+ 347:     margin-bottom: 1rem;
+ 348: }
+ 349: 
+ 350: .options-grid {
+ 351:     display: grid;
+ 352:     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+ 353:     gap: 1rem;
+ 354: }
+ 355: 
+ 356: .option-group {
+ 357:     display: flex;
+ 358:     flex-direction: column;
+ 359:     gap: 0.5rem;
+ 360: }
+ 361: 
+ 362: .option-group label {
+ 363:     font-size: 0.875rem;
+ 364:     color: var(--text-secondary);
+ 365: }
+ 366: 
+ 367: select,
+ 368: input[type="range"],
+ 369: input[type="checkbox"],
+ 370: input[type="radio"],
+ 371: input[type="text"],
+ 372: input[type="number"],
+ 373: input[type="search"],
+ 374: input[type="email"],
+ 375: input[type="url"],
+ 376: input[type="tel"],
+ 377: input[type="password"],
+ 378: input[type="date"],
+ 379: input[type="time"],
+ 380: input[type="datetime-local"],
+ 381: input[type="month"],
+ 382: input[type="week"] {
+ 383:     padding: 0.25rem 0.5rem;
+ 384:     background: var(--bg-secondary);
+ 385:     border: 1px solid var(--border-color);
+ 386:     border-radius: 4px;
+ 387:     color: var(--text-primary);
+ 388: }
+ 389: 
+ 390: select,
+ 391: input,
+ 392: textarea,
+ 393: button {
+ 394:     font: inherit;
+ 395: }
+ 396: 
+ 397: input[type="text"]::placeholder,
+ 398: input[type="number"]::placeholder,
+ 399: input[type="search"]::placeholder,
+ 400: input[type="email"]::placeholder,
+ 401: input[type="url"]::placeholder,
+ 402: input[type="tel"]::placeholder,
+ 403: input[type="password"]::placeholder,
+ 404: textarea::placeholder {
+ 405:     color: var(--text-secondary);
+ 406:     opacity: 1;
+ 407: }
+ 408: 
+ 409: select:disabled,
+ 410: input:disabled,
+ 411: textarea:disabled {
+ 412:     opacity: 0.65;
+ 413:     cursor: not-allowed;
+ 414: }
+ 415: 
+ 416: input[type="color"] {
+ 417:     background: var(--bg-secondary);
+ 418:     border: 1px solid var(--border-color);
+ 419:     border-radius: 4px;
+ 420:     color: var(--text-primary);
+ 421: }
+ 422: 
+ 423: input[type="color"]::-webkit-color-swatch-wrapper {
+ 424:     padding: 0;
+ 425: }
+ 426: 
+ 427: input[type="color"]::-webkit-color-swatch {
+ 428:     border: 1px solid var(--border-color);
+ 429:     border-radius: 3px;
+ 430: }
+ 431: 
+ 432: input[type="color"]::-moz-color-swatch {
+ 433:     border: 1px solid var(--border-color);
+ 434:     border-radius: 3px;
+ 435: }
+ 436: 
+ 437: input[type="date"]::-webkit-calendar-picker-indicator,
+ 438: input[type="time"]::-webkit-calendar-picker-indicator,
+ 439: input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+ 440: input[type="month"]::-webkit-calendar-picker-indicator,
+ 441: input[type="week"]::-webkit-calendar-picker-indicator,
+ 442: input[type="search"]::-webkit-search-cancel-button,
+ 443: input[type="number"]::-webkit-inner-spin-button,
+ 444: input[type="number"]::-webkit-outer-spin-button {
+ 445:     filter: var(--control-icon-filter);
+ 446: }
+ 447: 
+ 448: input[type="date"]::-webkit-calendar-picker-indicator,
+ 449: input[type="time"]::-webkit-calendar-picker-indicator,
+ 450: input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+ 451: input[type="month"]::-webkit-calendar-picker-indicator,
+ 452: input[type="week"]::-webkit-calendar-picker-indicator,
+ 453: input[type="search"]::-webkit-search-cancel-button {
+ 454:     cursor: pointer;
+ 455: }
+ 456: 
+ 457: input:-webkit-autofill,
+ 458: input:-webkit-autofill:hover,
+ 459: input:-webkit-autofill:focus,
+ 460: textarea:-webkit-autofill,
+ 461: textarea:-webkit-autofill:hover,
+ 462: textarea:-webkit-autofill:focus,
+ 463: select:-webkit-autofill,
+ 464: select:-webkit-autofill:hover,
+ 465: select:-webkit-autofill:focus {
+ 466:     -webkit-text-fill-color: var(--text-primary);
+ 467:     box-shadow: 0 0 0 1000px var(--bg-secondary) inset;
+ 468:     border: 1px solid var(--border-color);
+ 469:     transition: background-color 9999s ease-in-out 0s;
+ 470: }
+ 471: 
+ 472: input[type="checkbox"], input[type="radio"] {
+ 473:     width: auto;
+ 474:     cursor: pointer;
+ 475: }
+ 476: 
+ 477: /* Status Bar */
+ 478: .status-bar {
+ 479:     display: flex;
+ 480:     justify-content: space-between;
+ 481:     align-items: center;
+ 482:     padding-top: 1rem;
+ 483:     border-top: 1px solid var(--border-color);
+ 484:     font-size: 0.75rem;
+ 485:     color: var(--text-secondary);
+ 486: }
+ 487: 
+ 488: /* Tool Cards (for homepage) */
+ 489: .tool-grid {
+ 490:     display: grid;
+ 491:     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+ 492:     gap: 1rem;
+ 493:     margin-top: 1rem;
+ 494: }
+ 495: 
+ 496: .tool-card {
+ 497:     display: block;
+ 498:     background: var(--bg-tertiary);
+ 499:     border-radius: 8px;
+ 500:     padding: 1.5rem;
+ 501:     cursor: pointer;
+ 502:     transition: all 0.2s;
+ 503:     border: 1px solid transparent;
+ 504:     color: inherit;
+ 505:     text-decoration: none;
+ 506: }
+ 507: 
+ 508: .tool-card:hover {
+ 509:     border-color: var(--accent);
+ 510:     transform: translateY(-2px);
+ 511: }
+ 512: 
+ 513: .tool-icon {
+ 514:     width: 40px;
+ 515:     height: 40px;
+ 516:     background: var(--accent);
+ 517:     border-radius: 8px;
+ 518:     display: flex;
+ 519:     align-items: center;
+ 520:     justify-content: center;
+ 521:     margin-bottom: 1rem;
+ 522:     color: white;
+ 523: }
+ 524: 
+ 525: .tool-card h3 {
+ 526:     margin-bottom: 0.5rem;
+ 527: }
+ 528: 
+ 529: .tool-card p {
+ 530:     font-size: 0.875rem;
+ 531:     color: var(--text-secondary);
+ 532: }
+ 533: 
+ 534: .site-footer {
+ 535:     margin-top: 2rem;
+ 536:     padding: 1.5rem 0;
+ 537:     border-top: 1px solid var(--border-color);
+ 538:     text-align: center;
+ 539:     color: var(--text-secondary);
+ 540:     line-height: 1.5;
+ 541:     font-size: 0.95rem;
+ 542: }
+ 543: 
+ 544: .site-footer p {
+ 545:     margin: 0;
+ 546:     text-align: center;
+ 547: }
+ 548: 
+ 549: 
+ 550: .hidden {
+ 551:     display: none !important;
+ 552: }
+ 553: 
+ 554: .visually-hidden,
+ 555: .sr-only {
+ 556:     position: absolute;
+ 557:     width: 1px;
+ 558:     height: 1px;
+ 559:     padding: 0;
+ 560:     margin: -1px;
+ 561:     overflow: hidden;
+ 562:     clip: rect(0, 0, 0, 0);
+ 563:     white-space: nowrap;
+ 564:     border: 0;
+ 565: }
+ 566: 
+ 567: .pill {
+ 568:     padding: 0.35rem 0.75rem;
+ 569:     border-radius: 999px;
+ 570:     border: 1px solid var(--accent);
+ 571:     background: var(--bg-tertiary);
+ 572:     color: var(--text-primary);
+ 573:     font-size: 0.85rem;
+ 574:     display: inline-flex;
+ 575:     align-items: center;
+ 576:     gap: 0.25rem;
+ 577: }
+ 578: 
+ 579: .pill.muted {
+ 580:     border-color: var(--border-color);
+ 581:     color: var(--text-secondary);
+ 582: }
+ 583: 
+ 584: .success {
+ 585:     color: var(--success);
+ 586: }
+ 587: 
+ 588: .warning {
+ 589:     color: var(--warning);
+ 590: }
+ 591: 
+ 592: .error {
+ 593:     color: var(--error);
+ 594: }
+ 595: 
+ 596: /* Responsive */
+ 597: @media (max-width: 768px) {
+ 598:     .main-grid {
+ 599:         grid-template-columns: 1fr;
+ 600:     }
+ 601:     
+ 602:     .sidebar {
+ 603:         position: static;
+ 604:     }
+ 605:     
+ 606:     .tool-header {
+ 607:         flex-direction: column;
+ 608:         gap: 1rem;
+ 609:         align-items: flex-start;
+ 610:     }
+ 611: 
+ 612:     .site-network {
+ 613:         position: static;
+ 614:         transform: none;
+ 615:         order: 3;
+ 616:         width: 100%;
+ 617:         margin-top: 1rem;
+ 618:         display: flex;
+ 619:         flex-direction: column;
+ 620:         gap: 0.35rem;
+ 621:         justify-content: center;
+ 622:         align-items: center;
+ 623:     }
+ 624: 
+ 625:     header {
+ 626:         flex-wrap: wrap;
+ 627:     }
+ 628: }
+ 629: 
+ 630: @media (prefers-reduced-motion: reduce) {
+ 631:     * {
+ 632:         transition: none !important;
+ 633:         animation: none !important;
+ 634:     }
+ 635: 
+ 636:     .btn:hover {
+ 637:         transform: none !important;
+ 638:         box-shadow: none !important;
+ 639:     }
+ 640: }
+```
+----- END FILE: css/style.css -----
+
+----- BEGIN FILE: index.html -----
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en">
+   3: <head>
+   4: <!-- Google tag gtag.js -->
+   5: <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+   6: <script>
+   7:   window.dataLayer = window.dataLayer || [];
+   8:   function gtag(){dataLayer.push(arguments);}
+   9:   gtag('js', new Date());
+  10: 
+  11:   gtag('config', 'G-0V2F0V7FWB');
+  12: </script>
+  13:     <meta charset="UTF-8">
+  14:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  15:     <title>Text Utilities</title>
+  16:     <script>
+  17:         (function () {
+  18:             try {
+  19:                 const storedTheme = localStorage.getItem('theme');
+  20:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  21:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+  22:                     ? storedTheme
+  23:                     : (prefersLight ? 'light' : 'dark');
+  24:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
+  25: 
+  26:                 const storedAccent = localStorage.getItem('accentColor');
+  27:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+  28:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+  29:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+  30:                 }
+  31: 
+  32:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+  33:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
+  34:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
+  35:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+  36:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
+  37:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+  38:                 }
+  39:             } catch (_) {
+  40:                 document.documentElement.setAttribute('data-theme', 'dark');
+  41:             }
+  42:         })();
+  43:     </script>
+  44:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  45:     <link rel="stylesheet" href="css/style.css">
+  46: </head>
+  47: <body>
+  48:     <div class="container">
+  49:         <header>
+  50:             <div class="logo">
+  51:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  52:                     <span>Text Utilities</span>
+  53:                 </a>
+  54:             </div>
+  55:             <nav class="site-network" aria-label="Network sites">
+  56:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  57:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+  58:                     <span>Chess Nerd</span>
+  59:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  60:                 </a>
+  61:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  62:                     <img src="img/github.png" class="site-network-icon" alt="">
+  63:                     <span>GitHub</span>
+  64:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  65:                 </a>
+  66:             </nav>
+  67:             <div class="controls">
+  68:                 <div class="accent-selector">
+  69:                     <span class="material-icons">palette</span>
+  70:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+  71:                 </div>
+  72:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+  73:                     <span class="material-icons">dark_mode</span>
+  74:                 </button>
+  75:             </div>
+  76:         </header>
+  77: 
+  78:         <main>
+  79:             <div id="homeView">
+  80:                 <div class="tool-grid" id="toolGrid"></div>
+  81:             </div>
+  82:         </main>
+  83:     </div>
+  84: 
+  85:     <script src="js/theme.js"></script>
+  86:     <script>
+  87: const tools = [
+  88:     { id: 'case-converter', name: 'Case Converter', icon: 'text_format', category: 'text', description: 'Convert text between different cases' },
+  89:     { id: 'text-info', name: 'Text Info', icon: 'analytics', category: 'text', description: 'Detailed statistics and readability scores for text' },
+  90:     { id: 'line-operations', name: 'Line Operations', icon: 'reorder', category: 'text', description: 'Sort, filter, and manipulate lines of text' },
+  91:     { id: 'find-replace', name: 'Find & Replace', icon: 'find_replace', category: 'text', description: 'Search and replace text with regex support' },
+  92:     { id: 'font-chooser', name: 'Font Chooser', icon: 'text_fields', category: 'text', description: 'Preview fonts, check contrast, and generate CSS snippets' },
+  93:     { id: 'ip-info', name: 'IP Info', icon: 'language', category: 'data', description: 'Public IP, provider, location, and device diagnostics' },
+  94:     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
+  95:     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
+  96:     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
+  97:     { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
+  98:     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
+  99:     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
+ 100:     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
+ 101:     { id: 'json-tool', name: 'JSON Tool', icon: 'data_object', category: 'data', description: 'Format, validate, and convert JSON to JSONL format' },
+ 102:     { id: 'sitemap-generator', name: 'XML Sitemap Generator', icon: 'schema', category: 'data', description: 'Crawl (with optional CORS proxy) and build sitemap.xml' }
+ 103: ];
+ 104: 
+ 105: const toolGrid = document.getElementById('toolGrid');
+ 106: 
+ 107: function renderToolGrid(filter = '', category = 'all') {
+ 108:     toolGrid.innerHTML = '';
+ 109:     const filteredTools = [...tools]
+ 110:         .sort((a, b) => a.name.localeCompare(b.name))
+ 111:         .filter(tool => {
+ 112:         const matchesSearch = tool.name.toLowerCase().includes(filter.toLowerCase()) || tool.description.toLowerCase().includes(filter.toLowerCase());
+ 113:         const matchesCategory = category === 'all' || tool.category === category;
+ 114:         return matchesSearch && matchesCategory;
+ 115:     });
+ 116:     
+ 117:     filteredTools.forEach(tool => {
+ 118:         const card = document.createElement('a');
+ 119:         card.className = 'tool-card';
+ 120:         card.href = `${tool.id}.html`;
+ 121:         card.setAttribute('aria-label', `${tool.name} tool`);
+ 122: 
+ 123:         const iconContainer = document.createElement('div');
+ 124:         iconContainer.className = 'tool-icon';
+ 125:         const icon = document.createElement('span');
+ 126:         icon.className = 'material-icons';
+ 127:         icon.textContent = tool.icon;
+ 128:         iconContainer.appendChild(icon);
+ 129: 
+ 130:         const title = document.createElement('h3');
+ 131:         title.textContent = tool.name;
+ 132: 
+ 133:         const description = document.createElement('p');
+ 134:         description.textContent = tool.description;
+ 135: 
+ 136:         card.appendChild(iconContainer);
+ 137:         card.appendChild(title);
+ 138:         card.appendChild(description);
+ 139:         toolGrid.appendChild(card);
+ 140:     });
+ 141:     
+ 142:     if (filteredTools.length === 0) {
+ 143:         const emptyState = document.createElement('p');
+ 144:         emptyState.textContent = 'No tools found';
+ 145:         emptyState.style.gridColumn = '1 / -1';
+ 146:         emptyState.style.textAlign = 'center';
+ 147:         emptyState.style.color = 'var(--text-secondary)';
+ 148:         toolGrid.appendChild(emptyState);
+ 149:     }
+ 150: }
+ 151: 
+ 152: // No search input or filters on this page; always show all tools
+ 153: 
+ 154: renderToolGrid();
+ 155:     </script>
+ 156:     <footer class="site-footer">
+ 157:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 158:     </footer>
+ 159: </body>
+ 160: </html>
+```
+----- END FILE: index.html -----
+
+----- BEGIN FILE: js/theme.js -----
+```javascript
+   1: // Theme and accent color management
+   2: var textUtilsStorage = window.__textUtilsStorage || {
+   3:     get(key) {
+   4:         try {
+   5:             return localStorage.getItem(key);
+   6:         } catch (_) {
+   7:             return null;
+   8:         }
+   9:     },
+  10:     set(key, value) {
+  11:         try {
+  12:             localStorage.setItem(key, value);
+  13:         } catch (_) {
+  14:             // Ignore storage write failures (private mode / quota).
+  15:         }
+  16:     },
+  17:     remove(key) {
+  18:         try {
+  19:             localStorage.removeItem(key);
+  20:         } catch (_) {
+  21:             // Ignore storage removal failures.
+  22:         }
+  23:     }
+  24: };
+  25: window.__textUtilsStorage = textUtilsStorage;
+  26: 
+  27: if (typeof window.textUtilsClipboardWrite !== 'function') {
+  28:     window.textUtilsClipboardWrite = async function textUtilsClipboardWrite(value) {
+  29:         const text = String(value ?? '');
+  30: 
+  31:         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+  32:             return navigator.clipboard.writeText(text);
+  33:         }
+  34: 
+  35:         const textarea = document.createElement('textarea');
+  36:         textarea.value = text;
+  37:         textarea.setAttribute('readonly', '');
+  38:         textarea.setAttribute('aria-hidden', 'true');
+  39:         textarea.style.position = 'fixed';
+  40:         textarea.style.top = '0';
+  41:         textarea.style.left = '-9999px';
+  42:         textarea.style.opacity = '0';
+  43: 
+  44:         const previousActive = document.activeElement;
+  45: 
+  46:         document.body.appendChild(textarea);
+  47:         textarea.focus();
+  48:         textarea.select();
+  49:         textarea.setSelectionRange(0, textarea.value.length);
+  50: 
+  51:         let copied = false;
+  52:         try {
+  53:             copied = typeof document.execCommand === 'function'
+  54:                 && document.execCommand('copy');
+  55:         } finally {
+  56:             textarea.remove();
+  57:             if (previousActive && typeof previousActive.focus === 'function') {
+  58:                 previousActive.focus();
+  59:             }
+  60:         }
+  61: 
+  62:         if (!copied) {
+  63:             throw new Error('Clipboard copy unavailable');
+  64:         }
+  65:     };
+  66: }
+  67: 
+  68: (function() {
+  69:     'use strict';
+  70: 
+  71:     if (window.__textUtilsThemeModuleLoaded) {
+  72:         return;
+  73:     }
+  74:     window.__textUtilsThemeModuleLoaded = true;
+  75: 
+  76:     const ACCENT_PALETTE = [
+  77:         { value: '#0d9488', label: 'Teal' },
+  78:         { value: '#3b82f6', label: 'Blue' },
+  79:         { value: '#8b5cf6', label: 'Purple' },
+  80:         { value: '#10b981', label: 'Emerald' },
+  81:         { value: '#f59e0b', label: 'Amber' },
+  82:         { value: '#ef4444', label: 'Red' },
+  83:         { value: '#ec4899', label: 'Soft Pink' },
+  84:         { value: '#fb7185', label: 'Coral' },
+  85:         { value: '#5f9ea0', label: 'Cadet Blue' },
+  86:         { value: '#6495ed', label: 'Cornflower' },
+  87:         { value: '#deb887', label: 'Burlywood' },
+  88:         { value: '#60a5fa', label: 'Sky Blue' },
+  89:         { value: '#7c3aed', label: 'Violet' }
+  90:     ];
+  91:     const DEFAULT_ACCENT = '#0d9488';
+  92: 
+  93:     let themeToggle = null;
+  94:     let accentColor = null;
+  95: 
+  96:     function captureControls() {
+  97:         themeToggle = document.getElementById('themeToggle');
+  98:         accentColor = document.getElementById('accentColor');
+  99: 
+ 100:         if (themeToggle) {
+ 101:             themeToggle.type = 'button';
+ 102:         }
+ 103: 
+ 104:         if (accentColor && !accentColor.getAttribute('aria-label')) {
+ 105:             accentColor.setAttribute('aria-label', 'Accent color');
+ 106:         }
+ 107:     }
+ 108: 
+ 109:     function normalizeHexColor(color) {
+ 110:         if (typeof color !== 'string') {
+ 111:             return DEFAULT_ACCENT;
+ 112:         }
+ 113: 
+ 114:         let candidate = color.trim().toLowerCase();
+ 115:         if (/^#[0-9a-f]{3}$/.test(candidate)) {
+ 116:             candidate = `#${candidate[1]}${candidate[1]}${candidate[2]}${candidate[2]}${candidate[3]}${candidate[3]}`;
+ 117:         }
+ 118: 
+ 119:         if (/^#[0-9a-f]{6}$/.test(candidate)) {
+ 120:             return candidate;
+ 121:         }
+ 122: 
+ 123:         return DEFAULT_ACCENT;
+ 124:     }
+ 125: 
+ 126:     function hexToRgbTuple(hex) {
+ 127:         const normalized = normalizeHexColor(hex).slice(1);
+ 128:         const red = parseInt(normalized.slice(0, 2), 16);
+ 129:         const green = parseInt(normalized.slice(2, 4), 16);
+ 130:         const blue = parseInt(normalized.slice(4, 6), 16);
+ 131:         return `${red}, ${green}, ${blue}`;
+ 132:     }
+ 133: 
+ 134:     function adjustColor(color, amount) {
+ 135:         const normalized = normalizeHexColor(color).slice(1);
+ 136:         const parsed = parseInt(normalized, 16);
+ 137: 
+ 138:         if (Number.isNaN(parsed)) {
+ 139:             return DEFAULT_ACCENT;
+ 140:         }
+ 141: 
+ 142:         let red = ((parsed >> 16) & 0xFF) + amount;
+ 143:         let green = ((parsed >> 8) & 0xFF) + amount;
+ 144:         let blue = (parsed & 0xFF) + amount;
+ 145: 
+ 146:         red = Math.min(Math.max(0, red), 255);
+ 147:         green = Math.min(Math.max(0, green), 255);
+ 148:         blue = Math.min(Math.max(0, blue), 255);
+ 149: 
+ 150:         return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, '0')}`;
+ 151:     }
+ 152: 
+ 153:     function applyAccent(color) {
+ 154:         const normalized = normalizeHexColor(color);
+ 155:         document.documentElement.style.setProperty('--accent', normalized);
+ 156:         document.documentElement.style.setProperty('--accent-light', adjustColor(normalized, 20));
+ 157:         document.documentElement.style.setProperty('--accent-rgb', hexToRgbTuple(normalized));
+ 158:         return normalized;
+ 159:     }
+ 160: 
+ 161:     function ensureAccentOptionExists(value) {
+ 162:         if (!accentColor) {
+ 163:             return;
+ 164:         }
+ 165: 
+ 166:         const normalized = normalizeHexColor(value);
+ 167:         if (accentColor.querySelector(`option[value="${normalized}"]`)) {
+ 168:             return;
+ 169:         }
+ 170: 
+ 171:         const customOption = document.createElement('option');
+ 172:         customOption.value = normalized;
+ 173:         customOption.textContent = `Custom (${normalized})`;
+ 174:         accentColor.appendChild(customOption);
+ 175:     }
+ 176: 
+ 177:     function populateAccentDropdown(selectedColor) {
+ 178:         if (!accentColor) {
+ 179:             return;
+ 180:         }
+ 181: 
+ 182:         accentColor.replaceChildren();
+ 183: 
+ 184:         ACCENT_PALETTE.forEach(({ value, label }) => {
+ 185:             const option = document.createElement('option');
+ 186:             option.value = value;
+ 187:             option.textContent = label;
+ 188:             accentColor.appendChild(option);
+ 189:         });
+ 190: 
+ 191:         const normalizedSelected = normalizeHexColor(selectedColor);
+ 192:         const hasSavedColor = ACCENT_PALETTE.some(
+ 193:             ({ value }) => value.toLowerCase() === normalizedSelected
+ 194:         );
+ 195: 
+ 196:         if (!hasSavedColor) {
+ 197:             ensureAccentOptionExists(normalizedSelected);
+ 198:         }
+ 199: 
+ 200:         accentColor.value = normalizedSelected;
+ 201:     }
+ 202: 
+ 203:     function updateThemeToggleIcon(theme) {
+ 204:         if (!themeToggle) {
+ 205:             return;
+ 206:         }
+ 207: 
+ 208:         const icon = document.createElement('span');
+ 209:         icon.className = 'material-icons';
+ 210:         icon.setAttribute('aria-hidden', 'true');
+ 211:         icon.textContent = theme === 'dark' ? 'dark_mode' : 'light_mode';
+ 212: 
+ 213:         themeToggle.replaceChildren(icon);
+ 214: 
+ 215:         const isDark = theme === 'dark';
+ 216:         themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+ 217:         themeToggle.setAttribute('title', isDark ? 'Dark mode' : 'Light mode');
+ 218:         themeToggle.setAttribute(
+ 219:             'aria-label',
+ 220:             isDark ? 'Switch to light theme' : 'Switch to dark theme'
+ 221:         );
+ 222:     }
+ 223: 
+ 224:     function getDefaultTheme() {
+ 225:         const prefersLight = window.matchMedia
+ 226:             && window.matchMedia('(prefers-color-scheme: light)').matches;
+ 227:         return prefersLight ? 'light' : 'dark';
+ 228:     }
+ 229: 
+ 230:     function loadPreferences() {
+ 231:         const storedTheme = textUtilsStorage.get('theme');
+ 232:         const savedTheme = storedTheme === 'light' || storedTheme === 'dark'
+ 233:             ? storedTheme
+ 234:             : getDefaultTheme();
+ 235: 
+ 236:         document.documentElement.setAttribute('data-theme', savedTheme);
+ 237:         updateThemeToggleIcon(savedTheme);
+ 238: 
+ 239:         const storedColor = textUtilsStorage.get('accentColor');
+ 240:         const savedColor = normalizeHexColor(storedColor || DEFAULT_ACCENT);
+ 241:         const appliedColor = applyAccent(savedColor);
+ 242:         populateAccentDropdown(appliedColor);
+ 243:     }
+ 244: 
+ 245:     function toggleTheme() {
+ 246:         const currentTheme = document.documentElement.getAttribute('data-theme');
+ 247:         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+ 248:         document.documentElement.setAttribute('data-theme', newTheme);
+ 249:         textUtilsStorage.set('theme', newTheme);
+ 250:         updateThemeToggleIcon(newTheme);
+ 251:     }
+ 252: 
+ 253:     function changeAccentColor(color) {
+ 254:         const normalized = applyAccent(color);
+ 255:         textUtilsStorage.set('accentColor', normalized);
+ 256:         if (accentColor) {
+ 257:             ensureAccentOptionExists(normalized);
+ 258:             accentColor.value = normalized;
+ 259:         }
+ 260:     }
+ 261: 
+ 262:     function setupEventListeners() {
+ 263:         if (themeToggle && themeToggle.dataset.themeBound !== '1') {
+ 264:             themeToggle.addEventListener('click', toggleTheme);
+ 265:             themeToggle.dataset.themeBound = '1';
+ 266:         }
+ 267: 
+ 268:         if (accentColor && accentColor.dataset.accentBound !== '1') {
+ 269:             accentColor.addEventListener('change', (event) => {
+ 270:                 changeAccentColor(event.target.value);
+ 271:             });
+ 272:             accentColor.dataset.accentBound = '1';
+ 273:         }
+ 274:     }
+ 275: 
+ 276:     function init() {
+ 277:         captureControls();
+ 278:         loadPreferences();
+ 279:         setupEventListeners();
+ 280:     }
+ 281: 
+ 282:     if (document.readyState === 'loading') {
+ 283:         document.addEventListener('DOMContentLoaded', init);
+ 284:     } else {
+ 285:         init();
+ 286:     }
+ 287: 
+ 288:     window.themeUtils = {
+ 289:         adjustColor,
+ 290:         applyAccent,
+ 291:         normalizeHexColor,
+ 292:         toggleTheme() {
+ 293:             captureControls();
+ 294:             toggleTheme();
+ 295:         },
+ 296:         changeAccentColor(color) {
+ 297:             captureControls();
+ 298:             changeAccentColor(color);
+ 299:         },
+ 300:         loadPreferences() {
+ 301:             captureControls();
+ 302:             loadPreferences();
+ 303:         }
+ 304:     };
+ 305: })();
+ 306: 
+ 307: (function() {
+ 308:     'use strict';
+ 309: 
+ 310:     if (window.__textUtilsSnowModuleLoaded) {
+ 311:         return;
+ 312:     }
+ 313:     window.__textUtilsSnowModuleLoaded = true;
+ 314: 
+ 315:     const STORAGE_KEY = 'holiday_snow_enabled';
+ 316:     const BTN_CLASS = 'btn btn-secondary';
+ 317:     const BTN_ID = 'snowToggle';
+ 318: 
+ 319:     let canvas = null;
+ 320:     let ctx = null;
+ 321:     let width = 0;
+ 322:     let height = 0;
+ 323:     let particles = [];
+ 324:     let animationId = null;
+ 325:     let isSnowing = false;
+ 326:     let resizeAttached = false;
+ 327: 
+ 328:     function isHolidaySeason() {
+ 329:         const now = new Date();
+ 330:         const month = now.getMonth();
+ 331:         const date = now.getDate();
+ 332: 
+ 333:         if (month === 0 && date === 1) {
+ 334:             return true;
+ 335:         }
+ 336: 
+ 337:         if (month === 11) {
+ 338:             return true;
+ 339:         }
+ 340: 
+ 341:         if (month === 10) {
+ 342:             const firstOfNovember = new Date(now.getFullYear(), 10, 1);
+ 343:             const firstDay = firstOfNovember.getDay();
+ 344:             const daysToFirstThursday = (4 - firstDay + 7) % 7;
+ 345:             const thanksgivingDate = 1 + daysToFirstThursday + 21;
+ 346:             return date >= thanksgivingDate;
+ 347:         }
+ 348: 
+ 349:         return false;
+ 350:     }
+ 351: 
+ 352:     if (!isHolidaySeason()) {
+ 353:         return;
+ 354:     }
+ 355: 
+ 356:     function resize() {
+ 357:         if (!canvas || !ctx) {
+ 358:             return;
+ 359:         }
+ 360: 
+ 361:         const dpr = window.devicePixelRatio || 1;
+ 362:         width = window.innerWidth;
+ 363:         height = window.innerHeight;
+ 364: 
+ 365:         canvas.width = Math.floor(width * dpr);
+ 366:         canvas.height = Math.floor(height * dpr);
+ 367:         canvas.style.width = '100%';
+ 368:         canvas.style.height = '100%';
+ 369:         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+ 370:     }
+ 371: 
+ 372:     function buildParticles() {
+ 373:         const particleCount = Math.min(Math.floor(window.innerWidth / 10), 50);
+ 374:         particles = [];
+ 375: 
+ 376:         for (let index = 0; index < particleCount; index++) {
+ 377:             particles.push({
+ 378:                 x: Math.random() * width,
+ 379:                 y: Math.random() * height,
+ 380:                 r: 1 + Math.random() * 2.5,
+ 381:                 v: 0.4 + Math.random() * 1.2,
+ 382:                 drift: (Math.random() * 2 - 1) * 0.5
+ 383:             });
+ 384:         }
+ 385:     }
+ 386: 
+ 387:     function draw() {
+ 388:         if (!isSnowing || !ctx) {
+ 389:             return;
+ 390:         }
+ 391: 
+ 392:         ctx.clearRect(0, 0, width, height);
+ 393: 
+ 394:         const theme = document.documentElement.getAttribute('data-theme');
+ 395:         ctx.fillStyle = theme === 'light'
+ 396:             ? 'rgba(0, 0, 0, 0.25)'
+ 397:             : 'rgba(255, 255, 255, 0.65)';
+ 398: 
+ 399:         for (const particle of particles) {
+ 400:             ctx.beginPath();
+ 401:             ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
+ 402:             ctx.fill();
+ 403: 
+ 404:             particle.y += particle.v;
+ 405:             particle.x += particle.drift;
+ 406: 
+ 407:             if (particle.y > height + 5) {
+ 408:                 particle.y = -5;
+ 409:                 particle.x = Math.random() * width;
+ 410:             }
+ 411: 
+ 412:             if (particle.x < -5) {
+ 413:                 particle.x = width + 5;
+ 414:             } else if (particle.x > width + 5) {
+ 415:                 particle.x = -5;
+ 416:             }
+ 417:         }
+ 418: 
+ 419:         animationId = requestAnimationFrame(draw);
+ 420:     }
+ 421: 
+ 422:     function startSnow() {
+ 423:         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+ 424:             isSnowing = false;
+ 425:             return;
+ 426:         }
+ 427: 
+ 428:         isSnowing = true;
+ 429: 
+ 430:         if (!canvas) {
+ 431:             canvas = document.createElement('canvas');
+ 432:             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;';
+ 433:             document.body.appendChild(canvas);
+ 434:             ctx = canvas.getContext('2d');
+ 435:         }
+ 436: 
+ 437:         if (!resizeAttached) {
+ 438:             window.addEventListener('resize', resize, { passive: true });
+ 439:             resizeAttached = true;
+ 440:         }
+ 441: 
+ 442:         resize();
+ 443:         buildParticles();
+ 444: 
+ 445:         if (!animationId) {
+ 446:             animationId = requestAnimationFrame(draw);
+ 447:         }
+ 448:     }
+ 449: 
+ 450:     function stopSnow() {
+ 451:         isSnowing = false;
+ 452: 
+ 453:         if (animationId) {
+ 454:             cancelAnimationFrame(animationId);
+ 455:             animationId = null;
+ 456:         }
+ 457: 
+ 458:         particles = [];
+ 459: 
+ 460:         if (resizeAttached) {
+ 461:             window.removeEventListener('resize', resize);
+ 462:             resizeAttached = false;
+ 463:         }
+ 464: 
+ 465:         if (canvas) {
+ 466:             canvas.remove();
+ 467:             canvas = null;
+ 468:             ctx = null;
+ 469:         }
+ 470:     }
+ 471: 
+ 472:     function handleVisibilityChange() {
+ 473:         if (!isSnowing) {
+ 474:             return;
+ 475:         }
+ 476: 
+ 477:         if (document.hidden) {
+ 478:             if (animationId) {
+ 479:                 cancelAnimationFrame(animationId);
+ 480:                 animationId = null;
+ 481:             }
+ 482:         } else if (!animationId) {
+ 483:             animationId = requestAnimationFrame(draw);
+ 484:         }
+ 485:     }
+ 486: 
+ 487:     function updateSnowButtonState(button, snowEnabled) {
+ 488:         const icon = document.createElement('span');
+ 489:         icon.className = 'material-icons';
+ 490:         icon.setAttribute('aria-hidden', 'true');
+ 491:         icon.textContent = 'ac_unit';
+ 492: 
+ 493:         button.replaceChildren(
+ 494:             icon,
+ 495:             document.createTextNode(snowEnabled ? ' Disable Snow' : ' Enable Snow')
+ 496:         );
+ 497: 
+ 498:         button.setAttribute('aria-pressed', snowEnabled ? 'true' : 'false');
+ 499:         button.setAttribute(
+ 500:             'aria-label',
+ 501:             snowEnabled ? 'Disable snow effect' : 'Enable snow effect'
+ 502:         );
+ 503:     }
+ 504: 
+ 505:     function createSnowButton() {
+ 506:         const controls = document.querySelector('.controls');
+ 507:         if (!controls) {
+ 508:             return null;
+ 509:         }
+ 510: 
+ 511:         const existingButton = document.getElementById(BTN_ID);
+ 512:         if (existingButton) {
+ 513:             return existingButton;
+ 514:         }
+ 515: 
+ 516:         const button = document.createElement('button');
+ 517:         button.className = BTN_CLASS;
+ 518:         button.id = BTN_ID;
+ 519:         button.type = 'button';
+ 520:         button.style.marginLeft = '0.5rem';
+ 521:         controls.appendChild(button);
+ 522:         return button;
+ 523:     }
+ 524: 
+ 525:     function init() {
+ 526:         document.addEventListener('visibilitychange', handleVisibilityChange);
+ 527: 
+ 528:         const persistedState = textUtilsStorage.get(STORAGE_KEY) === 'true';
+ 529:         if (persistedState) {
+ 530:             startSnow();
+ 531:         }
+ 532: 
+ 533:         const button = createSnowButton();
+ 534:         if (!button) {
+ 535:             return;
+ 536:         }
+ 537: 
+ 538:         updateSnowButtonState(button, isSnowing);
+ 539:         button.addEventListener('click', () => {
+ 540:             if (isSnowing) {
+ 541:                 stopSnow();
+ 542:             } else {
+ 543:                 startSnow();
+ 544:             }
+ 545: 
+ 546:             textUtilsStorage.set(STORAGE_KEY, isSnowing ? 'true' : 'false');
+ 547:             updateSnowButtonState(button, isSnowing);
+ 548:         });
+ 549:     }
+ 550: 
+ 551:     if (document.readyState === 'loading') {
+ 552:         document.addEventListener('DOMContentLoaded', init);
+ 553:     } else {
+ 554:         init();
+ 555:     }
+ 556: })();
+```
+----- END FILE: js/theme.js -----
+
+----- BEGIN FILE: scripts/code-dump-json-tool.py -----
+```python
+   1: #!/usr/bin/env python3
+   2: """Convenience wrapper for generating the JSON Tool context dump."""
+   3: 
+   4: from __future__ import annotations
+   5: 
+   6: from pathlib import Path
+   7: 
+   8: from tool_context_dump import run
+   9: 
+  10: 
+  11: if __name__ == "__main__":
+  12:     raise SystemExit(
+  13:         run(
+  14:             default_tool="json-tool",
+  15:             default_output=Path("context/code-dump-json-tool.txt"),
+  16:         )
+  17:     )
+```
+----- END FILE: scripts/code-dump-json-tool.py -----
+
+----- BEGIN FILE: scripts/tool_context_dump.py -----
+```python
+   1: #!/usr/bin/env python3
+   2: """Generate LLM-friendly context packs for standalone tool pages."""
+   3: 
+   4: from __future__ import annotations
+   5: 
+   6: import argparse
+   7: import datetime as dt
+   8: import re
+   9: from dataclasses import dataclass
+  10: from pathlib import Path
+  11: from typing import Iterable, List, Optional, Sequence, Set, Tuple
+  12: 
+  13: 
+  14: IGNORE_DIRS = {
+  15:     ".git",
+  16:     "__pycache__",
+  17:     ".pytest_cache",
+  18:     "node_modules",
+  19:     ".venv",
+  20:     "venv",
+  21:     ".idea",
+  22:     ".vscode",
+  23: }
+  24: 
+  25: CODE_EXTENSIONS = {
+  26:     ".html",
+  27:     ".js",
+  28:     ".css",
+  29:     ".xml",
+  30:     ".py",
+  31:     ".ps1",
+  32:     ".json",
+  33:     ".ts",
+  34:     ".tsx",
+  35:     ".jsx",
+  36: }
+  37: 
+  38: DOC_EXTENSIONS = {".md", ".txt", ".rst"}
+  39: TEXT_EXTENSIONS = CODE_EXTENSIONS | DOC_EXTENSIONS | {
+  40:     ".yml",
+  41:     ".yaml",
+  42:     ".toml",
+  43:     ".ini",
+  44:     ".csv",
+  45:     ".tsv",
+  46:     ".svg",
+  47: }
+  48: 
+  49: ASSET_REFERENCE_PATTERN = re.compile(
+  50:     r'(?:href|src)\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE
+  51: )
+  52: MARKDOWN_HEADING_PATTERN = re.compile(r"^\s{0,3}#{1,6}\s+(.*\S)\s*$")
+  53: 
+  54: 
+  55: @dataclass(frozen=True)
+  56: class Excerpt:
+  57:     rel_path: str
+  58:     label: str
+  59:     start_line: int
+  60:     end_line: int
+  61:     content: str
+  62: 
+  63: 
+  64: def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+  65:     parser = argparse.ArgumentParser(
+  66:         description=(
+  67:             "Generate an LLM context pack for a tool page by collecting related code "
+  68:             "files and relevant text excerpts."
+  69:         )
+  70:     )
+  71:     parser.add_argument(
+  72:         "-t",
+  73:         "--tool",
+  74:         help="Tool id or page name (for example: json-tool or json-tool.html).",
+  75:     )
+  76:     parser.add_argument(
+  77:         "--target",
+  78:         help="Explicit path to the tool page. Relative paths are resolved from repo root.",
+  79:     )
+  80:     parser.add_argument(
+  81:         "-o",
+  82:         "--output",
+  83:         help=(
+  84:             "Output file path. Defaults to context/code-dump-<tool>.txt "
+  85:             "(relative to repo root)."
+  86:         ),
+  87:     )
+  88:     parser.add_argument(
+  89:         "--repo-root",
+  90:         help="Repository root path. Defaults to the parent of this script's directory.",
+  91:     )
+  92:     parser.add_argument(
+  93:         "--max-sections-per-file",
+  94:         type=int,
+  95:         default=3,
+  96:         help="Maximum number of extracted sections per reference text file. Default: 3.",
+  97:     )
+  98:     parser.add_argument(
+  99:         "--context-lines",
+ 100:         type=int,
+ 101:         default=10,
+ 102:         help="Line context radius for non-heading excerpts. Default: 10.",
+ 103:     )
+ 104: 
+ 105:     return parser.parse_args(argv)
+ 106: 
+ 107: 
+ 108: def normalize_key(value: str) -> str:
+ 109:     return re.sub(r"[^a-z0-9]+", "", value.lower())
+ 110: 
+ 111: 
+ 112: def slugify(value: str) -> str:
+ 113:     slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+ 114:     return slug or "tool"
+ 115: 
+ 116: 
+ 117: def to_repo_relative(path: Path, repo_root: Path) -> str:
+ 118:     try:
+ 119:         return path.resolve().relative_to(repo_root.resolve()).as_posix()
+ 120:     except ValueError:
+ 121:         return path.resolve().as_posix()
+ 122: 
+ 123: 
+ 124: def is_external_reference(reference: str) -> bool:
+ 125:     lowered = reference.lower()
+ 126:     return lowered.startswith("http://") or lowered.startswith("https://") or lowered.startswith("//")
+ 127: 
+ 128: 
+ 129: def is_non_file_reference(reference: str) -> bool:
+ 130:     lowered = reference.lower()
+ 131:     return (
+ 132:         lowered.startswith("data:")
+ 133:         or lowered.startswith("mailto:")
+ 134:         or lowered.startswith("javascript:")
+ 135:         or lowered.startswith("tel:")
+ 136:         or lowered.startswith("#")
+ 137:     )
+ 138: 
+ 139: 
+ 140: def should_skip_path(path: Path, repo_root: Path) -> bool:
+ 141:     try:
+ 142:         relative = path.resolve().relative_to(repo_root.resolve())
+ 143:     except ValueError:
+ 144:         return True
+ 145:     return any(part in IGNORE_DIRS or part == "context" for part in relative.parts)
+ 146: 
+ 147: 
+ 148: def read_text(path: Path) -> str:
+ 149:     try:
+ 150:         return path.read_text(encoding="utf-8")
+ 151:     except UnicodeDecodeError:
+ 152:         return path.read_text(encoding="utf-8", errors="ignore")
+ 153: 
+ 154: 
+ 155: def iter_repo_files(repo_root: Path) -> Iterable[Path]:
+ 156:     for file_path in repo_root.rglob("*"):
+ 157:         if not file_path.is_file():
+ 158:             continue
+ 159:         if should_skip_path(file_path, repo_root):
+ 160:             continue
+ 161:         yield file_path
+ 162: 
+ 163: 
+ 164: def get_language_tag(path: Path) -> str:
+ 165:     language_map = {
+ 166:         ".html": "html",
+ 167:         ".css": "css",
+ 168:         ".js": "javascript",
+ 169:         ".xml": "xml",
+ 170:         ".ps1": "powershell",
+ 171:         ".py": "python",
+ 172:         ".md": "markdown",
+ 173:         ".json": "json",
+ 174:         ".yml": "yaml",
+ 175:         ".yaml": "yaml",
+ 176:         ".ts": "typescript",
+ 177:         ".tsx": "tsx",
+ 178:         ".jsx": "jsx",
+ 179:         ".txt": "text",
+ 180:     }
+ 181:     return language_map.get(path.suffix.lower(), "text")
+ 182: 
+ 183: 
+ 184: def get_numbered_content(text: str, start_line: int = 1) -> str:
+ 185:     lines = text.splitlines()
+ 186:     return "\n".join(
+ 187:         f"{start_line + idx:4}: {line}" for idx, line in enumerate(lines)
+ 188:     )
+ 189: 
+ 190: 
+ 191: def merge_ranges(ranges: Iterable[Tuple[int, int]]) -> List[Tuple[int, int]]:
+ 192:     sorted_ranges = sorted(ranges, key=lambda pair: (pair[0], pair[1]))
+ 193:     if not sorted_ranges:
+ 194:         return []
+ 195: 
+ 196:     merged: List[Tuple[int, int]] = [sorted_ranges[0]]
+ 197:     for start, end in sorted_ranges[1:]:
+ 198:         last_start, last_end = merged[-1]
+ 199:         if start <= last_end:
+ 200:             merged[-1] = (last_start, max(last_end, end))
+ 201:         else:
+ 202:             merged.append((start, end))
+ 203:     return merged
+ 204: 
+ 205: 
+ 206: def extract_windows(
+ 207:     lines: Sequence[str],
+ 208:     patterns: Sequence[re.Pattern[str]],
+ 209:     context_lines: int,
+ 210:     max_sections: int,
+ 211:     label_prefix: str,
+ 212: ) -> List[Tuple[str, int, int, str]]:
+ 213:     hit_lines: List[int] = []
+ 214:     for idx, line in enumerate(lines):
+ 215:         if any(pattern.search(line) for pattern in patterns):
+ 216:             hit_lines.append(idx)
+ 217: 
+ 218:     if not hit_lines:
+ 219:         return []
+ 220: 
+ 221:     ranges = [
+ 222:         (max(0, idx - context_lines), min(len(lines), idx + context_lines + 1))
+ 223:         for idx in hit_lines
+ 224:     ]
+ 225:     merged = merge_ranges(ranges)[:max_sections]
+ 226: 
+ 227:     excerpts: List[Tuple[str, int, int, str]] = []
+ 228:     for start, end in merged:
+ 229:         label = f"{label_prefix} lines {start + 1}-{end}"
+ 230:         content = "\n".join(lines[start:end])
+ 231:         excerpts.append((label, start + 1, end, content))
+ 232:     return excerpts
+ 233: 
+ 234: 
+ 235: def extract_markdown_sections(
+ 236:     text: str,
+ 237:     patterns: Sequence[re.Pattern[str]],
+ 238:     max_sections: int,
+ 239:     context_lines: int,
+ 240: ) -> List[Tuple[str, int, int, str]]:
+ 241:     lines = text.splitlines()
+ 242:     heading_indices = [
+ 243:         idx for idx, line in enumerate(lines) if MARKDOWN_HEADING_PATTERN.match(line)
+ 244:     ]
+ 245: 
+ 246:     section_results: List[Tuple[str, int, int, str]] = []
+ 247:     for idx, start in enumerate(heading_indices):
+ 248:         end = heading_indices[idx + 1] if idx + 1 < len(heading_indices) else len(lines)
+ 249:         section_text = "\n".join(lines[start:end])
+ 250:         if not any(pattern.search(section_text) for pattern in patterns):
+ 251:             continue
+ 252: 
+ 253:         heading_match = MARKDOWN_HEADING_PATTERN.match(lines[start])
+ 254:         heading = heading_match.group(1).strip() if heading_match else "Untitled section"
+ 255:         label = f"Section: {heading}"
+ 256:         section_results.append((label, start + 1, end, section_text))
+ 257:         if len(section_results) >= max_sections:
+ 258:             break
+ 259: 
+ 260:     if section_results:
+ 261:         return section_results
+ 262: 
+ 263:     return extract_windows(
+ 264:         lines=lines,
+ 265:         patterns=patterns,
+ 266:         context_lines=context_lines,
+ 267:         max_sections=max_sections,
+ 268:         label_prefix="Reference",
+ 269:     )
+ 270: 
+ 271: 
+ 272: def extract_text_sections(
+ 273:     path: Path,
+ 274:     text: str,
+ 275:     patterns: Sequence[re.Pattern[str]],
+ 276:     max_sections: int,
+ 277:     context_lines: int,
+ 278: ) -> List[Tuple[str, int, int, str]]:
+ 279:     if path.suffix.lower() == ".md":
+ 280:         return extract_markdown_sections(
+ 281:             text=text,
+ 282:             patterns=patterns,
+ 283:             max_sections=max_sections,
+ 284:             context_lines=context_lines,
+ 285:         )
+ 286: 
+ 287:     lines = text.splitlines()
+ 288:     return extract_windows(
+ 289:         lines=lines,
+ 290:         patterns=patterns,
+ 291:         context_lines=context_lines,
+ 292:         max_sections=max_sections,
+ 293:         label_prefix="Reference",
+ 294:     )
+ 295: 
+ 296: 
+ 297: def resolve_target_reference(reference: str, target_file: Path, repo_root: Path) -> Optional[Path]:
+ 298:     reference_path = reference.split("#", 1)[0].split("?", 1)[0].strip()
+ 299:     if not reference_path:
+ 300:         return None
+ 301:     if is_external_reference(reference_path) or is_non_file_reference(reference_path):
+ 302:         return None
+ 303: 
+ 304:     if reference_path.startswith("/"):
+ 305:         candidate = (repo_root / reference_path.lstrip("/")).resolve()
+ 306:         return candidate if candidate.exists() else None
+ 307: 
+ 308:     rel_parts = [part for part in reference_path.split("/") if part not in ("", ".")]
+ 309:     candidate_rel = Path(*rel_parts)
+ 310:     candidate_from_target = (target_file.parent / candidate_rel).resolve()
+ 311:     if candidate_from_target.exists():
+ 312:         return candidate_from_target
+ 313: 
+ 314:     candidate_from_root = (repo_root / candidate_rel).resolve()
+ 315:     return candidate_from_root if candidate_from_root.exists() else None
+ 316: 
+ 317: 
+ 318: def collect_local_dependencies(target_text: str, target_file: Path, repo_root: Path) -> Tuple[List[str], List[str]]:
+ 319:     local: Set[str] = set()
+ 320:     external: Set[str] = set()
+ 321: 
+ 322:     for match in ASSET_REFERENCE_PATTERN.finditer(target_text):
+ 323:         raw_reference = match.group(1).strip()
+ 324:         if not raw_reference:
+ 325:             continue
+ 326: 
+ 327:         if is_external_reference(raw_reference):
+ 328:             external.add(raw_reference)
+ 329:             continue
+ 330:         if is_non_file_reference(raw_reference):
+ 331:             continue
+ 332: 
+ 333:         resolved = resolve_target_reference(raw_reference, target_file, repo_root)
+ 334:         if resolved is None:
+ 335:             continue
+ 336:         if should_skip_path(resolved, repo_root):
+ 337:             continue
+ 338:         if resolved.suffix.lower() not in TEXT_EXTENSIONS:
+ 339:             continue
+ 340:         local.add(to_repo_relative(resolved, repo_root))
+ 341: 
+ 342:     return sorted(local), sorted(external)
+ 343: 
+ 344: 
+ 345: def extract_tool_title(target_text: str, target_file: Path) -> str:
+ 346:     h2_match = re.search(r"<h2[^>]*>\s*([^<]+?)\s*</h2>", target_text, flags=re.IGNORECASE)
+ 347:     if h2_match:
+ 348:         return re.sub(r"\s+", " ", h2_match.group(1)).strip()
+ 349: 
+ 350:     title_match = re.search(
+ 351:         r"<title[^>]*>\s*(.*?)\s*</title>", target_text, flags=re.IGNORECASE | re.DOTALL
+ 352:     )
+ 353:     if title_match:
+ 354:         title = re.sub(r"\s+", " ", title_match.group(1)).strip()
+ 355:         title = re.sub(r"\s*-\s*Text Utilities\s*$", "", title, flags=re.IGNORECASE)
+ 356:         if title:
+ 357:             return title
+ 358: 
+ 359:     return target_file.stem.replace("-", " ").replace("_", " ").title()
+ 360: 
+ 361: 
+ 362: def build_reference_patterns(
+ 363:     target_rel: str,
+ 364:     tool_slug: str,
+ 365:     tool_title: str,
+ 366:     tool_stem: str,
+ 367: ) -> List[re.Pattern[str]]:
+ 368:     target_rel_pattern = re.escape(target_rel).replace(r"\/", r"[\\/]")
+ 369:     target_name_pattern = re.escape(Path(target_rel).name)
+ 370:     id_pattern = rf"id\s*:\s*['\"]{re.escape(tool_slug)}['\"]"
+ 371:     stem_pattern = re.escape(tool_stem)
+ 372:     title_pattern = re.escape(tool_title)
+ 373: 
+ 374:     return [
+ 375:         re.compile(target_rel_pattern, re.IGNORECASE),
+ 376:         re.compile(target_name_pattern, re.IGNORECASE),
+ 377:         re.compile(id_pattern, re.IGNORECASE),
+ 378:         re.compile(stem_pattern, re.IGNORECASE),
+ 379:         re.compile(title_pattern, re.IGNORECASE),
+ 380:     ]
+ 381: 
+ 382: 
+ 383: def collect_incoming_code_refs(
+ 384:     repo_root: Path,
+ 385:     target_file: Path,
+ 386:     patterns: Sequence[re.Pattern[str]],
+ 387: ) -> List[str]:
+ 388:     incoming: Set[str] = set()
+ 389:     for file_path in iter_repo_files(repo_root):
+ 390:         if file_path.resolve() == target_file.resolve():
+ 391:             continue
+ 392:         if file_path.suffix.lower() not in CODE_EXTENSIONS:
+ 393:             continue
+ 394: 
+ 395:         content = read_text(file_path)
+ 396:         if any(pattern.search(content) for pattern in patterns):
+ 397:             incoming.add(to_repo_relative(file_path, repo_root))
+ 398:     return sorted(incoming)
+ 399: 
+ 400: 
+ 401: def collect_direct_docs(
+ 402:     repo_root: Path,
+ 403:     target_file: Path,
+ 404:     tool_slug: str,
+ 405:     tool_stem: str,
+ 406: ) -> List[str]:
+ 407:     slug_key = normalize_key(tool_slug)
+ 408:     stem_key = normalize_key(tool_stem)
+ 409:     docs: Set[str] = set()
+ 410: 
+ 411:     for file_path in iter_repo_files(repo_root):
+ 412:         if file_path.suffix.lower() not in DOC_EXTENSIONS:
+ 413:             continue
+ 414:         if file_path.resolve() == target_file.resolve():
+ 415:             continue
+ 416: 
+ 417:         stem_key_candidate = normalize_key(file_path.stem)
+ 418:         name_key_candidate = normalize_key(file_path.name)
+ 419:         if slug_key and slug_key in name_key_candidate:
+ 420:             docs.add(to_repo_relative(file_path, repo_root))
+ 421:             continue
+ 422:         if stem_key and stem_key in stem_key_candidate:
+ 423:             docs.add(to_repo_relative(file_path, repo_root))
+ 424: 
+ 425:     return sorted(docs)
+ 426: 
+ 427: 
+ 428: def collect_reference_excerpts(
+ 429:     repo_root: Path,
+ 430:     patterns: Sequence[re.Pattern[str]],
+ 431:     excluded_rel_paths: Set[str],
+ 432:     max_sections_per_file: int,
+ 433:     context_lines: int,
+ 434: ) -> List[Excerpt]:
+ 435:     excerpts: List[Excerpt] = []
+ 436: 
+ 437:     for file_path in iter_repo_files(repo_root):
+ 438:         rel_path = to_repo_relative(file_path, repo_root)
+ 439:         if rel_path in excluded_rel_paths:
+ 440:             continue
+ 441:         if file_path.suffix.lower() not in DOC_EXTENSIONS:
+ 442:             continue
+ 443: 
+ 444:         content = read_text(file_path)
+ 445:         if not any(pattern.search(content) for pattern in patterns):
+ 446:             continue
+ 447: 
+ 448:         sections = extract_text_sections(
+ 449:             path=file_path,
+ 450:             text=content,
+ 451:             patterns=patterns,
+ 452:             max_sections=max_sections_per_file,
+ 453:             context_lines=context_lines,
+ 454:         )
+ 455:         for label, start_line, end_line, section_content in sections:
+ 456:             excerpts.append(
+ 457:                 Excerpt(
+ 458:                     rel_path=rel_path,
+ 459:                     label=label,
+ 460:                     start_line=start_line,
+ 461:                     end_line=end_line,
+ 462:                     content=section_content,
+ 463:                 )
+ 464:             )
+ 465: 
+ 466:     return sorted(excerpts, key=lambda item: (item.rel_path.lower(), item.start_line))
+ 467: 
+ 468: 
+ 469: def add_unique(ordered: List[str], seen: Set[str], rel_path: str) -> None:
+ 470:     key = rel_path.lower()
+ 471:     if key in seen:
+ 472:         return
+ 473:     seen.add(key)
+ 474:     ordered.append(rel_path)
+ 475: 
+ 476: 
+ 477: def build_context_output(
+ 478:     *,
+ 479:     repo_root: Path,
+ 480:     output_path: Path,
+ 481:     tool_slug: str,
+ 482:     tool_title: str,
+ 483:     target_rel: str,
+ 484:     full_files: Sequence[str],
+ 485:     local_dependencies: Sequence[str],
+ 486:     incoming_refs: Sequence[str],
+ 487:     direct_docs: Sequence[str],
+ 488:     external_dependencies: Sequence[str],
+ 489:     excerpts: Sequence[Excerpt],
+ 490: ) -> str:
+ 491:     generated_utc = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+ 492:     output_rel = to_repo_relative(output_path, repo_root)
+ 493: 
+ 494:     lines: List[str] = []
+ 495:     lines.append(f"# LLM Context Pack: {tool_title}")
+ 496:     lines.append("")
+ 497:     lines.append(
+ 498:         "This generated file is designed as a context bundle for LLM prompts."
+ 499:     )
+ 500:     lines.append(
+ 501:         "It contains full source text for files directly associated with the tool, "
+ 502:         "plus extracted sections from broader docs that reference the tool."
+ 503:     )
+ 504:     lines.append(
+ 505:         "Every included block is wrapped with explicit BEGIN/END markers for "
+ 506:         "reliable chunking."
+ 507:     )
+ 508:     lines.append("")
+ 509:     lines.append(f"Generated: {generated_utc}")
+ 510:     lines.append(f"Repository: `{repo_root}`")
+ 511:     lines.append(f"Tool slug: `{tool_slug}`")
+ 512:     lines.append(f"Tool page: `{target_rel}`")
+ 513:     lines.append(f"Output file: `{output_rel}`")
+ 514:     lines.append("")
+ 515: 
+ 516:     lines.append("## Discovery Summary")
+ 517:     lines.append(f"- Full files included: {len(full_files)}")
+ 518:     lines.append(f"- Direct local dependencies: {len(local_dependencies)}")
+ 519:     lines.append(f"- Incoming code references: {len(incoming_refs)}")
+ 520:     lines.append(f"- Direct tool docs (full): {len(direct_docs)}")
+ 521:     lines.append(f"- Cross-file text excerpts: {len(excerpts)}")
+ 522:     lines.append(f"- External dependencies in tool page: {len(external_dependencies)}")
+ 523:     lines.append("")
+ 524: 
+ 525:     lines.append("## Included Full Files")
+ 526:     for rel_path in full_files:
+ 527:         lines.append(f"- `{rel_path}`")
+ 528:     lines.append("")
+ 529: 
+ 530:     lines.append("## External Dependencies")
+ 531:     if external_dependencies:
+ 532:         for dependency in external_dependencies:
+ 533:             lines.append(f"- `{dependency}`")
+ 534:     else:
+ 535:         lines.append("- None detected")
+ 536:     lines.append("")
+ 537: 
+ 538:     lines.append("## Full File Dumps")
+ 539:     lines.append("")
+ 540: 
+ 541:     for rel_path in full_files:
+ 542:         full_path = (repo_root / Path(rel_path)).resolve()
+ 543:         lines.append(f"----- BEGIN FILE: {rel_path} -----")
+ 544:         if not full_path.exists():
+ 545:             lines.append("Missing at dump time.")
+ 546:             lines.append(f"----- END FILE: {rel_path} -----")
+ 547:             lines.append("")
+ 548:             continue
+ 549: 
+ 550:         file_text = read_text(full_path)
+ 551:         numbered_content = get_numbered_content(file_text)
+ 552:         language = get_language_tag(full_path)
+ 553:         lines.append(f"```{language}")
+ 554:         lines.append(numbered_content)
+ 555:         lines.append("```")
+ 556:         lines.append(f"----- END FILE: {rel_path} -----")
+ 557:         lines.append("")
+ 558: 
+ 559:     lines.append("## Referenced Text Excerpts")
+ 560:     lines.append("")
+ 561: 
+ 562:     if not excerpts:
+ 563:         lines.append("No additional text excerpts were needed.")
+ 564:         lines.append("")
+ 565:     else:
+ 566:         for excerpt in excerpts:
+ 567:             marker = (
+ 568:                 f"{excerpt.rel_path} | {excerpt.label} "
+ 569:                 f"(lines {excerpt.start_line}-{excerpt.end_line})"
+ 570:             )
+ 571:             lines.append(f"----- BEGIN EXCERPT: {marker} -----")
+ 572:             numbered_excerpt = get_numbered_content(
+ 573:                 excerpt.content, start_line=excerpt.start_line
+ 574:             )
+ 575:             lines.append("```text")
+ 576:             lines.append(numbered_excerpt)
+ 577:             lines.append("```")
+ 578:             lines.append(f"----- END EXCERPT: {marker} -----")
+ 579:             lines.append("")
+ 580: 
+ 581:     return "\n".join(lines).rstrip() + "\n"
+ 582: 
+ 583: 
+ 584: def generate_context_pack(
+ 585:     *,
+ 586:     repo_root: Path,
+ 587:     target_relative: Path,
+ 588:     tool_slug: str,
+ 589:     output_path: Path,
+ 590:     max_sections_per_file: int,
+ 591:     context_lines: int,
+ 592: ) -> Tuple[str, int]:
+ 593:     target_file = (repo_root / target_relative).resolve()
+ 594:     if not target_file.exists():
+ 595:         raise FileNotFoundError(f"Unable to find target tool page: {target_file}")
+ 596: 
+ 597:     target_text = read_text(target_file)
+ 598:     target_rel = to_repo_relative(target_file, repo_root)
+ 599:     tool_title = extract_tool_title(target_text, target_file)
+ 600: 
+ 601:     local_dependencies, external_dependencies = collect_local_dependencies(
+ 602:         target_text=target_text,
+ 603:         target_file=target_file,
+ 604:         repo_root=repo_root,
+ 605:     )
+ 606:     patterns = build_reference_patterns(
+ 607:         target_rel=target_rel,
+ 608:         tool_slug=tool_slug,
+ 609:         tool_title=tool_title,
+ 610:         tool_stem=target_file.stem,
+ 611:     )
+ 612:     incoming_refs = collect_incoming_code_refs(
+ 613:         repo_root=repo_root,
+ 614:         target_file=target_file,
+ 615:         patterns=patterns,
+ 616:     )
+ 617:     direct_docs = collect_direct_docs(
+ 618:         repo_root=repo_root,
+ 619:         target_file=target_file,
+ 620:         tool_slug=tool_slug,
+ 621:         tool_stem=target_file.stem,
+ 622:     )
+ 623: 
+ 624:     ordered_files: List[str] = []
+ 625:     seen: Set[str] = set()
+ 626:     add_unique(ordered_files, seen, target_rel)
+ 627:     for rel in local_dependencies:
+ 628:         add_unique(ordered_files, seen, rel)
+ 629:     for rel in incoming_refs:
+ 630:         add_unique(ordered_files, seen, rel)
+ 631:     for rel in direct_docs:
+ 632:         add_unique(ordered_files, seen, rel)
+ 633: 
+ 634:     excerpts = collect_reference_excerpts(
+ 635:         repo_root=repo_root,
+ 636:         patterns=patterns,
+ 637:         excluded_rel_paths=set(ordered_files),
+ 638:         max_sections_per_file=max_sections_per_file,
+ 639:         context_lines=context_lines,
+ 640:     )
+ 641: 
+ 642:     output_text = build_context_output(
+ 643:         repo_root=repo_root,
+ 644:         output_path=output_path,
+ 645:         tool_slug=tool_slug,
+ 646:         tool_title=tool_title,
+ 647:         target_rel=target_rel,
+ 648:         full_files=ordered_files,
+ 649:         local_dependencies=local_dependencies,
+ 650:         incoming_refs=incoming_refs,
+ 651:         direct_docs=direct_docs,
+ 652:         external_dependencies=external_dependencies,
+ 653:         excerpts=excerpts,
+ 654:     )
+ 655: 
+ 656:     output_path.parent.mkdir(parents=True, exist_ok=True)
+ 657:     output_path.write_text(output_text, encoding="utf-8", newline="\n")
+ 658:     return target_rel, len(ordered_files)
+ 659: 
+ 660: 
+ 661: def run(
+ 662:     *,
+ 663:     default_tool: Optional[str] = None,
+ 664:     default_output: Optional[Path] = None,
+ 665:     argv: Optional[Sequence[str]] = None,
+ 666: ) -> int:
+ 667:     args = parse_args(argv=argv)
+ 668: 
+ 669:     script_dir = Path(__file__).resolve().parent
+ 670:     repo_root = (
+ 671:         Path(args.repo_root).expanduser().resolve()
+ 672:         if args.repo_root
+ 673:         else script_dir.parent.resolve()
+ 674:     )
+ 675: 
+ 676:     if args.target:
+ 677:         target_relative = Path(args.target).expanduser()
+ 678:         if target_relative.is_absolute():
+ 679:             try:
+ 680:                 target_relative = target_relative.resolve().relative_to(repo_root)
+ 681:             except ValueError:
+ 682:                 raise ValueError(
+ 683:                     f"Target must be inside repository root ({repo_root}): {args.target}"
+ 684:                 )
+ 685:     else:
+ 686:         tool_value = args.tool or default_tool
+ 687:         if not tool_value:
+ 688:             raise ValueError("Missing tool id. Provide --tool or configure a default tool.")
+ 689:         if tool_value.lower().endswith(".html"):
+ 690:             target_relative = Path(tool_value)
+ 691:         else:
+ 692:             target_relative = Path(f"{tool_value}.html")
+ 693: 
+ 694:     target_name_for_slug = args.tool or default_tool or target_relative.stem
+ 695:     if str(target_name_for_slug).lower().endswith(".html"):
+ 696:         tool_slug = slugify(Path(str(target_name_for_slug)).stem)
+ 697:     else:
+ 698:         tool_slug = slugify(str(target_name_for_slug))
+ 699: 
+ 700:     if args.output:
+ 701:         output_path = Path(args.output).expanduser()
+ 702:     elif default_output is not None:
+ 703:         output_path = default_output
+ 704:     else:
+ 705:         output_path = Path(f"context/code-dump-{tool_slug}.txt")
+ 706: 
+ 707:     if not output_path.is_absolute():
+ 708:         output_path = (repo_root / output_path).resolve()
+ 709: 
+ 710:     target_rel, included_count = generate_context_pack(
+ 711:         repo_root=repo_root,
+ 712:         target_relative=target_relative,
+ 713:         tool_slug=tool_slug,
+ 714:         output_path=output_path,
+ 715:         max_sections_per_file=max(1, args.max_sections_per_file),
+ 716:         context_lines=max(1, args.context_lines),
+ 717:     )
+ 718: 
+ 719:     print(f"Tool context dump complete: {output_path}")
+ 720:     print(f"Target page: {target_rel}")
+ 721:     print(f"Files included (full): {included_count}")
+ 722:     return 0
+ 723: 
+ 724: 
+ 725: def main(argv: Optional[Sequence[str]] = None) -> int:
+ 726:     try:
+ 727:         return run(argv=argv)
+ 728:     except Exception as exc:
+ 729:         print(f"Error: {exc}")
+ 730:         return 1
+ 731: 
+ 732: 
+ 733: if __name__ == "__main__":
+ 734:     raise SystemExit(main())
+```
+----- END FILE: scripts/tool_context_dump.py -----
+
+----- BEGIN FILE: sitemap.xml -----
+```xml
+   1: <?xml version="1.0" encoding="UTF-8"?>
+   2: <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   3:   <url>
+   4:     <loc>https://text-utils.net/</loc>
+   5:     <lastmod>2026-02-18</lastmod>
+   6:     <changefreq>weekly</changefreq>
+   7:     <priority>1.0</priority>
+   8:   </url>
+   9: 
+  10:   <url>
+  11:     <loc>https://text-utils.net/case-converter.html</loc>
+  12:     <lastmod>2026-02-18</lastmod>
+  13:     <changefreq>monthly</changefreq>
+  14:     <priority>0.8</priority>
+  15:   </url>
+  16:   <url>
+  17:     <loc>https://text-utils.net/color-chooser.html</loc>
+  18:     <lastmod>2026-02-18</lastmod>
+  19:     <changefreq>monthly</changefreq>
+  20:     <priority>0.8</priority>
+  21:   </url>
+  22:   <url>
+  23:     <loc>https://text-utils.net/css-unit-converter.html</loc>
+  24:     <lastmod>2026-02-18</lastmod>
+  25:     <changefreq>monthly</changefreq>
+  26:     <priority>0.8</priority>
+  27:   </url>
+  28:   <url>
+  29:     <loc>https://text-utils.net/date-time-info.html</loc>
+  30:     <lastmod>2026-02-18</lastmod>
+  31:     <changefreq>monthly</changefreq>
+  32:     <priority>0.8</priority>
+  33:   </url>
+  34:   <url>
+  35:     <loc>https://text-utils.net/find-replace.html</loc>
+  36:     <lastmod>2026-02-18</lastmod>
+  37:     <changefreq>monthly</changefreq>
+  38:     <priority>0.8</priority>
+  39:   </url>
+  40:   <url>
+  41:     <loc>https://text-utils.net/font-awesome-chooser.html</loc>
+  42:     <lastmod>2026-02-18</lastmod>
+  43:     <changefreq>monthly</changefreq>
+  44:     <priority>0.8</priority>
+  45:   </url>
+  46:   <url>
+  47:     <loc>https://text-utils.net/font-chooser.html</loc>
+  48:     <lastmod>2026-02-18</lastmod>
+  49:     <changefreq>monthly</changefreq>
+  50:     <priority>0.8</priority>
+  51:   </url>
+  52:   <url>
+  53:     <loc>https://text-utils.net/google-icons-chooser.html</loc>
+  54:     <lastmod>2026-02-18</lastmod>
+  55:     <changefreq>monthly</changefreq>
+  56:     <priority>0.8</priority>
+  57:   </url>
+  58:   <url>
+  59:     <loc>https://text-utils.net/hashing-tool.html</loc>
+  60:     <lastmod>2026-02-18</lastmod>
+  61:     <changefreq>monthly</changefreq>
+  62:     <priority>0.8</priority>
+  63:   </url>
+  64:   <url>
+  65:     <loc>https://text-utils.net/ip-info.html</loc>
+  66:     <lastmod>2026-02-18</lastmod>
+  67:     <changefreq>monthly</changefreq>
+  68:     <priority>0.8</priority>
+  69:   </url>
+  70:   <url>
+  71:     <loc>https://text-utils.net/json-tool.html</loc>
+  72:     <lastmod>2026-02-18</lastmod>
+  73:     <changefreq>monthly</changefreq>
+  74:     <priority>0.8</priority>
+  75:   </url>
+  76:   <url>
+  77:     <loc>https://text-utils.net/line-operations.html</loc>
+  78:     <lastmod>2026-02-18</lastmod>
+  79:     <changefreq>monthly</changefreq>
+  80:     <priority>0.8</priority>
+  81:   </url>
+  82:   <url>
+  83:     <loc>https://text-utils.net/random-numbers.html</loc>
+  84:     <lastmod>2026-02-18</lastmod>
+  85:     <changefreq>monthly</changefreq>
+  86:     <priority>0.8</priority>
+  87:   </url>
+  88:   <url>
+  89:     <loc>https://text-utils.net/sitemap-generator.html</loc>
+  90:     <lastmod>2026-02-18</lastmod>
+  91:     <changefreq>monthly</changefreq>
+  92:     <priority>0.8</priority>
+  93:   </url>
+  94:   <url>
+  95:     <loc>https://text-utils.net/text-info.html</loc>
+  96:     <lastmod>2026-02-18</lastmod>
+  97:     <changefreq>monthly</changefreq>
+  98:     <priority>0.8</priority>
+  99:   </url>
+ 100: </urlset>
+```
+----- END FILE: sitemap.xml -----
+
+----- BEGIN FILE: JSON-TOOL-MIGRATION.md -----
+```markdown
+   1: # JSON Tool - Migration & Feature Summary
+   2: 
+   3: ## ? Migration Complete
+   4: 
+   5: The JSON Tool has been successfully created as a comprehensive standalone tool, replacing the simple inline JSON formatter with an advanced multi-mode JSON processor.
+   6: 
+   7: ## ?? File Created
+   8: 
+   9: **`json-tool.html`** (600+ lines)
+  10: 
+  11: ## ?? Three Operational Modes
+  12: 
+  13: ### 1. Format JSON Mode
+  14: **Purpose**: Pretty-print and format JSON with customizable options
+  15: 
+  16: **Features**:
+  17: - ? Configurable indentation (2 spaces, 4 spaces, tabs, minified)
+  18: - ? Optional alphabetical key sorting
+  19: - ? Syntax validation with detailed error messages
+  20: - ? Automatic structure analysis
+  21: - ? Preserves data types and special characters
+  22: 
+  23: **Example Use Cases**:
+  24: - Formatting minified API responses
+  25: - Cleaning up hand-written JSON
+  26: - Preparing JSON for version control
+  27: - Converting between indentation styles
+  28: 
+  29: ### 2. JSON to JSONL Mode
+  30: **Purpose**: Convert JSON arrays to JSON Lines format
+  31: 
+  32: **Features**:
+  33: - ? Converts array elements to separate lines
+  34: - ? Each line is valid JSON
+  35: - ? Validates array structure
+  36: - ? Shows conversion statistics
+  37: - ? Handles nested objects properly
+  38: 
+  39: **JSONL Format**:
+  40: ```
+  41: {"id":1,"name":"Alice","age":28}
+  42: {"id":2,"name":"Bob","age":34}
+  43: {"id":3,"name":"Carol","age":31}
+  44: ```
+  45: 
+  46: **Example Use Cases**:
+  47: - Big data processing (Hadoop, Spark)
+  48: - Streaming data pipelines
+  49: - Log file generation
+  50: - Database imports
+  51: - Machine learning datasets
+  52: 
+  53: **Why JSONL?**:
+  54: - Line-by-line processing (memory efficient)
+  55: - Streamable format
+  56: - Easy to append records
+  57: - Popular in data engineering
+  58: - Compatible with tools like `jq`, `grep`
+  59: 
+  60: ### 3. Validate Only Mode
+  61: **Purpose**: Check JSON syntax without formatting
+  62: 
+  63: **Features**:
+  64: - ? Syntax validation
+  65: - ? Structure analysis (objects, arrays, depth)
+  66: - ? Error position detection (line/column)
+  67: - ? Type identification
+  68: - ? Statistics display
+  69: 
+  70: **Output Example**:
+  71: ```
+  72: ✓ Valid JSON
+  73: 
+  74: Type: Object
+  75: Objects: 4
+  76: Arrays: 1
+  77: Total Keys: 17
+  78: Max Depth: 3
+  79: ```
+  80: 
+  81: ## ?? Advanced UI Features
+  82: 
+  83: ### Mode Switching Tabs
+  84: ```html
+  85: <div class="mode-tabs">
+  86:     <button class="mode-tab active" data-mode="format">
+  87:         <span class="material-icons">code</span>
+  88:         Format JSON
+  89:     </button>
+  90:     <!-- More tabs... -->
+  91: </div>
+  92: ```
+  93: 
+  94: **Benefits**:
+  95: - Clear visual indication of current mode
+  96: - Single-click mode switching
+  97: - Icon + text labels for clarity
+  98: - Active state highlighting
+  99: 
+ 100: ### Context-Sensitive Info Panel
+ 101: Dynamic information panel that changes based on selected mode:
+ 102: 
+ 103: ```javascript
+ 104: const modeInfo = {
+ 105:     format: {
+ 106:         title: 'JSON Formatting',
+ 107:         text: 'Format and validate JSON with customizable indentation...'
+ 108:     },
+ 109:     jsonl: {
+ 110:         title: 'JSON to JSONL Conversion',
+ 111:         text: 'Convert JSON arrays to JSON Lines format...'
+ 112:     },
+ 113:     validate: {
+ 114:         title: 'JSON Validation',
+ 115:         text: 'Validate JSON syntax and structure...'
+ 116:     }
+ 117: };
+ 118: ```
+ 119: 
+ 120: **User Benefits**:
+ 121: - Contextual help without clutter
+ 122: - Educational (explains what each mode does)
+ 123: - Reduces confusion for new users
+ 124: 
+ 125: ### Error Panel with Position Detection
+ 126: ```javascript
+ 127: function showError(error, sourceText) {
+ 128:     const ffLineColMatch = message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+ 129:     if (ffLineColMatch) {
+ 130:         message += `\n\nLocation: Line ${ffLineColMatch[1]}, Column ${ffLineColMatch[2]}`;
+ 131:         return;
+ 132:     }
+ 133: 
+ 134:     const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
+ 135:     if (posMatch) {
+ 136:         const pos = parseInt(posMatch[1], 10);
+ 137:         const lines = sourceText.substring(0, pos).split('\n');
+ 138:         const line = lines.length;
+ 139:         const col = lines[lines.length - 1].length + 1;
+ 140:         message += `\n\nLocation: Line ${line}, Column ${col}`;
+ 141:     }
+ 142: }
+ 143: ```
+ 144: 
+ 145: **Features**:
+ 146: - Extracts error position from JavaScript error
+ 147: - Calculates line and column numbers
+ 148: - Shows exact location of syntax error
+ 149: - Styled error panel with icon
+ 150: - Auto-hides when processing succeeds
+ 151: 
+ 152: ### Real-time Statistics Dashboard
+ 153: ```html
+ 154: <div class="json-stats">
+ 155:     <div class="stat-item">
+ 156:         <span class="stat-label">Objects</span>
+ 157:         <span class="stat-value">4</span>
+ 158:     </div>
+ 159:     <!-- More stats... -->
+ 160: </div>
+ 161: ```
+ 162: 
+ 163: **Statistics Tracked**:
+ 164: - Number of objects
+ 165: - Number of arrays
+ 166: - Total key count
+ 167: - Maximum nesting depth
+ 168: 
+ 169: **Analysis Function**:
+ 170: ```javascript
+ 171: function analyzeJSON(obj, depth = 0, stats = null) {
+ 172:     // Recursively traverses JSON structure
+ 173:     // Tracks objects, arrays, keys, and depth
+ 174:     // Returns comprehensive statistics
+ 175: }
+ 176: ```
+ 177: 
+ 178: ### Smart Options Panel
+ 179: - Shows only in Format mode
+ 180: - Hidden in JSONL and Validate modes
+ 181: - Reduces clutter
+ 182: - Context-appropriate controls
+ 183: 
+ 184: ## ?? Technical Implementation
+ 185: 
+ 186: ### 1. Recursive JSON Analysis
+ 187: ```javascript
+ 188: function analyzeJSON(obj, depth = 0, stats = null) {
+ 189:     stats.maxDepth = Math.max(stats.maxDepth, depth);
+ 190:     
+ 191:     if (Array.isArray(obj)) {
+ 192:         stats.arrays++;
+ 193:         obj.forEach(item => analyzeJSON(item, depth + 1, stats));
+ 194:     } else if (obj !== null && typeof obj === 'object') {
+ 195:         stats.objects++;
+ 196:         stats.keys += Object.keys(obj).length;
+ 197:         Object.values(obj).forEach(value => 
+ 198:             analyzeJSON(value, depth + 1, stats)
+ 199:         );
+ 200:     }
+ 201:     
+ 202:     return stats;
+ 203: }
+ 204: ```
+ 205: 
+ 206: **Features**:
+ 207: - Handles deeply nested structures
+ 208: - Counts all data types
+ 209: - Tracks maximum depth
+ 210: - Efficient single-pass algorithm
+ 211: 
+ 212: ### 2. Alphabetical Key Sorting
+ 213: ```javascript
+ 214: function sortObjectKeys(obj) {
+ 215:     if (Array.isArray(obj)) {
+ 216:         return obj.map(sortObjectKeys);
+ 217:     } else if (obj !== null && typeof obj === 'object') {
+ 218:         return Object.keys(obj)
+ 219:             .sort()
+ 220:             .reduce((sorted, key) => {
+ 221:                 sorted[key] = sortObjectKeys(obj[key]);
+ 222:                 return sorted;
+ 223:             }, {});
+ 224:     }
+ 225:     return obj;
+ 226: }
+ 227: ```
+ 228: 
+ 229: **Features**:
+ 230: - Recursive sorting (handles nested objects)
+ 231: - Preserves array order
+ 232: - Maintains primitive values
+ 233: - Optional feature (checkbox)
+ 234: 
+ 235: ### 3. JSONL Conversion
+ 236: ```javascript
+ 237: function convertToJSONL(input) {
+ 238:     const parsed = JSON.parse(input);
+ 239:     
+ 240:     if (!Array.isArray(parsed)) {
+ 241:         throw new Error('Input must be a JSON array...');
+ 242:     }
+ 243:     
+ 244:     return parsed.map(item => JSON.stringify(item)).join('\n');
+ 245: }
+ 246: ```
+ 247: 
+ 248: **Validation**:
+ 249: - Ensures input is array
+ 250: - Checks for empty arrays
+ 251: - Each line is valid JSON
+ 252: - Proper newline separation
+ 253: 
+ 254: ### 4. Error Handling
+ 255: ```javascript
+ 256: try {
+ 257:     const startTime = performance.now();
+ 258:     let result;
+ 259:     
+ 260:     switch (currentMode) {
+ 261:         case 'format': result = formatJSON(input); break;
+ 262:         case 'jsonl': result = convertToJSONL(input); break;
+ 263:         case 'validate': result = validateJSON(input); break;
+ 264:     }
+ 265:     
+ 266:     const endTime = performance.now();
+ 267:     // Success handling...
+ 268:     
+ 269: } catch (error) {
+ 270:     showError(error);
+ 271:     outputText.value = '';
+ 272:     showStatus('Error: ' + error.message, 'error');
+ 273: }
+ 274: ```
+ 275: 
+ 276: **Benefits**:
+ 277: - Graceful error handling
+ 278: - User-friendly error messages
+ 279: - Performance timing
+ 280: - Clean error recovery
+ 281: 
+ 282: ## ?? Comparison: Old vs New
+ 283: 
+ 284: | Feature | Old (Inline) | New (Standalone) | Improvement |
+ 285: |---------|-------------|------------------|-------------|
+ 286: | **Lines of Code** | ~30 | 600+ | 20x more features |
+ 287: | **Modes** | 1 (Format only) | 3 (Format, JSONL, Validate) | 3x functionality |
+ 288: | **Options** | 1 (Indentation) | 2 (Indentation + Sort) | 2x customization |
+ 289: | **Error Display** | Basic | Detailed with position | Professional |
+ 290: | **Statistics** | None | 4 metrics + depth | Analytical |
+ 291: | **JSONL Support** | No | Yes | New feature |
+ 292: | **Info Panel** | No | Yes (context-aware) | Educational |
+ 293: | **Example Data** | No | Yes | User-friendly |
+ 294: | **Key Sorting** | No | Yes | Professional |
+ 295: | **Validation Mode** | No | Yes | New feature |
+ 296: 
+ 297: ## ?? Educational Value
+ 298: 
+ 299: ### JSONL Format Explanation
+ 300: The tool includes educational information about JSONL:
+ 301: 
+ 302: ```
+ 303: Convert JSON arrays to JSON Lines format (JSONL). 
+ 304: Each array element becomes a separate line of valid JSON. 
+ 305: Perfect for streaming data and big data processing.
+ 306: ```
+ 307: 
+ 308: **Teaches Users**:
+ 309: - What JSONL is
+ 310: - When to use it
+ 311: - Why it's useful
+ 312: - Real-world applications
+ 313: 
+ 314: ### JSON Structure Analysis
+ 315: Shows users metrics about their JSON:
+ 316: - How nested their data is (depth)
+ 317: - Number of objects vs arrays
+ 318: - Total key count
+ 319: - Structure complexity
+ 320: 
+ 321: **Benefits**:
+ 322: - Understand JSON structure
+ 323: - Optimize data models
+ 324: - Identify over-nesting
+ 325: - Learn best practices
+ 326: 
+ 327: ## ?? Performance Characteristics
+ 328: 
+ 329: ### Processing Speed
+ 330: - **Small JSON** (<1KB): <5ms
+ 331: - **Medium JSON** (10-100KB): 5-20ms
+ 332: - **Large JSON** (1MB+): 50-200ms
+ 333: 
+ 334: ### Memory Efficiency
+ 335: - Uses native `JSON.parse()` (highly optimized)
+ 336: - Single-pass analysis
+ 337: - No intermediate string copies
+ 338: - Efficient for large files
+ 339: 
+ 340: ### Browser Compatibility
+ 341: - Modern browsers (ES6+)
+ 342: - Uses native JSON methods
+ 343: - No polyfills needed
+ 344: - Works offline (no server calls)
+ 345: 
+ 346: ## ?? Use Case Examples
+ 347: 
+ 348: ### 1. API Response Formatting
+ 349: **Scenario**: You receive minified JSON from an API
+ 350: 
+ 351: **Input**:
+ 352: ```json
+ 353: {"status":"ok","data":[{"id":1,"name":"Alice"},{"id":2,"name":"Bob"}],"count":2}
+ 354: ```
+ 355: 
+ 356: **Process**: Format mode with 2-space indent
+ 357: 
+ 358: **Output**:
+ 359: ```json
+ 360: {
+ 361:   "status": "ok",
+ 362:   "data": [
+ 363:     {
+ 364:       "id": 1,
+ 365:       "name": "Alice"
+ 366:     },
+ 367:     {
+ 368:       "id": 2,
+ 369:       "name": "Bob"
+ 370:     }
+ 371:   ],
+ 372:   "count": 2
+ 373: }
+ 374: ```
+ 375: 
+ 376: ### 2. Database Import Preparation
+ 377: **Scenario**: Convert user array to JSONL for MongoDB import
+ 378: 
+ 379: **Input**:
+ 380: ```json
+ 381: [
+ 382:   {"username": "alice", "email": "alice@example.com"},
+ 383:   {"username": "bob", "email": "bob@example.com"}
+ 384: ]
+ 385: ```
+ 386: 
+ 387: **Process**: JSONL mode
+ 388: 
+ 389: **Output**:
+ 390: ```
+ 391: {"username":"alice","email":"alice@example.com"}
+ 392: {"username":"bob","email":"bob@example.com"}
+ 393: ```
+ 394: 
+ 395: **Command**: `mongoimport --file users.jsonl --collection users`
+ 396: 
+ 397: ### 3. Config File Standardization
+ 398: **Scenario**: Standardize team's JSON configs with sorted keys
+ 399: 
+ 400: **Input**:
+ 401: ```json
+ 402: {"port":3000,"host":"localhost","debug":true,"name":"API"}
+ 403: ```
+ 404: 
+ 405: **Process**: Format mode with "Sort keys" checked
+ 406: 
+ 407: **Output**:
+ 408: ```json
+ 409: {
+ 410:   "debug": true,
+ 411:   "host": "localhost",
+ 412:   "name": "API",
+ 413:   "port": 3000
+ 414: }
+ 415: ```
+ 416: 
+ 417: **Benefit**: Easier git diffs, consistent formatting
+ 418: 
+ 419: ## ?? Security & Privacy
+ 420: 
+ 421: ### Client-Side Only
+ 422: - All processing in browser
+ 423: - No data sent to servers
+ 424: - JSON payloads are not sent to third-party APIs
+ 425: - Google Analytics is present for page-level traffic analytics
+ 426: 
+ 427: ### Safe Error Handling
+ 428: - Errors don't expose system info
+ 429: - No stack traces to users
+ 430: - Sanitized error messages
+ 431: - Prevents injection attacks
+ 432: 
+ 433: ## ?? Testing Checklist
+ 434: 
+ 435: ### Format Mode
+ 436: - [x] 2-space indentation works
+ 437: - [x] 4-space indentation works
+ 438: - [x] Tab indentation works
+ 439: - [x] Minified output (0 spaces) works
+ 440: - [x] Key sorting preserves values
+ 441: - [x] Nested objects format correctly
+ 442: - [x] Arrays format correctly
+ 443: - [x] Special characters preserved
+ 444: - [x] Unicode handled properly
+ 445: - [x] Empty objects/arrays work
+ 446: 
+ 447: ### JSONL Mode
+ 448: - [x] Array conversion works
+ 449: - [x] Error on non-array input
+ 450: - [x] Error on empty array
+ 451: - [x] Each line is valid JSON
+ 452: - [x] Nested objects handled
+ 453: - [x] Statistics panel updates correctly
+ 454: - [x] Large arrays process correctly
+ 455: 
+ 456: ### Validate Mode
+ 457: - [x] Valid JSON shows success
+ 458: - [x] Invalid JSON shows error
+ 459: - [x] Error position detected
+ 460: - [x] Statistics display
+ 461: - [x] Type identification works
+ 462: - [x] Depth calculation correct
+ 463: 
+ 464: ### UI/UX
+ 465: - [x] Mode tabs switch correctly
+ 466: - [x] Info panel updates per mode
+ 467: - [x] Options panel hides in non-format modes
+ 468: - [x] Error panel shows/hides properly
+ 469: - [x] Stats panel toggles correctly
+ 470: - [x] Example button loads data
+ 471: - [x] Copy button works
+ 472: - [x] Clear button resets all
+ 473: - [x] Back button returns to index
+ 474: - [x] Keyboard shortcuts work (Ctrl+Enter)
+ 475: - [x] Theme switching works
+ 476: - [x] Accent colors apply
+ 477: - [x] Mobile responsive
+ 478: 
+ 479: ### Edge Cases
+ 480: - [x] Empty input handled
+ 481: - [x] Whitespace-only input handled
+ 482: - [x] Very large JSON (1MB+) works
+ 483: - [x] Deeply nested JSON (10+ levels) works
+ 484: - [x] Special characters in keys work
+ 485: - [x] null values preserved
+ 486: - [x] Boolean values preserved
+ 487: - [x] Number precision maintained
+ 488: 
+ 489: ## ?? Bonus Features
+ 490: 
+ 491: ### 1. Example Data Button
+ 492: One-click to load realistic example JSON for testing
+ 493: 
+ 494: ### 2. Processing Time Display
+ 495: Shows performance metrics: "Processed in 15ms"
+ 496: 
+ 497: ### 3. Dual Character Counters
+ 498: Both input and output show char + line count
+ 499: 
+ 500: ### 4. Context-Aware Button Labels
+ 501: "Process" vs "Validate" changes based on mode
+ 502: 
+ 503: ### 5. Smart Error Recovery
+ 504: Errors clear automatically on next successful process
+ 505: 
+ 506: ## ?? Documentation Integration
+ 507: 
+ 508: ### Updated Files
+ 509: - `index.html` - Added JSON Tool to tools array
+ 510: - `json-tool.html` - New standalone page created
+ 511: - `JSON-TOOL-MIGRATION.md` - This documentation
+ 512: 
+ 513: ### Navigation Pattern
+ 514: ```javascript
+ 515: // From index.html
+ 516: if (!tool.function) {
+ 517:     window.location.href = `${tool.id}.html`;
+ 518: }
+ 519: 
+ 520: // Tool card click -> json-tool.html
+ 521: ```
+ 522: 
+ 523: ## ?? Migration from Inline
+ 524: 
+ 525: ### Before (Inline in index.html)
+ 526: ```javascript
+ 527: {
+ 528:     id: 'json-formatter',
+ 529:     name: 'JSON Formatter',
+ 530:     function: (input, options) => {
+ 531:         const obj = JSON.parse(input);
+ 532:         const indent = parseInt(options.indent) || 2;
+ 533:         return JSON.stringify(obj, null, indent);
+ 534:     },
+ 535:     options: [...]
+ 536: }
+ 537: ```
+ 538: 
+ 539: **Limitations**:
+ 540: - Single mode only
+ 541: - Basic error handling
+ 542: - No JSONL support
+ 543: - No validation mode
+ 544: - No statistics
+ 545: - No key sorting
+ 546: 
+ 547: ### After (Standalone Page)
+ 548: ```javascript
+ 549: {
+ 550:     id: 'json-tool',
+ 551:     name: 'JSON Tool',
+ 552:     icon: 'data_object',
+ 553:     category: 'data',
+ 554:     description: 'Format, validate, and convert JSON to JSONL format'
+ 555: }
+ 556: ```
+ 557: 
+ 558: **Benefits**:
+ 559: - Three operational modes
+ 560: - Advanced error handling
+ 561: - JSONL conversion
+ 562: - Structure analysis
+ 563: - Educational info panels
+ 564: - Professional UI
+ 565: 
+ 566: ## ?? Future Enhancement Ideas
+ 567: 
+ 568: ### Phase 1 (Completed) ?
+ 569: - Format JSON
+ 570: - Validate JSON
+ 571: - Convert to JSONL
+ 572: - Sort keys
+ 573: - Show statistics
+ 574: 
+ 575: ### Phase 2 (Potential)
+ 576: - JSONL to JSON (reverse conversion)
+ 577: - JSON Schema validation
+ 578: - JSONPath query support
+ 579: - JSON diff/compare tool
+ 580: - Bulk file processing
+ 581: 
+ 582: ### Phase 3 (Advanced)
+ 583: - JSON to YAML conversion
+ 584: - JSON to CSV conversion
+ 585: - Custom formatter rules
+ 586: - Syntax highlighting
+ 587: - Auto-save drafts
+ 588: 
+ 589: ## ?? Architecture Benefits
+ 590: 
+ 591: ### Scalability
+ 592: - Independent standalone page
+ 593: - No impact on index.html size
+ 594: - Can add features without bloating main app
+ 595: - Easy to maintain and update
+ 596: 
+ 597: ### User Experience
+ 598: - Fast loading (no unnecessary code)
+ 599: - Clear mode separation
+ 600: - Educational info panels
+ 601: - Professional error handling
+ 602: 
+ 603: ### Developer Experience
+ 604: - Clean code organization
+ 605: - Well-documented functions
+ 606: - Easy to test individual modes
+ 607: - Clear separation of concerns
+ 608: 
+ 609: ## ? Summary
+ 610: 
+ 611: **Status**: ? Production Ready
+ 612: 
+ 613: **Tool Capability Score**: ?????
+ 614: - Format JSON: ?
+ 615: - Validate JSON: ?
+ 616: - Convert to JSONL: ?
+ 617: - Sort Keys: ?
+ 618: - Analyze Structure: ?
+ 619: - Error Handling: ?
+ 620: - User Education: ?
+ 621: 
+ 622: **Lines of Code**: 600+
+ 623: **Modes**: 3
+ 624: **Options**: 2
+ 625: **Statistics**: 4
+ 626: **Error Messages**: Detailed with position
+ 627: 
+ 628: **Complexity**: High (but well-organized)
+ 629: **Maintainability**: Excellent
+ 630: **User Experience**: Professional
+ 631: **Feature Set**: Comprehensive
+ 632: 
+ 633: ---
+ 634: 
+ 635: **Next Migration Target**: Consider tools that would benefit from multi-mode operation similar to JSON Tool's architecture! ??
+ 636: 
+```
+----- END FILE: JSON-TOOL-MIGRATION.md -----
+
+----- BEGIN FILE: docs/doc-json-tool.md -----
+```markdown
+   1: # JSON Tool: Full Technical Walkthrough
+   2: 
+   3: This document explains how `json-tool.html` works internally, including rendering structure, state flow, processing algorithms, error handling, and integration with shared site modules.
+   4: 
+   5: ## Scope
+   6: 
+   7: Primary implementation:
+   8: 
+   9: - `json-tool.html`
+  10: 
+  11: Shared dependencies and integration points:
+  12: 
+  13: - `css/style.css`
+  14: - `js/theme.js`
+  15: - `index.html`
+  16: - `sitemap.xml`
+  17: 
+  18: ## What the Tool Does
+  19: 
+  20: JSON Tool is a browser-side utility with three modes:
+  21: 
+  22: - **Format JSON**: parse + pretty-print JSON with indentation and optional recursive key sorting
+  23: - **JSON to JSONL**: parse JSON arrays and emit one compact JSON object per line
+  24: - **Validate Only**: parse JSON and return a validation summary with structure statistics
+  25: 
+  26: The tool never sends user data to a backend; all processing is done in-page with native JavaScript (`JSON.parse`, `JSON.stringify`).
+  27: 
+  28: ## Page Composition (`json-tool.html`)
+  29: 
+  30: The page includes:
+  31: 
+  32: - Shared site shell (logo, network links, accent selector, theme toggle, footer)
+  33: - Tool header actions (`Back`, `Example`, `Copy`, `Clear`, `Process`)
+  34: - Mode tab strip (`format`, `jsonl`, `validate`)
+  35: - Context info panel (`#infoTitle`, `#infoText`)
+  36: - Error panel (`#errorPanel`, `#errorMessage`)
+  37: - Statistics panel (`#statsPanel`) with object/array/key/depth counters
+  38: - Format-only options panel (`#optionsPanel`) for indentation and key sorting
+  39: - Input/output textareas and status bar
+  40: - Inline script for all tool logic
+  41: 
+  42: ## Runtime Lifecycle
+  43: 
+  44: ### 1. Early theme bootstrap
+  45: 
+  46: Before stylesheet rendering, an inline `<script>` in `<head>`:
+  47: 
+  48: - resolves theme (`light`/`dark`) from `localStorage.theme` or `prefers-color-scheme`
+  49: - resolves accent from `localStorage.accentColor`
+  50: - normalizes short hex accents (`#abc` -> `#aabbcc`)
+  51: - writes `data-theme` and accent CSS vars to avoid flash of wrong theme
+  52: 
+  53: ### 2. Shared module initialization
+  54: 
+  55: `js/theme.js` loads after the page body and handles:
+  56: 
+  57: - theme toggle button behavior
+  58: - accent dropdown options and persistence
+  59: - seasonal snow toggle/canvas behavior in holiday window
+  60: 
+  61: ### 3. JSON Tool script setup
+  62: 
+  63: The inline JSON Tool script:
+  64: 
+  65: 1. Caches DOM handles for all controls and outputs.
+  66: 2. Sets mutable runtime state with `currentMode = 'format'`.
+  67: 3. Defines mode metadata (`modeInfo`) and sample payload (`exampleJSON`).
+  68: 4. Registers event listeners for tabs, actions, typing, and keyboard shortcuts.
+  69: 5. Calls `updateStats()` and `updateModeUI()` for initial render.
+  70: 
+  71: ## State Model
+  72: 
+  73: The tool is lightweight and DOM-driven:
+  74: 
+  75: - **State variable**: `currentMode`
+  76: - **Input state**: `inputText.value`
+  77: - **Output state**: `outputText.value`
+  78: - **Mode presentation**: tab active classes + `modeInfo` driven labels/text
+  79: - **Status state**: `#statusMessage` text + class (`success`, `warning`, `error`)
+  80: - **Timing state**: `#processingTime` text
+  81: - **Stats state**: `#statsPanel` values + display mode
+  82: 
+  83: No central store, framework, or persistence layer is used for tool data.
+  84: 
+  85: ## Mode Switching Internals
+  86: 
+  87: Each `.mode-tab` sets `currentMode = tab.dataset.mode` and triggers `updateModeUI()`.
+  88: 
+  89: `updateModeUI()`:
+  90: 
+  91: - updates info panel title/body from `modeInfo[currentMode]`
+  92: - updates output label text
+  93: - shows format options only when mode is `format`
+  94: - swaps process button icon/text (`play_arrow`/`check_circle`, `Process`/`Validate`)
+  95: 
+  96: ## Core Processing Algorithms
+  97: 
+  98: ### 1. Recursive structure analysis (`analyzeJSON`)
+  99: 
+ 100: `analyzeJSON(obj, depth = 0, stats = null)` traverses parsed JSON recursively and tracks:
+ 101: 
+ 102: - object count
+ 103: - array count
+ 104: - total key count
+ 105: - maximum nesting depth
+ 106: 
+ 107: Implementation details:
+ 108: 
+ 109: - arrays increment `stats.arrays` and recurse over each element
+ 110: - objects increment `stats.objects`, add `Object.keys(obj).length`, and recurse over values
+ 111: - primitives only update depth
+ 112: 
+ 113: This function is reused by all three modes.
+ 114: 
+ 115: ### 2. Recursive key sorting (`sortObjectKeys`)
+ 116: 
+ 117: When `Sort object keys alphabetically` is enabled in Format mode:
+ 118: 
+ 119: - arrays preserve order while each item is recursively sorted
+ 120: - objects are rebuilt from sorted key lists
+ 121: - primitives pass through unchanged
+ 122: 
+ 123: This guarantees deterministic key ordering across nested structures.
+ 124: 
+ 125: ### 3. Format mode (`formatJSON`)
+ 126: 
+ 127: Flow:
+ 128: 
+ 129: 1. Parse with `JSON.parse(input)`.
+ 130: 2. Optionally apply recursive sort.
+ 131: 3. Resolve indentation:
+ 132:    - `tab` -> `'\t'`
+ 133:    - `0` -> minified output
+ 134:    - numeric string -> `parseInt(...)`
+ 135: 4. Analyze JSON and update stats panel.
+ 136: 5. Return `JSON.stringify(obj, null, indent)`.
+ 137: 
+ 138: ### 4. JSONL mode (`convertToJSONL`)
+ 139: 
+ 140: Flow:
+ 141: 
+ 142: 1. Parse input JSON.
+ 143: 2. Enforce array input; throw if input is not an array.
+ 144: 3. Reject empty arrays with explicit error.
+ 145: 4. Analyze parsed array and display stats.
+ 146: 5. Return `parsed.map(item => JSON.stringify(item)).join('\n')`.
+ 147: 
+ 148: Output is newline-delimited compact JSON objects, suitable for line-oriented ingestion.
+ 149: 
+ 150: ### 5. Validate mode (`validateJSON`)
+ 151: 
+ 152: Flow:
+ 153: 
+ 154: 1. Parse input.
+ 155: 2. Analyze structure.
+ 156: 3. Infer top-level type (`Array`, `Object`, or primitive type).
+ 157: 4. Return a plain-text validation summary.
+ 158: 
+ 159: This mode confirms parse validity without reformatting into canonical JSON output.
+ 160: 
+ 161: ## Processing Pipeline (`processJSON`)
+ 162: 
+ 163: `processJSON()` is the orchestration function for the `Process` button and Ctrl/Cmd+Enter.
+ 164: 
+ 165: Execution path:
+ 166: 
+ 167: 1. Trim input; if empty, show warning and stop.
+ 168: 2. Hide stale error panel.
+ 169: 3. Start timer (`performance.now()`).
+ 170: 4. Dispatch by mode:
+ 171:    - `format` -> `formatJSON`
+ 172:    - `jsonl` -> `convertToJSONL`
+ 173:    - `validate` -> `validateJSON`
+ 174: 5. Write output text.
+ 175: 6. Show success status.
+ 176: 7. Show elapsed time in milliseconds.
+ 177: 8. Refresh char/line stats.
+ 178: 
+ 179: Failure path:
+ 180: 
+ 181: - catches thrown errors
+ 182: - logs to console
+ 183: - shows formatted error panel (`showError`)
+ 184: - clears output
+ 185: - updates status and timing to failure state
+ 186: 
+ 187: ## Error Handling Details
+ 188: 
+ 189: `showError(error)` enhances parse errors by extracting `"position N"` from the native JSON parser message:
+ 190: 
+ 191: - maps character offset to line/column using substring split by `\n`
+ 192: - appends `Location: Line X, Column Y` to the user-facing message
+ 193: - shows `#errorPanel`
+ 194: - hides stats panel to avoid stale metrics
+ 195: 
+ 196: `hideError()` removes the error panel when a new run starts.
+ 197: 
+ 198: ## Auxiliary Actions
+ 199: 
+ 200: - `loadExample()` loads a representative nested example payload.
+ 201: - `clearAll()` resets input/output, hides error + stats, and restores status.
+ 202: - `copyToClipboard()` copies output if non-empty and reports success/failure.
+ 203: - `updateStats()` updates input/output char and line counters continuously.
+ 204: 
+ 205: ## Event Wiring
+ 206: 
+ 207: Bound listeners:
+ 208: 
+ 209: - mode tab `click` -> update mode + UI
+ 210: - process button `click` -> `processJSON()`
+ 211: - copy button `click` -> `copyToClipboard()`
+ 212: - clear button `click` -> `clearAll()`
+ 213: - example button `click` -> `loadExample()`
+ 214: - back button `click` -> navigate to `index.html`
+ 215: - input textarea `input` -> `updateStats()`
+ 216: - input textarea `keydown` with Ctrl/Cmd+Enter -> `processJSON()`
+ 217: 
+ 218: ## Site Integration
+ 219: 
+ 220: ### `index.html`
+ 221: 
+ 222: Tool registry includes:
+ 223: 
+ 224: - `id: 'json-tool'`
+ 225: - card metadata for icon/category/description
+ 226: 
+ 227: Card navigation resolves to `json-tool.html`.
+ 228: 
+ 229: ### `sitemap.xml`
+ 230: 
+ 231: Includes `https://text-utils.net/json-tool.html`.
+ 232: 
+ 233: ### Shared styling
+ 234: 
+ 235: The tool uses global tokens/components from `css/style.css` and page-local CSS for:
+ 236: 
+ 237: - mode tabs
+ 238: - info/error panel styling
+ 239: - JSON stats grid
+ 240: 
+ 241: ## Edge Cases and Current Limitations
+ 242: 
+ 243: - JSONL mode only accepts top-level arrays.
+ 244: - Empty arrays are intentionally rejected in JSONL conversion.
+ 245: - Empty input shows a warning and clears stale output/error/stats.
+ 246: - Inputs larger than 5MB are rejected before parsing to avoid freezing the page.
+ 247: - Very deeply nested JSON is rejected with explicit depth-limit errors during analysis/sorting.
+ 248: - Clipboard API requires compatible browser permissions/context.
+ 249: - Parser and serializer are native JSON only (no comments, trailing commas, JSON5 features).
+ 250: 
+ 251: ## Extension Points
+ 252: 
+ 253: 1. Add new modes by extending `modeInfo`, tabs, and `processJSON()` dispatch.
+ 254: 2. Add reverse conversion (`JSONL -> JSON array`) as a fourth mode.
+ 255: 3. Add schema validation (`ajv`-style) if external dependency policy changes.
+ 256: 4. Add syntax-highlighted output panel for readability on very large objects.
+ 257: 5. Add chunked processing for very large arrays if performance becomes an issue.
+ 258: 
+ 259: ## Quick Verification Checklist
+ 260: 
+ 261: - Format mode: all indentation options and key sorting
+ 262: - JSONL mode: valid arrays, non-array error, empty-array error
+ 263: - Validate mode: valid summary + invalid syntax diagnostics
+ 264: - Error position mapping: line/column shown for malformed input
+ 265: - Stats panel visibility and values across mode changes
+ 266: - Copy/Clear/Example actions
+ 267: - Ctrl/Cmd+Enter shortcut
+ 268: - Theme/accent persistence and responsiveness on mobile widths
+```
+----- END FILE: docs/doc-json-tool.md -----
+
+## Referenced Text Excerpts
+
+----- BEGIN EXCERPT: INDEX-SIMPLIFICATION.md | Section: Current Standalone Tools (4) (lines 91-96) -----
+```text
+  91: ### Current Standalone Tools (4)
+  92: 1. ? **case-converter.html** - Text case transformations
+  93: 2. ? **text-info.html** - Text analysis & readability
+  94: 3. ? **hashing-tool.html** - Encoding & hashing (16 algorithms)
+  95: 4. ? **json-tool.html** - JSON formatting, validation, JSONL conversion
+```
+----- END EXCERPT: INDEX-SIMPLIFICATION.md | Section: Current Standalone Tools (4) (lines 91-96) -----
+
+----- BEGIN EXCERPT: INDEX-SIMPLIFICATION.md | Section: File Structure (lines 108-122) -----
+```text
+ 108: ## File Structure
+ 109: 
+ 110: ```
+ 111: text-utils/
+ 112: ??? index.html                 (Dashboard - 200 lines)
+ 113: ??? case-converter.html        (Standalone - 400 lines)
+ 114: ??? text-info.html             (Standalone - 450 lines)
+ 115: ??? hashing-tool.html          (Standalone - 600 lines)
+ 116: ??? json-tool.html             (Standalone - 600 lines)
+ 117: ??? css/
+ 118: ?   ??? style.css             (Shared - 400 lines)
+ 119: ??? js/
+ 120:     ??? theme.js              (Shared - 100 lines)
+ 121: ```
+```
+----- END EXCERPT: INDEX-SIMPLIFICATION.md | Section: File Structure (lines 108-122) -----
+
+----- BEGIN EXCERPT: LINE-OPERATIONS-MIGRATION.md | Section: ? Summary (lines 597-639) -----
+```text
+ 597: ## ? Summary
+ 598: 
+ 599: **Status**: ? Production Ready
+ 600: 
+ 601: **Feature Completeness**: 100%
+ 602: - All original features preserved
+ 603: - UI modernized
+ 604: - Performance optimized
+ 605: - Fully documented
+ 606: 
+ 607: **Code Quality**: Excellent
+ 608: - Clean architecture
+ 609: - Well-commented
+ 610: - No dependencies
+ 611: - Security-conscious
+ 612: 
+ 613: **User Experience**: Professional
+ 614: - Intuitive layout
+ 615: - Real-time feedback
+ 616: - Keyboard shortcuts
+ 617: - Responsive design
+ 618: 
+ 619: **Scalability**: Ready
+ 620: - Follows established patterns
+ 621: - Easy to add features
+ 622: - Independent tool file
+ 623: - Minimal index.html impact
+ 624: 
+ 625: ---
+ 626: 
+ 627: **Files**:
+ 628: - Created: `line-operations.html` (750 lines)
+ 629: - Updated: `index.html` (added tool definition)
+ 630: 
+ 631: **Tool Count**: 5 standalone tools
+ 632: 1. Case Converter
+ 633: 2. Text Info
+ 634: 3. Line Operations ? NEW
+ 635: 4. Hashing Tool
+ 636: 5. JSON Tool
+ 637: 
+ 638: **Ready for production use!** ??
+```
+----- END EXCERPT: LINE-OPERATIONS-MIGRATION.md | Section: ? Summary (lines 597-639) -----
+
+----- BEGIN EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
+```text
+   7: ## Current Tool Set
+   8: 
+   9: The dashboard (`index.html`) currently exposes these tools:
+  10: 
+  11: | Tool | File | Category | Description |
+  12: | --- | --- | --- | --- |
+  13: | Case Converter | `case-converter.html` | Text | Convert text between different letter cases. |
+  14: | Text Info | `text-info.html` | Text | Show detailed text metrics and readability info. |
+  15: | Line Operations | `line-operations.html` | Text | Sort, filter, and transform lines of text. |
+  16: | Find and Replace | `find-replace.html` | Text | Search and replace text with regex support. |
+  17: | Font Chooser | `font-chooser.html` | Text | Preview fonts, contrast, and CSS snippets. |
+  18: | IP Info | `ip-info.html` | Data | Show public IP, provider, location, and device details. |
+  19: | Font Awesome Chooser | `font-awesome-chooser.html` | Data | Browse Font Awesome icons and generate snippets. |
+  20: | Google Icons Chooser | `google-icons-chooser.html` | Data | Browse Material icons and generate snippets. |
+  21: | Color Chooser | `color-chooser.html` | Data | Pick colors, match closest named colors, and export snippets/PNG. |
+  22: | CSS Unit Converter | `css-unit-converter.html` | Convert | Convert CSS units (`px`, `em`, `rem`, `%`, `pt`, `vw`, `vh`). |
+  23: | Date/Time Info | `date-time-info.html` | Data | Display date/time formats, calendar views, and timezone output. |
+  24: | Random Number Generator | `random-numbers.html` | Data | Generate random numbers with range/uniqueness/sorting options. |
+  25: | Hashing Tool | `hashing-tool.html` | Convert | Hash, encode, and decode text with multiple algorithms. |
+  26: | JSON Tool | `json-tool.html` | Data | Format, validate, and convert JSON/JSONL. |
+  27: | XML Sitemap Generator | `sitemap-generator.html` | Data | Crawl a site and generate `sitemap.xml` output. |
+```
+----- END EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
+
+----- BEGIN EXCERPT: README.md | Section: Helper Scripts (lines 95-106) -----
+```text
+  95: ## Helper Scripts
+  96: 
+  97: The repo includes maintenance scripts for targeted context/code dumps:
+  98: 
+  99: - `scripts/code-dump-tool.py` (generic: any tool page via `--tool`)
+ 100: - `scripts/code-dump-case-converter.py` (wrapper for Case Converter)
+ 101: - `scripts/code-dump-color-chooser.py` (wrapper for Color Chooser)
+ 102: - `scripts/code-dump-json-tool.py` (wrapper for JSON Tool)
+ 103: - `scripts/code-dump-case-converter.ps1` (legacy PowerShell workflow)
+ 104: 
+ 105: Outputs are written to the `context/` folder by default.
+```
+----- END EXCERPT: README.md | Section: Helper Scripts (lines 95-106) -----
+
+----- BEGIN EXCERPT: TROUBLESHOOTING.md | Section: 1. Complete Tools Array (lines 34-74) -----
+```text
+  34: #### 1. Complete Tools Array
+  35: ```javascript
+  36: const tools = [
+  37:     {
+  38:         id: 'case-converter',
+  39:         name: 'Case Converter',
+  40:         icon: 'text_format',
+  41:         category: 'text',
+  42:         description: 'Convert text between different cases'
+  43:     },
+  44:     {
+  45:         id: 'text-info',
+  46:         name: 'Text Info',
+  47:         icon: 'analytics',
+  48:         category: 'text',
+  49:         description: 'Detailed statistics and readability scores for text'
+  50:     },
+  51:     {
+  52:         id: 'line-operations',
+  53:         name: 'Line Operations',
+  54:         icon: 'reorder',
+  55:         category: 'text',
+  56:         description: 'Sort, filter, and manipulate lines of text'
+  57:     },
+  58:     {
+  59:         id: 'hashing-tool',
+  60:         name: 'Hashing Tool',
+  61:         icon: 'lock',
+  62:         category: 'convert',
+  63:         description: 'Hash, encode, and decode text using various algorithms and formats'
+  64:     },
+  65:     {
+  66:         id: 'json-tool',
+  67:         name: 'JSON Tool',
+  68:         icon: 'data_object',
+  69:         category: 'data',
+  70:         description: 'Format, validate, and convert JSON to JSONL format'
+  71:     }
+  72: ];
+  73: ```
+```
+----- END EXCERPT: TROUBLESHOOTING.md | Section: 1. Complete Tools Array (lines 34-74) -----
+
+----- BEGIN EXCERPT: TROUBLESHOOTING.md | Section: Check 1: Tools Display (lines 104-112) -----
+```text
+ 104: #### Check 1: Tools Display
+ 105: ? Open `index.html` in browser
+ 106: ? Should see 5 tool cards:
+ 107:    - Case Converter
+ 108:    - Text Info
+ 109:    - Line Operations
+ 110:    - Hashing Tool
+ 111:    - JSON Tool
+```
+----- END EXCERPT: TROUBLESHOOTING.md | Section: Check 1: Tools Display (lines 104-112) -----

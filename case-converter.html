@@ -227,7 +227,7 @@
 
             try {
                 if (navigator.clipboard && window.isSecureContext) {
-                    await navigator.clipboard.writeText(outputText.value);
+                    await window.textUtilsClipboardWrite(outputText.value);
                 } else if (!fallbackCopy(outputText.value)) {
                     throw new Error('Clipboard unavailable');
                 }

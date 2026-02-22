@@ -241,27 +241,27 @@
                         <h2>Line Operations</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="undoBtn" class="btn btn-secondary" disabled>
+                        <button type="button" id="undoBtn" class="btn btn-secondary" disabled>
                             <span class="material-icons">undo</span>
                             Undo
                         </button>
-                        <button id="redoBtn" class="btn btn-secondary" disabled>
+                        <button type="button" id="redoBtn" class="btn btn-secondary" disabled>
                             <span class="material-icons">redo</span>
                             Redo
                         </button>
-                        <button id="copyBtn" class="btn btn-secondary">
+                        <button type="button" id="copyBtn" class="btn btn-secondary">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
-                        <button id="pasteBtn" class="btn btn-secondary">
+                        <button type="button" id="pasteBtn" class="btn btn-secondary">
                             <span class="material-icons">content_paste</span>
                             Paste
                         </button>
-                        <button id="clearBtn" class="btn btn-secondary">
+                        <button type="button" id="clearBtn" class="btn btn-secondary">
                             <span class="material-icons">clear</span>
                             Clear
                         </button>
@@ -295,27 +295,27 @@
                         Sorting
                     </h4>
                     <div class="button-grid">
-                        <button class="btn-operation" data-action="sort-alpha">
+                        <button type="button" class="btn-operation" data-action="sort-alpha">
                             <span class="material-icons">sort_by_alpha</span>
                             A -> Z
                         </button>
-                        <button class="btn-operation" data-action="sort-alpha-desc">
+                        <button type="button" class="btn-operation" data-action="sort-alpha-desc">
                             <span class="material-icons">sort_by_alpha</span>
                             Z -> A
                         </button>
-                        <button class="btn-operation" data-action="sort-numeric">
+                        <button type="button" class="btn-operation" data-action="sort-numeric">
                             <span class="material-icons">filter_1</span>
                             1 -> 9
                         </button>
-                        <button class="btn-operation" data-action="sort-numeric-desc">
+                        <button type="button" class="btn-operation" data-action="sort-numeric-desc">
                             <span class="material-icons">filter_9_plus</span>
                             9 -> 1
                         </button>
-                        <button class="btn-operation" data-action="sort-length">
+                        <button type="button" class="btn-operation" data-action="sort-length">
                             <span class="material-icons">height</span>
                             By Length
                         </button>
-                        <button class="btn-operation" data-action="sort-natural">
+                        <button type="button" class="btn-operation" data-action="sort-natural">
                             <span class="material-icons">auto_awesome</span>
                             Natural
                         </button>
@@ -335,31 +335,31 @@
                         Basic Operations
                     </h4>
                     <div class="button-grid">
-                        <button class="btn-operation" data-action="reverse">
+                        <button type="button" class="btn-operation" data-action="reverse">
                             <span class="material-icons">flip</span>
                             Reverse
                         </button>
-                        <button class="btn-operation" data-action="shuffle">
+                        <button type="button" class="btn-operation" data-action="shuffle">
                             <span class="material-icons">shuffle</span>
                             Shuffle
                         </button>
-                        <button class="btn-operation" data-action="unique">
+                        <button type="button" class="btn-operation" data-action="unique">
                             <span class="material-icons">filter_list</span>
                             Remove Duplicates
                         </button>
-                        <button class="btn-operation" data-action="trim">
+                        <button type="button" class="btn-operation" data-action="trim">
                             <span class="material-icons">space_bar</span>
                             Trim Spaces
                         </button>
-                        <button class="btn-operation" data-action="empty">
+                        <button type="button" class="btn-operation" data-action="empty">
                             <span class="material-icons">delete_sweep</span>
                             Remove Empty
                         </button>
-                        <button class="btn-operation" data-action="unwrap">
+                        <button type="button" class="btn-operation" data-action="unwrap">
                             <span class="material-icons">wrap_text</span>
                             Unwrap Lines
                         </button>
-                        <button class="btn-operation" data-action="remove-zerowidth">
+                        <button type="button" class="btn-operation" data-action="remove-zerowidth">
                             <span class="material-icons">clear_all</span>
                             Remove Zero-Width
                         </button>
@@ -374,11 +374,11 @@
                     <div class="input-row">
                         <label for="filterText">Filter:</label>
                         <input type="text" id="filterText" placeholder="Text to match...">
-                        <button class="btn-operation" data-action="filter-keep" style="width: auto;">
+                        <button type="button" class="btn-operation" data-action="filter-keep" style="width: auto;">
                             <span class="material-icons">check</span>
                             Keep
                         </button>
-                        <button class="btn-operation" data-action="filter-remove" style="width: auto;">
+                        <button type="button" class="btn-operation" data-action="filter-remove" style="width: auto;">
                             <span class="material-icons">close</span>
                             Remove
                         </button>
@@ -386,7 +386,7 @@
                     <div class="input-row">
                         <label for="prefix">Prefix:</label>
                         <input type="text" id="prefix" placeholder="Add to start...">
-                        <button class="btn-operation" data-action="add-prefix" style="width: auto;">
+                        <button type="button" class="btn-operation" data-action="add-prefix" style="width: auto;">
                             <span class="material-icons">keyboard_arrow_left</span>
                             Add
                         </button>
@@ -394,7 +394,7 @@
                     <div class="input-row">
                         <label for="suffix">Suffix:</label>
                         <input type="text" id="suffix" placeholder="Add to end...">
-                        <button class="btn-operation" data-action="add-suffix" style="width: auto;">
+                        <button type="button" class="btn-operation" data-action="add-suffix" style="width: auto;">
                             <span class="material-icons">keyboard_arrow_right</span>
                             Add
                         </button>
@@ -411,7 +411,7 @@
                         <input type="number" id="startNumber" value="1" style="width: 80px;">
                         <label for="stepNumber">Step:</label>
                         <input type="number" id="stepNumber" value="1" min="1" style="width: 80px;">
-                        <button class="btn-operation" data-action="number-lines" style="width: auto;">
+                        <button type="button" class="btn-operation" data-action="number-lines" style="width: auto;">
                             <span class="material-icons">format_list_numbered</span>
                             Number Lines
                         </button>
@@ -420,7 +420,7 @@
                         <label for="wrapLength">Wrap at:</label>
                         <input type="number" id="wrapLength" value="80" min="1" style="width: 80px;">
                         <span style="font-size: 0.875rem; color: var(--text-secondary);">characters</span>
-                        <button class="btn-operation" data-action="hardwrap" style="width: auto; margin-left: auto;">
+                        <button type="button" class="btn-operation" data-action="hardwrap" style="width: auto; margin-left: auto;">
                             <span class="material-icons">wrap_text</span>
                             Hard Wrap
                         </button>
@@ -781,7 +781,7 @@
                 return;
             }
             
-            await navigator.clipboard.writeText(inputText.value);
+            await window.textUtilsClipboardWrite(inputText.value);
             showStatus('Copied to clipboard!', 'success');
         }
 

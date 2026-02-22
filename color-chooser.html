@@ -103,15 +103,15 @@
                         <h2>Color Chooser</h2>
                     </div>
                     <div class="tool-actions">
-                        <button id="backButton" class="btn btn-secondary btn-compact">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
                             <span class="material-icons">arrow_back</span>
                             Back
                         </button>
-                        <button id="copyBtn" class="btn btn-secondary">
+                        <button type="button" id="copyBtn" class="btn btn-secondary">
                             <span class="material-icons">content_copy</span>
                             Copy
                         </button>
-                        <button id="savePngBtn" class="btn btn-secondary">
+                        <button type="button" id="savePngBtn" class="btn btn-secondary">
                             <span class="material-icons">save</span>
                             Save PNG
                         </button>
@@ -589,7 +589,7 @@
             const copySnippet = () => {
                 const txt = dom.colorOutput.textContent.trim();
                 if (!txt) { setStatus('Nothing to copy.', 'warning'); return; }
-                navigator.clipboard.writeText(txt).then(
+                window.textUtilsClipboardWrite(txt).then(
                     () => setStatus('Copied.', 'success'),
                     () => setStatus('Copy failed.', 'error')
                 );

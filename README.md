@@ -96,8 +96,11 @@ Serving from `http://localhost` avoids common browser security restrictions:
 
 The repo includes maintenance scripts for targeted context/code dumps:
 
-- `scripts/code-dump-case-converter.ps1`
-- `scripts/code-dump-color-chooser.py`
+- `scripts/code-dump-tool.py` (generic: any tool page via `--tool`)
+- `scripts/code-dump-case-converter.py` (wrapper for Case Converter)
+- `scripts/code-dump-color-chooser.py` (wrapper for Color Chooser)
+- `scripts/code-dump-json-tool.py` (wrapper for JSON Tool)
+- `scripts/code-dump-case-converter.ps1` (legacy PowerShell workflow)
 
 Outputs are written to the `context/` folder by default.
 
