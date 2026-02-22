@@ -31,34 +31,49 @@ The dashboard (`index.html`) currently exposes these tools:
 This project is static HTML/CSS/JS, so there is no build step.  
 Run a local server from the repo root instead of opening files directly with `file://`.
 
-### Python 3
+### Python 3 (Windows)
 
 ```powershell
-cd d:\GitHub\text-utils
-python -m http.server 8000
+cd path\to\text-utils
+py -3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-If `python` is not on PATH on Windows:
+If `py` is not available:
 
 ```powershell
-py -m http.server 8000
+python -m http.server 8000 --bind 127.0.0.1
+```
+
+### Python 3 (macOS / Linux)
+
+```bash
+cd /path/to/text-utils
+python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
 Then open:
 
 - `http://localhost:8000/`
+- `http://127.0.0.1:8000/`
 - `http://localhost:8000/index.html`
 
 Stop the server with `Ctrl+C`.
 
+Notes:
+
+- If port `8000` is already in use, choose another port (for example `8080`) and update the URL accordingly.
+- Use `localhost` or `127.0.0.1` for testing features that depend on a secure context. Opening the site via a LAN IP (for example `http://192.168.x.x:8000`) may disable some browser APIs.
+
 ## Why Use a Local Server Instead of `file://`
 
-Serving from `http://localhost` avoids common browser security restrictions:
+Serving from `http://localhost` / `http://127.0.0.1` avoids common browser security restrictions:
 
-- Clipboard APIs (`navigator.clipboard`) are more reliable in secure contexts.
+- Clipboard APIs (`navigator.clipboard`) and related browser copy behavior work best in secure contexts (localhost counts as secure in modern browsers).
 - Web Crypto (`crypto.subtle`) used by `hashing-tool.html` requires secure context for SHA hashing.
 - Fetch/network behavior is more consistent for tools that call remote APIs (`ip-info.html`, `sitemap-generator.html`).
 - Local storage and asset loading behave more consistently across browsers.
+
+Some tools also depend on external services or CDNs, so internet access may still be required even when running locally.
 
 ## Project Structure
 
