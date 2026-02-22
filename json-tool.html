@@ -43,6 +43,10 @@
     </script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonlint/1.6.0/jsonlint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/8.12.0/ajv7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jmespath.js/0.16.0/jmespath.min.js"></script>
     <style>
         .mode-tabs {
             display: flex;
@@ -158,6 +162,141 @@
             font-weight: 600;
             color: var(--text-primary);
         }
+
+        .aux-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .aux-panel {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .aux-panel.show {
+            display: block;
+        }
+
+        .aux-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .aux-panel-header label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .query-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+
+        .query-input:focus {
+            outline: 2px solid rgba(var(--accent-rgb), 0.25);
+            border-color: var(--accent);
+        }
+
+        .query-help {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .file-drop-zone {
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-tertiary);
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .file-drop-zone:hover,
+        .file-drop-zone.drag-active,
+        .file-drop-zone:focus-visible {
+            border-color: var(--accent);
+            background: rgba(var(--accent-rgb), 0.08);
+            outline: none;
+        }
+
+        .file-drop-main {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-drop-main .material-icons {
+            color: var(--accent);
+            font-size: 1.125rem;
+        }
+
+        .file-drop-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .file-drop-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .editor-shell {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+
+        .editor-shell .ace_editor {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .ace-host {
+            width: 100%;
+            height: 360px;
+        }
+
+        .ace-host.compact {
+            height: 180px;
+        }
+
+        @media (max-width: 900px) {
+            .aux-panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .ace-host {
+                height: 300px;
+            }
+
+            .ace-host.compact {
+                height: 160px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -222,7 +361,7 @@
                     </div>
                 </div>
 
-                <p class="tool-description">Format, validate, and convert JSON to JSONL format</p>
+                <p class="tool-description">Format, validate, query, and convert between JSON and JSONL</p>
 
                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
                     <button class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" tabindex="0">
@@ -232,6 +371,10 @@
                     <button class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" tabindex="-1">
                         <span class="material-icons">view_list</span>
                         JSON to JSONL
+                    </button>
+                    <button class="mode-tab" data-mode="jsonlToJson" type="button" role="tab" aria-selected="false" tabindex="-1">
+                        <span class="material-icons">playlist_add_check</span>
+                        JSONL to JSON
                     </button>
                     <button class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" tabindex="-1">
                         <span class="material-icons">check_circle</span>
@@ -253,7 +396,7 @@
                 <div class="error-panel" id="errorPanel" role="alert" aria-live="assertive" aria-hidden="true">
                     <div class="error-title">
                         <span class="material-icons">error</span>
-                        <span>Syntax Error</span>
+                        <span id="errorTitleText">Syntax Error</span>
                     </div>
                     <div class="error-message" id="errorMessage"></div>
                 </div>
@@ -297,20 +440,72 @@
                     </div>
                 </div>
 
+                <div class="aux-inputs">
+                    <div class="aux-panel show" id="queryPanel">
+                        <div class="aux-panel-header">
+                            <label for="jmespathQuery">JMESPath Query (Optional)</label>
+                            <span class="stats pill muted">Format / JSON to JSONL</span>
+                        </div>
+                        <input
+                            id="jmespathQuery"
+                            class="query-input"
+                            type="text"
+                            placeholder="Example: users[?active == `true`].{id: id, email: email}"
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                        <div class="query-help">Applied before formatting or JSONL conversion.</div>
+                    </div>
+
+                    <div class="aux-panel" id="schemaPanel">
+                        <div class="aux-panel-header">
+                            <label id="schemaLabel">Schema (Optional)</label>
+                            <span class="stats pill muted">AJV / JSON Schema</span>
+                        </div>
+                        <div class="editor-shell">
+                            <div id="schemaEditor" class="ace-host compact" aria-labelledby="schemaLabel"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="io-container">
                     <div class="io-panel">
                         <div class="io-label">
-                            <span>Input JSON</span>
+                            <span id="inputLabelText">Input JSON</span>
                             <span class="stats pill muted" id="inputStats">0 chars</span>
                         </div>
-                        <textarea id="inputText" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
+                        <div
+                            id="fileDropZone"
+                            class="file-drop-zone"
+                            tabindex="0"
+                            role="button"
+                            aria-label="Drag and drop a JSON or JSONL file, or press Enter to choose a file"
+                        >
+                            <div class="file-drop-main">
+                                <span class="material-icons" aria-hidden="true">upload_file</span>
+                                <span>Drag & drop a file here, or use the button below</span>
+                            </div>
+                            <div class="file-drop-actions">
+                                <button id="chooseFileBtn" class="btn btn-secondary btn-compact" type="button">
+                                    <span class="material-icons">folder_open</span>
+                                    Choose File
+                                </button>
+                                <span class="file-drop-meta" id="fileMeta">Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.</span>
+                            </div>
+                            <input id="fileInput" type="file" accept=".json,.jsonl,.ndjson,.txt,application/json,text/plain" hidden>
+                        </div>
+                        <div class="editor-shell">
+                            <div id="inputEditor" class="ace-host" aria-label="Input JSON editor"></div>
+                        </div>
                     </div>
                     <div class="io-panel">
                         <div class="io-label">
                             <span id="outputLabel">Formatted Output</span>
                             <span class="stats pill muted" id="outputStats">0 chars</span>
                         </div>
-                        <textarea id="outputText" class="output" readonly placeholder="Processed output will appear here..."></textarea>
+                        <div class="editor-shell">
+                            <div id="outputEditor" class="ace-host" aria-label="Output editor"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -322,442 +517,13 @@
         </main>
     </div>
 
+
     <script src="js/theme.js"></script>
-    <script>
-        'use strict';
-
-        // DOM Elements
-        const inputText = document.getElementById('inputText');
-        const outputText = document.getElementById('outputText');
-        const processBtn = document.getElementById('processBtn');
-        const processLabel = document.getElementById('processLabel');
-        const copyBtn = document.getElementById('copyOutput');
-        const clearBtn = document.getElementById('clearBtn');
-        const exampleBtn = document.getElementById('exampleBtn');
-        const backBtn = document.getElementById('backButton');
-        const modeTabs = document.querySelectorAll('.mode-tab');
-        const indentSelect = document.getElementById('indentSelect');
-        const sortKeysCheck = document.getElementById('sortKeysCheck');
-        const errorPanel = document.getElementById('errorPanel');
-        const errorMessage = document.getElementById('errorMessage');
-        const statsPanel = document.getElementById('statsPanel');
-        const optionsPanel = document.getElementById('optionsPanel');
-        const infoTitle = document.getElementById('infoTitle');
-        const infoText = document.getElementById('infoText');
-        const outputLabel = document.getElementById('outputLabel');
-        const statusMessage = document.getElementById('statusMessage');
-        const processingTime = document.getElementById('processingTime');
-        const inputStats = document.getElementById('inputStats');
-        const outputStats = document.getElementById('outputStats');
-        const statObjects = document.getElementById('statObjects');
-        const statArrays = document.getElementById('statArrays');
-        const statKeys = document.getElementById('statKeys');
-        const statDepth = document.getElementById('statDepth');
-
-        // State
-        let currentMode = 'format';
-        const MAX_INPUT_CHARACTERS = 5 * 1024 * 1024;
-        const MAX_RECURSION_DEPTH = 1000;
-
-        // Mode Information
-        const modeInfo = {
-            format: {
-                title: 'JSON Formatting',
-                text: 'Format and validate JSON with customizable indentation. Automatically detects syntax errors and provides helpful error messages.',
-                outputLabel: 'Formatted Output'
-            },
-            jsonl: {
-                title: 'JSON to JSONL Conversion',
-                text: 'Convert JSON arrays to JSON Lines format (JSONL). Each array element becomes a separate line of valid JSON. Perfect for streaming data and big data processing.',
-                outputLabel: 'JSONL Output'
-            },
-            validate: {
-                title: 'JSON Validation',
-                text: 'Validate JSON syntax and structure. Shows detailed error messages with line and column numbers. Also provides statistics about your JSON structure.',
-                outputLabel: 'Validation Result'
-            }
-        };
-
-        // Example JSON
-        const exampleJSON = {
-            users: [
-                {
-                    id: 1,
-                    name: "Alice Johnson",
-                    email: "alice@example.com",
-                    age: 28,
-                    active: true
-                },
-                {
-                    id: 2,
-                    name: "Bob Smith",
-                    email: "bob@example.com",
-                    age: 34,
-                    active: false
-                },
-                {
-                    id: 3,
-                    name: "Carol White",
-                    email: "carol@example.com",
-                    age: 31,
-                    active: true
-                }
-            ],
-            metadata: {
-                total: 3,
-                page: 1,
-                timestamp: "2024-01-15T10:30:00Z"
-            }
-        };
-
-        // Mode switching
-        function setActiveTab(activeTab) {
-            modeTabs.forEach(tab => {
-                const isActive = tab === activeTab;
-                tab.classList.toggle('active', isActive);
-                tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-                tab.setAttribute('tabindex', isActive ? '0' : '-1');
-            });
-        }
-
-        modeTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                setActiveTab(tab);
-                currentMode = tab.dataset.mode;
-                updateModeUI();
-            });
-        });
-
-        modeTabs.forEach((tab, index) => {
-            tab.addEventListener('keydown', event => {
-                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
-                    return;
-                }
-
-                event.preventDefault();
-                let nextIndex = index;
-                if (event.key === 'ArrowRight') {
-                    nextIndex = (index + 1) % modeTabs.length;
-                } else if (event.key === 'ArrowLeft') {
-                    nextIndex = (index - 1 + modeTabs.length) % modeTabs.length;
-                } else if (event.key === 'Home') {
-                    nextIndex = 0;
-                } else if (event.key === 'End') {
-                    nextIndex = modeTabs.length - 1;
-                }
-
-                const nextTab = modeTabs[nextIndex];
-                nextTab.focus();
-                nextTab.click();
-            });
-        });
-
-        function updateModeUI() {
-            const info = modeInfo[currentMode];
-            if (!info) {
-                throw new Error(`Unknown mode: ${currentMode}`);
-            }
-
-            infoTitle.textContent = info.title;
-            infoText.textContent = info.text;
-            outputLabel.textContent = info.outputLabel;
-
-            // Show/hide options panel
-            optionsPanel.style.display = currentMode === 'format' ? 'block' : 'none';
-
-            // Reset mode-scoped panels so old state is not shown after mode changes.
-            hideError();
-            hideStats();
-
-            const processIcon = processBtn.querySelector('.material-icons');
-            if (currentMode === 'validate') {
-                processIcon.textContent = 'check_circle';
-                processLabel.textContent = 'Validate';
-            } else if (currentMode === 'jsonl') {
-                processIcon.textContent = 'play_arrow';
-                processLabel.textContent = 'Convert';
-            } else {
-                processIcon.textContent = 'play_arrow';
-                processLabel.textContent = 'Format';
-            }
-        }
-
-        // JSON Processing Functions
-        function analyzeJSON(obj, depth = 0, stats = null) {
-            if (depth > MAX_RECURSION_DEPTH) {
-                throw new Error(`JSON is nested too deeply to analyze (>${MAX_RECURSION_DEPTH} levels).`);
-            }
-
-            if (!stats) {
-                stats = { objects: 0, arrays: 0, keys: 0, maxDepth: 0 };
-            }
-            
-            stats.maxDepth = Math.max(stats.maxDepth, depth);
-            
-            if (Array.isArray(obj)) {
-                stats.arrays++;
-                obj.forEach(item => analyzeJSON(item, depth + 1, stats));
-            } else if (obj !== null && typeof obj === 'object') {
-                stats.objects++;
-                stats.keys += Object.keys(obj).length;
-                Object.values(obj).forEach(value => analyzeJSON(value, depth + 1, stats));
-            }
-            
-            return stats;
-        }
-
-        function displayStats(stats) {
-            statObjects.textContent = stats.objects;
-            statArrays.textContent = stats.arrays;
-            statKeys.textContent = stats.keys;
-            statDepth.textContent = stats.maxDepth;
-            statsPanel.style.display = 'grid';
-        }
-
-        function hideStats() {
-            statsPanel.style.display = 'none';
-        }
-
-        function sortObjectKeys(obj, depth = 0) {
-            if (depth > MAX_RECURSION_DEPTH) {
-                throw new Error(`JSON is nested too deeply to sort (>${MAX_RECURSION_DEPTH} levels).`);
-            }
-
-            if (Array.isArray(obj)) {
-                return obj.map(item => sortObjectKeys(item, depth + 1));
-            } else if (obj !== null && typeof obj === 'object') {
-                return Object.keys(obj)
-                    .sort()
-                    .reduce((sorted, key) => {
-                        sorted[key] = sortObjectKeys(obj[key], depth + 1);
-                        return sorted;
-                    }, {});
-            }
-            return obj;
-        }
-
-        function formatJSON(input) {
-            const parsed = JSON.parse(input);
-            const shouldSort = sortKeysCheck.checked;
-            const indentValue = indentSelect.value;
-            
-            let obj = shouldSort ? sortObjectKeys(parsed, 0) : parsed;
-            let indent = indentValue === 'tab' ? '\t' : 
-                        indentValue === '0' ? 0 : 
-                        parseInt(indentValue);
-            
-            const stats = analyzeJSON(obj);
-            displayStats(stats);
-            
-            return JSON.stringify(obj, null, indent);
-        }
-
-        function convertToJSONL(input) {
-            const parsed = JSON.parse(input);
-            
-            if (!Array.isArray(parsed)) {
-                throw new Error('Input must be a JSON array for JSONL conversion. Wrap your object in square brackets [] if needed.');
-            }
-            
-            if (parsed.length === 0) {
-                throw new Error('Array is empty. Cannot convert to JSONL.');
-            }
-            
-            const stats = analyzeJSON(parsed);
-            displayStats(stats);
-            
-            return parsed.map(item => JSON.stringify(item)).join('\n');
-        }
-
-        function validateJSON(input) {
-            const parsed = JSON.parse(input);
-            const stats = analyzeJSON(parsed);
-            displayStats(stats);
-            
-            const type = parsed === null ? 'null' :
-                        Array.isArray(parsed) ? 'Array' :
-                        typeof parsed === 'object' ? 'Object' :
-                        typeof parsed;
-            
-            return `✓ Valid JSON\n\nType: ${type}\nObjects: ${stats.objects}\nArrays: ${stats.arrays}\nTotal Keys: ${stats.keys}\nMax Depth: ${stats.maxDepth}`;
-        }
-
-        function showError(error, sourceText) {
-            errorPanel.classList.add('show');
-            errorPanel.setAttribute('aria-hidden', 'false');
-            
-            // Parse error message for better display
-            let message = error && error.message ? error.message : String(error);
-            let locationText = '';
-
-            const ffLineColMatch = message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
-            if (ffLineColMatch) {
-                const line = Number(ffLineColMatch[1]);
-                const col = Number(ffLineColMatch[2]);
-                locationText = `Location: Line ${line}, Column ${col}`;
-            } else {
-                const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
-                if (posMatch && typeof sourceText === 'string') {
-                    const pos = Math.max(0, Math.min(sourceText.length, Number(posMatch[1])));
-                    const lines = sourceText.substring(0, pos).split('\n');
-                    const line = lines.length;
-                    const col = lines[lines.length - 1].length + 1;
-                    locationText = `Location: Line ${line}, Column ${col}`;
-                }
-            }
-
-            if (locationText && !message.includes(locationText)) {
-                message += `\n\n${locationText}`;
-            }
-            
-            errorMessage.textContent = message;
-            hideStats();
-        }
-
-        function hideError() {
-            errorPanel.classList.remove('show');
-            errorPanel.setAttribute('aria-hidden', 'true');
-        }
-
-        function processJSON() {
-            const rawInput = inputText.value;
-
-            if (rawInput.length > MAX_INPUT_CHARACTERS) {
-                outputText.value = '';
-                hideError();
-                hideStats();
-                updateStats();
-                showStatus('Input too large (max 5MB).', 'error');
-                return;
-            }
-            
-            if (!rawInput.trim()) {
-                outputText.value = '';
-                hideError();
-                hideStats();
-                updateStats();
-                showStatus('Please enter some JSON to process', 'warning');
-                return;
-            }
-
-            hideError();
-            
-            try {
-                const startTime = performance.now();
-                const parseText = rawInput;
-                let result;
-                
-                switch (currentMode) {
-                    case 'format':
-                        result = formatJSON(parseText);
-                        break;
-                    case 'jsonl':
-                        result = convertToJSONL(parseText);
-                        break;
-                    case 'validate':
-                        result = validateJSON(parseText);
-                        break;
-                    default:
-                        throw new Error(`Unknown mode: ${currentMode}`);
-                }
-                
-                const endTime = performance.now();
-                
-                outputText.value = result;
-                showStatus('Success!', 'success');
-                processingTime.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
-                updateStats();
-                
-            } catch (error) {
-                console.error('Processing error:', error);
-                showError(error, rawInput);
-                outputText.value = '';
-                const errorMessageText = error && error.message ? error.message : String(error);
-                showStatus('Error: ' + errorMessageText, 'error');
-                processingTime.textContent = 'Processing failed';
-            }
-        }
-
-        function loadExample() {
-            inputText.value = JSON.stringify(exampleJSON, null, 2);
-            updateStats();
-            showStatus('Example loaded', 'success');
-        }
-
-        function clearAll() {
-            inputText.value = '';
-            outputText.value = '';
-            hideError();
-            hideStats();
-            updateStats();
-            showStatus('Cleared', 'success');
-        }
-
-        async function copyToClipboard() {
-            const text = outputText.value;
-            if (!text) {
-                showStatus('Nothing to copy', 'warning');
-                return;
-            }
-
-            try {
-                if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-                    await window.textUtilsClipboardWrite(text);
-                    showStatus('Copied to clipboard!', 'success');
-                    return;
-                }
-
-                outputText.focus();
-                outputText.select();
-                const copied = document.execCommand('copy');
-                showStatus(copied ? 'Copied to clipboard!' : 'Copy failed', copied ? 'success' : 'error');
-            } catch {
-                showStatus('Copy failed', 'error');
-            }
-        }
-
-        function showStatus(message, type = 'success') {
-            statusMessage.textContent = message;
-            statusMessage.className = type;
-        }
-
-        function updateStats() {
-            const inputLength = inputText.value.length;
-            const outputLength = outputText.value.length;
-            const inputLines = inputLength === 0 ? 0 : inputText.value.split('\n').length;
-            const outputLines = outputLength === 0 ? 0 : outputText.value.split('\n').length;
-            
-            inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
-            outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
-        }
-
-        // Event Listeners
-        processBtn.addEventListener('click', processJSON);
-        copyBtn.addEventListener('click', copyToClipboard);
-        clearBtn.addEventListener('click', clearAll);
-        exampleBtn.addEventListener('click', loadExample);
-        backBtn.addEventListener('click', () => window.location.href = 'index.html');
-
-        inputText.addEventListener('input', updateStats);
-
-        // Keyboard shortcuts
-        inputText.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                processJSON();
-            }
-        });
-
-        // Initialize
-        updateStats();
-        const initialTab = Array.from(modeTabs).find(tab => tab.dataset.mode === currentMode);
-        if (initialTab) {
-            setActiveTab(initialTab);
-        }
-        updateModeUI();
-    </script>
+    <script src="js/json-tool-page.js"></script>
     <footer class="site-footer">
         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
     </footer>
 </body>
 </html>
+
+
