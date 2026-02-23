@@ -4,7 +4,7 @@ This generated file is designed as a context bundle for LLM prompts.
 It contains full source text for files directly associated with the tool, plus extracted sections from broader docs that reference the tool.
 Every included block is wrapped with explicit BEGIN/END markers for reliable chunking.
 
-Generated: 2026-02-23 02:11:54 UTC
+Generated: 2026-02-23 12:07:33 UTC
 Repository: `D:\GitHub\text-utils`
 Tool slug: `json-tool`
 Tool page: `json-tool.html`
@@ -276,317 +276,313 @@ Output file: `context/code-dump-json-tool.txt`
  229:         }
  230: 
  231:         .file-drop-zone:hover,
- 232:         .file-drop-zone.drag-active,
- 233:         .file-drop-zone:focus-visible {
- 234:             border-color: var(--accent);
- 235:             background: rgba(var(--accent-rgb), 0.08);
- 236:             outline: none;
- 237:         }
- 238: 
- 239:         .file-drop-main {
- 240:             display: flex;
- 241:             align-items: center;
- 242:             gap: 0.5rem;
- 243:             color: var(--text-primary);
- 244:             font-size: 0.875rem;
- 245:             margin-bottom: 0.5rem;
- 246:         }
- 247: 
- 248:         .file-drop-main .material-icons {
- 249:             color: var(--accent);
- 250:             font-size: 1.125rem;
- 251:         }
- 252: 
- 253:         .file-drop-actions {
- 254:             display: flex;
- 255:             align-items: center;
- 256:             gap: 0.75rem;
- 257:             flex-wrap: wrap;
- 258:         }
- 259: 
- 260:         .file-drop-meta {
- 261:             font-size: 0.75rem;
- 262:             color: var(--text-secondary);
- 263:         }
- 264: 
- 265:         .editor-shell {
- 266:             border: 1px solid var(--border-color);
- 267:             border-radius: 6px;
- 268:             overflow: hidden;
- 269:             background: var(--bg-secondary);
- 270:         }
- 271: 
- 272:         .editor-shell .ace_editor {
- 273:             font-size: 14px;
- 274:             line-height: 1.5;
- 275:         }
- 276: 
- 277:         .ace-host {
- 278:             width: 100%;
- 279:             height: 360px;
- 280:         }
- 281: 
- 282:         .ace-host.compact {
- 283:             height: 180px;
- 284:         }
- 285: 
- 286:         @media (max-width: 900px) {
- 287:             .aux-panel-header {
- 288:                 flex-direction: column;
- 289:                 align-items: flex-start;
- 290:             }
- 291: 
- 292:             .ace-host {
- 293:                 height: 300px;
- 294:             }
- 295: 
- 296:             .ace-host.compact {
- 297:                 height: 160px;
- 298:             }
- 299:         }
- 300:     </style>
- 301: </head>
- 302: <body>
- 303:     <div class="container">
- 304:         <header>
- 305:             <div class="logo">
- 306:                 <a href="index.html" style="color: inherit; text-decoration: none;">
- 307:                     <span>Text Utilities</span>
- 308:                 </a>
- 309:             </div>
- 310:             <nav class="site-network" aria-label="Network sites">
- 311:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
- 312:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
- 313:                     <span>Chess Nerd</span>
- 314:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
- 315:                 </a>
- 316:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
- 317:                     <img src="img/github.png" class="site-network-icon" alt="">
- 318:                     <span>GitHub</span>
- 319:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
- 320:                 </a>
- 321:             </nav>
- 322:             <div class="controls">
- 323:                 <div class="accent-selector">
- 324:                     <span class="material-icons">palette</span>
- 325:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
- 326:                 </div>
- 327:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
- 328:                     <span class="material-icons">dark_mode</span>
- 329:                 </button>
- 330:             </div>
- 331:         </header>
- 332: 
- 333:                 <main>
- 334:             <div class="tool-container">
- 335:                 <div class="tool-header">
- 336:                     <div class="tool-title">
- 337:                         <span class="material-icons">data_object</span>
- 338:                         <h2>JSON Tool</h2>
- 339:                     </div>
- 340:                     <div class="tool-actions">
- 341:                         <button id="backButton" class="btn btn-secondary btn-compact" type="button">
- 342:                             <span class="material-icons">arrow_back</span>
- 343:                             Back
- 344:                         </button>
- 345:                         <button id="exampleBtn" class="btn btn-secondary" type="button">
- 346:                             <span class="material-icons">science</span>
- 347:                             Example
- 348:                         </button>
- 349:                         <button id="copyOutput" class="btn btn-secondary btn-compact" type="button">
- 350:                             <span class="material-icons">content_copy</span>
- 351:                             Copy
- 352:                         </button>
- 353:                         <button id="clearBtn" class="btn btn-secondary" type="button">
- 354:                             <span class="material-icons">clear</span>
- 355:                             Clear
- 356:                         </button>
- 357:                         <button id="processBtn" class="btn btn-primary" type="button">
- 358:                             <span class="material-icons">play_arrow</span>
- 359:                             <span id="processLabel">Format</span>
- 360:                         </button>
- 361:                     </div>
- 362:                 </div>
- 363: 
- 364:                 <p class="tool-description">Format, validate, query, and convert between JSON and JSONL</p>
- 365: 
- 366:                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
- 367:                     <button id="tab-format" class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" aria-controls="panel-format" tabindex="0">
- 368:                         <span class="material-icons">code</span>
- 369:                         Format JSON
- 370:                     </button>
- 371:                     <button id="tab-jsonl" class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" aria-controls="panel-jsonl" tabindex="-1">
- 372:                         <span class="material-icons">view_list</span>
- 373:                         JSON to JSONL
- 374:                     </button>
- 375:                     <button id="tab-jsonlToJson" class="mode-tab" data-mode="jsonlToJson" type="button" role="tab" aria-selected="false" aria-controls="panel-jsonlToJson" tabindex="-1">
- 376:                         <span class="material-icons">playlist_add_check</span>
- 377:                         JSONL to JSON
- 378:                     </button>
- 379:                     <button id="tab-validate" class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" aria-controls="panel-validate" tabindex="-1">
- 380:                         <span class="material-icons">check_circle</span>
- 381:                         Validate Only
- 382:                     </button>
- 383:                 </div>
- 384: 
- 385:                 <div id="panel-format" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-format" aria-hidden="false">
- 386:                     Format JSON mode is active. Formatting options and query controls are available before processing.
- 387:                 </div>
- 388:                 <div id="panel-jsonl" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-jsonl" aria-hidden="true" hidden>
- 389:                     JSON to JSONL mode is active. The tool converts a JSON array or values into line-delimited JSON output.
- 390:                 </div>
- 391:                 <div id="panel-jsonlToJson" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-jsonlToJson" aria-hidden="true" hidden>
- 392:                     JSONL to JSON mode is active. The tool reads line-delimited JSON and combines rows into a JSON array.
- 393:                 </div>
- 394:                 <div id="panel-validate" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-validate" aria-hidden="true" hidden>
- 395:                     Validate mode is active. Schema input can be provided and processing returns validation results without reformatting.
- 396:                 </div>
- 397: 
- 398:                 <div class="info-panel">
- 399:                     <h4>
- 400:                         <span class="material-icons">info</span>
- 401:                         <span id="infoTitle">JSON Formatting</span>
- 402:                     </h4>
- 403:                     <p id="infoText">
- 404:                         Format and validate JSON with customizable indentation. 
- 405:                         Automatically detects syntax errors and provides helpful error messages.
- 406:                     </p>
- 407:                 </div>
- 408: 
- 409:                 <div class="error-panel" id="errorPanel" role="alert" aria-live="assertive" aria-hidden="true">
- 410:                     <div class="error-title">
- 411:                         <span class="material-icons">error</span>
- 412:                         <span id="errorTitleText">Syntax Error</span>
- 413:                     </div>
- 414:                     <div class="error-message" id="errorMessage"></div>
- 415:                 </div>
- 416: 
- 417:                 <div class="json-stats" id="statsPanel" style="display: none;">
- 418:                     <div class="stat-item">
- 419:                         <span class="stat-label">Objects</span>
- 420:                         <span class="stat-value" id="statObjects">0</span>
- 421:                     </div>
- 422:                     <div class="stat-item">
- 423:                         <span class="stat-label">Arrays</span>
- 424:                         <span class="stat-value" id="statArrays">0</span>
- 425:                     </div>
- 426:                     <div class="stat-item">
- 427:                         <span class="stat-label">Keys</span>
- 428:                         <span class="stat-value" id="statKeys">0</span>
- 429:                     </div>
- 430:                     <div class="stat-item">
- 431:                         <span class="stat-label">Max Depth</span>
- 432:                         <span class="stat-value" id="statDepth">0</span>
- 433:                     </div>
- 434:                 </div>
- 435: 
- 436:                 <div class="options-panel" id="optionsPanel">
- 437:                     <div class="options-grid">
- 438:                         <div class="option-group">
- 439:                             <label for="indentSelect">Indentation</label>
- 440:                             <select id="indentSelect">
- 441:                                 <option value="2">2 spaces</option>
- 442:                                 <option value="4">4 spaces</option>
- 443:                                 <option value="tab">Tab</option>
- 444:                                 <option value="0">Minified</option>
- 445:                             </select>
- 446:                         </div>
- 447:                         <div class="option-group">
- 448:                             <label for="sortKeysCheck">
- 449:                                 <input type="checkbox" id="sortKeysCheck">
- 450:                                 Sort object keys alphabetically
- 451:                             </label>
- 452:                         </div>
- 453:                     </div>
- 454:                 </div>
- 455: 
- 456:                 <div class="aux-inputs">
- 457:                     <div class="aux-panel show" id="queryPanel">
- 458:                         <div class="aux-panel-header">
- 459:                             <label for="jmespathQuery">JMESPath Query (Optional)</label>
- 460:                             <span class="stats pill muted">Format / JSON to JSONL</span>
- 461:                         </div>
- 462:                         <input
- 463:                             id="jmespathQuery"
- 464:                             class="query-input"
- 465:                             type="text"
- 466:                             placeholder="Example: users[?active == `true`].{id: id, email: email}"
- 467:                             autocomplete="off"
- 468:                             spellcheck="false"
- 469:                         >
- 470:                         <div class="query-help">Applied before formatting or JSONL conversion.</div>
- 471:                     </div>
- 472: 
- 473:                     <div class="aux-panel" id="schemaPanel">
- 474:                         <div class="aux-panel-header">
- 475:                             <label id="schemaLabel">Schema (Optional)</label>
- 476:                             <span class="stats pill muted">AJV / JSON Schema</span>
- 477:                         </div>
- 478:                         <div class="editor-shell">
- 479:                             <div id="schemaEditor" class="ace-host compact" aria-labelledby="schemaLabel"></div>
- 480:                         </div>
- 481:                     </div>
- 482:                 </div>
- 483: 
- 484:                 <div class="io-container">
- 485:                     <div class="io-panel">
- 486:                         <div class="io-label">
- 487:                             <span id="inputLabelText">Input JSON</span>
- 488:                             <span class="stats pill muted" id="inputStats">0 chars</span>
- 489:                         </div>
- 490:                         <div
- 491:                             id="fileDropZone"
- 492:                             class="file-drop-zone"
- 493:                             tabindex="0"
- 494:                             role="button"
- 495:                             aria-label="Drag and drop a JSON or JSONL file, or press Enter to choose a file"
- 496:                         >
- 497:                             <div class="file-drop-main">
- 498:                                 <span class="material-icons" aria-hidden="true">upload_file</span>
- 499:                                 <span>Drag & drop a file here, or use the button below</span>
- 500:                             </div>
- 501:                             <div class="file-drop-actions">
- 502:                                 <button id="chooseFileBtn" class="btn btn-secondary btn-compact" type="button">
- 503:                                     <span class="material-icons">folder_open</span>
- 504:                                     Choose File
- 505:                                 </button>
- 506:                                 <span class="file-drop-meta" id="fileMeta">Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.</span>
- 507:                             </div>
- 508:                             <input id="fileInput" type="file" accept=".json,.jsonl,.ndjson,.txt,application/json,text/plain" hidden>
- 509:                         </div>
- 510:                         <div class="editor-shell">
- 511:                             <div id="inputEditor" class="ace-host" aria-label="Input JSON editor"></div>
- 512:                         </div>
- 513:                     </div>
- 514:                     <div class="io-panel">
- 515:                         <div class="io-label">
- 516:                             <span id="outputLabel">Formatted Output</span>
- 517:                             <span class="stats pill muted" id="outputStats">0 chars</span>
- 518:                         </div>
- 519:                         <div class="editor-shell">
- 520:                             <div id="outputEditor" class="ace-host" aria-label="Output editor"></div>
- 521:                         </div>
- 522:                     </div>
- 523:                 </div>
- 524: 
- 525:                 <div class="status-bar">
- 526:                     <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
- 527:                     <div id="processingTime">No operations yet</div>
- 528:                 </div>
- 529:             </div>
- 530:         </main>
- 531:     </div>
- 532: 
- 533: 
- 534:     <script src="js/theme.js"></script>
- 535:     <script src="js/json-tool-page.js"></script>
- 536:     <footer class="site-footer">
- 537:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
- 538:     </footer>
- 539: </body>
- 540: </html>
- 541: 
- 542: 
+ 232:         .file-drop-zone.drag-active {
+ 233:             border-color: var(--accent);
+ 234:             background: rgba(var(--accent-rgb), 0.08);
+ 235:             outline: none;
+ 236:         }
+ 237: 
+ 238:         .file-drop-main {
+ 239:             display: flex;
+ 240:             align-items: center;
+ 241:             gap: 0.5rem;
+ 242:             color: var(--text-primary);
+ 243:             font-size: 0.875rem;
+ 244:             margin-bottom: 0.5rem;
+ 245:         }
+ 246: 
+ 247:         .file-drop-main .material-icons {
+ 248:             color: var(--accent);
+ 249:             font-size: 1.125rem;
+ 250:         }
+ 251: 
+ 252:         .file-drop-actions {
+ 253:             display: flex;
+ 254:             align-items: center;
+ 255:             gap: 0.75rem;
+ 256:             flex-wrap: wrap;
+ 257:         }
+ 258: 
+ 259:         .file-drop-meta {
+ 260:             font-size: 0.75rem;
+ 261:             color: var(--text-secondary);
+ 262:         }
+ 263: 
+ 264:         .editor-shell {
+ 265:             border: 1px solid var(--border-color);
+ 266:             border-radius: 6px;
+ 267:             overflow: hidden;
+ 268:             background: var(--bg-secondary);
+ 269:         }
+ 270: 
+ 271:         .editor-shell .ace_editor {
+ 272:             font-size: 14px;
+ 273:             line-height: 1.5;
+ 274:         }
+ 275: 
+ 276:         .ace-host {
+ 277:             width: 100%;
+ 278:             height: 360px;
+ 279:         }
+ 280: 
+ 281:         .ace-host.compact {
+ 282:             height: 180px;
+ 283:         }
+ 284: 
+ 285:         @media (max-width: 900px) {
+ 286:             .aux-panel-header {
+ 287:                 flex-direction: column;
+ 288:                 align-items: flex-start;
+ 289:             }
+ 290: 
+ 291:             .ace-host {
+ 292:                 height: 300px;
+ 293:             }
+ 294: 
+ 295:             .ace-host.compact {
+ 296:                 height: 160px;
+ 297:             }
+ 298:         }
+ 299:     </style>
+ 300: </head>
+ 301: <body>
+ 302:     <div class="container">
+ 303:         <header>
+ 304:             <div class="logo">
+ 305:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+ 306:                     <span>Text Utilities</span>
+ 307:                 </a>
+ 308:             </div>
+ 309:             <nav class="site-network" aria-label="Network sites">
+ 310:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 311:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+ 312:                     <span>Chess Nerd</span>
+ 313:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 314:                 </a>
+ 315:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 316:                     <img src="img/github.png" class="site-network-icon" alt="">
+ 317:                     <span>GitHub</span>
+ 318:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 319:                 </a>
+ 320:             </nav>
+ 321:             <div class="controls">
+ 322:                 <div class="accent-selector">
+ 323:                     <span class="material-icons">palette</span>
+ 324:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+ 325:                 </div>
+ 326:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+ 327:                     <span class="material-icons">dark_mode</span>
+ 328:                 </button>
+ 329:             </div>
+ 330:         </header>
+ 331: 
+ 332:                 <main>
+ 333:             <div class="tool-container">
+ 334:                 <div class="tool-header">
+ 335:                     <div class="tool-title">
+ 336:                         <span class="material-icons">data_object</span>
+ 337:                         <h2>JSON Tool</h2>
+ 338:                     </div>
+ 339:                     <div class="tool-actions">
+ 340:                         <button id="backButton" class="btn btn-secondary btn-compact" type="button">
+ 341:                             <span class="material-icons">arrow_back</span>
+ 342:                             Back
+ 343:                         </button>
+ 344:                         <button id="exampleBtn" class="btn btn-secondary" type="button">
+ 345:                             <span class="material-icons">science</span>
+ 346:                             Example
+ 347:                         </button>
+ 348:                         <button id="copyOutput" class="btn btn-secondary btn-compact" type="button">
+ 349:                             <span class="material-icons">content_copy</span>
+ 350:                             Copy
+ 351:                         </button>
+ 352:                         <button id="clearBtn" class="btn btn-secondary" type="button">
+ 353:                             <span class="material-icons">clear</span>
+ 354:                             Clear
+ 355:                         </button>
+ 356:                         <button id="processBtn" class="btn btn-primary" type="button">
+ 357:                             <span class="material-icons">play_arrow</span>
+ 358:                             <span id="processLabel">Format</span>
+ 359:                         </button>
+ 360:                     </div>
+ 361:                 </div>
+ 362: 
+ 363:                 <p class="tool-description">Format, validate, query, and convert between JSON and JSONL</p>
+ 364: 
+ 365:                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
+ 366:                     <button id="tab-format" class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" aria-controls="panel-format" tabindex="0">
+ 367:                         <span class="material-icons">code</span>
+ 368:                         Format JSON
+ 369:                     </button>
+ 370:                     <button id="tab-jsonl" class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" aria-controls="panel-jsonl" tabindex="-1">
+ 371:                         <span class="material-icons">view_list</span>
+ 372:                         JSON to JSONL
+ 373:                     </button>
+ 374:                     <button id="tab-jsonlToJson" class="mode-tab" data-mode="jsonlToJson" type="button" role="tab" aria-selected="false" aria-controls="panel-jsonlToJson" tabindex="-1">
+ 375:                         <span class="material-icons">playlist_add_check</span>
+ 376:                         JSONL to JSON
+ 377:                     </button>
+ 378:                     <button id="tab-validate" class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" aria-controls="panel-validate" tabindex="-1">
+ 379:                         <span class="material-icons">check_circle</span>
+ 380:                         Validate Only
+ 381:                     </button>
+ 382:                 </div>
+ 383: 
+ 384:                 <div id="panel-format" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-format" aria-hidden="false">
+ 385:                     Format JSON mode is active. Formatting options and query controls are available before processing.
+ 386:                 </div>
+ 387:                 <div id="panel-jsonl" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-jsonl" aria-hidden="true" hidden>
+ 388:                     JSON to JSONL mode is active. The tool converts a JSON array or values into line-delimited JSON output.
+ 389:                 </div>
+ 390:                 <div id="panel-jsonlToJson" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-jsonlToJson" aria-hidden="true" hidden>
+ 391:                     JSONL to JSON mode is active. The tool reads line-delimited JSON and combines rows into a JSON array.
+ 392:                 </div>
+ 393:                 <div id="panel-validate" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-validate" aria-hidden="true" hidden>
+ 394:                     Validate mode is active. Schema input can be provided and processing returns validation results without reformatting.
+ 395:                 </div>
+ 396: 
+ 397:                 <div class="info-panel">
+ 398:                     <h4>
+ 399:                         <span class="material-icons">info</span>
+ 400:                         <span id="infoTitle">JSON Formatting</span>
+ 401:                     </h4>
+ 402:                     <p id="infoText">
+ 403:                         Format and validate JSON with customizable indentation. 
+ 404:                         Automatically detects syntax errors and provides helpful error messages.
+ 405:                     </p>
+ 406:                 </div>
+ 407: 
+ 408:                 <div class="error-panel" id="errorPanel" role="alert" aria-live="assertive" aria-hidden="true">
+ 409:                     <div class="error-title">
+ 410:                         <span class="material-icons">error</span>
+ 411:                         <span id="errorTitleText">Syntax Error</span>
+ 412:                     </div>
+ 413:                     <div class="error-message" id="errorMessage"></div>
+ 414:                 </div>
+ 415: 
+ 416:                 <div class="json-stats" id="statsPanel" style="display: none;">
+ 417:                     <div class="stat-item">
+ 418:                         <span class="stat-label">Objects</span>
+ 419:                         <span class="stat-value" id="statObjects">0</span>
+ 420:                     </div>
+ 421:                     <div class="stat-item">
+ 422:                         <span class="stat-label">Arrays</span>
+ 423:                         <span class="stat-value" id="statArrays">0</span>
+ 424:                     </div>
+ 425:                     <div class="stat-item">
+ 426:                         <span class="stat-label">Keys</span>
+ 427:                         <span class="stat-value" id="statKeys">0</span>
+ 428:                     </div>
+ 429:                     <div class="stat-item">
+ 430:                         <span class="stat-label">Max Depth</span>
+ 431:                         <span class="stat-value" id="statDepth">0</span>
+ 432:                     </div>
+ 433:                 </div>
+ 434: 
+ 435:                 <div class="options-panel" id="optionsPanel">
+ 436:                     <div class="options-grid">
+ 437:                         <div class="option-group">
+ 438:                             <label for="indentSelect">Indentation</label>
+ 439:                             <select id="indentSelect">
+ 440:                                 <option value="2">2 spaces</option>
+ 441:                                 <option value="4">4 spaces</option>
+ 442:                                 <option value="tab">Tab</option>
+ 443:                                 <option value="0">Minified</option>
+ 444:                             </select>
+ 445:                         </div>
+ 446:                         <div class="option-group">
+ 447:                             <label for="sortKeysCheck">
+ 448:                                 <input type="checkbox" id="sortKeysCheck">
+ 449:                                 Sort object keys alphabetically
+ 450:                             </label>
+ 451:                         </div>
+ 452:                     </div>
+ 453:                 </div>
+ 454: 
+ 455:                 <div class="aux-inputs">
+ 456:                     <div class="aux-panel show" id="queryPanel">
+ 457:                         <div class="aux-panel-header">
+ 458:                             <label for="jmespathQuery">JMESPath Query (Optional)</label>
+ 459:                             <span class="stats pill muted">Format / JSON to JSONL</span>
+ 460:                         </div>
+ 461:                         <input
+ 462:                             id="jmespathQuery"
+ 463:                             class="query-input"
+ 464:                             type="text"
+ 465:                             placeholder="Example: users[?active == `true`].{id: id, email: email}"
+ 466:                             autocomplete="off"
+ 467:                             spellcheck="false"
+ 468:                         >
+ 469:                         <div class="query-help">Applied before formatting or JSONL conversion.</div>
+ 470:                     </div>
+ 471: 
+ 472:                     <div class="aux-panel" id="schemaPanel">
+ 473:                         <div class="aux-panel-header">
+ 474:                             <label id="schemaLabel">Schema (Optional)</label>
+ 475:                             <span class="stats pill muted">AJV / JSON Schema</span>
+ 476:                         </div>
+ 477:                         <div class="editor-shell">
+ 478:                             <div id="schemaEditor" class="ace-host compact" aria-labelledby="schemaLabel"></div>
+ 479:                         </div>
+ 480:                     </div>
+ 481:                 </div>
+ 482: 
+ 483:                 <div class="io-container">
+ 484:                     <div class="io-panel">
+ 485:                         <div class="io-label">
+ 486:                             <span id="inputLabelText">Input JSON</span>
+ 487:                             <span class="stats pill muted" id="inputStats">0 chars</span>
+ 488:                         </div>
+ 489:                         <div
+ 490:                             id="fileDropZone"
+ 491:                             class="file-drop-zone"
+ 492:                         >
+ 493:                             <div class="file-drop-main">
+ 494:                                 <span class="material-icons" aria-hidden="true">upload_file</span>
+ 495:                                 <span>Drag & drop a file here, or use the button below</span>
+ 496:                             </div>
+ 497:                             <div class="file-drop-actions">
+ 498:                                 <button id="chooseFileBtn" class="btn btn-secondary btn-compact" type="button">
+ 499:                                     <span class="material-icons">folder_open</span>
+ 500:                                     Choose File
+ 501:                                 </button>
+ 502:                                 <span class="file-drop-meta" id="fileMeta">Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.</span>
+ 503:                             </div>
+ 504:                             <input id="fileInput" type="file" accept=".json,.jsonl,.ndjson,.txt,application/json,text/plain" hidden>
+ 505:                         </div>
+ 506:                         <div class="editor-shell">
+ 507:                             <div id="inputEditor" class="ace-host" aria-label="Input JSON editor"></div>
+ 508:                         </div>
+ 509:                     </div>
+ 510:                     <div class="io-panel">
+ 511:                         <div class="io-label">
+ 512:                             <span id="outputLabel">Formatted Output</span>
+ 513:                             <span class="stats pill muted" id="outputStats">0 chars</span>
+ 514:                         </div>
+ 515:                         <div class="editor-shell">
+ 516:                             <div id="outputEditor" class="ace-host" aria-label="Output editor"></div>
+ 517:                         </div>
+ 518:                     </div>
+ 519:                 </div>
+ 520: 
+ 521:                 <div class="status-bar">
+ 522:                     <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
+ 523:                     <div id="processingTime">No operations yet</div>
+ 524:                 </div>
+ 525:             </div>
+ 526:         </main>
+ 527:     </div>
+ 528: 
+ 529: 
+ 530:     <script src="js/theme.js"></script>
+ 531:     <script src="js/json-tool-page.js"></script>
+ 532:     <footer class="site-footer">
+ 533:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 534:     </footer>
+ 535: </body>
+ 536: </html>
+ 537: 
+ 538: 
 ```
 ----- END FILE: json-tool.html -----
 
@@ -1463,939 +1459,956 @@ Output file: `context/code-dump-json-tool.txt`
   59: const STREAM_READ_YIELD_INTERVAL = 8;
   60: const ANALYZE_DEBOUNCE_MS = 300;
   61: const DEFAULT_FILE_META = 'Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.';
-  62: const WORKER_PATH = 'js/json-worker.js';
+  62: const WORKER_PATH = '/js/json-worker.js';
   63: const ACE_BASE_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/';
-  64: 
-  65: const exampleJSON = {
-  66:     users: [
-  67:         { id: 1, name: 'Alice Johnson', email: 'alice@example.com', age: 28, active: true },
-  68:         { id: 2, name: 'Bob Smith', email: 'bob@example.com', age: 34, active: false },
-  69:         { id: 3, name: 'Carol White', email: 'carol@example.com', age: 31, active: true }
-  70:     ],
-  71:     metadata: {
-  72:         total: 3,
-  73:         page: 1,
-  74:         timestamp: '2024-01-15T10:30:00Z'
-  75:     }
-  76: };
-  77: 
-  78: const exampleJSONL = [
-  79:     '{"id":1,"name":"Alice Johnson","active":true}',
-  80:     '{"id":2,"name":"Bob Smith","active":false}',
-  81:     '{"id":3,"name":"Carol White","active":true}'
-  82: ].join('\n');
-  83: 
-  84: const exampleSchema = {
-  85:     type: 'object',
-  86:     required: ['users', 'metadata'],
-  87:     properties: {
-  88:         users: {
-  89:             type: 'array',
-  90:             items: {
-  91:                 type: 'object',
-  92:                 required: ['id', 'name', 'email', 'active'],
-  93:                 properties: {
-  94:                     id: { type: 'integer' },
-  95:                     name: { type: 'string' },
-  96:                     email: { type: 'string', format: 'email' },
-  97:                     age: { type: 'integer' },
-  98:                     active: { type: 'boolean' }
-  99:                 }
- 100:             }
- 101:         },
- 102:         metadata: {
- 103:             type: 'object',
- 104:             required: ['total'],
- 105:             properties: {
- 106:                 total: { type: 'integer' },
- 107:                 page: { type: 'integer' },
- 108:                 timestamp: { type: 'string' }
- 109:             }
- 110:         }
- 111:     }
- 112: };
- 113: 
- 114: const modeInfo = {
- 115:     format: {
- 116:         title: 'JSON Formatting',
- 117:         text: 'Format JSON with optional key sorting and optional JMESPath pre-filtering. Syntax parsing and structural analysis run in a background worker.',
- 118:         inputLabel: 'Input JSON',
- 119:         outputLabel: 'Formatted Output',
- 120:         outputAceMode: 'ace/mode/json',
- 121:         showOptions: true,
- 122:         showQuery: true,
- 123:         showSchema: false,
- 124:         actionLabel: 'Format',
- 125:         actionIcon: 'play_arrow'
- 126:     },
- 127:     jsonl: {
- 128:         title: 'JSON to JSONL Conversion',
- 129:         text: 'Convert JSON (typically arrays) to JSON Lines. Use a JMESPath query to pre-filter or extract a subset before conversion.',
- 130:         inputLabel: 'Input JSON',
- 131:         outputLabel: 'JSONL Output',
- 132:         outputAceMode: 'ace/mode/json',
- 133:         showOptions: false,
- 134:         showQuery: true,
- 135:         showSchema: false,
- 136:         actionLabel: 'Convert',
- 137:         actionIcon: 'play_arrow'
- 138:     },
- 139:     jsonlToJson: {
- 140:         title: 'JSONL to JSON Conversion',
- 141:         text: 'Parse JSON Lines (one JSON value per line), skip empty lines, and re-stringify as a valid JSON array. Large inputs are processed in a background worker.',
- 142:         inputLabel: 'Input JSONL',
- 143:         outputLabel: 'JSON Output',
- 144:         outputAceMode: 'ace/mode/json',
- 145:         showOptions: true,
- 146:         showQuery: false,
- 147:         showSchema: false,
- 148:         actionLabel: 'Convert',
- 149:         actionIcon: 'play_arrow'
- 150:     },
- 151:     validate: {
- 152:         title: 'JSON Validation',
- 153:         text: 'Validate JSON syntax with JSONLint for precise line/character errors. Optionally validate against a JSON Schema using Ajv.',
- 154:         inputLabel: 'Input JSON',
- 155:         outputLabel: 'Validation Result',
- 156:         outputAceMode: 'ace/mode/text',
- 157:         showOptions: false,
- 158:         showQuery: false,
- 159:         showSchema: true,
- 160:         actionLabel: 'Validate',
- 161:         actionIcon: 'check_circle'
- 162:     }
- 163: };
- 164: 
- 165: function initAceEditors() {
- 166:     if (!window.ace) {
- 167:         throw new Error('Ace Editor failed to load from CDN.');
- 168:     }
- 169: 
- 170:     ace.config.set('basePath', ACE_BASE_PATH);
- 171:     ace.config.set('modePath', ACE_BASE_PATH);
- 172:     ace.config.set('themePath', ACE_BASE_PATH);
- 173: 
- 174:     inputEditor = ace.edit(inputEditorHost);
- 175:     outputEditor = ace.edit(outputEditorHost);
- 176:     schemaEditor = ace.edit(schemaEditorHost);
- 177: 
- 178:     configureEditor(inputEditor, { readOnly: false, mode: 'ace/mode/json' });
- 179:     configureEditor(outputEditor, { readOnly: true, mode: 'ace/mode/json' });
- 180:     outputEditor.setOptions({
- 181:         highlightActiveLine: false,
- 182:         highlightGutterLine: false
- 183:     });
- 184:     configureEditor(schemaEditor, { readOnly: false, mode: 'ace/mode/json' });
- 185: 
- 186:     inputEditor.commands.addCommand({
- 187:         name: 'process-json-tool',
- 188:         bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
- 189:         exec: () => processJSON()
- 190:     });
- 191: }
- 192: 
- 193: function configureEditor(editor, options) {
- 194:     editor.setOptions({
- 195:         readOnly: Boolean(options.readOnly),
- 196:         showPrintMargin: false,
- 197:         useWorker: false,
- 198:         wrap: true,
- 199:         fontSize: '14px',
- 200:         tabSize: 2,
- 201:         useSoftTabs: true,
- 202:         displayIndentGuides: true,
- 203:         behavioursEnabled: true
- 204:     });
- 205:     editor.session.setMode(options.mode || 'ace/mode/json');
- 206:     editor.session.setUseWorker(false);
- 207:     editor.session.setUseWrapMode(true);
- 208:     editor.session.setTabSize(2);
- 209:     editor.session.setUseSoftTabs(true);
- 210:     editor.renderer.setShowPrintMargin(false);
- 211:     editor.renderer.setScrollMargin(8, 8, 8, 8);
- 212: }
- 213: function applyEditorTheme() {
- 214:     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
- 215:     const aceTheme = isLight ? 'ace/theme/github' : 'ace/theme/monokai';
- 216:     [inputEditor, outputEditor, schemaEditor].forEach(editor => {
- 217:         if (editor) {
- 218:             editor.setTheme(aceTheme);
- 219:         }
- 220:     });
- 221: }
- 222: 
- 223: function setupThemeSync() {
- 224:     applyEditorTheme();
- 225: 
- 226:     if (themeObserver) {
- 227:         themeObserver.disconnect();
- 228:     }
- 229: 
- 230:     themeObserver = new MutationObserver(mutations => {
- 231:         for (const mutation of mutations) {
- 232:             if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
- 233:                 applyEditorTheme();
- 234:                 break;
- 235:             }
- 236:         }
- 237:     });
- 238: 
- 239:     themeObserver.observe(document.documentElement, {
- 240:         attributes: true,
- 241:         attributeFilter: ['data-theme']
- 242:     });
- 243: }
- 244: 
- 245: function ensureWorker() {
- 246:     if (jsonWorker) {
- 247:         return jsonWorker;
- 248:     }
- 249: 
- 250:     if (!window.Worker) {
- 251:         throw new Error('Web Workers are not supported in this browser.');
- 252:     }
- 253: 
- 254:     jsonWorker = new Worker(WORKER_PATH);
- 255: 
- 256:     jsonWorker.addEventListener('message', event => {
- 257:         const data = event.data || {};
- 258:         const pending = pendingWorkerJobs.get(data.jobId);
- 259:         if (!pending) {
- 260:             return;
- 261:         }
- 262: 
- 263:         pendingWorkerJobs.delete(data.jobId);
- 264:         if (data.ok) {
- 265:             pending.resolve(data);
- 266:         } else {
- 267:             pending.reject(data);
- 268:         }
- 269:     });
- 270: 
- 271:     jsonWorker.addEventListener('error', event => {
- 272:         console.error('JSON worker error:', event);
- 273:         const fatalPayload = {
- 274:             error: {
- 275:                 errorType: 'processing',
- 276:                 title: 'Worker Error',
- 277:                 message: event.message || 'The background JSON worker failed.'
- 278:             }
- 279:         };
- 280: 
- 281:         for (const pending of pendingWorkerJobs.values()) {
- 282:             pending.reject(fatalPayload);
- 283:         }
- 284:         pendingWorkerJobs.clear();
- 285: 
- 286:         try {
- 287:             jsonWorker.terminate();
- 288:         } catch (_) {
- 289:             // Ignore terminate failures.
- 290:         }
- 291:         jsonWorker = null;
- 292:     });
- 293: 
- 294:     return jsonWorker;
- 295: }
- 296: 
- 297: function runWorkerJob(action, payload) {
- 298:     const worker = ensureWorker();
- 299:     return new Promise((resolve, reject) => {
- 300:         const jobId = ++workerJobCounter;
- 301:         pendingWorkerJobs.set(jobId, { resolve, reject });
- 302:         worker.postMessage({ jobId, action, payload });
- 303:     });
- 304: }
- 305: 
- 306: function setActiveTab(activeTab) {
- 307:     let activePanelId = '';
- 308: 
- 309:     modeTabs.forEach(tab => {
- 310:         const isActive = tab === activeTab;
- 311:         tab.classList.toggle('active', isActive);
- 312:         tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
- 313:         tab.setAttribute('tabindex', isActive ? '0' : '-1');
- 314:         if (isActive) {
- 315:             activePanelId = tab.getAttribute('aria-controls') || '';
- 316:         }
- 317:     });
- 318: 
- 319:     modeTabPanels.forEach(panel => {
- 320:         const isActive = panel.id === activePanelId;
- 321:         panel.hidden = !isActive;
- 322:         panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
- 323:     });
- 324: }
- 325: 
- 326: function setOutputEditorMode(modePath) {
- 327:     if (!outputEditor) {
- 328:         return;
- 329:     }
- 330:     outputEditor.session.setMode(modePath || 'ace/mode/text');
- 331:     outputEditor.session.setUseWorker(false);
- 332: }
- 333: 
- 334: function updateModeUI() {
- 335:     const info = modeInfo[currentMode];
- 336:     if (!info) {
- 337:         throw new Error(`Unknown mode: ${currentMode}`);
- 338:     }
- 339: 
- 340:     infoTitle.textContent = info.title;
- 341:     infoText.textContent = info.text;
- 342:     inputLabelText.textContent = info.inputLabel;
- 343:     outputLabel.textContent = info.outputLabel;
- 344: 
- 345:     optionsPanel.style.display = info.showOptions ? 'block' : 'none';
- 346:     queryPanel.classList.toggle('show', info.showQuery);
- 347:     schemaPanel.classList.toggle('show', info.showSchema);
- 348: 
- 349:     const processIcon = processBtn.querySelector('.material-icons');
- 350:     if (processIcon) {
- 351:         processIcon.textContent = info.actionIcon;
- 352:     }
- 353:     processLabel.textContent = info.actionLabel;
- 354:     setOutputEditorMode(info.outputAceMode);
- 355: 
- 356:     hideError();
- 357:     hideStats();
- 358:     scheduleAsyncInputAnalysis();
- 359: 
- 360:     requestAnimationFrame(() => {
- 361:         inputEditor.resize(true);
- 362:         outputEditor.resize(true);
- 363:         if (info.showSchema) {
- 364:             schemaEditor.resize(true);
- 365:         }
- 366:     });
- 367: }
- 368: 
- 369: function displayStats(stats) {
- 370:     if (!stats) {
- 371:         hideStats();
- 372:         return;
- 373:     }
- 374: 
- 375:     statObjects.textContent = Number.isFinite(stats.objects) ? stats.objects : 0;
- 376:     statArrays.textContent = Number.isFinite(stats.arrays) ? stats.arrays : 0;
- 377:     statKeys.textContent = Number.isFinite(stats.keys) ? stats.keys : 0;
- 378:     statDepth.textContent = Number.isFinite(stats.maxDepth) ? stats.maxDepth : 0;
- 379:     statsPanel.style.display = 'grid';
- 380: }
- 381: 
- 382: function hideStats() {
- 383:     statsPanel.style.display = 'none';
- 384: }
- 385: 
- 386: function hideError() {
- 387:     errorPanel.classList.remove('show');
- 388:     errorPanel.setAttribute('aria-hidden', 'true');
- 389:     errorTitleText.textContent = 'Syntax Error';
- 390:     errorMessage.textContent = '';
- 391: }
- 392: 
- 393: function getErrorTitle(error) {
- 394:     switch (error && error.errorType) {
- 395:         case 'schema':
- 396:             return 'Schema Validation Failed';
- 397:         case 'schemaSyntax':
- 398:             return 'Schema Syntax Error';
- 399:         case 'query':
- 400:             return 'JMESPath Query Error';
- 401:         case 'processing':
- 402:             return 'Processing Error';
- 403:         default:
- 404:             return 'Syntax Error';
- 405:     }
- 406: }
- 407: 
- 408: function showErrorPanel(error) {
- 409:     const normalized = error && typeof error === 'object'
- 410:         ? error
- 411:         : { message: String(error) };
- 412: 
- 413:     errorTitleText.textContent = normalized.title || getErrorTitle(normalized);
- 414: 
- 415:     const lines = [];
- 416:     const message = normalized.message ? String(normalized.message) : 'An unknown error occurred.';
- 417:     lines.push(message);
- 418: 
- 419:     if (normalized.line || normalized.column) {
- 420:         const parts = [];
- 421:         if (normalized.line) {
- 422:             parts.push(`Line ${normalized.line}`);
- 423:         }
- 424:         if (normalized.column) {
- 425:             parts.push(`Character ${normalized.column}`);
- 426:         }
- 427:         const hasLineInMessage = /line\s+\d+/i.test(message);
- 428:         const hasColumnInMessage = /(?:column|character)\s+\d+/i.test(message);
- 429:         const shouldAppendLocation = parts.length > 0
- 430:             && (!hasLineInMessage || (normalized.column && !hasColumnInMessage));
- 431:         if (shouldAppendLocation) {
- 432:             lines.push(`Location: ${parts.join(', ')}`);
- 433:         }
- 434:     }
- 435: 
- 436:     if (normalized.source === 'schema') {
- 437:         lines.push('Source: Schema input');
- 438:     }
- 439: 
- 440:     errorMessage.textContent = lines.join('\n\n');
- 441:     errorPanel.classList.add('show');
- 442:     errorPanel.setAttribute('aria-hidden', 'false');
- 443: }
- 444: 
- 445: function showStatus(message, type = 'success') {
- 446:     statusMessage.textContent = message;
- 447:     statusMessage.className = type;
- 448: }
- 449: function formatCounts(chars, lines) {
- 450:     return `${chars} chars, ${lines} lines`;
- 451: }
- 452: 
- 453: function updateInputStatsLabel(rawInput) {
- 454:     const text = typeof rawInput === 'string' ? rawInput : inputEditor.getValue();
- 455:     const lines = text.length === 0
- 456:         ? 0
- 457:         : (typeof rawInput === 'string' ? text.split(/\r?\n/).length : inputEditor.session.getLength());
- 458:     inputStats.textContent = formatCounts(text.length, lines);
- 459: }
- 460: 
- 461: function updateOutputStatsLabel(rawOutput) {
- 462:     const text = typeof rawOutput === 'string' ? rawOutput : outputEditor.getValue();
- 463:     const lines = text.length === 0 ? 0 : outputEditor.session.getLength();
- 464:     outputStats.textContent = formatCounts(text.length, lines);
- 465: }
- 466: 
- 467: function queueInputStatsLabelUpdate() {
- 468:     if (inputStatsRaf) {
- 469:         return;
- 470:     }
- 471: 
- 472:     inputStatsRaf = requestAnimationFrame(() => {
- 473:         inputStatsRaf = 0;
- 474:         updateInputStatsLabel();
- 475:     });
- 476: }
- 477: 
- 478: function setInputEditorValue(text) {
- 479:     inputEditor.setValue(text || '', -1);
- 480:     inputEditor.clearSelection();
- 481:     queueInputStatsLabelUpdate();
- 482:     scheduleAsyncInputAnalysis();
- 483: }
- 484: 
- 485: function setOutputEditorValue(text, modePath) {
- 486:     if (modePath) {
- 487:         setOutputEditorMode(modePath);
- 488:     }
- 489:     outputEditor.setValue(text || '', -1);
- 490:     outputEditor.clearSelection();
- 491:     updateOutputStatsLabel(text || '');
- 492: }
- 493: 
- 494: function setProcessingState(busy) {
- 495:     isProcessing = Boolean(busy);
- 496:     processBtn.disabled = isProcessing;
- 497:     chooseFileBtn.disabled = isProcessing;
- 498: 
- 499:     modeTabs.forEach(tab => {
- 500:         tab.disabled = isProcessing;
- 501:     });
- 502: 
- 503:     fileDropZone.setAttribute('aria-disabled', isProcessing ? 'true' : 'false');
- 504: }
- 505: 
- 506: function buildWorkerPayload(rawInput) {
- 507:     return {
- 508:         rawInput,
- 509:         mode: currentMode,
- 510:         options: {
- 511:             indent: indentSelect.value,
- 512:             sortKeys: Boolean(sortKeysCheck.checked),
- 513:             query: jmespathQuery.value || '',
- 514:             schemaText: schemaEditor.getValue()
- 515:         }
- 516:     };
- 517: }
- 518: 
- 519: function safeFirstLine(text) {
- 520:     return String(text || '').split(/\r?\n/, 1)[0] || 'Processing failed';
- 521: }
- 522: 
- 523: async function processJSON() {
- 524:     const rawInput = inputEditor.getValue();
- 525: 
- 526:     if (!rawInput.trim()) {
- 527:         hideError();
- 528:         setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
- 529:         hideStats();
- 530:         showStatus('Please enter some JSON/JSONL to process.', 'warning');
- 531:         processingTime.textContent = 'No operations yet';
- 532:         return;
- 533:     }
- 534: 
- 535:     hideError();
- 536:     setProcessingState(true);
- 537:     const startedAt = performance.now();
- 538: 
- 539:     try {
- 540:         const response = await runWorkerJob('process', buildWorkerPayload(rawInput));
- 541: 
- 542:         if (response.stats) {
- 543:             displayStats(response.stats);
- 544:         } else {
- 545:             hideStats();
- 546:         }
- 547: 
- 548:         setOutputEditorValue(
- 549:             response.resultText || '',
- 550:             response.outputMode || modeInfo[currentMode].outputAceMode
- 551:         );
- 552: 
- 553:         showStatus(response.message || 'Success!', 'success');
- 554: 
- 555:         const totalMs = Math.round(performance.now() - startedAt);
- 556:         const workerMs = Number.isFinite(response.durationMs)
- 557:             ? ` (worker ${Math.round(response.durationMs)}ms)`
- 558:             : '';
- 559:         processingTime.textContent = `Processed in ${totalMs}ms${workerMs}`;
- 560:     } catch (failure) {
- 561:         console.error('Processing error:', failure);
- 562: 
- 563:         const payload = failure && typeof failure === 'object' ? failure : {};
- 564:         const error = payload.error || { message: String(failure), errorType: 'processing' };
- 565: 
- 566:         if (payload.stats) {
- 567:             displayStats(payload.stats);
- 568:         } else {
- 569:             hideStats();
- 570:         }
- 571: 
- 572:         if (typeof payload.validationReport === 'string') {
- 573:             setOutputEditorValue(payload.validationReport, 'ace/mode/text');
- 574:         } else {
- 575:             setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
- 576:         }
- 577: 
- 578:         showErrorPanel(error);
- 579:         showStatus(`Error: ${safeFirstLine(error.message)}`, 'error');
- 580:         processingTime.textContent = `Processing failed after ${Math.round(performance.now() - startedAt)}ms`;
- 581:     } finally {
- 582:         setProcessingState(false);
- 583:     }
- 584: }
- 585: 
- 586: function buildExampleInputForMode(mode) {
- 587:     return mode === 'jsonlToJson'
- 588:         ? exampleJSONL
- 589:         : JSON.stringify(exampleJSON, null, 2);
- 590: }
- 591: 
- 592: function loadExample() {
- 593:     hideError();
- 594:     setInputEditorValue(buildExampleInputForMode(currentMode));
- 595:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
- 596:     hideStats();
- 597: 
- 598:     if (currentMode === 'validate' && !schemaEditor.getValue().trim()) {
- 599:         schemaEditor.setValue(JSON.stringify(exampleSchema, null, 2), -1);
- 600:         schemaEditor.clearSelection();
- 601:     }
- 602: 
- 603:     fileMeta.textContent = DEFAULT_FILE_META;
- 604:     showStatus('Example loaded', 'success');
- 605:     processingTime.textContent = 'Ready to process example';
- 606: }
- 607: 
- 608: function clearAll() {
- 609:     activeFileLoadId += 1;
- 610:     latestStatsTicket += 1;
- 611:     clearTimeout(statsDebounceTimer);
- 612: 
- 613:     hideError();
- 614:     hideStats();
- 615:     jmespathQuery.value = '';
- 616:     schemaEditor.setValue('', -1);
- 617:     schemaEditor.clearSelection();
- 618:     setInputEditorValue('');
- 619:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
- 620:     fileMeta.textContent = DEFAULT_FILE_META;
- 621:     showStatus('Cleared', 'success');
- 622:     processingTime.textContent = 'No operations yet';
- 623: }
- 624: 
- 625: async function copyToClipboard() {
- 626:     const text = outputEditor.getValue();
- 627:     if (!text) {
- 628:         showStatus('Nothing to copy', 'warning');
- 629:         return;
- 630:     }
- 631: 
- 632:     try {
- 633:         if (typeof window.textUtilsClipboardWrite === 'function') {
- 634:             await window.textUtilsClipboardWrite(text);
- 635:         } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
- 636:             await navigator.clipboard.writeText(text);
- 637:         } else {
- 638:             throw new Error('Clipboard API unavailable');
- 639:         }
- 640:         showStatus('Copied to clipboard!', 'success');
- 641:     } catch {
- 642:         showStatus('Copy failed', 'error');
- 643:     }
- 644: }
- 645: 
- 646: function scheduleAsyncInputAnalysis() {
- 647:     if (!inputEditor) {
- 648:         return;
- 649:     }
- 650: 
- 651:     const rawInput = inputEditor.getValue();
- 652:     if (!rawInput.trim()) {
- 653:         hideStats();
- 654:         return;
- 655:     }
- 656: 
- 657:     latestStatsTicket += 1;
- 658:     const ticket = latestStatsTicket;
- 659:     clearTimeout(statsDebounceTimer);
- 660: 
- 661:     statsDebounceTimer = window.setTimeout(async () => {
- 662:         try {
- 663:             const response = await runWorkerJob('analyzeInput', {
- 664:                 rawInput: inputEditor.getValue(),
- 665:                 mode: currentMode
- 666:             });
- 667: 
- 668:             if (ticket !== latestStatsTicket) {
- 669:                 return;
- 670:             }
- 671: 
- 672:             if (response.valid && response.stats) {
- 673:                 displayStats(response.stats);
- 674:             } else if (!isProcessing) {
- 675:                 hideStats();
- 676:             }
- 677:         } catch {
- 678:             if (ticket === latestStatsTicket && !isProcessing) {
- 679:                 hideStats();
- 680:             }
- 681:         }
- 682:     }, ANALYZE_DEBOUNCE_MS);
- 683: }
- 684: function formatBytes(bytes) {
- 685:     if (!Number.isFinite(bytes) || bytes < 0) {
- 686:         return '0 B';
- 687:     }
- 688: 
- 689:     const units = ['B', 'KB', 'MB', 'GB'];
- 690:     let value = bytes;
- 691:     let unitIndex = 0;
- 692:     while (value >= 1024 && unitIndex < units.length - 1) {
- 693:         value /= 1024;
- 694:         unitIndex += 1;
- 695:     }
- 696:     return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`;
- 697: }
- 698: 
- 699: function shouldUseStreamRead(file) {
- 700:     return Boolean(
- 701:         file
- 702:         && typeof file.stream === 'function'
- 703:         && (file.size >= LARGE_FILE_THRESHOLD_BYTES
- 704:             || ((currentMode === 'jsonl' || currentMode === 'jsonlToJson')
- 705:                 && file.size >= JSONL_STREAM_THRESHOLD_BYTES))
- 706:     );
- 707: }
- 708: 
- 709: function waitForNextTick() {
- 710:     return new Promise(resolve => setTimeout(resolve, 0));
- 711: }
- 712: 
- 713: async function readFileAsTextStream(file, loadId) {
- 714:     const reader = file.stream().getReader();
- 715:     const decoder = new TextDecoder();
- 716:     const chunks = [];
- 717:     let bytesRead = 0;
- 718:     let chunkCount = 0;
- 719: 
- 720:     try {
- 721:         while (true) {
- 722:             if (loadId !== activeFileLoadId) {
- 723:                 try {
- 724:                     await reader.cancel();
- 725:                 } catch (_) {
- 726:                     // Ignore cancel failures when a newer load starts.
- 727:                 }
- 728:                 throw new Error('File load superseded.');
- 729:             }
- 730: 
- 731:             const { done, value } = await reader.read();
- 732:             if (done) {
- 733:                 break;
- 734:             }
- 735: 
- 736:             bytesRead += value.byteLength;
- 737:             chunks.push(decoder.decode(value, { stream: true }));
- 738:             fileMeta.textContent = `${file.name} • ${formatBytes(bytesRead)} / ${formatBytes(file.size)} (streaming)`;
- 739: 
- 740:             chunkCount += 1;
- 741:             if (chunkCount % STREAM_READ_YIELD_INTERVAL === 0) {
- 742:                 await waitForNextTick();
- 743:             }
- 744:         }
- 745: 
- 746:         chunks.push(decoder.decode());
- 747:         return chunks.join('');
- 748:     } finally {
- 749:         try {
- 750:             reader.releaseLock();
- 751:         } catch (_) {
- 752:             // Ignore release failures.
- 753:         }
- 754:     }
- 755: }
- 756: 
- 757: async function readFileAsText(file, loadId) {
- 758:     if (shouldUseStreamRead(file)) {
- 759:         return readFileAsTextStream(file, loadId);
- 760:     }
- 761: 
- 762:     return file.text();
- 763: }
- 764: 
- 765: async function loadFileIntoEditor(file) {
- 766:     if (!file) {
- 767:         return;
- 768:     }
- 769: 
- 770:     if (isProcessing) {
- 771:         showStatus('Please wait for the current operation to finish before loading a file.', 'warning');
- 772:         return;
- 773:     }
- 774: 
- 775:     const loadId = ++activeFileLoadId;
- 776:     hideError();
- 777:     showStatus(`Loading ${file.name}...`, 'success');
- 778:     processingTime.textContent = 'Loading file from disk...';
- 779:     fileMeta.textContent = `${file.name} • ${formatBytes(file.size)}`;
- 780: 
- 781:     try {
- 782:         const rawText = await readFileAsText(file, loadId);
- 783:         if (loadId !== activeFileLoadId) {
- 784:             return;
- 785:         }
- 786: 
- 787:         setInputEditorValue(rawText);
- 788:         setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
- 789:         hideError();
- 790: 
- 791:         fileMeta.textContent = `${file.name} • ${formatBytes(file.size)} • loaded`;
- 792:         processingTime.textContent = `Loaded ${formatBytes(file.size)} from disk`;
+  64: const STREAM_PROGRESS_UPDATE_INTERVAL_MS = 100;
+  65: 
+  66: const exampleJSON = {
+  67:     users: [
+  68:         { id: 1, name: 'Alice Johnson', email: 'alice@example.com', age: 28, active: true },
+  69:         { id: 2, name: 'Bob Smith', email: 'bob@example.com', age: 34, active: false },
+  70:         { id: 3, name: 'Carol White', email: 'carol@example.com', age: 31, active: true }
+  71:     ],
+  72:     metadata: {
+  73:         total: 3,
+  74:         page: 1,
+  75:         timestamp: '2024-01-15T10:30:00Z'
+  76:     }
+  77: };
+  78: 
+  79: const exampleJSONL = [
+  80:     '{"id":1,"name":"Alice Johnson","active":true}',
+  81:     '{"id":2,"name":"Bob Smith","active":false}',
+  82:     '{"id":3,"name":"Carol White","active":true}'
+  83: ].join('\n');
+  84: 
+  85: const exampleSchema = {
+  86:     type: 'object',
+  87:     required: ['users', 'metadata'],
+  88:     properties: {
+  89:         users: {
+  90:             type: 'array',
+  91:             items: {
+  92:                 type: 'object',
+  93:                 required: ['id', 'name', 'email', 'active'],
+  94:                 properties: {
+  95:                     id: { type: 'integer' },
+  96:                     name: { type: 'string' },
+  97:                     email: { type: 'string', format: 'email' },
+  98:                     age: { type: 'integer' },
+  99:                     active: { type: 'boolean' }
+ 100:                 }
+ 101:             }
+ 102:         },
+ 103:         metadata: {
+ 104:             type: 'object',
+ 105:             required: ['total'],
+ 106:             properties: {
+ 107:                 total: { type: 'integer' },
+ 108:                 page: { type: 'integer' },
+ 109:                 timestamp: { type: 'string' }
+ 110:             }
+ 111:         }
+ 112:     }
+ 113: };
+ 114: 
+ 115: const modeInfo = {
+ 116:     format: {
+ 117:         title: 'JSON Formatting',
+ 118:         text: 'Format JSON with optional key sorting and optional JMESPath pre-filtering. Syntax parsing and structural analysis run in a background worker.',
+ 119:         inputLabel: 'Input JSON',
+ 120:         outputLabel: 'Formatted Output',
+ 121:         outputAceMode: 'ace/mode/json',
+ 122:         showOptions: true,
+ 123:         showQuery: true,
+ 124:         showSchema: false,
+ 125:         actionLabel: 'Format',
+ 126:         actionIcon: 'play_arrow'
+ 127:     },
+ 128:     jsonl: {
+ 129:         title: 'JSON to JSONL Conversion',
+ 130:         text: 'Convert JSON (typically arrays) to JSON Lines. Use a JMESPath query to pre-filter or extract a subset before conversion.',
+ 131:         inputLabel: 'Input JSON',
+ 132:         outputLabel: 'JSONL Output',
+ 133:         outputAceMode: 'ace/mode/json',
+ 134:         showOptions: false,
+ 135:         showQuery: true,
+ 136:         showSchema: false,
+ 137:         actionLabel: 'Convert',
+ 138:         actionIcon: 'play_arrow'
+ 139:     },
+ 140:     jsonlToJson: {
+ 141:         title: 'JSONL to JSON Conversion',
+ 142:         text: 'Parse JSON Lines (one JSON value per line), skip empty lines, and re-stringify as a valid JSON array. Large inputs are processed in a background worker.',
+ 143:         inputLabel: 'Input JSONL',
+ 144:         outputLabel: 'JSON Output',
+ 145:         outputAceMode: 'ace/mode/json',
+ 146:         showOptions: true,
+ 147:         showQuery: false,
+ 148:         showSchema: false,
+ 149:         actionLabel: 'Convert',
+ 150:         actionIcon: 'play_arrow'
+ 151:     },
+ 152:     validate: {
+ 153:         title: 'JSON Validation',
+ 154:         text: 'Validate JSON syntax with JSONLint for precise line/character errors. Optionally validate against a JSON Schema using Ajv.',
+ 155:         inputLabel: 'Input JSON',
+ 156:         outputLabel: 'Validation Result',
+ 157:         outputAceMode: 'ace/mode/text',
+ 158:         showOptions: false,
+ 159:         showQuery: false,
+ 160:         showSchema: true,
+ 161:         actionLabel: 'Validate',
+ 162:         actionIcon: 'check_circle'
+ 163:     }
+ 164: };
+ 165: 
+ 166: function initAceEditors() {
+ 167:     if (!window.ace) {
+ 168:         throw new Error('Ace Editor failed to load from CDN.');
+ 169:     }
+ 170: 
+ 171:     ace.config.set('basePath', ACE_BASE_PATH);
+ 172:     ace.config.set('modePath', ACE_BASE_PATH);
+ 173:     ace.config.set('themePath', ACE_BASE_PATH);
+ 174: 
+ 175:     inputEditor = ace.edit(inputEditorHost);
+ 176:     outputEditor = ace.edit(outputEditorHost);
+ 177:     schemaEditor = ace.edit(schemaEditorHost);
+ 178: 
+ 179:     configureEditor(inputEditor, { readOnly: false, mode: 'ace/mode/json' });
+ 180:     configureEditor(outputEditor, { readOnly: true, mode: 'ace/mode/json' });
+ 181:     outputEditor.setOptions({
+ 182:         highlightActiveLine: false,
+ 183:         highlightGutterLine: false
+ 184:     });
+ 185:     configureEditor(schemaEditor, { readOnly: false, mode: 'ace/mode/json' });
+ 186: 
+ 187:     inputEditor.commands.addCommand({
+ 188:         name: 'process-json-tool',
+ 189:         bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
+ 190:         exec: () => processJSON()
+ 191:     });
+ 192: }
+ 193: 
+ 194: function configureEditor(editor, options) {
+ 195:     editor.setOptions({
+ 196:         readOnly: Boolean(options.readOnly),
+ 197:         showPrintMargin: false,
+ 198:         useWorker: false,
+ 199:         wrap: true,
+ 200:         fontSize: '14px',
+ 201:         tabSize: 2,
+ 202:         useSoftTabs: true,
+ 203:         displayIndentGuides: true,
+ 204:         behavioursEnabled: true
+ 205:     });
+ 206:     editor.session.setMode(options.mode || 'ace/mode/json');
+ 207:     editor.session.setUseWorker(false);
+ 208:     editor.session.setUseWrapMode(true);
+ 209:     editor.session.setTabSize(2);
+ 210:     editor.session.setUseSoftTabs(true);
+ 211:     editor.renderer.setShowPrintMargin(false);
+ 212:     editor.renderer.setScrollMargin(8, 8, 8, 8);
+ 213: }
+ 214: function applyEditorTheme() {
+ 215:     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+ 216:     const aceTheme = isLight ? 'ace/theme/github' : 'ace/theme/monokai';
+ 217:     [inputEditor, outputEditor, schemaEditor].forEach(editor => {
+ 218:         if (editor) {
+ 219:             editor.setTheme(aceTheme);
+ 220:         }
+ 221:     });
+ 222: }
+ 223: 
+ 224: function setupThemeSync() {
+ 225:     applyEditorTheme();
+ 226: 
+ 227:     if (themeObserver) {
+ 228:         themeObserver.disconnect();
+ 229:     }
+ 230: 
+ 231:     themeObserver = new MutationObserver(mutations => {
+ 232:         for (const mutation of mutations) {
+ 233:             if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+ 234:                 applyEditorTheme();
+ 235:                 break;
+ 236:             }
+ 237:         }
+ 238:     });
+ 239: 
+ 240:     themeObserver.observe(document.documentElement, {
+ 241:         attributes: true,
+ 242:         attributeFilter: ['data-theme']
+ 243:     });
+ 244: }
+ 245: 
+ 246: function ensureWorker() {
+ 247:     if (jsonWorker) {
+ 248:         return jsonWorker;
+ 249:     }
+ 250: 
+ 251:     if (!window.Worker) {
+ 252:         throw new Error('Web Workers are not supported in this browser.');
+ 253:     }
+ 254: 
+ 255:     jsonWorker = new Worker(WORKER_PATH);
+ 256: 
+ 257:     jsonWorker.addEventListener('message', event => {
+ 258:         const data = event.data || {};
+ 259:         const pending = pendingWorkerJobs.get(data.jobId);
+ 260:         if (!pending) {
+ 261:             return;
+ 262:         }
+ 263: 
+ 264:         pendingWorkerJobs.delete(data.jobId);
+ 265:         if (data.ok) {
+ 266:             pending.resolve(data);
+ 267:         } else {
+ 268:             pending.reject(data);
+ 269:         }
+ 270:     });
+ 271: 
+ 272:     jsonWorker.addEventListener('error', event => {
+ 273:         console.error('JSON worker error:', event);
+ 274:         const fatalPayload = {
+ 275:             error: {
+ 276:                 errorType: 'processing',
+ 277:                 title: 'Worker Error',
+ 278:                 message: event.message || 'The background JSON worker failed.'
+ 279:             }
+ 280:         };
+ 281: 
+ 282:         for (const pending of pendingWorkerJobs.values()) {
+ 283:             pending.reject(fatalPayload);
+ 284:         }
+ 285:         pendingWorkerJobs.clear();
+ 286: 
+ 287:         try {
+ 288:             jsonWorker.terminate();
+ 289:         } catch (_) {
+ 290:             // Ignore terminate failures.
+ 291:         }
+ 292:         jsonWorker = null;
+ 293:     });
+ 294: 
+ 295:     return jsonWorker;
+ 296: }
+ 297: 
+ 298: function runWorkerJob(action, payload) {
+ 299:     const worker = ensureWorker();
+ 300:     return new Promise((resolve, reject) => {
+ 301:         const jobId = ++workerJobCounter;
+ 302:         pendingWorkerJobs.set(jobId, { resolve, reject });
+ 303:         worker.postMessage({ jobId, action, payload });
+ 304:     });
+ 305: }
+ 306: 
+ 307: function setActiveTab(activeTab) {
+ 308:     let activePanelId = '';
+ 309: 
+ 310:     modeTabs.forEach(tab => {
+ 311:         const isActive = tab === activeTab;
+ 312:         tab.classList.toggle('active', isActive);
+ 313:         tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+ 314:         tab.setAttribute('tabindex', isActive ? '0' : '-1');
+ 315:         if (isActive) {
+ 316:             activePanelId = tab.getAttribute('aria-controls') || '';
+ 317:         }
+ 318:     });
+ 319: 
+ 320:     modeTabPanels.forEach(panel => {
+ 321:         const isActive = panel.id === activePanelId;
+ 322:         panel.hidden = !isActive;
+ 323:         panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+ 324:     });
+ 325: }
+ 326: 
+ 327: function setOutputEditorMode(modePath) {
+ 328:     if (!outputEditor) {
+ 329:         return;
+ 330:     }
+ 331:     outputEditor.session.setMode(modePath || 'ace/mode/text');
+ 332:     outputEditor.session.setUseWorker(false);
+ 333: }
+ 334: 
+ 335: function updateModeUI() {
+ 336:     const info = modeInfo[currentMode];
+ 337:     if (!info) {
+ 338:         throw new Error(`Unknown mode: ${currentMode}`);
+ 339:     }
+ 340: 
+ 341:     infoTitle.textContent = info.title;
+ 342:     infoText.textContent = info.text;
+ 343:     inputLabelText.textContent = info.inputLabel;
+ 344:     outputLabel.textContent = info.outputLabel;
+ 345: 
+ 346:     optionsPanel.style.display = info.showOptions ? 'block' : 'none';
+ 347:     queryPanel.classList.toggle('show', info.showQuery);
+ 348:     schemaPanel.classList.toggle('show', info.showSchema);
+ 349: 
+ 350:     const processIcon = processBtn.querySelector('.material-icons');
+ 351:     if (processIcon) {
+ 352:         processIcon.textContent = info.actionIcon;
+ 353:     }
+ 354:     processLabel.textContent = info.actionLabel;
+ 355:     setOutputEditorMode(info.outputAceMode);
+ 356: 
+ 357:     hideError();
+ 358:     hideStats();
+ 359:     scheduleAsyncInputAnalysis();
+ 360: 
+ 361:     requestAnimationFrame(() => {
+ 362:         inputEditor.resize(true);
+ 363:         outputEditor.resize(true);
+ 364:         if (info.showSchema) {
+ 365:             schemaEditor.resize(true);
+ 366:         }
+ 367:     });
+ 368: }
+ 369: 
+ 370: function displayStats(stats) {
+ 371:     if (!stats) {
+ 372:         hideStats();
+ 373:         return;
+ 374:     }
+ 375: 
+ 376:     statObjects.textContent = Number.isFinite(stats.objects) ? stats.objects : 0;
+ 377:     statArrays.textContent = Number.isFinite(stats.arrays) ? stats.arrays : 0;
+ 378:     statKeys.textContent = Number.isFinite(stats.keys) ? stats.keys : 0;
+ 379:     statDepth.textContent = Number.isFinite(stats.maxDepth) ? stats.maxDepth : 0;
+ 380:     statsPanel.style.display = 'grid';
+ 381: }
+ 382: 
+ 383: function hideStats() {
+ 384:     statsPanel.style.display = 'none';
+ 385: }
+ 386: 
+ 387: function hideError() {
+ 388:     errorPanel.classList.remove('show');
+ 389:     errorPanel.setAttribute('aria-hidden', 'true');
+ 390:     errorTitleText.textContent = 'Syntax Error';
+ 391:     errorMessage.textContent = '';
+ 392: }
+ 393: 
+ 394: function getErrorTitle(error) {
+ 395:     switch (error && error.errorType) {
+ 396:         case 'schema':
+ 397:             return 'Schema Validation Failed';
+ 398:         case 'schemaSyntax':
+ 399:             return 'Schema Syntax Error';
+ 400:         case 'query':
+ 401:             return 'JMESPath Query Error';
+ 402:         case 'processing':
+ 403:             return 'Processing Error';
+ 404:         default:
+ 405:             return 'Syntax Error';
+ 406:     }
+ 407: }
+ 408: 
+ 409: function showErrorPanel(error) {
+ 410:     const normalized = error && typeof error === 'object'
+ 411:         ? error
+ 412:         : { message: String(error) };
+ 413: 
+ 414:     errorTitleText.textContent = normalized.title || getErrorTitle(normalized);
+ 415: 
+ 416:     const lines = [];
+ 417:     const message = normalized.message ? String(normalized.message) : 'An unknown error occurred.';
+ 418:     lines.push(message);
+ 419: 
+ 420:     if (normalized.line || normalized.column) {
+ 421:         const parts = [];
+ 422:         if (normalized.line) {
+ 423:             parts.push(`Line ${normalized.line}`);
+ 424:         }
+ 425:         if (normalized.column) {
+ 426:             parts.push(`Character ${normalized.column}`);
+ 427:         }
+ 428:         const hasLineInMessage = /line\s+\d+/i.test(message);
+ 429:         const hasColumnInMessage = /(?:column|character)\s+\d+/i.test(message);
+ 430:         const shouldAppendLocation = parts.length > 0
+ 431:             && (!hasLineInMessage || (normalized.column && !hasColumnInMessage));
+ 432:         if (shouldAppendLocation) {
+ 433:             lines.push(`Location: ${parts.join(', ')}`);
+ 434:         }
+ 435:     }
+ 436: 
+ 437:     if (normalized.source === 'schema') {
+ 438:         lines.push('Source: Schema input');
+ 439:     }
+ 440: 
+ 441:     errorMessage.textContent = lines.join('\n\n');
+ 442:     errorPanel.classList.add('show');
+ 443:     errorPanel.setAttribute('aria-hidden', 'false');
+ 444: }
+ 445: 
+ 446: function showStatus(message, type = 'success') {
+ 447:     statusMessage.textContent = message;
+ 448:     statusMessage.className = type;
+ 449: }
+ 450: function formatCounts(chars, lines) {
+ 451:     return `${chars} chars, ${lines} lines`;
+ 452: }
+ 453: 
+ 454: function updateInputStatsLabel(rawInput) {
+ 455:     const text = typeof rawInput === 'string' ? rawInput : inputEditor.getValue();
+ 456:     const lines = text.length === 0
+ 457:         ? 0
+ 458:         : (typeof rawInput === 'string' ? text.split(/\r?\n/).length : inputEditor.session.getLength());
+ 459:     inputStats.textContent = formatCounts(text.length, lines);
+ 460: }
+ 461: 
+ 462: function updateOutputStatsLabel(rawOutput) {
+ 463:     const text = typeof rawOutput === 'string' ? rawOutput : outputEditor.getValue();
+ 464:     const lines = text.length === 0
+ 465:         ? 0
+ 466:         : (typeof rawOutput === 'string' ? text.split(/\r?\n/).length : outputEditor.session.getLength());
+ 467:     outputStats.textContent = formatCounts(text.length, lines);
+ 468: }
+ 469: 
+ 470: function queueInputStatsLabelUpdate() {
+ 471:     if (inputStatsRaf) {
+ 472:         return;
+ 473:     }
+ 474: 
+ 475:     inputStatsRaf = requestAnimationFrame(() => {
+ 476:         inputStatsRaf = 0;
+ 477:         updateInputStatsLabel();
+ 478:     });
+ 479: }
+ 480: 
+ 481: function setInputEditorValue(text) {
+ 482:     inputEditor.setValue(text || '', -1);
+ 483:     inputEditor.clearSelection();
+ 484:     queueInputStatsLabelUpdate();
+ 485:     scheduleAsyncInputAnalysis();
+ 486: }
+ 487: 
+ 488: function setOutputEditorValue(text, modePath) {
+ 489:     if (modePath) {
+ 490:         setOutputEditorMode(modePath);
+ 491:     }
+ 492:     outputEditor.setValue(text || '', -1);
+ 493:     outputEditor.clearSelection();
+ 494:     updateOutputStatsLabel(text || '');
+ 495: }
+ 496: 
+ 497: function setProcessingState(busy) {
+ 498:     isProcessing = Boolean(busy);
+ 499:     processBtn.disabled = isProcessing;
+ 500:     chooseFileBtn.disabled = isProcessing;
+ 501: 
+ 502:     modeTabs.forEach(tab => {
+ 503:         tab.disabled = isProcessing;
+ 504:     });
+ 505: }
+ 506: 
+ 507: function buildWorkerPayload(rawInput) {
+ 508:     return {
+ 509:         rawInput,
+ 510:         mode: currentMode,
+ 511:         options: {
+ 512:             indent: indentSelect.value,
+ 513:             sortKeys: Boolean(sortKeysCheck.checked),
+ 514:             query: jmespathQuery.value || '',
+ 515:             schemaText: schemaEditor.getValue()
+ 516:         }
+ 517:     };
+ 518: }
+ 519: 
+ 520: function safeFirstLine(text) {
+ 521:     return String(text || '').split(/\r?\n/, 1)[0] || 'Processing failed';
+ 522: }
+ 523: 
+ 524: async function processJSON() {
+ 525:     const rawInput = inputEditor.getValue();
+ 526: 
+ 527:     if (!rawInput.trim()) {
+ 528:         hideError();
+ 529:         setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 530:         hideStats();
+ 531:         showStatus('Please enter some JSON/JSONL to process.', 'warning');
+ 532:         processingTime.textContent = 'No operations yet';
+ 533:         return;
+ 534:     }
+ 535: 
+ 536:     hideError();
+ 537:     setProcessingState(true);
+ 538:     const startedAt = performance.now();
+ 539: 
+ 540:     try {
+ 541:         const response = await runWorkerJob('process', buildWorkerPayload(rawInput));
+ 542: 
+ 543:         if (response.stats) {
+ 544:             displayStats(response.stats);
+ 545:         } else {
+ 546:             hideStats();
+ 547:         }
+ 548: 
+ 549:         setOutputEditorValue(
+ 550:             response.resultText || '',
+ 551:             response.outputMode || modeInfo[currentMode].outputAceMode
+ 552:         );
+ 553: 
+ 554:         showStatus(response.message || 'Success!', 'success');
+ 555: 
+ 556:         const totalMs = Math.round(performance.now() - startedAt);
+ 557:         const workerMs = Number.isFinite(response.durationMs)
+ 558:             ? ` (worker ${Math.round(response.durationMs)}ms)`
+ 559:             : '';
+ 560:         processingTime.textContent = `Processed in ${totalMs}ms${workerMs}`;
+ 561:     } catch (failure) {
+ 562:         console.error('Processing error:', failure);
+ 563: 
+ 564:         const payload = failure && typeof failure === 'object' ? failure : {};
+ 565:         const error = payload.error || { message: String(failure), errorType: 'processing' };
+ 566: 
+ 567:         if (payload.stats) {
+ 568:             displayStats(payload.stats);
+ 569:         } else {
+ 570:             hideStats();
+ 571:         }
+ 572: 
+ 573:         if (typeof payload.validationReport === 'string') {
+ 574:             setOutputEditorValue(payload.validationReport, 'ace/mode/text');
+ 575:         } else {
+ 576:             setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 577:         }
+ 578: 
+ 579:         showErrorPanel(error);
+ 580:         showStatus(`Error: ${safeFirstLine(error.message)}`, 'error');
+ 581:         processingTime.textContent = `Processing failed after ${Math.round(performance.now() - startedAt)}ms`;
+ 582:     } finally {
+ 583:         setProcessingState(false);
+ 584:     }
+ 585: }
+ 586: 
+ 587: function buildExampleInputForMode(mode) {
+ 588:     return mode === 'jsonlToJson'
+ 589:         ? exampleJSONL
+ 590:         : JSON.stringify(exampleJSON, null, 2);
+ 591: }
+ 592: 
+ 593: function loadExample() {
+ 594:     hideError();
+ 595:     setInputEditorValue(buildExampleInputForMode(currentMode));
+ 596:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 597:     hideStats();
+ 598: 
+ 599:     if (currentMode === 'validate' && !schemaEditor.getValue().trim()) {
+ 600:         schemaEditor.setValue(JSON.stringify(exampleSchema, null, 2), -1);
+ 601:         schemaEditor.clearSelection();
+ 602:     }
+ 603: 
+ 604:     fileMeta.textContent = DEFAULT_FILE_META;
+ 605:     showStatus('Example loaded', 'success');
+ 606:     processingTime.textContent = 'Ready to process example';
+ 607: }
+ 608: 
+ 609: function clearAll() {
+ 610:     activeFileLoadId += 1;
+ 611:     latestStatsTicket += 1;
+ 612:     clearTimeout(statsDebounceTimer);
+ 613: 
+ 614:     hideError();
+ 615:     hideStats();
+ 616:     jmespathQuery.value = '';
+ 617:     schemaEditor.setValue('', -1);
+ 618:     schemaEditor.clearSelection();
+ 619:     setInputEditorValue('');
+ 620:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 621:     fileMeta.textContent = DEFAULT_FILE_META;
+ 622:     showStatus('Cleared', 'success');
+ 623:     processingTime.textContent = 'No operations yet';
+ 624: }
+ 625: 
+ 626: async function copyToClipboard() {
+ 627:     const text = outputEditor.getValue();
+ 628:     if (!text) {
+ 629:         showStatus('Nothing to copy', 'warning');
+ 630:         return;
+ 631:     }
+ 632: 
+ 633:     try {
+ 634:         if (typeof window.textUtilsClipboardWrite === 'function') {
+ 635:             await window.textUtilsClipboardWrite(text);
+ 636:         } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+ 637:             await navigator.clipboard.writeText(text);
+ 638:         } else {
+ 639:             throw new Error('Clipboard API unavailable');
+ 640:         }
+ 641:         showStatus('Copied to clipboard!', 'success');
+ 642:     } catch {
+ 643:         showStatus('Copy failed', 'error');
+ 644:     }
+ 645: }
+ 646: 
+ 647: function scheduleAsyncInputAnalysis() {
+ 648:     if (!inputEditor) {
+ 649:         return;
+ 650:     }
+ 651: 
+ 652:     const rawInput = inputEditor.getValue();
+ 653:     if (!rawInput.trim()) {
+ 654:         hideStats();
+ 655:         return;
+ 656:     }
+ 657: 
+ 658:     latestStatsTicket += 1;
+ 659:     const ticket = latestStatsTicket;
+ 660:     clearTimeout(statsDebounceTimer);
+ 661: 
+ 662:     statsDebounceTimer = window.setTimeout(async () => {
+ 663:         try {
+ 664:             const response = await runWorkerJob('analyzeInput', {
+ 665:                 rawInput: inputEditor.getValue(),
+ 666:                 mode: currentMode
+ 667:             });
+ 668: 
+ 669:             if (ticket !== latestStatsTicket) {
+ 670:                 return;
+ 671:             }
+ 672: 
+ 673:             if (response.valid && response.stats) {
+ 674:                 displayStats(response.stats);
+ 675:             } else if (!isProcessing) {
+ 676:                 hideStats();
+ 677:             }
+ 678:         } catch {
+ 679:             if (ticket === latestStatsTicket && !isProcessing) {
+ 680:                 hideStats();
+ 681:             }
+ 682:         }
+ 683:     }, ANALYZE_DEBOUNCE_MS);
+ 684: }
+ 685: function formatBytes(bytes) {
+ 686:     if (!Number.isFinite(bytes) || bytes < 0) {
+ 687:         return '0 B';
+ 688:     }
+ 689: 
+ 690:     const units = ['B', 'KB', 'MB', 'GB'];
+ 691:     let value = bytes;
+ 692:     let unitIndex = 0;
+ 693:     while (value >= 1024 && unitIndex < units.length - 1) {
+ 694:         value /= 1024;
+ 695:         unitIndex += 1;
+ 696:     }
+ 697:     return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`;
+ 698: }
+ 699: 
+ 700: function shouldUseStreamRead(file) {
+ 701:     return Boolean(
+ 702:         file
+ 703:         && typeof file.stream === 'function'
+ 704:         && (file.size >= LARGE_FILE_THRESHOLD_BYTES
+ 705:             || ((currentMode === 'jsonl' || currentMode === 'jsonlToJson')
+ 706:                 && file.size >= JSONL_STREAM_THRESHOLD_BYTES))
+ 707:     );
+ 708: }
+ 709: 
+ 710: function waitForNextTick() {
+ 711:     return new Promise(resolve => setTimeout(resolve, 0));
+ 712: }
+ 713: 
+ 714: async function readFileAsTextStream(file, loadId) {
+ 715:     const reader = file.stream().getReader();
+ 716:     const decoder = new TextDecoder();
+ 717:     const chunks = [];
+ 718:     let bytesRead = 0;
+ 719:     let chunkCount = 0;
+ 720:     let lastProgressUpdateAt = 0;
+ 721: 
+ 722:     try {
+ 723:         while (true) {
+ 724:             if (loadId !== activeFileLoadId) {
+ 725:                 try {
+ 726:                     await reader.cancel();
+ 727:                 } catch (_) {
+ 728:                     // Ignore cancel failures when a newer load starts.
+ 729:                 }
+ 730:                 throw new Error('File load superseded.');
+ 731:             }
+ 732: 
+ 733:             const { done, value } = await reader.read();
+ 734:             if (done) {
+ 735:                 break;
+ 736:             }
+ 737: 
+ 738:             bytesRead += value.byteLength;
+ 739:             chunks.push(decoder.decode(value, { stream: true }));
+ 740: 
+ 741:             const now = Date.now();
+ 742:             if (now - lastProgressUpdateAt >= STREAM_PROGRESS_UPDATE_INTERVAL_MS) {
+ 743:                 fileMeta.textContent = `${file.name} • ${formatBytes(bytesRead)} / ${formatBytes(file.size)} (streaming)`;
+ 744:                 lastProgressUpdateAt = now;
+ 745:             }
+ 746: 
+ 747:             chunkCount += 1;
+ 748:             if (chunkCount % STREAM_READ_YIELD_INTERVAL === 0) {
+ 749:                 await waitForNextTick();
+ 750:             }
+ 751:         }
+ 752: 
+ 753:         chunks.push(decoder.decode());
+ 754:         return chunks.join('');
+ 755:     } finally {
+ 756:         try {
+ 757:             reader.releaseLock();
+ 758:         } catch (_) {
+ 759:             // Ignore release failures.
+ 760:         }
+ 761:     }
+ 762: }
+ 763: 
+ 764: async function readFileAsText(file, loadId) {
+ 765:     if (shouldUseStreamRead(file)) {
+ 766:         return readFileAsTextStream(file, loadId);
+ 767:     }
+ 768: 
+ 769:     return file.text();
+ 770: }
+ 771: 
+ 772: async function loadFileIntoEditor(file) {
+ 773:     if (!file) {
+ 774:         return;
+ 775:     }
+ 776: 
+ 777:     if (isProcessing) {
+ 778:         showStatus('Please wait for the current operation to finish before loading a file.', 'warning');
+ 779:         return;
+ 780:     }
+ 781: 
+ 782:     const loadId = ++activeFileLoadId;
+ 783:     hideError();
+ 784:     showStatus(`Loading ${file.name}...`, 'success');
+ 785:     processingTime.textContent = 'Loading file from disk...';
+ 786:     fileMeta.textContent = `${file.name} • ${formatBytes(file.size)}`;
+ 787: 
+ 788:     try {
+ 789:         const rawText = await readFileAsText(file, loadId);
+ 790:         if (loadId !== activeFileLoadId) {
+ 791:             return;
+ 792:         }
  793: 
- 794:         const largeHint = rawText.length >= LARGE_FILE_THRESHOLD_BYTES
- 795:             ? ' Large input loaded; processing will run in the background worker.'
- 796:             : '';
- 797:         showStatus(`Loaded ${file.name}.${largeHint}`, 'success');
- 798:     } catch (error) {
- 799:         if (String(error && error.message).includes('superseded')) {
- 800:             return;
- 801:         }
- 802: 
- 803:         console.error('File load error:', error);
- 804:         const message = error && error.message ? error.message : String(error);
- 805:         showErrorPanel({
- 806:             errorType: 'processing',
- 807:             title: 'File Load Error',
- 808:             message
- 809:         });
- 810:         showStatus(`Error: ${safeFirstLine(message)}`, 'error');
- 811:         processingTime.textContent = 'File load failed';
- 812:     }
- 813: }
- 814: 
- 815: function handleModeTabClick(tab) {
- 816:     if (isProcessing) {
- 817:         return;
- 818:     }
- 819:     setActiveTab(tab);
- 820:     currentMode = tab.dataset.mode;
- 821:     updateModeUI();
- 822: }
- 823: 
- 824: function setupModeTabs() {
- 825:     modeTabs.forEach(tab => {
- 826:         tab.addEventListener('click', () => handleModeTabClick(tab));
- 827:     });
- 828: 
- 829:     modeTabs.forEach((tab, index) => {
- 830:         tab.addEventListener('keydown', event => {
- 831:             if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
- 832:                 return;
- 833:             }
- 834: 
- 835:             event.preventDefault();
- 836:             let nextIndex = index;
- 837: 
- 838:             if (event.key === 'ArrowRight') {
- 839:                 nextIndex = (index + 1) % modeTabs.length;
- 840:             } else if (event.key === 'ArrowLeft') {
- 841:                 nextIndex = (index - 1 + modeTabs.length) % modeTabs.length;
- 842:             } else if (event.key === 'Home') {
- 843:                 nextIndex = 0;
- 844:             } else if (event.key === 'End') {
- 845:                 nextIndex = modeTabs.length - 1;
- 846:             }
- 847: 
- 848:             const nextTab = modeTabs[nextIndex];
- 849:             nextTab.focus();
- 850:             nextTab.click();
- 851:         });
- 852:     });
- 853: }
+ 794:         setInputEditorValue(rawText);
+ 795:         setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 796:         hideError();
+ 797: 
+ 798:         fileMeta.textContent = `${file.name} • ${formatBytes(file.size)} • loaded`;
+ 799:         processingTime.textContent = `Loaded ${formatBytes(file.size)} from disk`;
+ 800: 
+ 801:         const largeHint = rawText.length >= LARGE_FILE_THRESHOLD_BYTES
+ 802:             ? ' Large input loaded; processing will run in the background worker.'
+ 803:             : '';
+ 804:         showStatus(`Loaded ${file.name}.${largeHint}`, 'success');
+ 805:     } catch (error) {
+ 806:         if (String(error && error.message).includes('superseded')) {
+ 807:             return;
+ 808:         }
+ 809: 
+ 810:         console.error('File load error:', error);
+ 811:         const message = error && error.message ? error.message : String(error);
+ 812:         showErrorPanel({
+ 813:             errorType: 'processing',
+ 814:             title: 'File Load Error',
+ 815:             message
+ 816:         });
+ 817:         showStatus(`Error: ${safeFirstLine(message)}`, 'error');
+ 818:         processingTime.textContent = 'File load failed';
+ 819:     }
+ 820: }
+ 821: 
+ 822: function handleModeTabClick(tab) {
+ 823:     if (isProcessing) {
+ 824:         return;
+ 825:     }
+ 826:     setActiveTab(tab);
+ 827:     currentMode = tab.dataset.mode;
+ 828:     updateModeUI();
+ 829: }
+ 830: 
+ 831: function setupModeTabs() {
+ 832:     modeTabs.forEach(tab => {
+ 833:         tab.addEventListener('click', () => handleModeTabClick(tab));
+ 834:     });
+ 835: 
+ 836:     modeTabs.forEach((tab, index) => {
+ 837:         tab.addEventListener('keydown', event => {
+ 838:             if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+ 839:                 return;
+ 840:             }
+ 841: 
+ 842:             event.preventDefault();
+ 843:             let nextIndex = index;
+ 844: 
+ 845:             if (event.key === 'ArrowRight') {
+ 846:                 nextIndex = (index + 1) % modeTabs.length;
+ 847:             } else if (event.key === 'ArrowLeft') {
+ 848:                 nextIndex = (index - 1 + modeTabs.length) % modeTabs.length;
+ 849:             } else if (event.key === 'Home') {
+ 850:                 nextIndex = 0;
+ 851:             } else if (event.key === 'End') {
+ 852:                 nextIndex = modeTabs.length - 1;
+ 853:             }
  854: 
- 855: function setupFileDropZone() {
- 856:     function preventDefaults(event) {
- 857:         event.preventDefault();
- 858:         event.stopPropagation();
- 859:     }
- 860: 
- 861:     ['dragenter', 'dragover'].forEach(eventName => {
- 862:         fileDropZone.addEventListener(eventName, event => {
- 863:             preventDefaults(event);
- 864:             if (!isProcessing) {
- 865:                 fileDropZone.classList.add('drag-active');
- 866:             }
- 867:         });
- 868:     });
- 869: 
- 870:     ['dragleave', 'drop'].forEach(eventName => {
- 871:         fileDropZone.addEventListener(eventName, event => {
- 872:             preventDefaults(event);
- 873:             fileDropZone.classList.remove('drag-active');
+ 855:             const nextTab = modeTabs[nextIndex];
+ 856:             nextTab.focus();
+ 857:             nextTab.click();
+ 858:         });
+ 859:     });
+ 860: }
+ 861: 
+ 862: function setupFileDropZone() {
+ 863:     function preventDefaults(event) {
+ 864:         event.preventDefault();
+ 865:         event.stopPropagation();
+ 866:     }
+ 867: 
+ 868:     ['dragenter', 'dragover'].forEach(eventName => {
+ 869:         fileDropZone.addEventListener(eventName, event => {
+ 870:             preventDefaults(event);
+ 871:             if (!isProcessing) {
+ 872:                 fileDropZone.classList.add('drag-active');
+ 873:             }
  874:         });
  875:     });
  876: 
- 877:     fileDropZone.addEventListener('drop', event => {
- 878:         if (isProcessing) {
- 879:             return;
- 880:         }
- 881:         const files = event.dataTransfer && event.dataTransfer.files;
- 882:         if (files && files.length > 0) {
- 883:             loadFileIntoEditor(files[0]);
- 884:         }
- 885:     });
- 886:     fileDropZone.addEventListener('click', event => {
- 887:         if (isProcessing) {
- 888:             return;
- 889:         }
- 890:         if (event.target.closest('#chooseFileBtn')) {
- 891:             return;
- 892:         }
- 893:         fileInput.click();
- 894:     });
- 895: 
- 896:     fileDropZone.addEventListener('keydown', event => {
- 897:         if (isProcessing) {
+ 877:     ['dragleave', 'drop'].forEach(eventName => {
+ 878:         fileDropZone.addEventListener(eventName, event => {
+ 879:             preventDefaults(event);
+ 880:             fileDropZone.classList.remove('drag-active');
+ 881:         });
+ 882:     });
+ 883: 
+ 884:     fileDropZone.addEventListener('drop', event => {
+ 885:         if (isProcessing) {
+ 886:             return;
+ 887:         }
+ 888:         const files = event.dataTransfer && event.dataTransfer.files;
+ 889:         if (files && files.length > 0) {
+ 890:             loadFileIntoEditor(files[0]);
+ 891:         }
+ 892:     });
+ 893:     fileDropZone.addEventListener('click', event => {
+ 894:         if (isProcessing) {
+ 895:             return;
+ 896:         }
+ 897:         if (event.target.closest('#chooseFileBtn')) {
  898:             return;
  899:         }
- 900:         if (event.key === 'Enter' || event.key === ' ') {
- 901:             event.preventDefault();
- 902:             fileInput.click();
- 903:         }
- 904:     });
- 905: 
- 906:     chooseFileBtn.addEventListener('click', event => {
- 907:         event.stopPropagation();
- 908:         if (!isProcessing) {
- 909:             fileInput.click();
- 910:         }
- 911:     });
- 912: 
- 913:     fileInput.addEventListener('change', () => {
- 914:         const file = fileInput.files && fileInput.files[0];
- 915:         if (file) {
- 916:             loadFileIntoEditor(file);
- 917:         }
- 918:         fileInput.value = '';
- 919:     });
- 920: }
- 921: 
- 922: function setupEventListeners() {
- 923:     processBtn.addEventListener('click', processJSON);
- 924:     copyBtn.addEventListener('click', copyToClipboard);
- 925:     clearBtn.addEventListener('click', clearAll);
- 926:     exampleBtn.addEventListener('click', loadExample);
- 927:     backBtn.addEventListener('click', () => {
- 928:         window.location.href = 'index.html';
- 929:     });
- 930: 
- 931:     jmespathQuery.addEventListener('keydown', event => {
- 932:         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
- 933:             event.preventDefault();
- 934:             processJSON();
- 935:         }
- 936:     });
- 937: 
- 938:     inputEditor.session.on('change', () => {
- 939:         queueInputStatsLabelUpdate();
- 940:         scheduleAsyncInputAnalysis();
- 941:     });
- 942: 
- 943:     inputEditor.on('paste', pastedText => {
- 944:         const text = typeof pastedText === 'string'
- 945:             ? pastedText
- 946:             : (pastedText && typeof pastedText.text === 'string' ? pastedText.text : '');
- 947:         if (text.length >= LARGE_FILE_THRESHOLD_BYTES) {
- 948:             showStatus('Large paste detected. Parsing and formatting will run in a background worker.', 'warning');
- 949:         }
- 950:     });
- 951: 
- 952:     window.addEventListener('beforeunload', () => {
- 953:         if (jsonWorker) {
- 954:             try {
- 955:                 jsonWorker.terminate();
- 956:             } catch (_) {
- 957:                 // Ignore terminate failures.
- 958:             }
- 959:         }
- 960: 
- 961:         if (themeObserver) {
- 962:             themeObserver.disconnect();
- 963:         }
- 964:     });
- 965: }
- 966: 
- 967: function initialize() {
- 968:     initAceEditors();
- 969:     setupThemeSync();
- 970:     setupModeTabs();
- 971:     setupFileDropZone();
- 972:     setupEventListeners();
- 973: 
- 974:     const initialTab = Array.from(modeTabs).find(tab => tab.dataset.mode === currentMode);
- 975:     if (initialTab) {
- 976:         setActiveTab(initialTab);
- 977:     }
- 978: 
- 979:     updateInputStatsLabel('');
- 980:     updateOutputStatsLabel('');
- 981:     fileMeta.textContent = DEFAULT_FILE_META;
- 982:     updateModeUI();
- 983:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
- 984: 
- 985:     // Warm up the worker so the first process call has less startup overhead.
- 986:     try {
- 987:         ensureWorker();
- 988:     } catch (error) {
- 989:         console.error(error);
- 990:         showStatus('Worker initialization failed. Processing may not be available.', 'error');
- 991:     }
- 992: }
- 993: 
- 994: initialize();
+ 900:         fileInput.click();
+ 901:     });
+ 902: 
+ 903:     chooseFileBtn.addEventListener('click', event => {
+ 904:         event.stopPropagation();
+ 905:         if (!isProcessing) {
+ 906:             fileInput.click();
+ 907:         }
+ 908:     });
+ 909: 
+ 910:     fileInput.addEventListener('change', () => {
+ 911:         const file = fileInput.files && fileInput.files[0];
+ 912:         if (file) {
+ 913:             loadFileIntoEditor(file);
+ 914:         }
+ 915:         fileInput.value = '';
+ 916:     });
+ 917: }
+ 918: 
+ 919: function setupEventListeners() {
+ 920:     processBtn.addEventListener('click', processJSON);
+ 921:     copyBtn.addEventListener('click', copyToClipboard);
+ 922:     clearBtn.addEventListener('click', clearAll);
+ 923:     exampleBtn.addEventListener('click', loadExample);
+ 924:     backBtn.addEventListener('click', () => {
+ 925:         window.location.href = 'index.html';
+ 926:     });
+ 927: 
+ 928:     jmespathQuery.addEventListener('keydown', event => {
+ 929:         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+ 930:             event.preventDefault();
+ 931:             processJSON();
+ 932:         }
+ 933:     });
+ 934: 
+ 935:     inputEditor.session.on('change', () => {
+ 936:         queueInputStatsLabelUpdate();
+ 937:         scheduleAsyncInputAnalysis();
+ 938:     });
+ 939: 
+ 940:     inputEditor.on('paste', pastedText => {
+ 941:         const text = typeof pastedText === 'string'
+ 942:             ? pastedText
+ 943:             : (pastedText && typeof pastedText.text === 'string' ? pastedText.text : '');
+ 944:         if (text.length >= LARGE_FILE_THRESHOLD_BYTES) {
+ 945:             showStatus('Large paste detected. Parsing and formatting will run in a background worker.', 'warning');
+ 946:         }
+ 947:     });
+ 948: 
+ 949:     window.addEventListener('beforeunload', () => {
+ 950:         if (jsonWorker) {
+ 951:             try {
+ 952:                 jsonWorker.terminate();
+ 953:             } catch (_) {
+ 954:                 // Ignore terminate failures.
+ 955:             }
+ 956:         }
+ 957: 
+ 958:         if (themeObserver) {
+ 959:             themeObserver.disconnect();
+ 960:         }
+ 961:     });
+ 962: }
+ 963: 
+ 964: function initialize() {
+ 965:     try {
+ 966:         initAceEditors();
+ 967:     } catch (error) {
+ 968:         console.error('Ace editor initialization failed:', error);
+ 969:         hideStats();
+ 970:         showErrorPanel({
+ 971:             errorType: 'processing',
+ 972:             title: 'Editor Load Error',
+ 973:             message: 'The Ace editor failed to load from the CDN. Reload the page and check your network connection or content blocker settings.'
+ 974:         });
+ 975:         showStatus('Editor failed to load. Reload and check your network/CDN access.', 'error');
+ 976:         processingTime.textContent = 'Editor unavailable';
+ 977:         fileMeta.textContent = DEFAULT_FILE_META;
+ 978:         processBtn.disabled = true;
+ 979:         copyBtn.disabled = true;
+ 980:         clearBtn.disabled = true;
+ 981:         exampleBtn.disabled = true;
+ 982:         chooseFileBtn.disabled = true;
+ 983:         return;
+ 984:     }
+ 985: 
+ 986:     setupThemeSync();
+ 987:     setupModeTabs();
+ 988:     setupFileDropZone();
+ 989:     setupEventListeners();
+ 990: 
+ 991:     const initialTab = Array.from(modeTabs).find(tab => tab.dataset.mode === currentMode);
+ 992:     if (initialTab) {
+ 993:         setActiveTab(initialTab);
+ 994:     }
+ 995: 
+ 996:     updateInputStatsLabel('');
+ 997:     updateOutputStatsLabel('');
+ 998:     fileMeta.textContent = DEFAULT_FILE_META;
+ 999:     updateModeUI();
+1000:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+1001: 
+1002:     // Warm up the worker so the first process call has less startup overhead.
+1003:     try {
+1004:         ensureWorker();
+1005:     } catch (error) {
+1006:         console.error(error);
+1007:         showStatus('Worker initialization failed. Processing may not be available.', 'error');
+1008:     }
+1009: }
+1010: 
+1011: initialize();
 ```
 ----- END FILE: js/json-tool-page.js -----
 
@@ -2416,7 +2429,7 @@ Output file: `context/code-dump-json-tool.txt`
   13:     jmespath: false
   14: };
   15: 
-  16: const MAX_RECURSION_DEPTH = 1000;
+  16: const MAX_RECURSION_DEPTH = 100;
   17: 
   18: safeImport('jsonlint', CDN_URLS.jsonlint);
   19: safeImport('ajv', CDN_URLS.ajv);
@@ -2558,558 +2571,563 @@ Output file: `context/code-dump-json-tool.txt`
  155: 
  156:     const stats = analyzeJSON(value);
  157:     const conversion = convertJsonToJsonl(value, { allowSingleValue: hasQuery });
- 158: 
- 159:     return {
- 160:         resultText: conversion.text,
- 161:         outputMode: 'ace/mode/json',
- 162:         stats,
- 163:         message: `Converted ${conversion.count} record(s) to JSONL.`
- 164:     };
- 165: }
- 166: 
- 167: function processJsonlToJsonMode(rawInput, options) {
- 168:     const parsed = parseJsonLines(rawInput);
- 169:     let value = parsed.data;
- 170: 
- 171:     if (options.sortKeys) {
- 172:         value = sortObjectKeys(value);
- 173:     }
- 174: 
- 175:     const stats = analyzeJSON(value);
- 176:     const resultText = stringifyJson(value, options.indent);
+ 158:     const querySingleValueWarning = hasQuery && conversion.singleValueOutput
+ 159:         ? ' Query returned a single value; output contains one JSONL line.'
+ 160:         : '';
+ 161: 
+ 162:     return {
+ 163:         resultText: conversion.text,
+ 164:         outputMode: 'ace/mode/json',
+ 165:         stats,
+ 166:         message: `Converted ${conversion.count} record(s) to JSONL.${querySingleValueWarning}`
+ 167:     };
+ 168: }
+ 169: 
+ 170: function processJsonlToJsonMode(rawInput, options) {
+ 171:     const parsed = parseJsonLines(rawInput);
+ 172:     let value = parsed.data;
+ 173: 
+ 174:     if (options.sortKeys) {
+ 175:         value = sortObjectKeys(value);
+ 176:     }
  177: 
- 178:     return {
- 179:         resultText,
- 180:         outputMode: 'ace/mode/json',
- 181:         stats,
- 182:         message: `Converted ${parsed.recordCount} JSONL line(s) to a JSON array.`
- 183:     };
- 184: }
- 185: 
- 186: function processValidateMode(rawInput, options) {
- 187:     const value = parseJsonText(rawInput, 'input');
- 188:     const stats = analyzeJSON(value);
- 189:     const schemaText = typeof options.schemaText === 'string' ? options.schemaText : '';
- 190: 
- 191:     if (schemaText.trim()) {
- 192:         let schemaValue;
- 193:         let validation;
- 194: 
- 195:         try {
- 196:             schemaValue = parseSchemaText(schemaText);
- 197:             validation = validateWithSchema(value, schemaValue);
- 198:         } catch (error) {
- 199:             if (error && typeof error === 'object') {
- 200:                 if (error.error && typeof error.error === 'object') {
- 201:                     error.stats = error.stats || stats;
- 202:                 } else if (error.errorType === 'schemaSyntax' || error.errorType === 'schema') {
- 203:                     throw { error, stats };
- 204:                 }
- 205:             }
- 206:             throw error;
- 207:         }
- 208: 
- 209:         if (!validation.valid) {
- 210:             throw {
- 211:                 error: {
- 212:                     errorType: 'schema',
- 213:                     title: 'Schema Validation Failed',
- 214:                     message: `JSON is valid but failed schema validation (${validation.errors.length} violation(s)).`
- 215:                 },
- 216:                 stats,
- 217:                 validationReport: buildSchemaFailureReport(validation.errors, stats)
- 218:             };
- 219:         }
- 220: 
- 221:         return {
- 222:             resultText: buildValidationSuccessReport(value, stats, {
- 223:                 schemaChecked: true,
- 224:                 schemaErrorCount: 0
- 225:             }),
- 226:             outputMode: 'ace/mode/text',
- 227:             stats,
- 228:             message: 'JSON and schema validation passed.'
- 229:         };
- 230:     }
- 231: 
- 232:     return {
- 233:         resultText: buildValidationSuccessReport(value, stats, {
- 234:             schemaChecked: false,
- 235:             schemaErrorCount: 0
- 236:         }),
- 237:         outputMode: 'ace/mode/text',
- 238:         stats,
- 239:         message: 'JSON is valid.'
- 240:     };
- 241: }
- 242: function parseJsonText(text, source) {
- 243:     try {
- 244:         return parseJsonStrict(text);
- 245:     } catch (error) {
- 246:         throw makeParseError(error, text, source || 'input', 'syntax');
- 247:     }
- 248: }
- 249: 
- 250: function parseSchemaText(text) {
- 251:     try {
- 252:         return parseJsonStrict(text);
- 253:     } catch (error) {
- 254:         throw makeParseError(error, text, 'schema', 'schemaSyntax');
- 255:     }
- 256: }
- 257: 
- 258: function parseJsonStrict(text) {
- 259:     if (self.jsonlint && typeof self.jsonlint.parse === 'function') {
- 260:         return self.jsonlint.parse(text);
- 261:     }
- 262:     return JSON.parse(text);
- 263: }
- 264: 
- 265: function parseJsonLines(text) {
- 266:     const records = [];
- 267:     let lineNumber = 1;
- 268:     let startIndex = 0;
- 269: 
- 270:     while (startIndex <= text.length) {
- 271:         let endIndex = text.indexOf('\n', startIndex);
- 272:         if (endIndex === -1) {
- 273:             endIndex = text.length;
- 274:         }
- 275: 
- 276:         let line = text.slice(startIndex, endIndex);
- 277:         if (line.endsWith('\r')) {
- 278:             line = line.slice(0, -1);
- 279:         }
- 280: 
- 281:         if (line.trim()) {
- 282:             try {
- 283:                 records.push(parseJsonStrict(line));
- 284:             } catch (error) {
- 285:                 const lineError = makeParseError(error, line, 'input', 'syntax');
- 286:                 lineError.line = lineNumber;
- 287:                 if (!lineError.message.toLowerCase().includes('jsonl')) {
- 288:                     lineError.message = `JSONL parse error on line ${lineNumber}: ${lineError.message}`;
- 289:                 }
- 290:                 throw lineError;
- 291:             }
- 292:         }
- 293: 
- 294:         if (endIndex === text.length) {
- 295:             break;
- 296:         }
- 297: 
- 298:         startIndex = endIndex + 1;
- 299:         lineNumber += 1;
- 300:     }
- 301: 
- 302:     return { data: records, recordCount: records.length };
- 303: }
+ 178:     const stats = analyzeJSON(value);
+ 179:     const resultText = stringifyJson(value, options.indent);
+ 180: 
+ 181:     return {
+ 182:         resultText,
+ 183:         outputMode: 'ace/mode/json',
+ 184:         stats,
+ 185:         message: `Converted ${parsed.recordCount} JSONL line(s) to a JSON array.`
+ 186:     };
+ 187: }
+ 188: 
+ 189: function processValidateMode(rawInput, options) {
+ 190:     const value = parseJsonText(rawInput, 'input');
+ 191:     const stats = analyzeJSON(value);
+ 192:     const schemaText = typeof options.schemaText === 'string' ? options.schemaText : '';
+ 193: 
+ 194:     if (schemaText.trim()) {
+ 195:         let schemaValue;
+ 196:         let validation;
+ 197: 
+ 198:         try {
+ 199:             schemaValue = parseSchemaText(schemaText);
+ 200:             validation = validateWithSchema(value, schemaValue);
+ 201:         } catch (error) {
+ 202:             if (error && typeof error === 'object') {
+ 203:                 if (error.error && typeof error.error === 'object') {
+ 204:                     error.stats = error.stats || stats;
+ 205:                 } else if (error.errorType === 'schemaSyntax' || error.errorType === 'schema') {
+ 206:                     throw { error, stats };
+ 207:                 }
+ 208:             }
+ 209:             throw error;
+ 210:         }
+ 211: 
+ 212:         if (!validation.valid) {
+ 213:             throw {
+ 214:                 error: {
+ 215:                     errorType: 'schema',
+ 216:                     title: 'Schema Validation Failed',
+ 217:                     message: `JSON is valid but failed schema validation (${validation.errors.length} violation(s)).`
+ 218:                 },
+ 219:                 stats,
+ 220:                 validationReport: buildSchemaFailureReport(validation.errors, stats)
+ 221:             };
+ 222:         }
+ 223: 
+ 224:         return {
+ 225:             resultText: buildValidationSuccessReport(value, stats, {
+ 226:                 schemaChecked: true,
+ 227:                 schemaErrorCount: 0
+ 228:             }),
+ 229:             outputMode: 'ace/mode/text',
+ 230:             stats,
+ 231:             message: 'JSON and schema validation passed.'
+ 232:         };
+ 233:     }
+ 234: 
+ 235:     return {
+ 236:         resultText: buildValidationSuccessReport(value, stats, {
+ 237:             schemaChecked: false,
+ 238:             schemaErrorCount: 0
+ 239:         }),
+ 240:         outputMode: 'ace/mode/text',
+ 241:         stats,
+ 242:         message: 'JSON is valid.'
+ 243:     };
+ 244: }
+ 245: function parseJsonText(text, source) {
+ 246:     try {
+ 247:         return parseJsonStrict(text);
+ 248:     } catch (error) {
+ 249:         throw makeParseError(error, text, source || 'input', 'syntax');
+ 250:     }
+ 251: }
+ 252: 
+ 253: function parseSchemaText(text) {
+ 254:     try {
+ 255:         return parseJsonStrict(text);
+ 256:     } catch (error) {
+ 257:         throw makeParseError(error, text, 'schema', 'schemaSyntax');
+ 258:     }
+ 259: }
+ 260: 
+ 261: function parseJsonStrict(text) {
+ 262:     if (self.jsonlint && typeof self.jsonlint.parse === 'function') {
+ 263:         return self.jsonlint.parse(text);
+ 264:     }
+ 265:     return JSON.parse(text);
+ 266: }
+ 267: 
+ 268: function parseJsonLines(text) {
+ 269:     const records = [];
+ 270:     let lineNumber = 1;
+ 271:     let startIndex = 0;
+ 272: 
+ 273:     while (startIndex <= text.length) {
+ 274:         let endIndex = text.indexOf('\n', startIndex);
+ 275:         if (endIndex === -1) {
+ 276:             endIndex = text.length;
+ 277:         }
+ 278: 
+ 279:         let line = text.slice(startIndex, endIndex);
+ 280:         if (line.endsWith('\r')) {
+ 281:             line = line.slice(0, -1);
+ 282:         }
+ 283: 
+ 284:         if (line.trim()) {
+ 285:             try {
+ 286:                 records.push(parseJsonStrict(line));
+ 287:             } catch (error) {
+ 288:                 const lineError = makeParseError(error, line, 'input', 'syntax');
+ 289:                 lineError.line = lineNumber;
+ 290:                 if (!lineError.message.toLowerCase().includes('jsonl')) {
+ 291:                     lineError.message = `JSONL parse error on line ${lineNumber}: ${lineError.message}`;
+ 292:                 }
+ 293:                 throw lineError;
+ 294:             }
+ 295:         }
+ 296: 
+ 297:         if (endIndex === text.length) {
+ 298:             break;
+ 299:         }
+ 300: 
+ 301:         startIndex = endIndex + 1;
+ 302:         lineNumber += 1;
+ 303:     }
  304: 
- 305: function convertJsonToJsonl(value, options) {
- 306:     const allowSingleValue = Boolean(options && options.allowSingleValue);
+ 305:     return { data: records, recordCount: records.length };
+ 306: }
  307: 
- 308:     if (Array.isArray(value)) {
- 309:         return {
- 310:             text: value.map(item => stringifyLine(item)).join('\n'),
- 311:             count: value.length
- 312:         };
- 313:     }
- 314: 
- 315:     if (!allowSingleValue) {
- 316:         throw makeCustomError(
- 317:             'processing',
- 318:             'Input must be a JSON array for JSONL conversion. Apply a JMESPath query that returns an array, or switch to Format mode.'
- 319:         );
- 320:     }
- 321: 
- 322:     return {
- 323:         text: stringifyLine(value),
- 324:         count: 1
- 325:     };
- 326: }
- 327: 
- 328: function stringifyLine(value) {
- 329:     const text = JSON.stringify(value);
- 330:     if (typeof text !== 'string') {
- 331:         throw makeCustomError('processing', 'Unable to serialize a JSONL line (query returned an unsupported value).');
- 332:     }
- 333:     return text;
- 334: }
- 335: 
- 336: function stringifyJson(value, indentOption) {
- 337:     const indent = resolveIndent(indentOption);
- 338:     const text = JSON.stringify(value, null, indent);
- 339:     if (typeof text !== 'string') {
- 340:         throw makeCustomError('processing', 'Unable to serialize output JSON.');
- 341:     }
- 342:     return text;
- 343: }
- 344: 
- 345: function resolveIndent(indentOption) {
- 346:     if (indentOption === 'tab') {
- 347:         return '\t';
- 348:     }
- 349:     if (indentOption === '0' || indentOption === 0) {
- 350:         return 0;
- 351:     }
- 352: 
- 353:     const parsed = Number.parseInt(indentOption, 10);
- 354:     if (!Number.isFinite(parsed) || parsed < 0) {
- 355:         return 2;
+ 308: function convertJsonToJsonl(value, options) {
+ 309:     const allowSingleValue = Boolean(options && options.allowSingleValue);
+ 310: 
+ 311:     if (Array.isArray(value)) {
+ 312:         return {
+ 313:             text: value.map(item => stringifyLine(item)).join('\n'),
+ 314:             count: value.length,
+ 315:             singleValueOutput: false
+ 316:         };
+ 317:     }
+ 318: 
+ 319:     if (!allowSingleValue) {
+ 320:         throw makeCustomError(
+ 321:             'processing',
+ 322:             'Input must be a JSON array for JSONL conversion. Apply a JMESPath query that returns an array, or switch to Format mode.'
+ 323:         );
+ 324:     }
+ 325: 
+ 326:     return {
+ 327:         text: stringifyLine(value),
+ 328:         count: 1,
+ 329:         singleValueOutput: true
+ 330:     };
+ 331: }
+ 332: 
+ 333: function stringifyLine(value) {
+ 334:     const text = JSON.stringify(value);
+ 335:     if (typeof text !== 'string') {
+ 336:         throw makeCustomError('processing', 'Unable to serialize a JSONL line (query returned an unsupported value).');
+ 337:     }
+ 338:     return text;
+ 339: }
+ 340: 
+ 341: function stringifyJson(value, indentOption) {
+ 342:     const indent = resolveIndent(indentOption);
+ 343:     const text = JSON.stringify(value, null, indent);
+ 344:     if (typeof text !== 'string') {
+ 345:         throw makeCustomError('processing', 'Unable to serialize output JSON.');
+ 346:     }
+ 347:     return text;
+ 348: }
+ 349: 
+ 350: function resolveIndent(indentOption) {
+ 351:     if (indentOption === 'tab') {
+ 352:         return '\t';
+ 353:     }
+ 354:     if (indentOption === '0' || indentOption === 0) {
+ 355:         return 0;
  356:     }
- 357:     return Math.min(parsed, 10);
- 358: }
- 359: 
- 360: function applyQueryIfPresent(value, queryText) {
- 361:     const query = typeof queryText === 'string' ? queryText.trim() : '';
- 362:     if (!query) {
- 363:         return value;
- 364:     }
- 365: 
- 366:     if (!(self.jmespath && typeof self.jmespath.search === 'function')) {
- 367:         throw makeCustomError('query', 'JMESPath library is unavailable in the worker.');
- 368:     }
- 369: 
- 370:     try {
- 371:         const result = self.jmespath.search(value, query);
- 372:         if (typeof result === 'undefined') {
- 373:             throw makeCustomError('query', 'JMESPath query returned no result (undefined).');
- 374:         }
- 375:         return result;
- 376:     } catch (error) {
- 377:         if (error && error.errorType) {
- 378:             throw error;
+ 357: 
+ 358:     const parsed = Number.parseInt(indentOption, 10);
+ 359:     if (!Number.isFinite(parsed) || parsed < 0) {
+ 360:         return 2;
+ 361:     }
+ 362:     return Math.min(parsed, 10);
+ 363: }
+ 364: 
+ 365: function applyQueryIfPresent(value, queryText) {
+ 366:     const query = typeof queryText === 'string' ? queryText.trim() : '';
+ 367:     if (!query) {
+ 368:         return value;
+ 369:     }
+ 370: 
+ 371:     if (!(self.jmespath && typeof self.jmespath.search === 'function')) {
+ 372:         throw makeCustomError('query', 'JMESPath library is unavailable in the worker.');
+ 373:     }
+ 374: 
+ 375:     try {
+ 376:         const result = self.jmespath.search(value, query);
+ 377:         if (typeof result === 'undefined') {
+ 378:             throw makeCustomError('query', 'JMESPath query returned no result (undefined).');
  379:         }
- 380:         throw makeCustomError('query', error && error.message ? error.message : String(error));
- 381:     }
- 382: }
- 383: 
- 384: function analyzeJSON(value, depth = 0, stats) {
- 385:     if (depth > MAX_RECURSION_DEPTH) {
- 386:         throw makeCustomError('processing', `JSON is nested too deeply to analyze (> ${MAX_RECURSION_DEPTH} levels).`);
- 387:     }
+ 380:         return result;
+ 381:     } catch (error) {
+ 382:         if (error && error.errorType) {
+ 383:             throw error;
+ 384:         }
+ 385:         throw makeCustomError('query', error && error.message ? error.message : String(error));
+ 386:     }
+ 387: }
  388: 
- 389:     const nextStats = stats || { objects: 0, arrays: 0, keys: 0, maxDepth: 0 };
- 390:     nextStats.maxDepth = Math.max(nextStats.maxDepth, depth);
- 391: 
- 392:     if (Array.isArray(value)) {
- 393:         nextStats.arrays += 1;
- 394:         for (const item of value) {
- 395:             analyzeJSON(item, depth + 1, nextStats);
- 396:         }
- 397:         return nextStats;
- 398:     }
- 399: 
- 400:     if (value && typeof value === 'object') {
- 401:         nextStats.objects += 1;
- 402:         const keys = Object.keys(value);
- 403:         nextStats.keys += keys.length;
- 404:         for (const key of keys) {
- 405:             analyzeJSON(value[key], depth + 1, nextStats);
- 406:         }
- 407:         return nextStats;
- 408:     }
- 409: 
- 410:     return nextStats;
- 411: }
- 412: 
- 413: function sortObjectKeys(value, depth = 0) {
- 414:     if (depth > MAX_RECURSION_DEPTH) {
- 415:         throw makeCustomError('processing', `JSON is nested too deeply to sort (> ${MAX_RECURSION_DEPTH} levels).`);
- 416:     }
+ 389: function analyzeJSON(value, depth = 0, stats) {
+ 390:     if (depth > MAX_RECURSION_DEPTH) {
+ 391:         throw makeCustomError('processing', `JSON is nested too deeply to analyze (> ${MAX_RECURSION_DEPTH} levels).`);
+ 392:     }
+ 393: 
+ 394:     const nextStats = stats || { objects: 0, arrays: 0, keys: 0, maxDepth: 0 };
+ 395:     nextStats.maxDepth = Math.max(nextStats.maxDepth, depth);
+ 396: 
+ 397:     if (Array.isArray(value)) {
+ 398:         nextStats.arrays += 1;
+ 399:         for (const item of value) {
+ 400:             analyzeJSON(item, depth + 1, nextStats);
+ 401:         }
+ 402:         return nextStats;
+ 403:     }
+ 404: 
+ 405:     if (value && typeof value === 'object') {
+ 406:         nextStats.objects += 1;
+ 407:         const keys = Object.keys(value);
+ 408:         nextStats.keys += keys.length;
+ 409:         for (const key of keys) {
+ 410:             analyzeJSON(value[key], depth + 1, nextStats);
+ 411:         }
+ 412:         return nextStats;
+ 413:     }
+ 414: 
+ 415:     return nextStats;
+ 416: }
  417: 
- 418:     if (Array.isArray(value)) {
- 419:         return value.map(item => sortObjectKeys(item, depth + 1));
- 420:     }
- 421: 
- 422:     if (value && typeof value === 'object') {
- 423:         const out = {};
- 424:         for (const key of Object.keys(value).sort()) {
- 425:             out[key] = sortObjectKeys(value[key], depth + 1);
- 426:         }
- 427:         return out;
- 428:     }
- 429: 
- 430:     return value;
- 431: }
- 432: function validateWithSchema(data, schema) {
- 433:     const AjvCtor = resolveAjvConstructor();
- 434:     if (!AjvCtor) {
- 435:         throw makeCustomError('processing', 'Ajv failed to load in the worker, so schema validation is unavailable.');
- 436:     }
- 437: 
- 438:     let ajv;
- 439:     try {
- 440:         ajv = new AjvCtor({
- 441:             allErrors: true,
- 442:             strict: false,
- 443:             allowUnionTypes: true,
- 444:             validateFormats: false
- 445:         });
- 446:     } catch (error) {
- 447:         throw makeCustomError('processing', error && error.message ? error.message : String(error));
- 448:     }
- 449: 
- 450:     let validateFn;
- 451:     try {
- 452:         validateFn = ajv.compile(schema);
- 453:     } catch (error) {
- 454:         throw {
- 455:             error: {
- 456:                 errorType: 'schema',
- 457:                 title: 'Schema Compilation Error',
- 458:                 message: error && error.message ? error.message : String(error)
- 459:             }
- 460:         };
- 461:     }
- 462: 
- 463:     const valid = Boolean(validateFn(data));
- 464:     return {
- 465:         valid,
- 466:         errors: valid ? [] : formatAjvErrors(validateFn.errors)
- 467:     };
- 468: }
- 469: 
- 470: function resolveAjvConstructor() {
- 471:     if (self.ajv7) {
- 472:         if (typeof self.ajv7 === 'function') {
- 473:             return self.ajv7;
- 474:         }
- 475:         if (typeof self.ajv7.Ajv === 'function') {
- 476:             return self.ajv7.Ajv;
- 477:         }
- 478:         if (typeof self.ajv7.default === 'function') {
- 479:             return self.ajv7.default;
- 480:         }
- 481:     }
- 482: 
- 483:     if (typeof self.Ajv === 'function') {
- 484:         return self.Ajv;
- 485:     }
- 486: 
- 487:     if (self.Ajv && typeof self.Ajv.Ajv === 'function') {
- 488:         return self.Ajv.Ajv;
- 489:     }
- 490: 
- 491:     for (const key of ['ajv', 'ajv2019', 'ajv2020']) {
- 492:         const candidate = self[key];
- 493:         if (!candidate) {
- 494:             continue;
- 495:         }
- 496:         if (typeof candidate === 'function') {
- 497:             return candidate;
- 498:         }
- 499:         if (typeof candidate.Ajv === 'function') {
- 500:             return candidate.Ajv;
- 501:         }
- 502:         if (typeof candidate.default === 'function') {
- 503:             return candidate.default;
- 504:         }
- 505:     }
- 506: 
- 507:     return null;
- 508: }
- 509: 
- 510: function formatAjvErrors(errors) {
- 511:     return (errors || []).map((error, index) => ({
- 512:         index: index + 1,
- 513:         instancePath: error && typeof error.instancePath === 'string' && error.instancePath
- 514:             ? error.instancePath
- 515:             : '/',
- 516:         schemaPath: error && typeof error.schemaPath === 'string' ? error.schemaPath : '',
- 517:         keyword: error && typeof error.keyword === 'string' ? error.keyword : '',
- 518:         message: error && typeof error.message === 'string' ? error.message : 'Schema validation error'
- 519:     }));
- 520: }
- 521: 
- 522: function buildValidationSuccessReport(value, stats, options) {
- 523:     const type = describeType(value);
- 524:     const schemaChecked = Boolean(options && options.schemaChecked);
- 525:     const lines = [
- 526:         'Valid JSON',
- 527:         '',
- 528:         `Type: ${type}`,
- 529:         `Objects: ${stats.objects}`,
- 530:         `Arrays: ${stats.arrays}`,
- 531:         `Total Keys: ${stats.keys}`,
- 532:         `Max Depth: ${stats.maxDepth}`,
- 533:         `Schema Checked: ${schemaChecked ? 'Yes (passed)' : 'No'}`
- 534:     ];
- 535: 
- 536:     return lines.join('\n');
- 537: }
- 538: 
- 539: function buildSchemaFailureReport(errors, stats) {
- 540:     const lines = [
- 541:         'Schema validation failed',
- 542:         '',
- 543:         `Violations: ${errors.length}`,
- 544:         ''
- 545:     ];
- 546: 
- 547:     for (const error of errors) {
- 548:         const path = error.instancePath || '/';
- 549:         const schemaPath = error.schemaPath ? ` (${error.schemaPath})` : '';
- 550:         lines.push(`${error.index}. ${path}: ${error.message}${schemaPath}`);
- 551:     }
- 552: 
- 553:     lines.push('');
- 554:     lines.push('JSON Stats');
- 555:     lines.push(`Objects: ${stats.objects}`);
- 556:     lines.push(`Arrays: ${stats.arrays}`);
- 557:     lines.push(`Total Keys: ${stats.keys}`);
- 558:     lines.push(`Max Depth: ${stats.maxDepth}`);
- 559: 
- 560:     return lines.join('\n');
- 561: }
- 562: 
- 563: function describeType(value) {
- 564:     if (value === null) {
- 565:         return 'null';
- 566:     }
- 567:     if (Array.isArray(value)) {
- 568:         return 'Array';
- 569:     }
- 570:     if (typeof value === 'object') {
- 571:         return 'Object';
- 572:     }
- 573:     return typeof value;
- 574: }
- 575: function makeParseError(originalError, sourceText, source, errorType) {
- 576:     const message = originalError && originalError.message
- 577:         ? String(originalError.message)
- 578:         : String(originalError);
- 579: 
- 580:     const location = extractErrorLocation(originalError, sourceText);
- 581:     return {
- 582:         errorType: errorType || 'syntax',
- 583:         source: source || 'input',
- 584:         message,
- 585:         ...(location.line ? { line: location.line } : {}),
- 586:         ...(location.column ? { column: location.column } : {})
- 587:     };
- 588: }
- 589: 
- 590: function extractErrorLocation(error, sourceText) {
- 591:     const out = { line: null, column: null };
- 592: 
- 593:     if (error && error.hash && error.hash.loc) {
- 594:         const loc = error.hash.loc;
- 595:         if (Number.isFinite(loc.first_line)) {
- 596:             out.line = Number(loc.first_line);
- 597:         }
- 598:         if (Number.isFinite(loc.first_column)) {
- 599:             out.column = Number(loc.first_column) + 1;
- 600:         }
- 601:     }
- 602: 
- 603:     const message = error && error.message ? String(error.message) : String(error);
- 604: 
- 605:     if (!out.line) {
- 606:         const lineMatch = message.match(/line\s+(\d+)/i);
- 607:         if (lineMatch) {
- 608:             out.line = Number(lineMatch[1]);
- 609:         }
- 610:     }
- 611: 
- 612:     if (!out.column) {
- 613:         const columnMatch = message.match(/(?:column|character)\s+(\d+)/i);
- 614:         if (columnMatch) {
- 615:             out.column = Number(columnMatch[1]);
- 616:         }
- 617:     }
- 618: 
- 619:     if (!out.column) {
- 620:         const messageLines = message.split(/\r?\n/);
- 621:         for (const line of messageLines) {
- 622:             const caretIndex = line.indexOf('^');
- 623:             if (caretIndex >= 0) {
- 624:                 out.column = caretIndex + 1;
- 625:                 break;
- 626:             }
- 627:         }
- 628:     }
- 629: 
- 630:     if ((!out.line || !out.column) && typeof sourceText === 'string') {
- 631:         const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
- 632:         if (posMatch) {
- 633:             const position = Math.max(0, Math.min(sourceText.length, Number(posMatch[1])));
- 634:             const calculated = positionToLineColumn(sourceText, position);
- 635:             if (!out.line) {
- 636:                 out.line = calculated.line;
- 637:             }
- 638:             if (!out.column) {
- 639:                 out.column = calculated.column;
- 640:             }
- 641:         }
- 642:     }
- 643: 
- 644:     return out;
- 645: }
- 646: 
- 647: function positionToLineColumn(text, position) {
- 648:     let line = 1;
- 649:     let column = 1;
- 650: 
- 651:     for (let index = 0; index < position; index += 1) {
- 652:         if (text[index] === '\n') {
- 653:             line += 1;
- 654:             column = 1;
- 655:         } else {
- 656:             column += 1;
- 657:         }
- 658:     }
- 659: 
- 660:     return { line, column };
- 661: }
- 662: 
- 663: function makeCustomError(errorType, message, extra) {
- 664:     return {
- 665:         errorType: errorType || 'processing',
- 666:         message: typeof message === 'string' ? message : String(message),
- 667:         ...(extra && typeof extra === 'object' ? extra : {})
- 668:     };
- 669: }
- 670: 
- 671: function normalizeThrownError(error) {
- 672:     if (!error) {
- 673:         return { error: makeCustomError('processing', 'Unknown worker error.') };
- 674:     }
+ 418: function sortObjectKeys(value, depth = 0) {
+ 419:     if (depth > MAX_RECURSION_DEPTH) {
+ 420:         throw makeCustomError('processing', `JSON is nested too deeply to sort (> ${MAX_RECURSION_DEPTH} levels).`);
+ 421:     }
+ 422: 
+ 423:     if (Array.isArray(value)) {
+ 424:         return value.map(item => sortObjectKeys(item, depth + 1));
+ 425:     }
+ 426: 
+ 427:     if (value && typeof value === 'object') {
+ 428:         const out = {};
+ 429:         for (const key of Object.keys(value).sort()) {
+ 430:             out[key] = sortObjectKeys(value[key], depth + 1);
+ 431:         }
+ 432:         return out;
+ 433:     }
+ 434: 
+ 435:     return value;
+ 436: }
+ 437: function validateWithSchema(data, schema) {
+ 438:     const AjvCtor = resolveAjvConstructor();
+ 439:     if (!AjvCtor) {
+ 440:         throw makeCustomError('processing', 'Ajv failed to load in the worker, so schema validation is unavailable.');
+ 441:     }
+ 442: 
+ 443:     let ajv;
+ 444:     try {
+ 445:         ajv = new AjvCtor({
+ 446:             allErrors: true,
+ 447:             strict: false,
+ 448:             allowUnionTypes: true,
+ 449:             validateFormats: false
+ 450:         });
+ 451:     } catch (error) {
+ 452:         throw makeCustomError('processing', error && error.message ? error.message : String(error));
+ 453:     }
+ 454: 
+ 455:     let validateFn;
+ 456:     try {
+ 457:         validateFn = ajv.compile(schema);
+ 458:     } catch (error) {
+ 459:         throw {
+ 460:             error: {
+ 461:                 errorType: 'schema',
+ 462:                 title: 'Schema Compilation Error',
+ 463:                 message: error && error.message ? error.message : String(error)
+ 464:             }
+ 465:         };
+ 466:     }
+ 467: 
+ 468:     const valid = Boolean(validateFn(data));
+ 469:     return {
+ 470:         valid,
+ 471:         errors: valid ? [] : formatAjvErrors(validateFn.errors)
+ 472:     };
+ 473: }
+ 474: 
+ 475: function resolveAjvConstructor() {
+ 476:     if (self.ajv7) {
+ 477:         if (typeof self.ajv7 === 'function') {
+ 478:             return self.ajv7;
+ 479:         }
+ 480:         if (typeof self.ajv7.Ajv === 'function') {
+ 481:             return self.ajv7.Ajv;
+ 482:         }
+ 483:         if (typeof self.ajv7.default === 'function') {
+ 484:             return self.ajv7.default;
+ 485:         }
+ 486:     }
+ 487: 
+ 488:     if (typeof self.Ajv === 'function') {
+ 489:         return self.Ajv;
+ 490:     }
+ 491: 
+ 492:     if (self.Ajv && typeof self.Ajv.Ajv === 'function') {
+ 493:         return self.Ajv.Ajv;
+ 494:     }
+ 495: 
+ 496:     for (const key of ['ajv', 'ajv2019', 'ajv2020']) {
+ 497:         const candidate = self[key];
+ 498:         if (!candidate) {
+ 499:             continue;
+ 500:         }
+ 501:         if (typeof candidate === 'function') {
+ 502:             return candidate;
+ 503:         }
+ 504:         if (typeof candidate.Ajv === 'function') {
+ 505:             return candidate.Ajv;
+ 506:         }
+ 507:         if (typeof candidate.default === 'function') {
+ 508:             return candidate.default;
+ 509:         }
+ 510:     }
+ 511: 
+ 512:     return null;
+ 513: }
+ 514: 
+ 515: function formatAjvErrors(errors) {
+ 516:     return (errors || []).map((error, index) => ({
+ 517:         index: index + 1,
+ 518:         instancePath: error && typeof error.instancePath === 'string' && error.instancePath
+ 519:             ? error.instancePath
+ 520:             : '/',
+ 521:         schemaPath: error && typeof error.schemaPath === 'string' ? error.schemaPath : '',
+ 522:         keyword: error && typeof error.keyword === 'string' ? error.keyword : '',
+ 523:         message: error && typeof error.message === 'string' ? error.message : 'Schema validation error'
+ 524:     }));
+ 525: }
+ 526: 
+ 527: function buildValidationSuccessReport(value, stats, options) {
+ 528:     const type = describeType(value);
+ 529:     const schemaChecked = Boolean(options && options.schemaChecked);
+ 530:     const lines = [
+ 531:         'Valid JSON',
+ 532:         '',
+ 533:         `Type: ${type}`,
+ 534:         `Objects: ${stats.objects}`,
+ 535:         `Arrays: ${stats.arrays}`,
+ 536:         `Total Keys: ${stats.keys}`,
+ 537:         `Max Depth: ${stats.maxDepth}`,
+ 538:         `Schema Checked: ${schemaChecked ? 'Yes (passed)' : 'No'}`
+ 539:     ];
+ 540: 
+ 541:     return lines.join('\n');
+ 542: }
+ 543: 
+ 544: function buildSchemaFailureReport(errors, stats) {
+ 545:     const lines = [
+ 546:         'Schema validation failed',
+ 547:         '',
+ 548:         `Violations: ${errors.length}`,
+ 549:         ''
+ 550:     ];
+ 551: 
+ 552:     for (const error of errors) {
+ 553:         const path = error.instancePath || '/';
+ 554:         const schemaPath = error.schemaPath ? ` (${error.schemaPath})` : '';
+ 555:         lines.push(`${error.index}. ${path}: ${error.message}${schemaPath}`);
+ 556:     }
+ 557: 
+ 558:     lines.push('');
+ 559:     lines.push('JSON Stats');
+ 560:     lines.push(`Objects: ${stats.objects}`);
+ 561:     lines.push(`Arrays: ${stats.arrays}`);
+ 562:     lines.push(`Total Keys: ${stats.keys}`);
+ 563:     lines.push(`Max Depth: ${stats.maxDepth}`);
+ 564: 
+ 565:     return lines.join('\n');
+ 566: }
+ 567: 
+ 568: function describeType(value) {
+ 569:     if (value === null) {
+ 570:         return 'null';
+ 571:     }
+ 572:     if (Array.isArray(value)) {
+ 573:         return 'Array';
+ 574:     }
+ 575:     if (typeof value === 'object') {
+ 576:         return 'Object';
+ 577:     }
+ 578:     return typeof value;
+ 579: }
+ 580: function makeParseError(originalError, sourceText, source, errorType) {
+ 581:     const message = originalError && originalError.message
+ 582:         ? String(originalError.message)
+ 583:         : String(originalError);
+ 584: 
+ 585:     const location = extractErrorLocation(originalError, sourceText);
+ 586:     return {
+ 587:         errorType: errorType || 'syntax',
+ 588:         source: source || 'input',
+ 589:         message,
+ 590:         ...(location.line ? { line: location.line } : {}),
+ 591:         ...(location.column ? { column: location.column } : {})
+ 592:     };
+ 593: }
+ 594: 
+ 595: function extractErrorLocation(error, sourceText) {
+ 596:     const out = { line: null, column: null };
+ 597: 
+ 598:     if (error && error.hash && error.hash.loc) {
+ 599:         const loc = error.hash.loc;
+ 600:         if (Number.isFinite(loc.first_line)) {
+ 601:             out.line = Number(loc.first_line);
+ 602:         }
+ 603:         if (Number.isFinite(loc.first_column)) {
+ 604:             out.column = Number(loc.first_column) + 1;
+ 605:         }
+ 606:     }
+ 607: 
+ 608:     const message = error && error.message ? String(error.message) : String(error);
+ 609: 
+ 610:     if (!out.line) {
+ 611:         const lineMatch = message.match(/line\s+(\d+)/i);
+ 612:         if (lineMatch) {
+ 613:             out.line = Number(lineMatch[1]);
+ 614:         }
+ 615:     }
+ 616: 
+ 617:     if (!out.column) {
+ 618:         const columnMatch = message.match(/(?:column|character)\s+(\d+)/i);
+ 619:         if (columnMatch) {
+ 620:             out.column = Number(columnMatch[1]);
+ 621:         }
+ 622:     }
+ 623: 
+ 624:     if (!out.column) {
+ 625:         const messageLines = message.split(/\r?\n/);
+ 626:         for (const line of messageLines) {
+ 627:             const caretIndex = line.indexOf('^');
+ 628:             if (caretIndex >= 0) {
+ 629:                 out.column = caretIndex + 1;
+ 630:                 break;
+ 631:             }
+ 632:         }
+ 633:     }
+ 634: 
+ 635:     if ((!out.line || !out.column) && typeof sourceText === 'string') {
+ 636:         const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
+ 637:         if (posMatch) {
+ 638:             const position = Math.max(0, Math.min(sourceText.length, Number(posMatch[1])));
+ 639:             const calculated = positionToLineColumn(sourceText, position);
+ 640:             if (!out.line) {
+ 641:                 out.line = calculated.line;
+ 642:             }
+ 643:             if (!out.column) {
+ 644:                 out.column = calculated.column;
+ 645:             }
+ 646:         }
+ 647:     }
+ 648: 
+ 649:     return out;
+ 650: }
+ 651: 
+ 652: function positionToLineColumn(text, position) {
+ 653:     let line = 1;
+ 654:     let column = 1;
+ 655: 
+ 656:     for (let index = 0; index < position; index += 1) {
+ 657:         if (text[index] === '\n') {
+ 658:             line += 1;
+ 659:             column = 1;
+ 660:         } else {
+ 661:             column += 1;
+ 662:         }
+ 663:     }
+ 664: 
+ 665:     return { line, column };
+ 666: }
+ 667: 
+ 668: function makeCustomError(errorType, message, extra) {
+ 669:     return {
+ 670:         errorType: errorType || 'processing',
+ 671:         message: typeof message === 'string' ? message : String(message),
+ 672:         ...(extra && typeof extra === 'object' ? extra : {})
+ 673:     };
+ 674: }
  675: 
- 676:     if (error.error && typeof error.error === 'object') {
- 677:         return {
- 678:             error: {
- 679:                 errorType: error.error.errorType || 'processing',
- 680:                 title: error.error.title,
- 681:                 source: error.error.source,
- 682:                 message: error.error.message || 'Worker error',
- 683:                 ...(Number.isFinite(error.error.line) ? { line: error.error.line } : {}),
- 684:                 ...(Number.isFinite(error.error.column) ? { column: error.error.column } : {})
- 685:             },
- 686:             ...(error.stats ? { stats: error.stats } : {}),
- 687:             ...(typeof error.validationReport === 'string' ? { validationReport: error.validationReport } : {})
- 688:         };
- 689:     }
- 690: 
- 691:     if (error.errorType) {
- 692:         return {
- 693:             error: {
- 694:                 errorType: error.errorType || 'processing',
- 695:                 title: error.title,
- 696:                 source: error.source,
- 697:                 message: error.message || 'Worker error',
- 698:                 ...(Number.isFinite(error.line) ? { line: error.line } : {}),
- 699:                 ...(Number.isFinite(error.column) ? { column: error.column } : {})
- 700:             }
- 701:         };
- 702:     }
- 703: 
- 704:     if (error instanceof Error) {
- 705:         return { error: makeCustomError('processing', error.message || String(error)) };
- 706:     }
- 707: 
- 708:     return { error: makeCustomError('processing', String(error)) };
- 709: }
+ 676: function normalizeThrownError(error) {
+ 677:     if (!error) {
+ 678:         return { error: makeCustomError('processing', 'Unknown worker error.') };
+ 679:     }
+ 680: 
+ 681:     if (error.error && typeof error.error === 'object') {
+ 682:         return {
+ 683:             error: {
+ 684:                 errorType: error.error.errorType || 'processing',
+ 685:                 title: error.error.title,
+ 686:                 source: error.error.source,
+ 687:                 message: error.error.message || 'Worker error',
+ 688:                 ...(Number.isFinite(error.error.line) ? { line: error.error.line } : {}),
+ 689:                 ...(Number.isFinite(error.error.column) ? { column: error.error.column } : {})
+ 690:             },
+ 691:             ...(error.stats ? { stats: error.stats } : {}),
+ 692:             ...(typeof error.validationReport === 'string' ? { validationReport: error.validationReport } : {})
+ 693:         };
+ 694:     }
+ 695: 
+ 696:     if (error.errorType) {
+ 697:         return {
+ 698:             error: {
+ 699:                 errorType: error.errorType || 'processing',
+ 700:                 title: error.title,
+ 701:                 source: error.source,
+ 702:                 message: error.message || 'Worker error',
+ 703:                 ...(Number.isFinite(error.line) ? { line: error.line } : {}),
+ 704:                 ...(Number.isFinite(error.column) ? { column: error.column } : {})
+ 705:             }
+ 706:         };
+ 707:     }
+ 708: 
+ 709:     if (error instanceof Error) {
+ 710:         return { error: makeCustomError('processing', error.message || String(error)) };
+ 711:     }
+ 712: 
+ 713:     return { error: makeCustomError('processing', String(error)) };
+ 714: }
 ```
 ----- END FILE: js/json-worker.js -----
 

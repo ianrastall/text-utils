@@ -2,13 +2,15 @@
 
 ## ? Migration Complete
 
+> Note: This migration log is partly historical. The current JSON Tool implementation has evolved beyond the original migration scope and now includes a fourth mode (`JSONL to JSON`) plus worker-based processing and schema validation.
+
 The JSON Tool has been successfully created as a comprehensive standalone tool, replacing the simple inline JSON formatter with an advanced multi-mode JSON processor.
 
 ## ?? File Created
 
 **`json-tool.html`** (600+ lines)
 
-## ?? Three Operational Modes
+## ?? Four Operational Modes
 
 ### 1. Format JSON Mode
 **Purpose**: Pretty-print and format JSON with customizable options
@@ -57,7 +59,17 @@ The JSON Tool has been successfully created as a comprehensive standalone tool, 
 - Popular in data engineering
 - Compatible with tools like `jq`, `grep`
 
-### 3. Validate Only Mode
+### 3. JSONL to JSON Mode
+**Purpose**: Convert JSON Lines input back into a JSON array
+
+**Features**:
+- ? Parses one JSON value per line
+- ? Skips empty lines
+- ? Produces valid JSON array output
+- ? Supports optional key sorting and indentation controls
+- ? Shows structure statistics for the resulting array
+
+### 4. Validate Only Mode
 **Purpose**: Check JSON syntax without formatting
 
 **Features**:
@@ -109,6 +121,10 @@ const modeInfo = {
     jsonl: {
         title: 'JSON to JSONL Conversion',
         text: 'Convert JSON arrays to JSON Lines format...'
+    },
+    jsonlToJson: {
+        title: 'JSONL to JSON Conversion',
+        text: 'Parse JSON Lines and re-stringify as a JSON array...'
     },
     validate: {
         title: 'JSON Validation',
@@ -177,7 +193,7 @@ function analyzeJSON(obj, depth = 0, stats = null) {
 
 ### Smart Options Panel
 - Shows only in Format mode
-- Hidden in JSONL and Validate modes
+- Hidden in JSONL, JSONL to JSON, and Validate modes
 - Reduces clutter
 - Context-appropriate controls
 
@@ -284,7 +300,7 @@ try {
 | Feature | Old (Inline) | New (Standalone) | Improvement |
 |---------|-------------|------------------|-------------|
 | **Lines of Code** | ~30 | 600+ | 20x more features |
-| **Modes** | 1 (Format only) | 3 (Format, JSONL, Validate) | 3x functionality |
+| **Modes** | 1 (Format only) | 4 (Format, JSONL, JSONL to JSON, Validate) | 4x functionality |
 | **Options** | 1 (Indentation) | 2 (Indentation + Sort) | 2x customization |
 | **Error Display** | Basic | Detailed with position | Professional |
 | **Statistics** | None | 4 metrics + depth | Analytical |
@@ -556,7 +572,7 @@ if (!tool.function) {
 ```
 
 **Benefits**:
-- Three operational modes
+- Four operational modes
 - Advanced error handling
 - JSONL conversion
 - Structure analysis
@@ -573,8 +589,6 @@ if (!tool.function) {
 - Show statistics
 
 ### Phase 2 (Potential)
-- JSONL to JSON (reverse conversion)
-- JSON Schema validation
 - JSONPath query support
 - JSON diff/compare tool
 - Bulk file processing
@@ -620,7 +634,7 @@ if (!tool.function) {
 - User Education: ?
 
 **Lines of Code**: 600+
-**Modes**: 3
+**Modes**: 4
 **Options**: 2
 **Statistics**: 4
 **Error Messages**: Detailed with position

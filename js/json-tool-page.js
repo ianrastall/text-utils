@@ -59,7 +59,7 @@ const JSONL_STREAM_THRESHOLD_BYTES = 100 * 1024;
 const STREAM_READ_YIELD_INTERVAL = 8;
 const ANALYZE_DEBOUNCE_MS = 300;
 const DEFAULT_FILE_META = 'Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.';
-const WORKER_PATH = '/js/json-worker.js';
+const WORKER_PATH = 'js/json-worker.js';
 const ACE_BASE_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/';
 const STREAM_PROGRESS_UPDATE_INTERVAL_MS = 100;
 
@@ -270,6 +270,7 @@ function ensureWorker() {
     });
 
     jsonWorker.addEventListener('error', event => {
+        const failedWorker = jsonWorker;
         console.error('JSON worker error:', event);
         const fatalPayload = {
             error: {
@@ -279,17 +280,24 @@ function ensureWorker() {
             }
         };
 
-        for (const pending of pendingWorkerJobs.values()) {
+        const pendingEntries = Array.from(pendingWorkerJobs.values());
+        for (const pending of pendingEntries) {
             pending.reject(fatalPayload);
         }
         pendingWorkerJobs.clear();
 
-        try {
-            jsonWorker.terminate();
-        } catch (_) {
-            // Ignore terminate failures.
+        // Drop the shared reference before terminate() so new jobs can only bind to a fresh worker.
+        if (jsonWorker === failedWorker) {
+            jsonWorker = null;
         }
-        jsonWorker = null;
+
+        try {
+            if (failedWorker) {
+                failedWorker.terminate();
+            }
+        } catch (terminateError) {
+            console.warn('Failed to terminate JSON worker after error:', terminateError);
+        }
     });
 
     return jsonWorker;
@@ -352,11 +360,10 @@ function updateModeUI() {
         processIcon.textContent = info.actionIcon;
     }
     processLabel.textContent = info.actionLabel;
-    setOutputEditorMode(info.outputAceMode);
-
     hideError();
     hideStats();
     scheduleAsyncInputAnalysis();
+    setOutputEditorValue('', info.outputAceMode);
 
     requestAnimationFrame(() => {
         inputEditor.resize(true);
@@ -512,7 +519,7 @@ function buildWorkerPayload(rawInput) {
             indent: indentSelect.value,
             sortKeys: Boolean(sortKeysCheck.checked),
             query: jmespathQuery.value || '',
-            schemaText: schemaEditor.getValue()
+            schemaText: currentMode === 'validate' ? schemaEditor.getValue() : ''
         }
     };
 }
@@ -592,6 +599,7 @@ function buildExampleInputForMode(mode) {
 
 function loadExample() {
     hideError();
+    jmespathQuery.value = '';
     setInputEditorValue(buildExampleInputForMode(currentMode));
     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
     hideStats();
@@ -607,6 +615,11 @@ function loadExample() {
 }
 
 function clearAll() {
+    if (inputStatsRaf) {
+        cancelAnimationFrame(inputStatsRaf);
+        inputStatsRaf = 0;
+    }
+
     activeFileLoadId += 1;
     latestStatsTicket += 1;
     clearTimeout(statsDebounceTimer);
@@ -694,7 +707,11 @@ function formatBytes(bytes) {
         value /= 1024;
         unitIndex += 1;
     }
-    return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`;
+    if (unitIndex === 0) {
+        return `${value.toFixed(0)} ${units[unitIndex]}`;
+    }
+
+    return `${value >= 100 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`;
 }
 
 function shouldUseStreamRead(file) {
@@ -835,6 +852,9 @@ function setupModeTabs() {
 
     modeTabs.forEach((tab, index) => {
         tab.addEventListener('keydown', event => {
+            if (isProcessing) {
+                return;
+            }
             if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
                 return;
             }
@@ -997,7 +1017,6 @@ function initialize() {
     updateOutputStatsLabel('');
     fileMeta.textContent = DEFAULT_FILE_META;
     updateModeUI();
-    setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
 
     // Warm up the worker so the first process call has less startup overhead.
     try {
