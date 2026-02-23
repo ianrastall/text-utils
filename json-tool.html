@@ -364,22 +364,35 @@
                 <p class="tool-description">Format, validate, query, and convert between JSON and JSONL</p>
 
                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
-                    <button class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" tabindex="0">
+                    <button id="tab-format" class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" aria-controls="panel-format" tabindex="0">
                         <span class="material-icons">code</span>
                         Format JSON
                     </button>
-                    <button class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" tabindex="-1">
+                    <button id="tab-jsonl" class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" aria-controls="panel-jsonl" tabindex="-1">
                         <span class="material-icons">view_list</span>
                         JSON to JSONL
                     </button>
-                    <button class="mode-tab" data-mode="jsonlToJson" type="button" role="tab" aria-selected="false" tabindex="-1">
+                    <button id="tab-jsonlToJson" class="mode-tab" data-mode="jsonlToJson" type="button" role="tab" aria-selected="false" aria-controls="panel-jsonlToJson" tabindex="-1">
                         <span class="material-icons">playlist_add_check</span>
                         JSONL to JSON
                     </button>
-                    <button class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" tabindex="-1">
+                    <button id="tab-validate" class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" aria-controls="panel-validate" tabindex="-1">
                         <span class="material-icons">check_circle</span>
                         Validate Only
                     </button>
+                </div>
+
+                <div id="panel-format" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-format" aria-hidden="false">
+                    Format JSON mode is active. Formatting options and query controls are available before processing.
+                </div>
+                <div id="panel-jsonl" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-jsonl" aria-hidden="true" hidden>
+                    JSON to JSONL mode is active. The tool converts a JSON array or values into line-delimited JSON output.
+                </div>
+                <div id="panel-jsonlToJson" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-jsonlToJson" aria-hidden="true" hidden>
+                    JSONL to JSON mode is active. The tool reads line-delimited JSON and combines rows into a JSON array.
+                </div>
+                <div id="panel-validate" class="mode-tab-panel sr-only" role="tabpanel" aria-labelledby="tab-validate" aria-hidden="true" hidden>
+                    Validate mode is active. Schema input can be provided and processing returns validation results without reformatting.
                 </div>
 
                 <div class="info-panel">

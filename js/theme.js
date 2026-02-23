@@ -131,6 +131,81 @@ if (typeof window.textUtilsClipboardWrite !== 'function') {
         return `${red}, ${green}, ${blue}`;
     }
 
+    function clampUnit(value) {
+        return Math.min(Math.max(value, 0), 1);
+    }
+
+    function rgbToHsl(red, green, blue) {
+        const r = red / 255;
+        const g = green / 255;
+        const b = blue / 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const delta = max - min;
+
+        let hue = 0;
+        let saturation = 0;
+        const lightness = (max + min) / 2;
+
+        if (delta !== 0) {
+            saturation = delta / (1 - Math.abs((2 * lightness) - 1));
+
+            switch (max) {
+                case r:
+                    hue = ((g - b) / delta) % 6;
+                    break;
+                case g:
+                    hue = ((b - r) / delta) + 2;
+                    break;
+                default:
+                    hue = ((r - g) / delta) + 4;
+                    break;
+            }
+
+            hue *= 60;
+            if (hue < 0) {
+                hue += 360;
+            }
+        }
+
+        return { hue, saturation, lightness };
+    }
+
+    function hslToRgb(hue, saturation, lightness) {
+        const chroma = (1 - Math.abs((2 * lightness) - 1)) * saturation;
+        const huePrime = (hue % 360) / 60;
+        const x = chroma * (1 - Math.abs((huePrime % 2) - 1));
+        let r1 = 0;
+        let g1 = 0;
+        let b1 = 0;
+
+        if (huePrime >= 0 && huePrime < 1) {
+            r1 = chroma;
+            g1 = x;
+        } else if (huePrime < 2) {
+            r1 = x;
+            g1 = chroma;
+        } else if (huePrime < 3) {
+            g1 = chroma;
+            b1 = x;
+        } else if (huePrime < 4) {
+            g1 = x;
+            b1 = chroma;
+        } else if (huePrime < 5) {
+            r1 = x;
+            b1 = chroma;
+        } else {
+            r1 = chroma;
+            b1 = x;
+        }
+
+        const match = lightness - (chroma / 2);
+        const red = Math.round((r1 + match) * 255);
+        const green = Math.round((g1 + match) * 255);
+        const blue = Math.round((b1 + match) * 255);
+        return { red, green, blue };
+    }
+
     function adjustColor(color, amount) {
         const normalized = normalizeHexColor(color).slice(1);
         const parsed = parseInt(normalized, 16);
@@ -139,15 +214,14 @@ if (typeof window.textUtilsClipboardWrite !== 'function') {
             return DEFAULT_ACCENT;
         }
 
-        let red = ((parsed >> 16) & 0xFF) + amount;
-        let green = ((parsed >> 8) & 0xFF) + amount;
-        let blue = (parsed & 0xFF) + amount;
+        const red = (parsed >> 16) & 0xFF;
+        const green = (parsed >> 8) & 0xFF;
+        const blue = parsed & 0xFF;
+        const hsl = rgbToHsl(red, green, blue);
+        const adjustedLightness = clampUnit(hsl.lightness + (amount / 255));
+        const adjusted = hslToRgb(hsl.hue, hsl.saturation, adjustedLightness);
 
-        red = Math.min(Math.max(0, red), 255);
-        green = Math.min(Math.max(0, green), 255);
-        blue = Math.min(Math.max(0, blue), 255);
-
-        return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, '0')}`;
+        return `#${((adjusted.red << 16) | (adjusted.green << 8) | adjusted.blue).toString(16).padStart(6, '0')}`;
     }
 
     function applyAccent(color) {

@@ -49,6 +49,17 @@ TEXT_EXTENSIONS = CODE_EXTENSIONS | DOC_EXTENSIONS | {
 ASSET_REFERENCE_PATTERN = re.compile(
     r'(?:href|src)\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE
 )
+WORKER_PATH_LITERAL_PATTERN = re.compile(
+    r"new\s+(?:window\.)?Worker\s*\(\s*['\"]([^'\"]+)['\"]",
+    re.IGNORECASE,
+)
+WORKER_PATH_IDENTIFIER_PATTERN = re.compile(
+    r"new\s+(?:window\.)?Worker\s*\(\s*([A-Za-z_$][\w$]*)\b",
+    re.IGNORECASE,
+)
+JS_STRING_ASSIGNMENT_PATTERN = re.compile(
+    r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*['\"]([^'\"]+)['\"]"
+)
 MARKDOWN_HEADING_PATTERN = re.compile(r"^\s{0,3}#{1,6}\s+(.*\S)\s*$")
 
 
@@ -315,9 +326,46 @@ def resolve_target_reference(reference: str, target_file: Path, repo_root: Path)
     return candidate_from_root if candidate_from_root.exists() else None
 
 
+def collect_js_runtime_dependencies(
+    source_text: str, source_file: Path, repo_root: Path
+) -> Set[str]:
+    local: Set[str] = set()
+    string_assignments = {
+        match.group(1): match.group(2)
+        for match in JS_STRING_ASSIGNMENT_PATTERN.finditer(source_text)
+    }
+
+    candidate_references = [match.group(1).strip() for match in WORKER_PATH_LITERAL_PATTERN.finditer(source_text)]
+
+    for match in WORKER_PATH_IDENTIFIER_PATTERN.finditer(source_text):
+        variable_name = match.group(1)
+        assigned_value = string_assignments.get(variable_name, "").strip()
+        if assigned_value:
+            candidate_references.append(assigned_value)
+
+    for raw_reference in candidate_references:
+        if not raw_reference:
+            continue
+        if is_external_reference(raw_reference) or is_non_file_reference(raw_reference):
+            continue
+
+        resolved = resolve_target_reference(raw_reference, source_file, repo_root)
+        if resolved is None:
+            continue
+        if should_skip_path(resolved, repo_root):
+            continue
+        if resolved.suffix.lower() not in TEXT_EXTENSIONS:
+            continue
+        local.add(to_repo_relative(resolved, repo_root))
+
+    return local
+
+
 def collect_local_dependencies(target_text: str, target_file: Path, repo_root: Path) -> Tuple[List[str], List[str]]:
     local: Set[str] = set()
     external: Set[str] = set()
+    js_scan_queue: List[Path] = []
+    scanned_js: Set[str] = set()
 
     for match in ASSET_REFERENCE_PATTERN.finditer(target_text):
         raw_reference = match.group(1).strip()
@@ -338,6 +386,24 @@ def collect_local_dependencies(target_text: str, target_file: Path, repo_root: P
         if resolved.suffix.lower() not in TEXT_EXTENSIONS:
             continue
         local.add(to_repo_relative(resolved, repo_root))
+        if resolved.suffix.lower() == ".js":
+            js_scan_queue.append(resolved)
+
+    while js_scan_queue:
+        source_file = js_scan_queue.pop()
+        source_key = str(source_file.resolve()).lower()
+        if source_key in scanned_js:
+            continue
+        scanned_js.add(source_key)
+
+        source_text = read_text(source_file)
+        for rel_path in collect_js_runtime_dependencies(source_text, source_file, repo_root):
+            if rel_path in local:
+                continue
+            local.add(rel_path)
+            discovered_path = (repo_root / Path(rel_path)).resolve()
+            if discovered_path.suffix.lower() == ".js":
+                js_scan_queue.append(discovered_path)
 
     return sorted(local), sorted(external)
 

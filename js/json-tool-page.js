@@ -8,6 +8,7 @@ const clearBtn = document.getElementById('clearBtn');
 const exampleBtn = document.getElementById('exampleBtn');
 const backBtn = document.getElementById('backButton');
 const modeTabs = document.querySelectorAll('.mode-tab');
+const modeTabPanels = document.querySelectorAll('.mode-tab-panel');
 const indentSelect = document.getElementById('indentSelect');
 const sortKeysCheck = document.getElementById('sortKeysCheck');
 const errorPanel = document.getElementById('errorPanel');
@@ -54,6 +55,7 @@ let themeObserver = null;
 const pendingWorkerJobs = new Map();
 
 const LARGE_FILE_THRESHOLD_BYTES = 5 * 1024 * 1024;
+const JSONL_STREAM_THRESHOLD_BYTES = 100 * 1024;
 const STREAM_READ_YIELD_INTERVAL = 8;
 const ANALYZE_DEBOUNCE_MS = 300;
 const DEFAULT_FILE_META = 'Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.';
@@ -302,11 +304,22 @@ function runWorkerJob(action, payload) {
 }
 
 function setActiveTab(activeTab) {
+    let activePanelId = '';
+
     modeTabs.forEach(tab => {
         const isActive = tab === activeTab;
         tab.classList.toggle('active', isActive);
         tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
         tab.setAttribute('tabindex', isActive ? '0' : '-1');
+        if (isActive) {
+            activePanelId = tab.getAttribute('aria-controls') || '';
+        }
+    });
+
+    modeTabPanels.forEach(panel => {
+        const isActive = panel.id === activePanelId;
+        panel.hidden = !isActive;
+        panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
     });
 }
 
@@ -439,7 +452,9 @@ function formatCounts(chars, lines) {
 
 function updateInputStatsLabel(rawInput) {
     const text = typeof rawInput === 'string' ? rawInput : inputEditor.getValue();
-    const lines = text.length === 0 ? 0 : inputEditor.session.getLength();
+    const lines = text.length === 0
+        ? 0
+        : (typeof rawInput === 'string' ? text.split(/\r?\n/).length : inputEditor.session.getLength());
     inputStats.textContent = formatCounts(text.length, lines);
 }
 
@@ -686,8 +701,8 @@ function shouldUseStreamRead(file) {
         file
         && typeof file.stream === 'function'
         && (file.size >= LARGE_FILE_THRESHOLD_BYTES
-            || currentMode === 'jsonl'
-            || currentMode === 'jsonlToJson')
+            || ((currentMode === 'jsonl' || currentMode === 'jsonlToJson')
+                && file.size >= JSONL_STREAM_THRESHOLD_BYTES))
     );
 }
 
@@ -926,7 +941,10 @@ function setupEventListeners() {
     });
 
     inputEditor.on('paste', pastedText => {
-        if (typeof pastedText === 'string' && pastedText.length >= LARGE_FILE_THRESHOLD_BYTES) {
+        const text = typeof pastedText === 'string'
+            ? pastedText
+            : (pastedText && typeof pastedText.text === 'string' ? pastedText.text : '');
+        if (text.length >= LARGE_FILE_THRESHOLD_BYTES) {
             showStatus('Large paste detected. Parsing and formatting will run in a background worker.', 'warning');
         }
     });

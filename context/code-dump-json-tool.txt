@@ -4,24 +4,25 @@ This generated file is designed as a context bundle for LLM prompts.
 It contains full source text for files directly associated with the tool, plus extracted sections from broader docs that reference the tool.
 Every included block is wrapped with explicit BEGIN/END markers for reliable chunking.
 
-Generated: 2026-02-22 00:59:35 UTC
+Generated: 2026-02-23 00:38:01 UTC
 Repository: `D:\GitHub\text-utils`
 Tool slug: `json-tool`
 Tool page: `json-tool.html`
 Output file: `context/code-dump-json-tool.txt`
 
 ## Discovery Summary
-- Full files included: 9
-- Direct local dependencies: 3
-- Incoming code references: 4
+- Full files included: 10
+- Direct local dependencies: 4
+- Incoming code references: 5
 - Direct tool docs (full): 2
 - Cross-file text excerpts: 7
-- External dependencies in tool page: 4
+- External dependencies in tool page: 8
 
 ## Included Full Files
 - `json-tool.html`
 - `css/style.css`
 - `index.html`
+- `js/json-tool-page.js`
 - `js/theme.js`
 - `scripts/code-dump-json-tool.py`
 - `scripts/tool_context_dump.py`
@@ -30,6 +31,10 @@ Output file: `context/code-dump-json-tool.txt`
 - `docs/doc-json-tool.md`
 
 ## External Dependencies
+- `https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.js`
+- `https://cdnjs.cloudflare.com/ajax/libs/ajv/8.12.0/ajv7.min.js`
+- `https://cdnjs.cloudflare.com/ajax/libs/jmespath.js/0.16.0/jmespath.min.js`
+- `https://cdnjs.cloudflare.com/ajax/libs/jsonlint/1.6.0/jsonlint.min.js`
 - `https://chessnerd.net`
 - `https://fonts.googleapis.com/icon?family=Material+Icons`
 - `https://github.com/ianrastall/text-utils`
@@ -84,724 +89,490 @@ Output file: `context/code-dump-json-tool.txt`
   43:     </script>
   44:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   45:     <link rel="stylesheet" href="css/style.css">
-  46:     <style>
-  47:         .mode-tabs {
-  48:             display: flex;
-  49:             gap: 0.5rem;
-  50:             margin-bottom: 1rem;
-  51:             border-bottom: 1px solid var(--border-color);
-  52:         }
-  53: 
-  54:         .mode-tab {
-  55:             padding: 0.75rem 1.5rem;
-  56:             background: transparent;
-  57:             border: none;
-  58:             border-bottom: 2px solid transparent;
-  59:             color: var(--text-secondary);
-  60:             cursor: pointer;
-  61:             font-size: 0.875rem;
-  62:             transition: all 0.2s;
-  63:             display: flex;
-  64:             align-items: center;
-  65:             gap: 0.5rem;
-  66:         }
-  67: 
-  68:         .mode-tab:hover {
-  69:             color: var(--text-primary);
-  70:             background: var(--bg-tertiary);
-  71:         }
-  72: 
-  73:         .mode-tab.active {
-  74:             color: var(--accent);
-  75:             border-bottom-color: var(--accent);
-  76:         }
-  77: 
-  78:         .error-panel {
-  79:             background: var(--bg-tertiary);
-  80:             border-left: 3px solid var(--error);
-  81:             padding: 1rem;
-  82:             margin-bottom: 1rem;
-  83:             border-radius: 4px;
-  84:             display: none;
-  85:         }
-  86: 
-  87:         .error-panel.show {
-  88:             display: block;
+  46:     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.js"></script>
+  47:     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonlint/1.6.0/jsonlint.min.js"></script>
+  48:     <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/8.12.0/ajv7.min.js"></script>
+  49:     <script src="https://cdnjs.cloudflare.com/ajax/libs/jmespath.js/0.16.0/jmespath.min.js"></script>
+  50:     <style>
+  51:         .mode-tabs {
+  52:             display: flex;
+  53:             gap: 0.5rem;
+  54:             margin-bottom: 1rem;
+  55:             border-bottom: 1px solid var(--border-color);
+  56:         }
+  57: 
+  58:         .mode-tab {
+  59:             padding: 0.75rem 1.5rem;
+  60:             background: transparent;
+  61:             border: none;
+  62:             border-bottom: 2px solid transparent;
+  63:             color: var(--text-secondary);
+  64:             cursor: pointer;
+  65:             font-size: 0.875rem;
+  66:             transition: all 0.2s;
+  67:             display: flex;
+  68:             align-items: center;
+  69:             gap: 0.5rem;
+  70:         }
+  71: 
+  72:         .mode-tab:hover {
+  73:             color: var(--text-primary);
+  74:             background: var(--bg-tertiary);
+  75:         }
+  76: 
+  77:         .mode-tab.active {
+  78:             color: var(--accent);
+  79:             border-bottom-color: var(--accent);
+  80:         }
+  81: 
+  82:         .error-panel {
+  83:             background: var(--bg-tertiary);
+  84:             border-left: 3px solid var(--error);
+  85:             padding: 1rem;
+  86:             margin-bottom: 1rem;
+  87:             border-radius: 4px;
+  88:             display: none;
   89:         }
   90: 
-  91:         .error-title {
-  92:             color: var(--error);
-  93:             font-weight: 600;
-  94:             margin-bottom: 0.5rem;
-  95:             display: flex;
-  96:             align-items: center;
-  97:             gap: 0.5rem;
-  98:         }
-  99: 
- 100:         .error-message {
- 101:             color: var(--text-primary);
- 102:             font-family: 'Monaco', 'Menlo', monospace;
- 103:             font-size: 0.875rem;
- 104:         }
- 105: 
- 106:         .info-panel {
- 107:             background: var(--bg-tertiary);
- 108:             border-left: 3px solid var(--accent);
- 109:             padding: 1rem;
- 110:             margin-bottom: 1rem;
- 111:             border-radius: 4px;
- 112:             font-size: 0.875rem;
- 113:             color: var(--text-secondary);
- 114:         }
- 115: 
- 116:         .info-panel h4 {
- 117:             color: var(--text-primary);
- 118:             margin-bottom: 0.5rem;
- 119:             display: flex;
- 120:             align-items: center;
- 121:             gap: 0.5rem;
- 122:         }
- 123: 
- 124:         .example-badge {
- 125:             display: inline-block;
- 126:             background: var(--accent);
- 127:             color: white;
- 128:             padding: 0.125rem 0.5rem;
- 129:             border-radius: 12px;
- 130:             font-size: 0.75rem;
- 131:             margin-left: 0.5rem;
- 132:         }
- 133: 
- 134:         .json-stats {
- 135:             display: grid;
- 136:             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
- 137:             gap: 1rem;
- 138:             margin-bottom: 1rem;
- 139:             padding: 1rem;
- 140:             background: var(--bg-tertiary);
- 141:             border-radius: 4px;
- 142:         }
- 143: 
- 144:         .stat-item {
- 145:             display: flex;
- 146:             flex-direction: column;
- 147:             gap: 0.25rem;
- 148:         }
- 149: 
- 150:         .stat-label {
- 151:             font-size: 0.75rem;
- 152:             color: var(--text-secondary);
- 153:             text-transform: uppercase;
- 154:         }
- 155: 
- 156:         .stat-value {
- 157:             font-size: 1.25rem;
- 158:             font-weight: 600;
- 159:             color: var(--text-primary);
- 160:         }
- 161:     </style>
- 162: </head>
- 163: <body>
- 164:     <div class="container">
- 165:         <header>
- 166:             <div class="logo">
- 167:                 <a href="index.html" style="color: inherit; text-decoration: none;">
- 168:                     <span>Text Utilities</span>
- 169:                 </a>
- 170:             </div>
- 171:             <nav class="site-network" aria-label="Network sites">
- 172:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
- 173:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
- 174:                     <span>Chess Nerd</span>
- 175:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
- 176:                 </a>
- 177:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
- 178:                     <img src="img/github.png" class="site-network-icon" alt="">
- 179:                     <span>GitHub</span>
- 180:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
- 181:                 </a>
- 182:             </nav>
- 183:             <div class="controls">
- 184:                 <div class="accent-selector">
- 185:                     <span class="material-icons">palette</span>
- 186:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
- 187:                 </div>
- 188:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
- 189:                     <span class="material-icons">dark_mode</span>
- 190:                 </button>
- 191:             </div>
- 192:         </header>
- 193: 
- 194:                 <main>
- 195:             <div class="tool-container">
- 196:                 <div class="tool-header">
- 197:                     <div class="tool-title">
- 198:                         <span class="material-icons">data_object</span>
- 199:                         <h2>JSON Tool</h2>
- 200:                     </div>
- 201:                     <div class="tool-actions">
- 202:                         <button id="backButton" class="btn btn-secondary btn-compact" type="button">
- 203:                             <span class="material-icons">arrow_back</span>
- 204:                             Back
- 205:                         </button>
- 206:                         <button id="exampleBtn" class="btn btn-secondary" type="button">
- 207:                             <span class="material-icons">science</span>
- 208:                             Example
- 209:                         </button>
- 210:                         <button id="copyOutput" class="btn btn-secondary btn-compact" type="button">
- 211:                             <span class="material-icons">content_copy</span>
- 212:                             Copy
- 213:                         </button>
- 214:                         <button id="clearBtn" class="btn btn-secondary" type="button">
- 215:                             <span class="material-icons">clear</span>
- 216:                             Clear
- 217:                         </button>
- 218:                         <button id="processBtn" class="btn btn-primary" type="button">
- 219:                             <span class="material-icons">play_arrow</span>
- 220:                             <span id="processLabel">Format</span>
- 221:                         </button>
- 222:                     </div>
- 223:                 </div>
- 224: 
- 225:                 <p class="tool-description">Format, validate, and convert JSON to JSONL format</p>
- 226: 
- 227:                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
- 228:                     <button class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" tabindex="0">
- 229:                         <span class="material-icons">code</span>
- 230:                         Format JSON
- 231:                     </button>
- 232:                     <button class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" tabindex="-1">
- 233:                         <span class="material-icons">view_list</span>
- 234:                         JSON to JSONL
- 235:                     </button>
- 236:                     <button class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" tabindex="-1">
- 237:                         <span class="material-icons">check_circle</span>
- 238:                         Validate Only
- 239:                     </button>
- 240:                 </div>
- 241: 
- 242:                 <div class="info-panel">
- 243:                     <h4>
- 244:                         <span class="material-icons">info</span>
- 245:                         <span id="infoTitle">JSON Formatting</span>
- 246:                     </h4>
- 247:                     <p id="infoText">
- 248:                         Format and validate JSON with customizable indentation. 
- 249:                         Automatically detects syntax errors and provides helpful error messages.
- 250:                     </p>
- 251:                 </div>
+  91:         .error-panel.show {
+  92:             display: block;
+  93:         }
+  94: 
+  95:         .error-title {
+  96:             color: var(--error);
+  97:             font-weight: 600;
+  98:             margin-bottom: 0.5rem;
+  99:             display: flex;
+ 100:             align-items: center;
+ 101:             gap: 0.5rem;
+ 102:         }
+ 103: 
+ 104:         .error-message {
+ 105:             color: var(--text-primary);
+ 106:             font-family: 'Monaco', 'Menlo', monospace;
+ 107:             font-size: 0.875rem;
+ 108:         }
+ 109: 
+ 110:         .info-panel {
+ 111:             background: var(--bg-tertiary);
+ 112:             border-left: 3px solid var(--accent);
+ 113:             padding: 1rem;
+ 114:             margin-bottom: 1rem;
+ 115:             border-radius: 4px;
+ 116:             font-size: 0.875rem;
+ 117:             color: var(--text-secondary);
+ 118:         }
+ 119: 
+ 120:         .info-panel h4 {
+ 121:             color: var(--text-primary);
+ 122:             margin-bottom: 0.5rem;
+ 123:             display: flex;
+ 124:             align-items: center;
+ 125:             gap: 0.5rem;
+ 126:         }
+ 127: 
+ 128:         .example-badge {
+ 129:             display: inline-block;
+ 130:             background: var(--accent);
+ 131:             color: white;
+ 132:             padding: 0.125rem 0.5rem;
+ 133:             border-radius: 12px;
+ 134:             font-size: 0.75rem;
+ 135:             margin-left: 0.5rem;
+ 136:         }
+ 137: 
+ 138:         .json-stats {
+ 139:             display: grid;
+ 140:             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ 141:             gap: 1rem;
+ 142:             margin-bottom: 1rem;
+ 143:             padding: 1rem;
+ 144:             background: var(--bg-tertiary);
+ 145:             border-radius: 4px;
+ 146:         }
+ 147: 
+ 148:         .stat-item {
+ 149:             display: flex;
+ 150:             flex-direction: column;
+ 151:             gap: 0.25rem;
+ 152:         }
+ 153: 
+ 154:         .stat-label {
+ 155:             font-size: 0.75rem;
+ 156:             color: var(--text-secondary);
+ 157:             text-transform: uppercase;
+ 158:         }
+ 159: 
+ 160:         .stat-value {
+ 161:             font-size: 1.25rem;
+ 162:             font-weight: 600;
+ 163:             color: var(--text-primary);
+ 164:         }
+ 165: 
+ 166:         .aux-inputs {
+ 167:             display: flex;
+ 168:             flex-direction: column;
+ 169:             gap: 1rem;
+ 170:             margin-bottom: 1rem;
+ 171:         }
+ 172: 
+ 173:         .aux-panel {
+ 174:             display: none;
+ 175:             background: var(--bg-secondary);
+ 176:             border: 1px solid var(--border-color);
+ 177:             border-radius: 6px;
+ 178:             padding: 0.75rem;
+ 179:         }
+ 180: 
+ 181:         .aux-panel.show {
+ 182:             display: block;
+ 183:         }
+ 184: 
+ 185:         .aux-panel-header {
+ 186:             display: flex;
+ 187:             justify-content: space-between;
+ 188:             align-items: center;
+ 189:             gap: 0.75rem;
+ 190:             margin-bottom: 0.5rem;
+ 191:         }
+ 192: 
+ 193:         .aux-panel-header label {
+ 194:             font-size: 0.875rem;
+ 195:             font-weight: 600;
+ 196:             color: var(--text-primary);
+ 197:         }
+ 198: 
+ 199:         .query-input {
+ 200:             width: 100%;
+ 201:             padding: 0.75rem;
+ 202:             border-radius: 6px;
+ 203:             border: 1px solid var(--border-color);
+ 204:             background: var(--bg-tertiary);
+ 205:             color: var(--text-primary);
+ 206:             font-family: 'Monaco', 'Menlo', monospace;
+ 207:             font-size: 0.875rem;
+ 208:         }
+ 209: 
+ 210:         .query-input:focus {
+ 211:             outline: 2px solid rgba(var(--accent-rgb), 0.25);
+ 212:             border-color: var(--accent);
+ 213:         }
+ 214: 
+ 215:         .query-help {
+ 216:             margin-top: 0.5rem;
+ 217:             font-size: 0.75rem;
+ 218:             color: var(--text-secondary);
+ 219:         }
+ 220: 
+ 221:         .file-drop-zone {
+ 222:             border: 1px dashed var(--border-color);
+ 223:             border-radius: 6px;
+ 224:             background: var(--bg-tertiary);
+ 225:             padding: 0.75rem;
+ 226:             margin-bottom: 0.75rem;
+ 227:             transition: border-color 0.2s ease, background-color 0.2s ease;
+ 228:             cursor: pointer;
+ 229:         }
+ 230: 
+ 231:         .file-drop-zone:hover,
+ 232:         .file-drop-zone.drag-active,
+ 233:         .file-drop-zone:focus-visible {
+ 234:             border-color: var(--accent);
+ 235:             background: rgba(var(--accent-rgb), 0.08);
+ 236:             outline: none;
+ 237:         }
+ 238: 
+ 239:         .file-drop-main {
+ 240:             display: flex;
+ 241:             align-items: center;
+ 242:             gap: 0.5rem;
+ 243:             color: var(--text-primary);
+ 244:             font-size: 0.875rem;
+ 245:             margin-bottom: 0.5rem;
+ 246:         }
+ 247: 
+ 248:         .file-drop-main .material-icons {
+ 249:             color: var(--accent);
+ 250:             font-size: 1.125rem;
+ 251:         }
  252: 
- 253:                 <div class="error-panel" id="errorPanel" role="alert" aria-live="assertive" aria-hidden="true">
- 254:                     <div class="error-title">
- 255:                         <span class="material-icons">error</span>
- 256:                         <span>Syntax Error</span>
- 257:                     </div>
- 258:                     <div class="error-message" id="errorMessage"></div>
- 259:                 </div>
- 260: 
- 261:                 <div class="json-stats" id="statsPanel" style="display: none;">
- 262:                     <div class="stat-item">
- 263:                         <span class="stat-label">Objects</span>
- 264:                         <span class="stat-value" id="statObjects">0</span>
- 265:                     </div>
- 266:                     <div class="stat-item">
- 267:                         <span class="stat-label">Arrays</span>
- 268:                         <span class="stat-value" id="statArrays">0</span>
- 269:                     </div>
- 270:                     <div class="stat-item">
- 271:                         <span class="stat-label">Keys</span>
- 272:                         <span class="stat-value" id="statKeys">0</span>
- 273:                     </div>
- 274:                     <div class="stat-item">
- 275:                         <span class="stat-label">Max Depth</span>
- 276:                         <span class="stat-value" id="statDepth">0</span>
- 277:                     </div>
- 278:                 </div>
- 279: 
- 280:                 <div class="options-panel" id="optionsPanel">
- 281:                     <div class="options-grid">
- 282:                         <div class="option-group">
- 283:                             <label for="indentSelect">Indentation</label>
- 284:                             <select id="indentSelect">
- 285:                                 <option value="2">2 spaces</option>
- 286:                                 <option value="4">4 spaces</option>
- 287:                                 <option value="tab">Tab</option>
- 288:                                 <option value="0">Minified</option>
- 289:                             </select>
- 290:                         </div>
- 291:                         <div class="option-group">
- 292:                             <label for="sortKeysCheck">
- 293:                                 <input type="checkbox" id="sortKeysCheck">
- 294:                                 Sort object keys alphabetically
- 295:                             </label>
- 296:                         </div>
- 297:                     </div>
- 298:                 </div>
- 299: 
- 300:                 <div class="io-container">
- 301:                     <div class="io-panel">
- 302:                         <div class="io-label">
- 303:                             <span>Input JSON</span>
- 304:                             <span class="stats pill muted" id="inputStats">0 chars</span>
- 305:                         </div>
- 306:                         <textarea id="inputText" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
- 307:                     </div>
- 308:                     <div class="io-panel">
- 309:                         <div class="io-label">
- 310:                             <span id="outputLabel">Formatted Output</span>
- 311:                             <span class="stats pill muted" id="outputStats">0 chars</span>
- 312:                         </div>
- 313:                         <textarea id="outputText" class="output" readonly placeholder="Processed output will appear here..."></textarea>
- 314:                     </div>
- 315:                 </div>
- 316: 
- 317:                 <div class="status-bar">
- 318:                     <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
- 319:                     <div id="processingTime">No operations yet</div>
- 320:                 </div>
- 321:             </div>
- 322:         </main>
- 323:     </div>
- 324: 
- 325:     <script src="js/theme.js"></script>
- 326:     <script>
- 327:         'use strict';
- 328: 
- 329:         // DOM Elements
- 330:         const inputText = document.getElementById('inputText');
- 331:         const outputText = document.getElementById('outputText');
- 332:         const processBtn = document.getElementById('processBtn');
- 333:         const processLabel = document.getElementById('processLabel');
- 334:         const copyBtn = document.getElementById('copyOutput');
- 335:         const clearBtn = document.getElementById('clearBtn');
- 336:         const exampleBtn = document.getElementById('exampleBtn');
- 337:         const backBtn = document.getElementById('backButton');
- 338:         const modeTabs = document.querySelectorAll('.mode-tab');
- 339:         const indentSelect = document.getElementById('indentSelect');
- 340:         const sortKeysCheck = document.getElementById('sortKeysCheck');
- 341:         const errorPanel = document.getElementById('errorPanel');
- 342:         const errorMessage = document.getElementById('errorMessage');
- 343:         const statsPanel = document.getElementById('statsPanel');
- 344:         const optionsPanel = document.getElementById('optionsPanel');
- 345:         const infoTitle = document.getElementById('infoTitle');
- 346:         const infoText = document.getElementById('infoText');
- 347:         const outputLabel = document.getElementById('outputLabel');
- 348:         const statusMessage = document.getElementById('statusMessage');
- 349:         const processingTime = document.getElementById('processingTime');
- 350:         const inputStats = document.getElementById('inputStats');
- 351:         const outputStats = document.getElementById('outputStats');
- 352:         const statObjects = document.getElementById('statObjects');
- 353:         const statArrays = document.getElementById('statArrays');
- 354:         const statKeys = document.getElementById('statKeys');
- 355:         const statDepth = document.getElementById('statDepth');
- 356: 
- 357:         // State
- 358:         let currentMode = 'format';
- 359:         const MAX_INPUT_CHARACTERS = 5 * 1024 * 1024;
- 360:         const MAX_RECURSION_DEPTH = 1000;
- 361: 
- 362:         // Mode Information
- 363:         const modeInfo = {
- 364:             format: {
- 365:                 title: 'JSON Formatting',
- 366:                 text: 'Format and validate JSON with customizable indentation. Automatically detects syntax errors and provides helpful error messages.',
- 367:                 outputLabel: 'Formatted Output'
- 368:             },
- 369:             jsonl: {
- 370:                 title: 'JSON to JSONL Conversion',
- 371:                 text: 'Convert JSON arrays to JSON Lines format (JSONL). Each array element becomes a separate line of valid JSON. Perfect for streaming data and big data processing.',
- 372:                 outputLabel: 'JSONL Output'
- 373:             },
- 374:             validate: {
- 375:                 title: 'JSON Validation',
- 376:                 text: 'Validate JSON syntax and structure. Shows detailed error messages with line and column numbers. Also provides statistics about your JSON structure.',
- 377:                 outputLabel: 'Validation Result'
- 378:             }
- 379:         };
- 380: 
- 381:         // Example JSON
- 382:         const exampleJSON = {
- 383:             users: [
- 384:                 {
- 385:                     id: 1,
- 386:                     name: "Alice Johnson",
- 387:                     email: "alice@example.com",
- 388:                     age: 28,
- 389:                     active: true
- 390:                 },
- 391:                 {
- 392:                     id: 2,
- 393:                     name: "Bob Smith",
- 394:                     email: "bob@example.com",
- 395:                     age: 34,
- 396:                     active: false
- 397:                 },
- 398:                 {
- 399:                     id: 3,
- 400:                     name: "Carol White",
- 401:                     email: "carol@example.com",
- 402:                     age: 31,
- 403:                     active: true
- 404:                 }
- 405:             ],
- 406:             metadata: {
- 407:                 total: 3,
- 408:                 page: 1,
- 409:                 timestamp: "2024-01-15T10:30:00Z"
- 410:             }
- 411:         };
- 412: 
- 413:         // Mode switching
- 414:         function setActiveTab(activeTab) {
- 415:             modeTabs.forEach(tab => {
- 416:                 const isActive = tab === activeTab;
- 417:                 tab.classList.toggle('active', isActive);
- 418:                 tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
- 419:                 tab.setAttribute('tabindex', isActive ? '0' : '-1');
- 420:             });
- 421:         }
+ 253:         .file-drop-actions {
+ 254:             display: flex;
+ 255:             align-items: center;
+ 256:             gap: 0.75rem;
+ 257:             flex-wrap: wrap;
+ 258:         }
+ 259: 
+ 260:         .file-drop-meta {
+ 261:             font-size: 0.75rem;
+ 262:             color: var(--text-secondary);
+ 263:         }
+ 264: 
+ 265:         .editor-shell {
+ 266:             border: 1px solid var(--border-color);
+ 267:             border-radius: 6px;
+ 268:             overflow: hidden;
+ 269:             background: var(--bg-secondary);
+ 270:         }
+ 271: 
+ 272:         .editor-shell .ace_editor {
+ 273:             font-size: 14px;
+ 274:             line-height: 1.5;
+ 275:         }
+ 276: 
+ 277:         .ace-host {
+ 278:             width: 100%;
+ 279:             height: 360px;
+ 280:         }
+ 281: 
+ 282:         .ace-host.compact {
+ 283:             height: 180px;
+ 284:         }
+ 285: 
+ 286:         @media (max-width: 900px) {
+ 287:             .aux-panel-header {
+ 288:                 flex-direction: column;
+ 289:                 align-items: flex-start;
+ 290:             }
+ 291: 
+ 292:             .ace-host {
+ 293:                 height: 300px;
+ 294:             }
+ 295: 
+ 296:             .ace-host.compact {
+ 297:                 height: 160px;
+ 298:             }
+ 299:         }
+ 300:     </style>
+ 301: </head>
+ 302: <body>
+ 303:     <div class="container">
+ 304:         <header>
+ 305:             <div class="logo">
+ 306:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+ 307:                     <span>Text Utilities</span>
+ 308:                 </a>
+ 309:             </div>
+ 310:             <nav class="site-network" aria-label="Network sites">
+ 311:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 312:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+ 313:                     <span>Chess Nerd</span>
+ 314:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 315:                 </a>
+ 316:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 317:                     <img src="img/github.png" class="site-network-icon" alt="">
+ 318:                     <span>GitHub</span>
+ 319:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 320:                 </a>
+ 321:             </nav>
+ 322:             <div class="controls">
+ 323:                 <div class="accent-selector">
+ 324:                     <span class="material-icons">palette</span>
+ 325:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+ 326:                 </div>
+ 327:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+ 328:                     <span class="material-icons">dark_mode</span>
+ 329:                 </button>
+ 330:             </div>
+ 331:         </header>
+ 332: 
+ 333:                 <main>
+ 334:             <div class="tool-container">
+ 335:                 <div class="tool-header">
+ 336:                     <div class="tool-title">
+ 337:                         <span class="material-icons">data_object</span>
+ 338:                         <h2>JSON Tool</h2>
+ 339:                     </div>
+ 340:                     <div class="tool-actions">
+ 341:                         <button id="backButton" class="btn btn-secondary btn-compact" type="button">
+ 342:                             <span class="material-icons">arrow_back</span>
+ 343:                             Back
+ 344:                         </button>
+ 345:                         <button id="exampleBtn" class="btn btn-secondary" type="button">
+ 346:                             <span class="material-icons">science</span>
+ 347:                             Example
+ 348:                         </button>
+ 349:                         <button id="copyOutput" class="btn btn-secondary btn-compact" type="button">
+ 350:                             <span class="material-icons">content_copy</span>
+ 351:                             Copy
+ 352:                         </button>
+ 353:                         <button id="clearBtn" class="btn btn-secondary" type="button">
+ 354:                             <span class="material-icons">clear</span>
+ 355:                             Clear
+ 356:                         </button>
+ 357:                         <button id="processBtn" class="btn btn-primary" type="button">
+ 358:                             <span class="material-icons">play_arrow</span>
+ 359:                             <span id="processLabel">Format</span>
+ 360:                         </button>
+ 361:                     </div>
+ 362:                 </div>
+ 363: 
+ 364:                 <p class="tool-description">Format, validate, query, and convert between JSON and JSONL</p>
+ 365: 
+ 366:                 <div class="mode-tabs" role="tablist" aria-label="JSON tool mode">
+ 367:                     <button class="mode-tab active" data-mode="format" type="button" role="tab" aria-selected="true" tabindex="0">
+ 368:                         <span class="material-icons">code</span>
+ 369:                         Format JSON
+ 370:                     </button>
+ 371:                     <button class="mode-tab" data-mode="jsonl" type="button" role="tab" aria-selected="false" tabindex="-1">
+ 372:                         <span class="material-icons">view_list</span>
+ 373:                         JSON to JSONL
+ 374:                     </button>
+ 375:                     <button class="mode-tab" data-mode="jsonlToJson" type="button" role="tab" aria-selected="false" tabindex="-1">
+ 376:                         <span class="material-icons">playlist_add_check</span>
+ 377:                         JSONL to JSON
+ 378:                     </button>
+ 379:                     <button class="mode-tab" data-mode="validate" type="button" role="tab" aria-selected="false" tabindex="-1">
+ 380:                         <span class="material-icons">check_circle</span>
+ 381:                         Validate Only
+ 382:                     </button>
+ 383:                 </div>
+ 384: 
+ 385:                 <div class="info-panel">
+ 386:                     <h4>
+ 387:                         <span class="material-icons">info</span>
+ 388:                         <span id="infoTitle">JSON Formatting</span>
+ 389:                     </h4>
+ 390:                     <p id="infoText">
+ 391:                         Format and validate JSON with customizable indentation. 
+ 392:                         Automatically detects syntax errors and provides helpful error messages.
+ 393:                     </p>
+ 394:                 </div>
+ 395: 
+ 396:                 <div class="error-panel" id="errorPanel" role="alert" aria-live="assertive" aria-hidden="true">
+ 397:                     <div class="error-title">
+ 398:                         <span class="material-icons">error</span>
+ 399:                         <span id="errorTitleText">Syntax Error</span>
+ 400:                     </div>
+ 401:                     <div class="error-message" id="errorMessage"></div>
+ 402:                 </div>
+ 403: 
+ 404:                 <div class="json-stats" id="statsPanel" style="display: none;">
+ 405:                     <div class="stat-item">
+ 406:                         <span class="stat-label">Objects</span>
+ 407:                         <span class="stat-value" id="statObjects">0</span>
+ 408:                     </div>
+ 409:                     <div class="stat-item">
+ 410:                         <span class="stat-label">Arrays</span>
+ 411:                         <span class="stat-value" id="statArrays">0</span>
+ 412:                     </div>
+ 413:                     <div class="stat-item">
+ 414:                         <span class="stat-label">Keys</span>
+ 415:                         <span class="stat-value" id="statKeys">0</span>
+ 416:                     </div>
+ 417:                     <div class="stat-item">
+ 418:                         <span class="stat-label">Max Depth</span>
+ 419:                         <span class="stat-value" id="statDepth">0</span>
+ 420:                     </div>
+ 421:                 </div>
  422: 
- 423:         modeTabs.forEach(tab => {
- 424:             tab.addEventListener('click', () => {
- 425:                 setActiveTab(tab);
- 426:                 currentMode = tab.dataset.mode;
- 427:                 updateModeUI();
- 428:             });
- 429:         });
- 430: 
- 431:         modeTabs.forEach((tab, index) => {
- 432:             tab.addEventListener('keydown', event => {
- 433:                 if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
- 434:                     return;
- 435:                 }
- 436: 
- 437:                 event.preventDefault();
- 438:                 let nextIndex = index;
- 439:                 if (event.key === 'ArrowRight') {
- 440:                     nextIndex = (index + 1) % modeTabs.length;
- 441:                 } else if (event.key === 'ArrowLeft') {
- 442:                     nextIndex = (index - 1 + modeTabs.length) % modeTabs.length;
- 443:                 } else if (event.key === 'Home') {
- 444:                     nextIndex = 0;
- 445:                 } else if (event.key === 'End') {
- 446:                     nextIndex = modeTabs.length - 1;
- 447:                 }
- 448: 
- 449:                 const nextTab = modeTabs[nextIndex];
- 450:                 nextTab.focus();
- 451:                 nextTab.click();
- 452:             });
- 453:         });
- 454: 
- 455:         function updateModeUI() {
- 456:             const info = modeInfo[currentMode];
- 457:             if (!info) {
- 458:                 throw new Error(`Unknown mode: ${currentMode}`);
- 459:             }
- 460: 
- 461:             infoTitle.textContent = info.title;
- 462:             infoText.textContent = info.text;
- 463:             outputLabel.textContent = info.outputLabel;
- 464: 
- 465:             // Show/hide options panel
- 466:             optionsPanel.style.display = currentMode === 'format' ? 'block' : 'none';
- 467: 
- 468:             // Reset mode-scoped panels so old state is not shown after mode changes.
- 469:             hideError();
- 470:             hideStats();
- 471: 
- 472:             const processIcon = processBtn.querySelector('.material-icons');
- 473:             if (currentMode === 'validate') {
- 474:                 processIcon.textContent = 'check_circle';
- 475:                 processLabel.textContent = 'Validate';
- 476:             } else if (currentMode === 'jsonl') {
- 477:                 processIcon.textContent = 'play_arrow';
- 478:                 processLabel.textContent = 'Convert';
- 479:             } else {
- 480:                 processIcon.textContent = 'play_arrow';
- 481:                 processLabel.textContent = 'Format';
- 482:             }
- 483:         }
- 484: 
- 485:         // JSON Processing Functions
- 486:         function analyzeJSON(obj, depth = 0, stats = null) {
- 487:             if (depth > MAX_RECURSION_DEPTH) {
- 488:                 throw new Error(`JSON is nested too deeply to analyze (>${MAX_RECURSION_DEPTH} levels).`);
- 489:             }
- 490: 
- 491:             if (!stats) {
- 492:                 stats = { objects: 0, arrays: 0, keys: 0, maxDepth: 0 };
- 493:             }
- 494:             
- 495:             stats.maxDepth = Math.max(stats.maxDepth, depth);
- 496:             
- 497:             if (Array.isArray(obj)) {
- 498:                 stats.arrays++;
- 499:                 obj.forEach(item => analyzeJSON(item, depth + 1, stats));
- 500:             } else if (obj !== null && typeof obj === 'object') {
- 501:                 stats.objects++;
- 502:                 stats.keys += Object.keys(obj).length;
- 503:                 Object.values(obj).forEach(value => analyzeJSON(value, depth + 1, stats));
- 504:             }
- 505:             
- 506:             return stats;
- 507:         }
- 508: 
- 509:         function displayStats(stats) {
- 510:             statObjects.textContent = stats.objects;
- 511:             statArrays.textContent = stats.arrays;
- 512:             statKeys.textContent = stats.keys;
- 513:             statDepth.textContent = stats.maxDepth;
- 514:             statsPanel.style.display = 'grid';
- 515:         }
- 516: 
- 517:         function hideStats() {
- 518:             statsPanel.style.display = 'none';
- 519:         }
+ 423:                 <div class="options-panel" id="optionsPanel">
+ 424:                     <div class="options-grid">
+ 425:                         <div class="option-group">
+ 426:                             <label for="indentSelect">Indentation</label>
+ 427:                             <select id="indentSelect">
+ 428:                                 <option value="2">2 spaces</option>
+ 429:                                 <option value="4">4 spaces</option>
+ 430:                                 <option value="tab">Tab</option>
+ 431:                                 <option value="0">Minified</option>
+ 432:                             </select>
+ 433:                         </div>
+ 434:                         <div class="option-group">
+ 435:                             <label for="sortKeysCheck">
+ 436:                                 <input type="checkbox" id="sortKeysCheck">
+ 437:                                 Sort object keys alphabetically
+ 438:                             </label>
+ 439:                         </div>
+ 440:                     </div>
+ 441:                 </div>
+ 442: 
+ 443:                 <div class="aux-inputs">
+ 444:                     <div class="aux-panel show" id="queryPanel">
+ 445:                         <div class="aux-panel-header">
+ 446:                             <label for="jmespathQuery">JMESPath Query (Optional)</label>
+ 447:                             <span class="stats pill muted">Format / JSON to JSONL</span>
+ 448:                         </div>
+ 449:                         <input
+ 450:                             id="jmespathQuery"
+ 451:                             class="query-input"
+ 452:                             type="text"
+ 453:                             placeholder="Example: users[?active == `true`].{id: id, email: email}"
+ 454:                             autocomplete="off"
+ 455:                             spellcheck="false"
+ 456:                         >
+ 457:                         <div class="query-help">Applied before formatting or JSONL conversion.</div>
+ 458:                     </div>
+ 459: 
+ 460:                     <div class="aux-panel" id="schemaPanel">
+ 461:                         <div class="aux-panel-header">
+ 462:                             <label id="schemaLabel">Schema (Optional)</label>
+ 463:                             <span class="stats pill muted">AJV / JSON Schema</span>
+ 464:                         </div>
+ 465:                         <div class="editor-shell">
+ 466:                             <div id="schemaEditor" class="ace-host compact" aria-labelledby="schemaLabel"></div>
+ 467:                         </div>
+ 468:                     </div>
+ 469:                 </div>
+ 470: 
+ 471:                 <div class="io-container">
+ 472:                     <div class="io-panel">
+ 473:                         <div class="io-label">
+ 474:                             <span id="inputLabelText">Input JSON</span>
+ 475:                             <span class="stats pill muted" id="inputStats">0 chars</span>
+ 476:                         </div>
+ 477:                         <div
+ 478:                             id="fileDropZone"
+ 479:                             class="file-drop-zone"
+ 480:                             tabindex="0"
+ 481:                             role="button"
+ 482:                             aria-label="Drag and drop a JSON or JSONL file, or press Enter to choose a file"
+ 483:                         >
+ 484:                             <div class="file-drop-main">
+ 485:                                 <span class="material-icons" aria-hidden="true">upload_file</span>
+ 486:                                 <span>Drag & drop a file here, or use the button below</span>
+ 487:                             </div>
+ 488:                             <div class="file-drop-actions">
+ 489:                                 <button id="chooseFileBtn" class="btn btn-secondary btn-compact" type="button">
+ 490:                                     <span class="material-icons">folder_open</span>
+ 491:                                     Choose File
+ 492:                                 </button>
+ 493:                                 <span class="file-drop-meta" id="fileMeta">Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.</span>
+ 494:                             </div>
+ 495:                             <input id="fileInput" type="file" accept=".json,.jsonl,.ndjson,.txt,application/json,text/plain" hidden>
+ 496:                         </div>
+ 497:                         <div class="editor-shell">
+ 498:                             <div id="inputEditor" class="ace-host" aria-label="Input JSON editor"></div>
+ 499:                         </div>
+ 500:                     </div>
+ 501:                     <div class="io-panel">
+ 502:                         <div class="io-label">
+ 503:                             <span id="outputLabel">Formatted Output</span>
+ 504:                             <span class="stats pill muted" id="outputStats">0 chars</span>
+ 505:                         </div>
+ 506:                         <div class="editor-shell">
+ 507:                             <div id="outputEditor" class="ace-host" aria-label="Output editor"></div>
+ 508:                         </div>
+ 509:                     </div>
+ 510:                 </div>
+ 511: 
+ 512:                 <div class="status-bar">
+ 513:                     <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
+ 514:                     <div id="processingTime">No operations yet</div>
+ 515:                 </div>
+ 516:             </div>
+ 517:         </main>
+ 518:     </div>
+ 519: 
  520: 
- 521:         function sortObjectKeys(obj, depth = 0) {
- 522:             if (depth > MAX_RECURSION_DEPTH) {
- 523:                 throw new Error(`JSON is nested too deeply to sort (>${MAX_RECURSION_DEPTH} levels).`);
- 524:             }
- 525: 
- 526:             if (Array.isArray(obj)) {
- 527:                 return obj.map(item => sortObjectKeys(item, depth + 1));
- 528:             } else if (obj !== null && typeof obj === 'object') {
- 529:                 return Object.keys(obj)
- 530:                     .sort()
- 531:                     .reduce((sorted, key) => {
- 532:                         sorted[key] = sortObjectKeys(obj[key], depth + 1);
- 533:                         return sorted;
- 534:                     }, {});
- 535:             }
- 536:             return obj;
- 537:         }
- 538: 
- 539:         function formatJSON(input) {
- 540:             const parsed = JSON.parse(input);
- 541:             const shouldSort = sortKeysCheck.checked;
- 542:             const indentValue = indentSelect.value;
- 543:             
- 544:             let obj = shouldSort ? sortObjectKeys(parsed, 0) : parsed;
- 545:             let indent = indentValue === 'tab' ? '\t' : 
- 546:                         indentValue === '0' ? 0 : 
- 547:                         parseInt(indentValue);
- 548:             
- 549:             const stats = analyzeJSON(obj);
- 550:             displayStats(stats);
- 551:             
- 552:             return JSON.stringify(obj, null, indent);
- 553:         }
- 554: 
- 555:         function convertToJSONL(input) {
- 556:             const parsed = JSON.parse(input);
- 557:             
- 558:             if (!Array.isArray(parsed)) {
- 559:                 throw new Error('Input must be a JSON array for JSONL conversion. Wrap your object in square brackets [] if needed.');
- 560:             }
- 561:             
- 562:             if (parsed.length === 0) {
- 563:                 throw new Error('Array is empty. Cannot convert to JSONL.');
- 564:             }
- 565:             
- 566:             const stats = analyzeJSON(parsed);
- 567:             displayStats(stats);
- 568:             
- 569:             return parsed.map(item => JSON.stringify(item)).join('\n');
- 570:         }
- 571: 
- 572:         function validateJSON(input) {
- 573:             const parsed = JSON.parse(input);
- 574:             const stats = analyzeJSON(parsed);
- 575:             displayStats(stats);
- 576:             
- 577:             const type = parsed === null ? 'null' :
- 578:                         Array.isArray(parsed) ? 'Array' :
- 579:                         typeof parsed === 'object' ? 'Object' :
- 580:                         typeof parsed;
- 581:             
- 582:             return `✓ Valid JSON\n\nType: ${type}\nObjects: ${stats.objects}\nArrays: ${stats.arrays}\nTotal Keys: ${stats.keys}\nMax Depth: ${stats.maxDepth}`;
- 583:         }
- 584: 
- 585:         function showError(error, sourceText) {
- 586:             errorPanel.classList.add('show');
- 587:             errorPanel.setAttribute('aria-hidden', 'false');
- 588:             
- 589:             // Parse error message for better display
- 590:             let message = error && error.message ? error.message : String(error);
- 591:             let locationText = '';
- 592: 
- 593:             const ffLineColMatch = message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
- 594:             if (ffLineColMatch) {
- 595:                 const line = Number(ffLineColMatch[1]);
- 596:                 const col = Number(ffLineColMatch[2]);
- 597:                 locationText = `Location: Line ${line}, Column ${col}`;
- 598:             } else {
- 599:                 const posMatch = message.match(/(?:at\s+)?position\s+(\d+)/i);
- 600:                 if (posMatch && typeof sourceText === 'string') {
- 601:                     const pos = Math.max(0, Math.min(sourceText.length, Number(posMatch[1])));
- 602:                     const lines = sourceText.substring(0, pos).split('\n');
- 603:                     const line = lines.length;
- 604:                     const col = lines[lines.length - 1].length + 1;
- 605:                     locationText = `Location: Line ${line}, Column ${col}`;
- 606:                 }
- 607:             }
- 608: 
- 609:             if (locationText && !message.includes(locationText)) {
- 610:                 message += `\n\n${locationText}`;
- 611:             }
- 612:             
- 613:             errorMessage.textContent = message;
- 614:             hideStats();
- 615:         }
- 616: 
- 617:         function hideError() {
- 618:             errorPanel.classList.remove('show');
- 619:             errorPanel.setAttribute('aria-hidden', 'true');
- 620:         }
- 621: 
- 622:         function processJSON() {
- 623:             const rawInput = inputText.value;
- 624: 
- 625:             if (rawInput.length > MAX_INPUT_CHARACTERS) {
- 626:                 outputText.value = '';
- 627:                 hideError();
- 628:                 hideStats();
- 629:                 updateStats();
- 630:                 showStatus('Input too large (max 5MB).', 'error');
- 631:                 return;
- 632:             }
- 633:             
- 634:             if (!rawInput.trim()) {
- 635:                 outputText.value = '';
- 636:                 hideError();
- 637:                 hideStats();
- 638:                 updateStats();
- 639:                 showStatus('Please enter some JSON to process', 'warning');
- 640:                 return;
- 641:             }
- 642: 
- 643:             hideError();
- 644:             
- 645:             try {
- 646:                 const startTime = performance.now();
- 647:                 const parseText = rawInput;
- 648:                 let result;
- 649:                 
- 650:                 switch (currentMode) {
- 651:                     case 'format':
- 652:                         result = formatJSON(parseText);
- 653:                         break;
- 654:                     case 'jsonl':
- 655:                         result = convertToJSONL(parseText);
- 656:                         break;
- 657:                     case 'validate':
- 658:                         result = validateJSON(parseText);
- 659:                         break;
- 660:                     default:
- 661:                         throw new Error(`Unknown mode: ${currentMode}`);
- 662:                 }
- 663:                 
- 664:                 const endTime = performance.now();
- 665:                 
- 666:                 outputText.value = result;
- 667:                 showStatus('Success!', 'success');
- 668:                 processingTime.textContent = `Processed in ${Math.round(endTime - startTime)}ms`;
- 669:                 updateStats();
- 670:                 
- 671:             } catch (error) {
- 672:                 console.error('Processing error:', error);
- 673:                 showError(error, rawInput);
- 674:                 outputText.value = '';
- 675:                 const errorMessageText = error && error.message ? error.message : String(error);
- 676:                 showStatus('Error: ' + errorMessageText, 'error');
- 677:                 processingTime.textContent = 'Processing failed';
- 678:             }
- 679:         }
- 680: 
- 681:         function loadExample() {
- 682:             inputText.value = JSON.stringify(exampleJSON, null, 2);
- 683:             updateStats();
- 684:             showStatus('Example loaded', 'success');
- 685:         }
- 686: 
- 687:         function clearAll() {
- 688:             inputText.value = '';
- 689:             outputText.value = '';
- 690:             hideError();
- 691:             hideStats();
- 692:             updateStats();
- 693:             showStatus('Cleared', 'success');
- 694:         }
- 695: 
- 696:         async function copyToClipboard() {
- 697:             const text = outputText.value;
- 698:             if (!text) {
- 699:                 showStatus('Nothing to copy', 'warning');
- 700:                 return;
- 701:             }
- 702: 
- 703:             try {
- 704:                 if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
- 705:                     await window.textUtilsClipboardWrite(text);
- 706:                     showStatus('Copied to clipboard!', 'success');
- 707:                     return;
- 708:                 }
- 709: 
- 710:                 outputText.focus();
- 711:                 outputText.select();
- 712:                 const copied = document.execCommand('copy');
- 713:                 showStatus(copied ? 'Copied to clipboard!' : 'Copy failed', copied ? 'success' : 'error');
- 714:             } catch {
- 715:                 showStatus('Copy failed', 'error');
- 716:             }
- 717:         }
- 718: 
- 719:         function showStatus(message, type = 'success') {
- 720:             statusMessage.textContent = message;
- 721:             statusMessage.className = type;
- 722:         }
- 723: 
- 724:         function updateStats() {
- 725:             const inputLength = inputText.value.length;
- 726:             const outputLength = outputText.value.length;
- 727:             const inputLines = inputLength === 0 ? 0 : inputText.value.split('\n').length;
- 728:             const outputLines = outputLength === 0 ? 0 : outputText.value.split('\n').length;
- 729:             
- 730:             inputStats.textContent = `${inputLength} chars, ${inputLines} lines`;
- 731:             outputStats.textContent = `${outputLength} chars, ${outputLines} lines`;
- 732:         }
- 733: 
- 734:         // Event Listeners
- 735:         processBtn.addEventListener('click', processJSON);
- 736:         copyBtn.addEventListener('click', copyToClipboard);
- 737:         clearBtn.addEventListener('click', clearAll);
- 738:         exampleBtn.addEventListener('click', loadExample);
- 739:         backBtn.addEventListener('click', () => window.location.href = 'index.html');
- 740: 
- 741:         inputText.addEventListener('input', updateStats);
- 742: 
- 743:         // Keyboard shortcuts
- 744:         inputText.addEventListener('keydown', (e) => {
- 745:             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
- 746:                 e.preventDefault();
- 747:                 processJSON();
- 748:             }
- 749:         });
- 750: 
- 751:         // Initialize
- 752:         updateStats();
- 753:         const initialTab = Array.from(modeTabs).find(tab => tab.dataset.mode === currentMode);
- 754:         if (initialTab) {
- 755:             setActiveTab(initialTab);
- 756:         }
- 757:         updateModeUI();
- 758:     </script>
- 759:     <footer class="site-footer">
- 760:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
- 761:     </footer>
- 762: </body>
- 763: </html>
+ 521:     <script src="js/theme.js"></script>
+ 522:     <script src="js/json-tool-page.js"></script>
+ 523:     <footer class="site-footer">
+ 524:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 525:     </footer>
+ 526: </body>
+ 527: </html>
+ 528: 
+ 529: 
 ```
 ----- END FILE: json-tool.html -----
 
@@ -1614,6 +1385,987 @@ Output file: `context/code-dump-json-tool.txt`
  160: </html>
 ```
 ----- END FILE: index.html -----
+
+----- BEGIN FILE: js/json-tool-page.js -----
+```javascript
+   1: 'use strict';
+   2: 
+   3: // DOM elements
+   4: const processBtn = document.getElementById('processBtn');
+   5: const processLabel = document.getElementById('processLabel');
+   6: const copyBtn = document.getElementById('copyOutput');
+   7: const clearBtn = document.getElementById('clearBtn');
+   8: const exampleBtn = document.getElementById('exampleBtn');
+   9: const backBtn = document.getElementById('backButton');
+  10: const modeTabs = document.querySelectorAll('.mode-tab');
+  11: const indentSelect = document.getElementById('indentSelect');
+  12: const sortKeysCheck = document.getElementById('sortKeysCheck');
+  13: const errorPanel = document.getElementById('errorPanel');
+  14: const errorTitleText = document.getElementById('errorTitleText');
+  15: const errorMessage = document.getElementById('errorMessage');
+  16: const statsPanel = document.getElementById('statsPanel');
+  17: const optionsPanel = document.getElementById('optionsPanel');
+  18: const queryPanel = document.getElementById('queryPanel');
+  19: const schemaPanel = document.getElementById('schemaPanel');
+  20: const jmespathQuery = document.getElementById('jmespathQuery');
+  21: const infoTitle = document.getElementById('infoTitle');
+  22: const infoText = document.getElementById('infoText');
+  23: const inputLabelText = document.getElementById('inputLabelText');
+  24: const outputLabel = document.getElementById('outputLabel');
+  25: const statusMessage = document.getElementById('statusMessage');
+  26: const processingTime = document.getElementById('processingTime');
+  27: const inputStats = document.getElementById('inputStats');
+  28: const outputStats = document.getElementById('outputStats');
+  29: const statObjects = document.getElementById('statObjects');
+  30: const statArrays = document.getElementById('statArrays');
+  31: const statKeys = document.getElementById('statKeys');
+  32: const statDepth = document.getElementById('statDepth');
+  33: const fileDropZone = document.getElementById('fileDropZone');
+  34: const chooseFileBtn = document.getElementById('chooseFileBtn');
+  35: const fileInput = document.getElementById('fileInput');
+  36: const fileMeta = document.getElementById('fileMeta');
+  37: const inputEditorHost = document.getElementById('inputEditor');
+  38: const outputEditorHost = document.getElementById('outputEditor');
+  39: const schemaEditorHost = document.getElementById('schemaEditor');
+  40: 
+  41: // State
+  42: let currentMode = 'format';
+  43: let inputEditor = null;
+  44: let outputEditor = null;
+  45: let schemaEditor = null;
+  46: let jsonWorker = null;
+  47: let workerJobCounter = 0;
+  48: let isProcessing = false;
+  49: let inputStatsRaf = 0;
+  50: let statsDebounceTimer = 0;
+  51: let latestStatsTicket = 0;
+  52: let activeFileLoadId = 0;
+  53: let themeObserver = null;
+  54: const pendingWorkerJobs = new Map();
+  55: 
+  56: const LARGE_FILE_THRESHOLD_BYTES = 5 * 1024 * 1024;
+  57: const STREAM_READ_YIELD_INTERVAL = 8;
+  58: const ANALYZE_DEBOUNCE_MS = 300;
+  59: const DEFAULT_FILE_META = 'Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.';
+  60: const WORKER_PATH = 'js/json-worker.js';
+  61: const ACE_BASE_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/';
+  62: 
+  63: const exampleJSON = {
+  64:     users: [
+  65:         { id: 1, name: 'Alice Johnson', email: 'alice@example.com', age: 28, active: true },
+  66:         { id: 2, name: 'Bob Smith', email: 'bob@example.com', age: 34, active: false },
+  67:         { id: 3, name: 'Carol White', email: 'carol@example.com', age: 31, active: true }
+  68:     ],
+  69:     metadata: {
+  70:         total: 3,
+  71:         page: 1,
+  72:         timestamp: '2024-01-15T10:30:00Z'
+  73:     }
+  74: };
+  75: 
+  76: const exampleJSONL = [
+  77:     '{"id":1,"name":"Alice Johnson","active":true}',
+  78:     '{"id":2,"name":"Bob Smith","active":false}',
+  79:     '{"id":3,"name":"Carol White","active":true}'
+  80: ].join('\n');
+  81: 
+  82: const exampleSchema = {
+  83:     type: 'object',
+  84:     required: ['users', 'metadata'],
+  85:     properties: {
+  86:         users: {
+  87:             type: 'array',
+  88:             items: {
+  89:                 type: 'object',
+  90:                 required: ['id', 'name', 'email', 'active'],
+  91:                 properties: {
+  92:                     id: { type: 'integer' },
+  93:                     name: { type: 'string' },
+  94:                     email: { type: 'string', format: 'email' },
+  95:                     age: { type: 'integer' },
+  96:                     active: { type: 'boolean' }
+  97:                 }
+  98:             }
+  99:         },
+ 100:         metadata: {
+ 101:             type: 'object',
+ 102:             required: ['total'],
+ 103:             properties: {
+ 104:                 total: { type: 'integer' },
+ 105:                 page: { type: 'integer' },
+ 106:                 timestamp: { type: 'string' }
+ 107:             }
+ 108:         }
+ 109:     }
+ 110: };
+ 111: 
+ 112: const modeInfo = {
+ 113:     format: {
+ 114:         title: 'JSON Formatting',
+ 115:         text: 'Format JSON with optional key sorting and optional JMESPath pre-filtering. Syntax parsing and structural analysis run in a background worker.',
+ 116:         inputLabel: 'Input JSON',
+ 117:         outputLabel: 'Formatted Output',
+ 118:         outputAceMode: 'ace/mode/json',
+ 119:         showOptions: true,
+ 120:         showQuery: true,
+ 121:         showSchema: false,
+ 122:         actionLabel: 'Format',
+ 123:         actionIcon: 'play_arrow'
+ 124:     },
+ 125:     jsonl: {
+ 126:         title: 'JSON to JSONL Conversion',
+ 127:         text: 'Convert JSON (typically arrays) to JSON Lines. Use a JMESPath query to pre-filter or extract a subset before conversion.',
+ 128:         inputLabel: 'Input JSON',
+ 129:         outputLabel: 'JSONL Output',
+ 130:         outputAceMode: 'ace/mode/json',
+ 131:         showOptions: false,
+ 132:         showQuery: true,
+ 133:         showSchema: false,
+ 134:         actionLabel: 'Convert',
+ 135:         actionIcon: 'play_arrow'
+ 136:     },
+ 137:     jsonlToJson: {
+ 138:         title: 'JSONL to JSON Conversion',
+ 139:         text: 'Parse JSON Lines (one JSON value per line), skip empty lines, and re-stringify as a valid JSON array. Large inputs are processed in a background worker.',
+ 140:         inputLabel: 'Input JSONL',
+ 141:         outputLabel: 'JSON Output',
+ 142:         outputAceMode: 'ace/mode/json',
+ 143:         showOptions: true,
+ 144:         showQuery: false,
+ 145:         showSchema: false,
+ 146:         actionLabel: 'Convert',
+ 147:         actionIcon: 'play_arrow'
+ 148:     },
+ 149:     validate: {
+ 150:         title: 'JSON Validation',
+ 151:         text: 'Validate JSON syntax with JSONLint for precise line/character errors. Optionally validate against a JSON Schema using Ajv.',
+ 152:         inputLabel: 'Input JSON',
+ 153:         outputLabel: 'Validation Result',
+ 154:         outputAceMode: 'ace/mode/text',
+ 155:         showOptions: false,
+ 156:         showQuery: false,
+ 157:         showSchema: true,
+ 158:         actionLabel: 'Validate',
+ 159:         actionIcon: 'check_circle'
+ 160:     }
+ 161: };
+ 162: 
+ 163: function initAceEditors() {
+ 164:     if (!window.ace) {
+ 165:         throw new Error('Ace Editor failed to load from CDN.');
+ 166:     }
+ 167: 
+ 168:     ace.config.set('basePath', ACE_BASE_PATH);
+ 169:     ace.config.set('modePath', ACE_BASE_PATH);
+ 170:     ace.config.set('themePath', ACE_BASE_PATH);
+ 171: 
+ 172:     inputEditor = ace.edit(inputEditorHost);
+ 173:     outputEditor = ace.edit(outputEditorHost);
+ 174:     schemaEditor = ace.edit(schemaEditorHost);
+ 175: 
+ 176:     configureEditor(inputEditor, { readOnly: false, mode: 'ace/mode/json' });
+ 177:     configureEditor(outputEditor, { readOnly: true, mode: 'ace/mode/json' });
+ 178:     outputEditor.setOptions({
+ 179:         highlightActiveLine: false,
+ 180:         highlightGutterLine: false
+ 181:     });
+ 182:     configureEditor(schemaEditor, { readOnly: false, mode: 'ace/mode/json' });
+ 183: 
+ 184:     inputEditor.commands.addCommand({
+ 185:         name: 'process-json-tool',
+ 186:         bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
+ 187:         exec: () => processJSON()
+ 188:     });
+ 189: }
+ 190: 
+ 191: function configureEditor(editor, options) {
+ 192:     editor.setOptions({
+ 193:         readOnly: Boolean(options.readOnly),
+ 194:         showPrintMargin: false,
+ 195:         useWorker: false,
+ 196:         wrap: true,
+ 197:         fontSize: '14px',
+ 198:         tabSize: 2,
+ 199:         useSoftTabs: true,
+ 200:         displayIndentGuides: true,
+ 201:         behavioursEnabled: true
+ 202:     });
+ 203:     editor.session.setMode(options.mode || 'ace/mode/json');
+ 204:     editor.session.setUseWorker(false);
+ 205:     editor.session.setUseWrapMode(true);
+ 206:     editor.session.setTabSize(2);
+ 207:     editor.session.setUseSoftTabs(true);
+ 208:     editor.renderer.setShowPrintMargin(false);
+ 209:     editor.renderer.setScrollMargin(8, 8, 8, 8);
+ 210: }
+ 211: function applyEditorTheme() {
+ 212:     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+ 213:     const aceTheme = isLight ? 'ace/theme/github' : 'ace/theme/monokai';
+ 214:     [inputEditor, outputEditor, schemaEditor].forEach(editor => {
+ 215:         if (editor) {
+ 216:             editor.setTheme(aceTheme);
+ 217:         }
+ 218:     });
+ 219: }
+ 220: 
+ 221: function setupThemeSync() {
+ 222:     applyEditorTheme();
+ 223: 
+ 224:     if (themeObserver) {
+ 225:         themeObserver.disconnect();
+ 226:     }
+ 227: 
+ 228:     themeObserver = new MutationObserver(mutations => {
+ 229:         for (const mutation of mutations) {
+ 230:             if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+ 231:                 applyEditorTheme();
+ 232:                 break;
+ 233:             }
+ 234:         }
+ 235:     });
+ 236: 
+ 237:     themeObserver.observe(document.documentElement, {
+ 238:         attributes: true,
+ 239:         attributeFilter: ['data-theme']
+ 240:     });
+ 241: }
+ 242: 
+ 243: function ensureWorker() {
+ 244:     if (jsonWorker) {
+ 245:         return jsonWorker;
+ 246:     }
+ 247: 
+ 248:     if (!window.Worker) {
+ 249:         throw new Error('Web Workers are not supported in this browser.');
+ 250:     }
+ 251: 
+ 252:     jsonWorker = new Worker(WORKER_PATH);
+ 253: 
+ 254:     jsonWorker.addEventListener('message', event => {
+ 255:         const data = event.data || {};
+ 256:         const pending = pendingWorkerJobs.get(data.jobId);
+ 257:         if (!pending) {
+ 258:             return;
+ 259:         }
+ 260: 
+ 261:         pendingWorkerJobs.delete(data.jobId);
+ 262:         if (data.ok) {
+ 263:             pending.resolve(data);
+ 264:         } else {
+ 265:             pending.reject(data);
+ 266:         }
+ 267:     });
+ 268: 
+ 269:     jsonWorker.addEventListener('error', event => {
+ 270:         console.error('JSON worker error:', event);
+ 271:         const fatalPayload = {
+ 272:             error: {
+ 273:                 errorType: 'processing',
+ 274:                 title: 'Worker Error',
+ 275:                 message: event.message || 'The background JSON worker failed.'
+ 276:             }
+ 277:         };
+ 278: 
+ 279:         for (const pending of pendingWorkerJobs.values()) {
+ 280:             pending.reject(fatalPayload);
+ 281:         }
+ 282:         pendingWorkerJobs.clear();
+ 283: 
+ 284:         try {
+ 285:             jsonWorker.terminate();
+ 286:         } catch (_) {
+ 287:             // Ignore terminate failures.
+ 288:         }
+ 289:         jsonWorker = null;
+ 290:     });
+ 291: 
+ 292:     return jsonWorker;
+ 293: }
+ 294: 
+ 295: function runWorkerJob(action, payload) {
+ 296:     const worker = ensureWorker();
+ 297:     return new Promise((resolve, reject) => {
+ 298:         const jobId = ++workerJobCounter;
+ 299:         pendingWorkerJobs.set(jobId, { resolve, reject });
+ 300:         worker.postMessage({ jobId, action, payload });
+ 301:     });
+ 302: }
+ 303: 
+ 304: function setActiveTab(activeTab) {
+ 305:     modeTabs.forEach(tab => {
+ 306:         const isActive = tab === activeTab;
+ 307:         tab.classList.toggle('active', isActive);
+ 308:         tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+ 309:         tab.setAttribute('tabindex', isActive ? '0' : '-1');
+ 310:     });
+ 311: }
+ 312: 
+ 313: function setOutputEditorMode(modePath) {
+ 314:     if (!outputEditor) {
+ 315:         return;
+ 316:     }
+ 317:     outputEditor.session.setMode(modePath || 'ace/mode/text');
+ 318:     outputEditor.session.setUseWorker(false);
+ 319: }
+ 320: 
+ 321: function updateModeUI() {
+ 322:     const info = modeInfo[currentMode];
+ 323:     if (!info) {
+ 324:         throw new Error(`Unknown mode: ${currentMode}`);
+ 325:     }
+ 326: 
+ 327:     infoTitle.textContent = info.title;
+ 328:     infoText.textContent = info.text;
+ 329:     inputLabelText.textContent = info.inputLabel;
+ 330:     outputLabel.textContent = info.outputLabel;
+ 331: 
+ 332:     optionsPanel.style.display = info.showOptions ? 'block' : 'none';
+ 333:     queryPanel.classList.toggle('show', info.showQuery);
+ 334:     schemaPanel.classList.toggle('show', info.showSchema);
+ 335: 
+ 336:     const processIcon = processBtn.querySelector('.material-icons');
+ 337:     if (processIcon) {
+ 338:         processIcon.textContent = info.actionIcon;
+ 339:     }
+ 340:     processLabel.textContent = info.actionLabel;
+ 341:     setOutputEditorMode(info.outputAceMode);
+ 342: 
+ 343:     hideError();
+ 344:     hideStats();
+ 345:     scheduleAsyncInputAnalysis();
+ 346: 
+ 347:     requestAnimationFrame(() => {
+ 348:         inputEditor.resize(true);
+ 349:         outputEditor.resize(true);
+ 350:         if (info.showSchema) {
+ 351:             schemaEditor.resize(true);
+ 352:         }
+ 353:     });
+ 354: }
+ 355: 
+ 356: function displayStats(stats) {
+ 357:     if (!stats) {
+ 358:         hideStats();
+ 359:         return;
+ 360:     }
+ 361: 
+ 362:     statObjects.textContent = Number.isFinite(stats.objects) ? stats.objects : 0;
+ 363:     statArrays.textContent = Number.isFinite(stats.arrays) ? stats.arrays : 0;
+ 364:     statKeys.textContent = Number.isFinite(stats.keys) ? stats.keys : 0;
+ 365:     statDepth.textContent = Number.isFinite(stats.maxDepth) ? stats.maxDepth : 0;
+ 366:     statsPanel.style.display = 'grid';
+ 367: }
+ 368: 
+ 369: function hideStats() {
+ 370:     statsPanel.style.display = 'none';
+ 371: }
+ 372: 
+ 373: function hideError() {
+ 374:     errorPanel.classList.remove('show');
+ 375:     errorPanel.setAttribute('aria-hidden', 'true');
+ 376:     errorTitleText.textContent = 'Syntax Error';
+ 377:     errorMessage.textContent = '';
+ 378: }
+ 379: 
+ 380: function getErrorTitle(error) {
+ 381:     switch (error && error.errorType) {
+ 382:         case 'schema':
+ 383:             return 'Schema Validation Failed';
+ 384:         case 'schemaSyntax':
+ 385:             return 'Schema Syntax Error';
+ 386:         case 'query':
+ 387:             return 'JMESPath Query Error';
+ 388:         case 'processing':
+ 389:             return 'Processing Error';
+ 390:         default:
+ 391:             return 'Syntax Error';
+ 392:     }
+ 393: }
+ 394: 
+ 395: function showErrorPanel(error) {
+ 396:     const normalized = error && typeof error === 'object'
+ 397:         ? error
+ 398:         : { message: String(error) };
+ 399: 
+ 400:     errorTitleText.textContent = normalized.title || getErrorTitle(normalized);
+ 401: 
+ 402:     const lines = [];
+ 403:     const message = normalized.message ? String(normalized.message) : 'An unknown error occurred.';
+ 404:     lines.push(message);
+ 405: 
+ 406:     if (normalized.line || normalized.column) {
+ 407:         const parts = [];
+ 408:         if (normalized.line) {
+ 409:             parts.push(`Line ${normalized.line}`);
+ 410:         }
+ 411:         if (normalized.column) {
+ 412:             parts.push(`Character ${normalized.column}`);
+ 413:         }
+ 414:         const hasLineInMessage = /line\s+\d+/i.test(message);
+ 415:         const hasColumnInMessage = /(?:column|character)\s+\d+/i.test(message);
+ 416:         const shouldAppendLocation = parts.length > 0
+ 417:             && (!hasLineInMessage || (normalized.column && !hasColumnInMessage));
+ 418:         if (shouldAppendLocation) {
+ 419:             lines.push(`Location: ${parts.join(', ')}`);
+ 420:         }
+ 421:     }
+ 422: 
+ 423:     if (normalized.source === 'schema') {
+ 424:         lines.push('Source: Schema input');
+ 425:     }
+ 426: 
+ 427:     errorMessage.textContent = lines.join('\n\n');
+ 428:     errorPanel.classList.add('show');
+ 429:     errorPanel.setAttribute('aria-hidden', 'false');
+ 430: }
+ 431: 
+ 432: function showStatus(message, type = 'success') {
+ 433:     statusMessage.textContent = message;
+ 434:     statusMessage.className = type;
+ 435: }
+ 436: function formatCounts(chars, lines) {
+ 437:     return `${chars} chars, ${lines} lines`;
+ 438: }
+ 439: 
+ 440: function updateInputStatsLabel(rawInput) {
+ 441:     const text = typeof rawInput === 'string' ? rawInput : inputEditor.getValue();
+ 442:     const lines = text.length === 0 ? 0 : inputEditor.session.getLength();
+ 443:     inputStats.textContent = formatCounts(text.length, lines);
+ 444: }
+ 445: 
+ 446: function updateOutputStatsLabel(rawOutput) {
+ 447:     const text = typeof rawOutput === 'string' ? rawOutput : outputEditor.getValue();
+ 448:     const lines = text.length === 0 ? 0 : outputEditor.session.getLength();
+ 449:     outputStats.textContent = formatCounts(text.length, lines);
+ 450: }
+ 451: 
+ 452: function queueInputStatsLabelUpdate() {
+ 453:     if (inputStatsRaf) {
+ 454:         return;
+ 455:     }
+ 456: 
+ 457:     inputStatsRaf = requestAnimationFrame(() => {
+ 458:         inputStatsRaf = 0;
+ 459:         updateInputStatsLabel();
+ 460:     });
+ 461: }
+ 462: 
+ 463: function setInputEditorValue(text) {
+ 464:     inputEditor.setValue(text || '', -1);
+ 465:     inputEditor.clearSelection();
+ 466:     queueInputStatsLabelUpdate();
+ 467:     scheduleAsyncInputAnalysis();
+ 468: }
+ 469: 
+ 470: function setOutputEditorValue(text, modePath) {
+ 471:     if (modePath) {
+ 472:         setOutputEditorMode(modePath);
+ 473:     }
+ 474:     outputEditor.setValue(text || '', -1);
+ 475:     outputEditor.clearSelection();
+ 476:     updateOutputStatsLabel(text || '');
+ 477: }
+ 478: 
+ 479: function setProcessingState(busy) {
+ 480:     isProcessing = Boolean(busy);
+ 481:     processBtn.disabled = isProcessing;
+ 482:     chooseFileBtn.disabled = isProcessing;
+ 483: 
+ 484:     modeTabs.forEach(tab => {
+ 485:         tab.disabled = isProcessing;
+ 486:     });
+ 487: 
+ 488:     fileDropZone.setAttribute('aria-disabled', isProcessing ? 'true' : 'false');
+ 489: }
+ 490: 
+ 491: function buildWorkerPayload(rawInput) {
+ 492:     return {
+ 493:         rawInput,
+ 494:         mode: currentMode,
+ 495:         options: {
+ 496:             indent: indentSelect.value,
+ 497:             sortKeys: Boolean(sortKeysCheck.checked),
+ 498:             query: jmespathQuery.value || '',
+ 499:             schemaText: schemaEditor.getValue()
+ 500:         }
+ 501:     };
+ 502: }
+ 503: 
+ 504: function safeFirstLine(text) {
+ 505:     return String(text || '').split(/\r?\n/, 1)[0] || 'Processing failed';
+ 506: }
+ 507: 
+ 508: async function processJSON() {
+ 509:     const rawInput = inputEditor.getValue();
+ 510: 
+ 511:     if (!rawInput.trim()) {
+ 512:         hideError();
+ 513:         setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 514:         hideStats();
+ 515:         showStatus('Please enter some JSON/JSONL to process.', 'warning');
+ 516:         processingTime.textContent = 'No operations yet';
+ 517:         return;
+ 518:     }
+ 519: 
+ 520:     hideError();
+ 521:     setProcessingState(true);
+ 522:     const startedAt = performance.now();
+ 523: 
+ 524:     try {
+ 525:         const response = await runWorkerJob('process', buildWorkerPayload(rawInput));
+ 526: 
+ 527:         if (response.stats) {
+ 528:             displayStats(response.stats);
+ 529:         } else {
+ 530:             hideStats();
+ 531:         }
+ 532: 
+ 533:         setOutputEditorValue(
+ 534:             response.resultText || '',
+ 535:             response.outputMode || modeInfo[currentMode].outputAceMode
+ 536:         );
+ 537: 
+ 538:         showStatus(response.message || 'Success!', 'success');
+ 539: 
+ 540:         const totalMs = Math.round(performance.now() - startedAt);
+ 541:         const workerMs = Number.isFinite(response.durationMs)
+ 542:             ? ` (worker ${Math.round(response.durationMs)}ms)`
+ 543:             : '';
+ 544:         processingTime.textContent = `Processed in ${totalMs}ms${workerMs}`;
+ 545:     } catch (failure) {
+ 546:         console.error('Processing error:', failure);
+ 547: 
+ 548:         const payload = failure && typeof failure === 'object' ? failure : {};
+ 549:         const error = payload.error || { message: String(failure), errorType: 'processing' };
+ 550: 
+ 551:         if (payload.stats) {
+ 552:             displayStats(payload.stats);
+ 553:         } else {
+ 554:             hideStats();
+ 555:         }
+ 556: 
+ 557:         if (typeof payload.validationReport === 'string') {
+ 558:             setOutputEditorValue(payload.validationReport, 'ace/mode/text');
+ 559:         } else {
+ 560:             setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 561:         }
+ 562: 
+ 563:         showErrorPanel(error);
+ 564:         showStatus(`Error: ${safeFirstLine(error.message)}`, 'error');
+ 565:         processingTime.textContent = `Processing failed after ${Math.round(performance.now() - startedAt)}ms`;
+ 566:     } finally {
+ 567:         setProcessingState(false);
+ 568:     }
+ 569: }
+ 570: 
+ 571: function buildExampleInputForMode(mode) {
+ 572:     return mode === 'jsonlToJson'
+ 573:         ? exampleJSONL
+ 574:         : JSON.stringify(exampleJSON, null, 2);
+ 575: }
+ 576: 
+ 577: function loadExample() {
+ 578:     hideError();
+ 579:     setInputEditorValue(buildExampleInputForMode(currentMode));
+ 580:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 581:     hideStats();
+ 582: 
+ 583:     if (currentMode === 'validate' && !schemaEditor.getValue().trim()) {
+ 584:         schemaEditor.setValue(JSON.stringify(exampleSchema, null, 2), -1);
+ 585:         schemaEditor.clearSelection();
+ 586:     }
+ 587: 
+ 588:     fileMeta.textContent = DEFAULT_FILE_META;
+ 589:     showStatus('Example loaded', 'success');
+ 590:     processingTime.textContent = 'Ready to process example';
+ 591: }
+ 592: 
+ 593: function clearAll() {
+ 594:     activeFileLoadId += 1;
+ 595:     latestStatsTicket += 1;
+ 596:     clearTimeout(statsDebounceTimer);
+ 597: 
+ 598:     hideError();
+ 599:     hideStats();
+ 600:     jmespathQuery.value = '';
+ 601:     schemaEditor.setValue('', -1);
+ 602:     schemaEditor.clearSelection();
+ 603:     setInputEditorValue('');
+ 604:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 605:     fileMeta.textContent = DEFAULT_FILE_META;
+ 606:     showStatus('Cleared', 'success');
+ 607:     processingTime.textContent = 'No operations yet';
+ 608: }
+ 609: 
+ 610: async function copyToClipboard() {
+ 611:     const text = outputEditor.getValue();
+ 612:     if (!text) {
+ 613:         showStatus('Nothing to copy', 'warning');
+ 614:         return;
+ 615:     }
+ 616: 
+ 617:     try {
+ 618:         if (typeof window.textUtilsClipboardWrite === 'function') {
+ 619:             await window.textUtilsClipboardWrite(text);
+ 620:         } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+ 621:             await navigator.clipboard.writeText(text);
+ 622:         } else {
+ 623:             throw new Error('Clipboard API unavailable');
+ 624:         }
+ 625:         showStatus('Copied to clipboard!', 'success');
+ 626:     } catch {
+ 627:         showStatus('Copy failed', 'error');
+ 628:     }
+ 629: }
+ 630: 
+ 631: function scheduleAsyncInputAnalysis() {
+ 632:     if (!inputEditor) {
+ 633:         return;
+ 634:     }
+ 635: 
+ 636:     const rawInput = inputEditor.getValue();
+ 637:     if (!rawInput.trim()) {
+ 638:         hideStats();
+ 639:         return;
+ 640:     }
+ 641: 
+ 642:     latestStatsTicket += 1;
+ 643:     const ticket = latestStatsTicket;
+ 644:     clearTimeout(statsDebounceTimer);
+ 645: 
+ 646:     statsDebounceTimer = window.setTimeout(async () => {
+ 647:         try {
+ 648:             const response = await runWorkerJob('analyzeInput', {
+ 649:                 rawInput: inputEditor.getValue(),
+ 650:                 mode: currentMode
+ 651:             });
+ 652: 
+ 653:             if (ticket !== latestStatsTicket) {
+ 654:                 return;
+ 655:             }
+ 656: 
+ 657:             if (response.valid && response.stats) {
+ 658:                 displayStats(response.stats);
+ 659:             } else if (!isProcessing) {
+ 660:                 hideStats();
+ 661:             }
+ 662:         } catch {
+ 663:             if (ticket === latestStatsTicket && !isProcessing) {
+ 664:                 hideStats();
+ 665:             }
+ 666:         }
+ 667:     }, ANALYZE_DEBOUNCE_MS);
+ 668: }
+ 669: function formatBytes(bytes) {
+ 670:     if (!Number.isFinite(bytes) || bytes < 0) {
+ 671:         return '0 B';
+ 672:     }
+ 673: 
+ 674:     const units = ['B', 'KB', 'MB', 'GB'];
+ 675:     let value = bytes;
+ 676:     let unitIndex = 0;
+ 677:     while (value >= 1024 && unitIndex < units.length - 1) {
+ 678:         value /= 1024;
+ 679:         unitIndex += 1;
+ 680:     }
+ 681:     return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`;
+ 682: }
+ 683: 
+ 684: function shouldUseStreamRead(file) {
+ 685:     return Boolean(
+ 686:         file
+ 687:         && typeof file.stream === 'function'
+ 688:         && (file.size >= LARGE_FILE_THRESHOLD_BYTES
+ 689:             || currentMode === 'jsonl'
+ 690:             || currentMode === 'jsonlToJson')
+ 691:     );
+ 692: }
+ 693: 
+ 694: function waitForNextTick() {
+ 695:     return new Promise(resolve => setTimeout(resolve, 0));
+ 696: }
+ 697: 
+ 698: async function readFileAsTextStream(file, loadId) {
+ 699:     const reader = file.stream().getReader();
+ 700:     const decoder = new TextDecoder();
+ 701:     const chunks = [];
+ 702:     let bytesRead = 0;
+ 703:     let chunkCount = 0;
+ 704: 
+ 705:     try {
+ 706:         while (true) {
+ 707:             if (loadId !== activeFileLoadId) {
+ 708:                 try {
+ 709:                     await reader.cancel();
+ 710:                 } catch (_) {
+ 711:                     // Ignore cancel failures when a newer load starts.
+ 712:                 }
+ 713:                 throw new Error('File load superseded.');
+ 714:             }
+ 715: 
+ 716:             const { done, value } = await reader.read();
+ 717:             if (done) {
+ 718:                 break;
+ 719:             }
+ 720: 
+ 721:             bytesRead += value.byteLength;
+ 722:             chunks.push(decoder.decode(value, { stream: true }));
+ 723:             fileMeta.textContent = `${file.name} • ${formatBytes(bytesRead)} / ${formatBytes(file.size)} (streaming)`;
+ 724: 
+ 725:             chunkCount += 1;
+ 726:             if (chunkCount % STREAM_READ_YIELD_INTERVAL === 0) {
+ 727:                 await waitForNextTick();
+ 728:             }
+ 729:         }
+ 730: 
+ 731:         chunks.push(decoder.decode());
+ 732:         return chunks.join('');
+ 733:     } finally {
+ 734:         try {
+ 735:             reader.releaseLock();
+ 736:         } catch (_) {
+ 737:             // Ignore release failures.
+ 738:         }
+ 739:     }
+ 740: }
+ 741: 
+ 742: async function readFileAsText(file, loadId) {
+ 743:     if (shouldUseStreamRead(file)) {
+ 744:         return readFileAsTextStream(file, loadId);
+ 745:     }
+ 746: 
+ 747:     return file.text();
+ 748: }
+ 749: 
+ 750: async function loadFileIntoEditor(file) {
+ 751:     if (!file) {
+ 752:         return;
+ 753:     }
+ 754: 
+ 755:     if (isProcessing) {
+ 756:         showStatus('Please wait for the current operation to finish before loading a file.', 'warning');
+ 757:         return;
+ 758:     }
+ 759: 
+ 760:     const loadId = ++activeFileLoadId;
+ 761:     hideError();
+ 762:     showStatus(`Loading ${file.name}...`, 'success');
+ 763:     processingTime.textContent = 'Loading file from disk...';
+ 764:     fileMeta.textContent = `${file.name} • ${formatBytes(file.size)}`;
+ 765: 
+ 766:     try {
+ 767:         const rawText = await readFileAsText(file, loadId);
+ 768:         if (loadId !== activeFileLoadId) {
+ 769:             return;
+ 770:         }
+ 771: 
+ 772:         setInputEditorValue(rawText);
+ 773:         setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 774:         hideError();
+ 775: 
+ 776:         fileMeta.textContent = `${file.name} • ${formatBytes(file.size)} • loaded`;
+ 777:         processingTime.textContent = `Loaded ${formatBytes(file.size)} from disk`;
+ 778: 
+ 779:         const largeHint = rawText.length >= LARGE_FILE_THRESHOLD_BYTES
+ 780:             ? ' Large input loaded; processing will run in the background worker.'
+ 781:             : '';
+ 782:         showStatus(`Loaded ${file.name}.${largeHint}`, 'success');
+ 783:     } catch (error) {
+ 784:         if (String(error && error.message).includes('superseded')) {
+ 785:             return;
+ 786:         }
+ 787: 
+ 788:         console.error('File load error:', error);
+ 789:         const message = error && error.message ? error.message : String(error);
+ 790:         showErrorPanel({
+ 791:             errorType: 'processing',
+ 792:             title: 'File Load Error',
+ 793:             message
+ 794:         });
+ 795:         showStatus(`Error: ${safeFirstLine(message)}`, 'error');
+ 796:         processingTime.textContent = 'File load failed';
+ 797:     }
+ 798: }
+ 799: 
+ 800: function handleModeTabClick(tab) {
+ 801:     if (isProcessing) {
+ 802:         return;
+ 803:     }
+ 804:     setActiveTab(tab);
+ 805:     currentMode = tab.dataset.mode;
+ 806:     updateModeUI();
+ 807: }
+ 808: 
+ 809: function setupModeTabs() {
+ 810:     modeTabs.forEach(tab => {
+ 811:         tab.addEventListener('click', () => handleModeTabClick(tab));
+ 812:     });
+ 813: 
+ 814:     modeTabs.forEach((tab, index) => {
+ 815:         tab.addEventListener('keydown', event => {
+ 816:             if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+ 817:                 return;
+ 818:             }
+ 819: 
+ 820:             event.preventDefault();
+ 821:             let nextIndex = index;
+ 822: 
+ 823:             if (event.key === 'ArrowRight') {
+ 824:                 nextIndex = (index + 1) % modeTabs.length;
+ 825:             } else if (event.key === 'ArrowLeft') {
+ 826:                 nextIndex = (index - 1 + modeTabs.length) % modeTabs.length;
+ 827:             } else if (event.key === 'Home') {
+ 828:                 nextIndex = 0;
+ 829:             } else if (event.key === 'End') {
+ 830:                 nextIndex = modeTabs.length - 1;
+ 831:             }
+ 832: 
+ 833:             const nextTab = modeTabs[nextIndex];
+ 834:             nextTab.focus();
+ 835:             nextTab.click();
+ 836:         });
+ 837:     });
+ 838: }
+ 839: 
+ 840: function setupFileDropZone() {
+ 841:     function preventDefaults(event) {
+ 842:         event.preventDefault();
+ 843:         event.stopPropagation();
+ 844:     }
+ 845: 
+ 846:     ['dragenter', 'dragover'].forEach(eventName => {
+ 847:         fileDropZone.addEventListener(eventName, event => {
+ 848:             preventDefaults(event);
+ 849:             if (!isProcessing) {
+ 850:                 fileDropZone.classList.add('drag-active');
+ 851:             }
+ 852:         });
+ 853:     });
+ 854: 
+ 855:     ['dragleave', 'drop'].forEach(eventName => {
+ 856:         fileDropZone.addEventListener(eventName, event => {
+ 857:             preventDefaults(event);
+ 858:             fileDropZone.classList.remove('drag-active');
+ 859:         });
+ 860:     });
+ 861: 
+ 862:     fileDropZone.addEventListener('drop', event => {
+ 863:         if (isProcessing) {
+ 864:             return;
+ 865:         }
+ 866:         const files = event.dataTransfer && event.dataTransfer.files;
+ 867:         if (files && files.length > 0) {
+ 868:             loadFileIntoEditor(files[0]);
+ 869:         }
+ 870:     });
+ 871:     fileDropZone.addEventListener('click', event => {
+ 872:         if (isProcessing) {
+ 873:             return;
+ 874:         }
+ 875:         if (event.target.closest('#chooseFileBtn')) {
+ 876:             return;
+ 877:         }
+ 878:         fileInput.click();
+ 879:     });
+ 880: 
+ 881:     fileDropZone.addEventListener('keydown', event => {
+ 882:         if (isProcessing) {
+ 883:             return;
+ 884:         }
+ 885:         if (event.key === 'Enter' || event.key === ' ') {
+ 886:             event.preventDefault();
+ 887:             fileInput.click();
+ 888:         }
+ 889:     });
+ 890: 
+ 891:     chooseFileBtn.addEventListener('click', event => {
+ 892:         event.stopPropagation();
+ 893:         if (!isProcessing) {
+ 894:             fileInput.click();
+ 895:         }
+ 896:     });
+ 897: 
+ 898:     fileInput.addEventListener('change', () => {
+ 899:         const file = fileInput.files && fileInput.files[0];
+ 900:         if (file) {
+ 901:             loadFileIntoEditor(file);
+ 902:         }
+ 903:         fileInput.value = '';
+ 904:     });
+ 905: }
+ 906: 
+ 907: function setupEventListeners() {
+ 908:     processBtn.addEventListener('click', processJSON);
+ 909:     copyBtn.addEventListener('click', copyToClipboard);
+ 910:     clearBtn.addEventListener('click', clearAll);
+ 911:     exampleBtn.addEventListener('click', loadExample);
+ 912:     backBtn.addEventListener('click', () => {
+ 913:         window.location.href = 'index.html';
+ 914:     });
+ 915: 
+ 916:     jmespathQuery.addEventListener('keydown', event => {
+ 917:         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+ 918:             event.preventDefault();
+ 919:             processJSON();
+ 920:         }
+ 921:     });
+ 922: 
+ 923:     inputEditor.session.on('change', () => {
+ 924:         queueInputStatsLabelUpdate();
+ 925:         scheduleAsyncInputAnalysis();
+ 926:     });
+ 927: 
+ 928:     inputEditor.on('paste', pastedText => {
+ 929:         if (typeof pastedText === 'string' && pastedText.length >= LARGE_FILE_THRESHOLD_BYTES) {
+ 930:             showStatus('Large paste detected. Parsing and formatting will run in a background worker.', 'warning');
+ 931:         }
+ 932:     });
+ 933: 
+ 934:     window.addEventListener('beforeunload', () => {
+ 935:         if (jsonWorker) {
+ 936:             try {
+ 937:                 jsonWorker.terminate();
+ 938:             } catch (_) {
+ 939:                 // Ignore terminate failures.
+ 940:             }
+ 941:         }
+ 942: 
+ 943:         if (themeObserver) {
+ 944:             themeObserver.disconnect();
+ 945:         }
+ 946:     });
+ 947: }
+ 948: 
+ 949: function initialize() {
+ 950:     initAceEditors();
+ 951:     setupThemeSync();
+ 952:     setupModeTabs();
+ 953:     setupFileDropZone();
+ 954:     setupEventListeners();
+ 955: 
+ 956:     const initialTab = Array.from(modeTabs).find(tab => tab.dataset.mode === currentMode);
+ 957:     if (initialTab) {
+ 958:         setActiveTab(initialTab);
+ 959:     }
+ 960: 
+ 961:     updateInputStatsLabel('');
+ 962:     updateOutputStatsLabel('');
+ 963:     fileMeta.textContent = DEFAULT_FILE_META;
+ 964:     updateModeUI();
+ 965:     setOutputEditorValue('', modeInfo[currentMode].outputAceMode);
+ 966: 
+ 967:     // Warm up the worker so the first process call has less startup overhead.
+ 968:     try {
+ 969:         ensureWorker();
+ 970:     } catch (error) {
+ 971:         console.error(error);
+ 972:         showStatus('Worker initialization failed. Processing may not be available.', 'error');
+ 973:     }
+ 974: }
+ 975: 
+ 976: initialize();
+```
+----- END FILE: js/json-tool-page.js -----
 
 ----- BEGIN FILE: js/theme.js -----
 ```javascript
@@ -4060,21 +4812,21 @@ Output file: `context/code-dump-json-tool.txt`
 ```
 ----- END EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
 
------ BEGIN EXCERPT: README.md | Section: Helper Scripts (lines 95-106) -----
+----- BEGIN EXCERPT: README.md | Section: Helper Scripts (lines 110-121) -----
 ```text
-  95: ## Helper Scripts
-  96: 
-  97: The repo includes maintenance scripts for targeted context/code dumps:
-  98: 
-  99: - `scripts/code-dump-tool.py` (generic: any tool page via `--tool`)
- 100: - `scripts/code-dump-case-converter.py` (wrapper for Case Converter)
- 101: - `scripts/code-dump-color-chooser.py` (wrapper for Color Chooser)
- 102: - `scripts/code-dump-json-tool.py` (wrapper for JSON Tool)
- 103: - `scripts/code-dump-case-converter.ps1` (legacy PowerShell workflow)
- 104: 
- 105: Outputs are written to the `context/` folder by default.
+ 110: ## Helper Scripts
+ 111: 
+ 112: The repo includes maintenance scripts for targeted context/code dumps:
+ 113: 
+ 114: - `scripts/code-dump-tool.py` (generic: any tool page via `--tool`)
+ 115: - `scripts/code-dump-case-converter.py` (wrapper for Case Converter)
+ 116: - `scripts/code-dump-color-chooser.py` (wrapper for Color Chooser)
+ 117: - `scripts/code-dump-json-tool.py` (wrapper for JSON Tool)
+ 118: - `scripts/code-dump-case-converter.ps1` (legacy PowerShell workflow)
+ 119: 
+ 120: Outputs are written to the `context/` folder by default.
 ```
------ END EXCERPT: README.md | Section: Helper Scripts (lines 95-106) -----
+----- END EXCERPT: README.md | Section: Helper Scripts (lines 110-121) -----
 
 ----- BEGIN EXCERPT: TROUBLESHOOTING.md | Section: 1. Complete Tools Array (lines 34-74) -----
 ```text
