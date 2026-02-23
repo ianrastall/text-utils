@@ -13,7 +13,7 @@ const libraryStatus = {
     jmespath: false
 };
 
-const MAX_RECURSION_DEPTH = 1000;
+const MAX_RECURSION_DEPTH = 100;
 
 safeImport('jsonlint', CDN_URLS.jsonlint);
 safeImport('ajv', CDN_URLS.ajv);
@@ -155,12 +155,15 @@ function processJsonToJsonlMode(rawInput, options) {
 
     const stats = analyzeJSON(value);
     const conversion = convertJsonToJsonl(value, { allowSingleValue: hasQuery });
+    const querySingleValueWarning = hasQuery && conversion.singleValueOutput
+        ? ' Query returned a single value; output contains one JSONL line.'
+        : '';
 
     return {
         resultText: conversion.text,
         outputMode: 'ace/mode/json',
         stats,
-        message: `Converted ${conversion.count} record(s) to JSONL.`
+        message: `Converted ${conversion.count} record(s) to JSONL.${querySingleValueWarning}`
     };
 }
 
@@ -308,7 +311,8 @@ function convertJsonToJsonl(value, options) {
     if (Array.isArray(value)) {
         return {
             text: value.map(item => stringifyLine(item)).join('\n'),
-            count: value.length
+            count: value.length,
+            singleValueOutput: false
         };
     }
 
@@ -321,7 +325,8 @@ function convertJsonToJsonl(value, options) {
 
     return {
         text: stringifyLine(value),
-        count: 1
+        count: 1,
+        singleValueOutput: true
     };
 }
 

@@ -59,8 +59,9 @@ const JSONL_STREAM_THRESHOLD_BYTES = 100 * 1024;
 const STREAM_READ_YIELD_INTERVAL = 8;
 const ANALYZE_DEBOUNCE_MS = 300;
 const DEFAULT_FILE_META = 'Supports `.json`, `.jsonl`, `.ndjson`, and plain text files.';
-const WORKER_PATH = 'js/json-worker.js';
+const WORKER_PATH = '/js/json-worker.js';
 const ACE_BASE_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/';
+const STREAM_PROGRESS_UPDATE_INTERVAL_MS = 100;
 
 const exampleJSON = {
     users: [
@@ -460,7 +461,9 @@ function updateInputStatsLabel(rawInput) {
 
 function updateOutputStatsLabel(rawOutput) {
     const text = typeof rawOutput === 'string' ? rawOutput : outputEditor.getValue();
-    const lines = text.length === 0 ? 0 : outputEditor.session.getLength();
+    const lines = text.length === 0
+        ? 0
+        : (typeof rawOutput === 'string' ? text.split(/\r?\n/).length : outputEditor.session.getLength());
     outputStats.textContent = formatCounts(text.length, lines);
 }
 
@@ -499,8 +502,6 @@ function setProcessingState(busy) {
     modeTabs.forEach(tab => {
         tab.disabled = isProcessing;
     });
-
-    fileDropZone.setAttribute('aria-disabled', isProcessing ? 'true' : 'false');
 }
 
 function buildWorkerPayload(rawInput) {
@@ -716,6 +717,7 @@ async function readFileAsTextStream(file, loadId) {
     const chunks = [];
     let bytesRead = 0;
     let chunkCount = 0;
+    let lastProgressUpdateAt = 0;
 
     try {
         while (true) {
@@ -735,7 +737,12 @@ async function readFileAsTextStream(file, loadId) {
 
             bytesRead += value.byteLength;
             chunks.push(decoder.decode(value, { stream: true }));
-            fileMeta.textContent = `${file.name} • ${formatBytes(bytesRead)} / ${formatBytes(file.size)} (streaming)`;
+
+            const now = Date.now();
+            if (now - lastProgressUpdateAt >= STREAM_PROGRESS_UPDATE_INTERVAL_MS) {
+                fileMeta.textContent = `${file.name} • ${formatBytes(bytesRead)} / ${formatBytes(file.size)} (streaming)`;
+                lastProgressUpdateAt = now;
+            }
 
             chunkCount += 1;
             if (chunkCount % STREAM_READ_YIELD_INTERVAL === 0) {
@@ -893,16 +900,6 @@ function setupFileDropZone() {
         fileInput.click();
     });
 
-    fileDropZone.addEventListener('keydown', event => {
-        if (isProcessing) {
-            return;
-        }
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            fileInput.click();
-        }
-    });
-
     chooseFileBtn.addEventListener('click', event => {
         event.stopPropagation();
         if (!isProcessing) {
@@ -965,7 +962,27 @@ function setupEventListeners() {
 }
 
 function initialize() {
-    initAceEditors();
+    try {
+        initAceEditors();
+    } catch (error) {
+        console.error('Ace editor initialization failed:', error);
+        hideStats();
+        showErrorPanel({
+            errorType: 'processing',
+            title: 'Editor Load Error',
+            message: 'The Ace editor failed to load from the CDN. Reload the page and check your network connection or content blocker settings.'
+        });
+        showStatus('Editor failed to load. Reload and check your network/CDN access.', 'error');
+        processingTime.textContent = 'Editor unavailable';
+        fileMeta.textContent = DEFAULT_FILE_META;
+        processBtn.disabled = true;
+        copyBtn.disabled = true;
+        clearBtn.disabled = true;
+        exampleBtn.disabled = true;
+        chooseFileBtn.disabled = true;
+        return;
+    }
+
     setupThemeSync();
     setupModeTabs();
     setupFileDropZone();

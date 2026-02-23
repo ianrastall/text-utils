@@ -229,8 +229,7 @@
         }
 
         .file-drop-zone:hover,
-        .file-drop-zone.drag-active,
-        .file-drop-zone:focus-visible {
+        .file-drop-zone.drag-active {
             border-color: var(--accent);
             background: rgba(var(--accent-rgb), 0.08);
             outline: none;
@@ -490,9 +489,6 @@
                         <div
                             id="fileDropZone"
                             class="file-drop-zone"
-                            tabindex="0"
-                            role="button"
-                            aria-label="Drag and drop a JSON or JSONL file, or press Enter to choose a file"
                         >
                             <div class="file-drop-main">
                                 <span class="material-icons" aria-hidden="true">upload_file</span>
