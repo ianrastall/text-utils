@@ -175,9 +175,10 @@
                                         <option value="japanese">Japanese</option>
                                         <option value="persian">Persian</option>
                                         <option value="roc">Minguo (ROC)</option>
-                                        <option value="badi">Baha'i</option>
+                                        <option value="badi">Baha'i (approx, experimental)</option>
                                         <option value="indian">Indian (National)</option>
                                     </select>
+                                    <p class="small-note">Some calendars depend on browser Intl support and may fall back to Gregorian. Baha'i output is approximate.</p>
                                 </div>
                                 <div class="option-group">
                                     <label for="timeFormatSelect">Time Format</label>
@@ -188,7 +189,7 @@
                                         <option value="rfc">RFC 2822</option>
                                         <option value="unix">Unix Timestamp</option>
                                         <option value="utc">UTC (Zulu)</option>
-                                        <option value="julian">Julian Date (astronomy)</option>
+                                        <option value="julian">Julian Date (instant)</option>
                                     </select>
                                 </div>
                                 <div class="option-group">
@@ -223,7 +224,7 @@
                                 <div class="option-group">
                                     <label for="customDateTime">Custom Date/Time (optional)</label>
                                     <input type="datetime-local" id="customDateTime">
-                                    <p class="small-note">If blank, the current moment is used. Entered time is interpreted as your browser's local time.</p>
+                                    <p class="small-note">If blank, the current moment is used. Entered time is interpreted as your browser's local time; the Time Zone setting controls how that moment is displayed.</p>
                                 </div>
                             </div>
                             <div class="btn-bar" style="margin-top:0.75rem;">
@@ -267,6 +268,9 @@
             const supportedCalendars = typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function'
                 ? Intl.supportedValuesOf('calendar')
                 : [];
+            const hasCalendarSupportList = Array.isArray(supportedCalendars) && supportedCalendars.length > 0;
+            const BADI_APPROX_YEAR_MIN = 1900;
+            const BADI_APPROX_YEAR_MAX = 2100;
 
             const setStatus = (msg, type = 'success') => {
                 dom.status.textContent = msg;
@@ -274,7 +278,7 @@
             };
 
             const toJulianDate = (date) => {
-                // Algorithm for Julian Date from UTC
+                // Julian Date for the exact UTC instant represented by `date`
                 const t = date.getTime(); // ms since epoch UTC
                 return t / 86400000 + 2440587.5;
             };
@@ -409,8 +413,8 @@
 
             const render = () => {
                 if (typeof Intl === 'undefined' || !Intl.DateTimeFormat) {
-                    dom.outputBlock.textContent = 'Your browser does not support internationalization features required for this tool.';
-                    setStatus('Browser not supported', 'error');
+                    dom.outputBlock.textContent = 'Your browser does not support the internationalization features required for this tool. Try a modern browser such as Firefox, Chrome, or Edge (some in-app mobile browsers may not work).';
+                    setStatus('Intl features unavailable in this browser', 'error');
                     dom.toolStats.textContent = 'Intl.DateTimeFormat unavailable';
                     return;
                 }
@@ -426,7 +430,7 @@
 
                 let displayCalendar = effectiveCalendar;
                 let fallbackUsed = false;
-                if (!useBadi && supportedCalendars.length && !supportedCalendars.includes(effectiveCalendar)) {
+                if (!useBadi && hasCalendarSupportList && !supportedCalendars.includes(effectiveCalendar)) {
                     displayCalendar = 'gregory';
                     fallbackUsed = true;
                 }
@@ -436,35 +440,54 @@
                     formats = buildFormats(zonedDate, { calendar: displayCalendar, timeZone, timeFormat });
                     setStatus(
                         useBadi
-                            ? 'Badíʿ calendar (approximate) shown with Gregorian reference.'
-                            : (fallbackUsed ? 'Calendar not supported; showing Gregorian equivalent.' : 'Updated.'),
+                            ? 'Badíʿ values are custom-calculated and approximate; browser date formatting uses Gregorian.'
+                            : (fallbackUsed ? 'Your browser cannot format this calendar. Displaying Gregorian dates.' : 'Updated.'),
                         useBadi ? 'info' : (fallbackUsed ? 'warning' : 'success')
                     );
                 } catch (err) {
+                    console.error('Date/Time Info format fallback:', err);
                     formats = buildFormats(zonedDate, { calendar: 'gregory', timeZone, timeFormat });
                     displayCalendar = 'gregory';
                     fallbackUsed = true;
-                    setStatus('Calendar not supported; showing Gregorian equivalent.', 'warning');
+                    const isLikelyIntlRangeError = err instanceof RangeError;
+                    setStatus(
+                        isLikelyIntlRangeError
+                            ? 'Browser formatting for this calendar is unavailable. Showing Gregorian dates.'
+                            : 'Unexpected formatting error. Showing Gregorian dates.',
+                        isLikelyIntlRangeError ? 'warning' : 'error'
+                    );
                 }
 
                 const { parts, tz } = formats;
                 const lines = [
                     `Calendar: ${calendar}${fallbackUsed && !useBadi ? ' (not supported; showing Gregorian)' : ''}`,
-                    `Time Zone: ${timeZone === 'local' ? `${tz} (auto)` : tz}`,
+                    `Time Zone: ${timeZone === 'local' ? `${tz} (auto from your browser)` : tz}`,
                     `Date (long): ${parts.dateOnly}`,
                     `Time (${timeFormat}): ${parts[timeFormat] ?? parts['24h']}`,
                     `ISO 8601: ${parts.iso}`,
                     `RFC 2822: ${parts.rfc}`,
                     `Unix Timestamp: ${parts.unix}`,
-                    `Julian Date: ${parts.julian}`
+                    `Julian Date (instant): ${parts.julian}`
                 ];
 
                 if (useBadi) {
-                    const badi = badiFromGregorian(dtInput);
-                    lines.push(
-                        `Badíʿ (approx): Year ${badi.yearBE} B.E., ${badi.label}`,
-                        `Intercalary days this year: ${badi.ayyamiHaDays}`
-                    );
+                    const gYear = dtInput.getUTCFullYear();
+                    const isOutsideApproxRange = gYear < BADI_APPROX_YEAR_MIN || gYear > BADI_APPROX_YEAR_MAX;
+                    try {
+                        const badi = badiFromGregorian(dtInput);
+                        lines.push(
+                            `Badíʿ (approx): Year ${badi.yearBE} B.E., ${badi.label}`,
+                            `Intercalary days this year: ${badi.ayyamiHaDays}`
+                        );
+                        if (isOutsideApproxRange) {
+                            lines.push(`Badíʿ note: Approximation is least reliable outside Gregorian years ${BADI_APPROX_YEAR_MIN}-${BADI_APPROX_YEAR_MAX}.`);
+                            setStatus('Badíʿ values are highly approximate outside the tested year range.', 'warning');
+                        }
+                    } catch (err) {
+                        console.error('Date/Time Info Badíʿ calculation error:', err);
+                        lines.push('Badíʿ calendar: unavailable due to a calculation error.');
+                        setStatus('Badíʿ calculation error; Gregorian formatting still shown.', 'warning');
+                    }
                 }
 
                 dom.outputBlock.textContent = lines.join('\n');
@@ -497,9 +520,12 @@
                     textarea.style.opacity = '0';
                     document.body.appendChild(textarea);
                     textarea.select();
-                    const ok = document.execCommand('copy');
+                    const ok = typeof document.execCommand === 'function' && document.execCommand('copy');
                     document.body.removeChild(textarea);
-                    setStatus(ok ? 'Copied (fallback).' : 'Copy failed.', ok ? 'success' : 'error');
+                    setStatus(
+                        ok ? 'Copied (legacy fallback).' : 'Copy not supported in this browser. Select the output and press Ctrl+C / Cmd+C.',
+                        ok ? 'success' : 'warning'
+                    );
                 } catch (err) {
                     const message = err && err.message ? err.message : 'Unknown error';
                     setStatus(`Copy failed: ${message}`, 'error');
@@ -536,7 +562,13 @@
                 dom.copyBtn.addEventListener('click', copyOutput);
                 dom.refreshBtn.addEventListener('click', render);
                 dom.useNowBtn.addEventListener('click', useNow);
-                dom.backButton.addEventListener('click', () => window.location.href = 'index.html');
+                dom.backButton.addEventListener('click', () => {
+                    if (window.history.length > 1) {
+                        window.history.back();
+                        return;
+                    }
+                    window.location.href = 'index.html';
+                });
                 render();
             };
 
