@@ -1,0 +1,2413 @@
+# LLM Context Pack: Font Awesome Chooser
+
+This generated file is designed as a context bundle for LLM prompts.
+It contains full source text for files directly associated with the tool, plus extracted sections from broader docs that reference the tool.
+Every included block is wrapped with explicit BEGIN/END markers for reliable chunking.
+
+Generated: 2026-02-23 23:49:03 UTC
+Repository: `D:\GitHub\text-utils`
+Tool slug: `font-awesome-chooser`
+Tool page: `font-awesome-chooser.html`
+Output file: `context/code-dump-font-awesome-chooser.txt`
+
+## Discovery Summary
+- Full files included: 6
+- Direct local dependencies: 4
+- Incoming code references: 2
+- Direct tool docs (full): 0
+- Cross-file text excerpts: 4
+- External dependencies in tool page: 5
+
+## Included Full Files
+- `font-awesome-chooser.html`
+- `css/style.css`
+- `index.html`
+- `js/font-awesome-data.js`
+- `js/theme.js`
+- `sitemap.xml`
+
+## External Dependencies
+- `https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css`
+- `https://chessnerd.net`
+- `https://fonts.googleapis.com/icon?family=Material+Icons`
+- `https://github.com/ianrastall/text-utils`
+- `https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB`
+
+## Full File Dumps
+
+----- BEGIN FILE: font-awesome-chooser.html -----
+```html
+   1: <!DOCTYPE html>
+   2: 
+   3: <html lang="en">
+   4: 
+   5: <head>
+   6: <!-- Google tag gtag.js -->
+   7: <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+   8: <script>
+   9:   window.dataLayer = window.dataLayer || [];
+  10:   function gtag(){dataLayer.push(arguments);}
+  11:   gtag('js', new Date());
+  12: 
+  13:   gtag('config', 'G-0V2F0V7FWB');
+  14: </script>
+  15: 
+  16:     <meta charset="UTF-8">
+  17: 
+  18:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  19: 
+  20:     <title>Font Awesome Chooser - Text Utilities</title>
+  21: 
+  22:     <script>
+  23:         (function () {
+  24:             try {
+  25:                 const storedTheme = localStorage.getItem('theme');
+  26:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  27:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+  28:                     ? storedTheme
+  29:                     : (prefersLight ? 'light' : 'dark');
+  30:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
+  31: 
+  32:                 const storedAccent = localStorage.getItem('accentColor');
+  33:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+  34:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+  35:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+  36:                 }
+  37: 
+  38:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+  39:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
+  40:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
+  41:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+  42:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
+  43:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+  44:                 }
+  45:             } catch (_) {
+  46:                 document.documentElement.setAttribute('data-theme', 'dark');
+  47:             }
+  48:         })();
+  49:     </script>
+  50:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  51: 
+  52:     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  53: 
+  54:     <link rel="stylesheet" href="css/style.css">
+  55: 
+  56:     <style>
+  57: 
+  58:         .tool-layout {
+  59: 
+  60:             display: grid;
+  61: 
+  62:             grid-template-columns: 380px 1fr;
+  63: 
+  64:             gap: 1.25rem;
+  65: 
+  66:         }
+  67: 
+  68:         .panel {
+  69: 
+  70:             background: var(--bg-tertiary);
+  71: 
+  72:             border: 1px solid var(--border-color);
+  73: 
+  74:             border-radius: 8px;
+  75: 
+  76:             padding: 1rem;
+  77: 
+  78:         }
+  79: 
+  80:         .panel h4 {
+  81: 
+  82:             display: flex;
+  83: 
+  84:             align-items: center;
+  85: 
+  86:             gap: 0.5rem;
+  87: 
+  88:             margin-bottom: 0.75rem;
+  89: 
+  90:             font-size: 1rem;
+  91: 
+  92:         }
+  93: 
+  94:         .icons-grid {
+  95: 
+  96:             display: grid;
+  97: 
+  98:             grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  99: 
+ 100:             gap: 0.75rem;
+ 101: 
+ 102:         }
+ 103: 
+ 104:         .icon-item {
+ 105: 
+ 106:             background: var(--bg-secondary);
+ 107: 
+ 108:             border: 1px solid var(--border-color);
+ 109: 
+ 110:             border-radius: 6px;
+ 111: 
+ 112:             aspect-ratio: 1 / 1;
+ 113: 
+ 114:             display: flex;
+ 115: 
+ 116:             align-items: center;
+ 117: 
+ 118:             justify-content: center;
+ 119: 
+ 120:             cursor: pointer;
+ 121: 
+ 122:             transition: all 0.15s;
+ 123: 
+ 124:             padding: 0.35rem;
+ 125: 
+ 126:         }
+ 127: 
+ 128:         .icon-item .fa {
+ 129: 
+ 130:             font-size: 28px;
+ 131: 
+ 132:             color: var(--text-primary);
+ 133: 
+ 134:         }
+ 135: 
+ 136:         .icon-item:hover {
+ 137: 
+ 138:             border-color: var(--accent);
+ 139: 
+ 140:             transform: translateY(-2px);
+ 141: 
+ 142:         }
+ 143: 
+ 144:         .icon-item.active {
+ 145: 
+ 146:             background: var(--accent);
+ 147: 
+ 148:             border-color: var(--accent);
+ 149: 
+ 150:         }
+ 151: 
+ 152:         .icon-item.active .fa {
+ 153: 
+ 154:             color: #fff;
+ 155: 
+ 156:         }
+ 157: 
+ 158:         .code-block {
+ 159: 
+ 160:             background: var(--bg-tertiary);
+ 161: 
+ 162:             border: 1px solid var(--border-color);
+ 163: 
+ 164:             border-radius: 6px;
+ 165: 
+ 166:             padding: 1rem;
+ 167: 
+ 168:             min-height: 120px;
+ 169: 
+ 170:             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+ 171: 
+ 172:             white-space: pre-wrap;
+ 173: 
+ 174:             overflow-x: auto;
+ 175: 
+ 176:         }
+ 177: 
+ 178:         .info-row {
+ 179: 
+ 180:             display: grid;
+ 181: 
+ 182:             grid-template-columns: 140px 1fr;
+ 183: 
+ 184:             gap: 0.35rem;
+ 185: 
+ 186:             padding: 0.25rem 0;
+ 187: 
+ 188:         }
+ 189: 
+ 190:         .info-label {
+ 191: 
+ 192:             color: var(--text-secondary);
+ 193: 
+ 194:             font-size: 0.9rem;
+ 195: 
+ 196:         }
+ 197: 
+ 198:         .info-value {
+ 199: 
+ 200:             word-break: break-word;
+ 201: 
+ 202:         }
+ 203: 
+ 204:         .taglist {
+ 205: 
+ 206:             display: flex;
+ 207: 
+ 208:             gap: 0.35rem;
+ 209: 
+ 210:             flex-wrap: wrap;
+ 211: 
+ 212:         }
+ 213: 
+ 214:         .chip {
+ 215: 
+ 216:             display: inline-flex;
+ 217: 
+ 218:             align-items: center;
+ 219: 
+ 220:             gap: 0.35rem;
+ 221: 
+ 222:             padding: 0.25rem 0.5rem;
+ 223: 
+ 224:             background: var(--bg-secondary);
+ 225: 
+ 226:             border: 1px solid var(--border-color);
+ 227: 
+ 228:             border-radius: 999px;
+ 229: 
+ 230:             font-size: 0.85rem;
+ 231: 
+ 232:         }
+ 233: 
+ 234:         .option-group {
+ 235: 
+ 236:             margin-bottom: 0.9rem;
+ 237: 
+ 238:         }
+ 239: 
+ 240:         @media (max-width: 1024px) {
+ 241: 
+ 242:             .tool-layout {
+ 243: 
+ 244:                 grid-template-columns: 1fr;
+ 245: 
+ 246:             }
+ 247: 
+ 248:         }
+ 249: 
+ 250:     </style>
+ 251: 
+ 252: </head>
+ 253: 
+ 254: <body>
+ 255: 
+ 256:     <div class="container">
+ 257: 
+ 258:         <header>
+ 259: 
+ 260:             <div class="logo">
+ 261: 
+ 262:                 <span class="material-icons">text_snippet</span>
+ 263: 
+ 264:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+ 265: 
+ 266:                     <span>Text Utilities</span>
+ 267: 
+ 268:                 </a>
+ 269: 
+ 270:             </div>
+ 271: 
+ 272:             <nav class="site-network" aria-label="Network sites">
+ 273:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 274:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+ 275:                     <span>Chess Nerd</span>
+ 276:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 277:                 </a>
+ 278:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+ 279:                     <img src="img/github.png" class="site-network-icon" alt="">
+ 280:                     <span>GitHub</span>
+ 281:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+ 282:                 </a>
+ 283:             </nav>
+ 284:             <div class="controls">
+ 285: 
+ 286:                 <div class="accent-selector">
+ 287: 
+ 288:                     <span class="material-icons">palette</span>
+ 289: 
+ 290:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+ 291: 
+ 292:                 </div>
+ 293: 
+ 294:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+ 295: 
+ 296:                     <span class="material-icons">dark_mode</span>
+ 297: 
+ 298:                 </button>
+ 299: 
+ 300:             </div>
+ 301: 
+ 302:         </header>
+ 303: 
+ 304: 
+ 305: 
+ 306:         <main>
+ 307: 
+ 308:             <div class="tool-container">
+ 309: 
+ 310:                 <div class="tool-header">
+ 311: 
+ 312:                     <div class="tool-title">
+ 313: 
+ 314:                         <span class="material-icons">code</span>
+ 315: 
+ 316:                         <h2>Font Awesome Chooser</h2>
+ 317: 
+ 318:                     </div>
+ 319: 
+ 320:                     <div class="tool-actions">
+ 321: 
+ 322:                         <button type="button" id="backButton" class="btn btn-secondary btn-compact">
+ 323: 
+ 324:                             <span class="material-icons">arrow_back</span>
+ 325: 
+ 326:                             Back
+ 327: 
+ 328:                         </button>
+ 329: 
+ 330:                         <button type="button" id="copyBtn" class="btn btn-secondary">
+ 331: 
+ 332:                             <span class="material-icons">content_copy</span>
+ 333: 
+ 334:                             Copy
+ 335: 
+ 336:                         </button>
+ 337: 
+ 338:                         <button type="button" id="clearBtn" class="btn btn-secondary">
+ 339: 
+ 340:                             <span class="material-icons">clear</span>
+ 341: 
+ 342:                             Clear
+ 343: 
+ 344:                         </button>
+ 345: 
+ 346:                     </div>
+ 347: 
+ 348:                 </div>
+ 349: 
+ 350: 
+ 351: 
+ 352:                 <p class="tool-description">Browse Font Awesome icons, filter by name, and generate usage snippets for HTML, CSS, React, and more.</p>
+ 353: 
+ 354: 
+ 355: 
+ 356:                 <div class="tool-layout">
+ 357: 
+ 358:                     <div class="panel">
+ 359: 
+ 360:                         <h4><span class="material-icons" style="font-size: 20px;">tune</span>Filters</h4>
+ 361: 
+ 362:                         <div class="option-group">
+ 363: 
+ 364:                             <label for="categorySelect">Category</label>
+ 365: 
+ 366:                             <select id="categorySelect">
+ 367: 
+ 368:                                 <option value="">-- Select a Category --</option>
+ 369: 
+ 370:                             </select>
+ 371: 
+ 372:                         </div>
+ 373: 
+ 374:                         <div class="option-group">
+ 375: 
+ 376:                             <label for="codeFormatSelect">Code Format</label>
+ 377: 
+ 378:                             <select id="codeFormatSelect">
+ 379: 
+ 380:                                 <option value="html" selected>HTML</option>
+ 381: 
+ 382:                                 <option value="css_before">CSS (::before)</option>
+ 383: 
+ 384:                                 <option value="react">React (JSX)</option>
+ 385: 
+ 386:                                 <option value="js_dom">JavaScript (DOM)</option>
+ 387: 
+ 388:                                 <option value="icon_name">Icon Name</option>
+ 389: 
+ 390:                                 <option value="codepoint">Codepoint</option>
+ 391: 
+ 392:                             </select>
+ 393: 
+ 394:                         </div>
+ 395: 
+ 396:                         <div class="option-group">
+ 397: 
+ 398:                             <label>Selected Icon</label>
+ 399: 
+ 400:                             <div class="info-row">
+ 401: 
+ 402:                                 <span class="info-label">Name</span>
+ 403: 
+ 404:                                 <span class="info-value" id="selected-name">None</span>
+ 405: 
+ 406:                             </div>
+ 407: 
+ 408:                             <div class="info-row">
+ 409: 
+ 410:                                 <span class="info-label">Codepoint</span>
+ 411: 
+ 412:                                 <span class="info-value" id="selected-codepoint">-</span>
+ 413: 
+ 414:                             </div>
+ 415: 
+ 416:                         </div>
+ 417: 
+ 418:                         <div class="option-group">
+ 419: 
+ 420:                             <label>Tags</label>
+ 421: 
+ 422:                             <div class="taglist" id="tagList"></div>
+ 423: 
+ 424:                         </div>
+ 425: 
+ 426:                     </div>
+ 427: 
+ 428: 
+ 429: 
+ 430:                     <div class="panel" style="display: flex; flex-direction: column; gap: 1rem;">
+ 431: 
+ 432:                         <div>
+ 433: 
+ 434:                             <h4><span class="material-icons" style="font-size: 20px;">apps</span>Icons (<span id="iconCount">0</span>)</h4>
+ 435: 
+ 436:                             <div id="loadingIndicator" class="muted" style="display:none;">Loading...</div>
+ 437: 
+ 438:                             <div id="iconsGrid" class="icons-grid" role="grid" aria-label="Icon Selection Grid">
+ 439: 
+ 440:                                 <div id="gridPlaceholder" class="muted" style="grid-column:1/-1; text-align:center;">Select a category to view icons.</div>
+ 441: 
+ 442:                             </div>
+ 443: 
+ 444:                         </div>
+ 445: 
+ 446: 
+ 447: 
+ 448:                         <div>
+ 449: 
+ 450:                             <h4><span class="material-icons" style="font-size: 20px;">code</span>Snippet</h4>
+ 451: 
+ 452:                             <div class="code-block" id="outputSnippet" aria-live="polite" aria-label="Generated code snippet"></div>
+ 453: 
+ 454:                         </div>
+ 455: 
+ 456:                     </div>
+ 457: 
+ 458:                 </div>
+ 459: 
+ 460: 
+ 461: 
+ 462:                 <div class="status-bar">
+ 463: 
+ 464:                     <div id="statusMessage" class="success">Ready</div>
+ 465: 
+ 466:                     <div id="toolStats">Select a category to start</div>
+ 467: 
+ 468:                 </div>
+ 469: 
+ 470:             </div>
+ 471: 
+ 472:         </main>
+ 473: 
+ 474:     </div>
+ 475: 
+ 476: 
+ 477: 
+ 478:     <script src="js/theme.js"></script>
+ 479:     <script src="js/font-awesome-data.js"></script>
+ 480:     <script>
+ 481:         (() => {
+ 482:             'use strict';
+ 483: 
+ 484:             const CATEGORY_FILES = [
+ 485:                 { file: 'accessibility.txt', label: 'Accessibility' },
+ 486:                 { file: 'brand.txt', label: 'Brand' },
+ 487:                 { file: 'chart.txt', label: 'Chart' },
+ 488:                 { file: 'currency.txt', label: 'Currency' },
+ 489:                 { file: 'directional.txt', label: 'Directional' },
+ 490:                 { file: 'file-type.txt', label: 'File type' },
+ 491:                 { file: 'form-control.txt', label: 'Form control' },
+ 492:                 { file: 'gender.txt', label: 'Gender' },
+ 493:                 { file: 'hand.txt', label: 'Hand' },
+ 494:                 { file: 'payment.txt', label: 'Payment' },
+ 495:                 { file: 'spinner.txt', label: 'Spinner' },
+ 496:                 { file: 'text-editor.txt', label: 'Text editor' },
+ 497:                 { file: 'transportation.txt', label: 'Transportation' },
+ 498:                 { file: 'video-player.txt', label: 'Video player' },
+ 499:                 { file: 'web-application.txt', label: 'Web application' }
+ 500:             ];
+ 501: 
+ 502:             const categorySelect = document.getElementById('categorySelect');
+ 503:             const codeFormatSelect = document.getElementById('codeFormatSelect');
+ 504:             const iconsGrid = document.getElementById('iconsGrid');
+ 505:             const iconCount = document.getElementById('iconCount');
+ 506:             const outputSnippet = document.getElementById('outputSnippet');
+ 507:             const statusMessage = document.getElementById('statusMessage');
+ 508:             const toolStats = document.getElementById('toolStats');
+ 509:             const selectedName = document.getElementById('selected-name');
+ 510:             const selectedCodepoint = document.getElementById('selected-codepoint');
+ 511:             const tagList = document.getElementById('tagList');
+ 512:             const loadingIndicator = document.getElementById('loadingIndicator');
+ 513: 
+ 514:             let currentIcons = [];
+ 515:             let selectedIcon = null;
+ 516: 
+ 517:             const setStatus = (msg, type = 'success') => {
+ 518:                 statusMessage.textContent = msg;
+ 519:                 statusMessage.className = type;
+ 520:             };
+ 521: 
+ 522:             const setPlaceholder = (text) => {
+ 523:                 iconsGrid.innerHTML = '';
+ 524:                 const placeholder = document.createElement('div');
+ 525:                 placeholder.className = 'muted';
+ 526:                 placeholder.style.gridColumn = '1 / -1';
+ 527:                 placeholder.style.textAlign = 'center';
+ 528:                 placeholder.textContent = text;
+ 529:                 iconsGrid.appendChild(placeholder);
+ 530:                 iconCount.textContent = '0';
+ 531:             };
+ 532: 
+ 533:             const sanitizeCodepoint = (raw) => {
+ 534:                 if (!raw) return '';
+ 535:                 return raw.replace(/&#x/i, '').replace(/;/g, '').trim();
+ 536:             };
+ 537: 
+ 538:             const paddedCodepoint = (raw) => sanitizeCodepoint(raw).padStart(4, '0');
+ 539: 
+ 540:             const populateCategories = () => {
+ 541:                 categorySelect.innerHTML = '<option value="">-- Select a Category --</option>';
+ 542:                 CATEGORY_FILES.forEach(({ file, label }) => {
+ 543:                     const option = document.createElement('option');
+ 544:                     option.value = file;
+ 545:                     option.textContent = label;
+ 546:                     categorySelect.appendChild(option);
+ 547:                 });
+ 548:                 setStatus('Ready', 'success');
+ 549:                 toolStats.textContent = 'Select a category to start';
+ 550:             };
+ 551: 
+ 552:             const parseIconLine = (entry) => {
+ 553:                 const nameRaw = (entry?.name || '').trim();
+ 554:                 const codeRaw = (entry?.codepoint || '').trim();
+ 555:                 const name = nameRaw.replace(/\s*\(alias\)$/i, '');
+ 556:                 return { name, codepoint: sanitizeCodepoint(codeRaw) };
+ 557:             };
+ 558: 
+ 559:             const loadIcons = (file) => {
+ 560:                 currentIcons = [];
+ 561:                 iconCount.textContent = '0';
+ 562: 
+ 563:                 if (!file) {
+ 564:                     setPlaceholder('Select a category to view icons.');
+ 565:                     return;
+ 566:                 }
+ 567: 
+ 568:                 loadingIndicator.style.display = 'block';
+ 569:                 setStatus('Loading icons...', 'warning');
+ 570:                 setPlaceholder('Loading icons...');
+ 571: 
+ 572:                 const rawIcons = (window.FONT_AWESOME_DATA && window.FONT_AWESOME_DATA[file]) || [];
+ 573:                 const unique = new Map();
+ 574:                 rawIcons
+ 575:                     .map(parseIconLine)
+ 576:                     .forEach(icon => {
+ 577:                         const codeKey = icon.codepoint ? `cp-${icon.codepoint}` : '';
+ 578:                         const nameKey = (icon.name || '').toLowerCase();
+ 579:                         const key = codeKey || `nm-${nameKey}`;
+ 580:                         if (!key || unique.has(key)) return;
+ 581:                         unique.set(key, icon);
+ 582:                     });
+ 583:                 currentIcons = Array.from(unique.values()).sort((a, b) => a.name.localeCompare(b.name));
+ 584: 
+ 585:                 if (!currentIcons.length) {
+ 586:                     setStatus('No icons found.', 'error');
+ 587:                     setPlaceholder('No icons found.');
+ 588:                     toolStats.textContent = 'No icons loaded';
+ 589:                     loadingIndicator.style.display = 'none';
+ 590:                     return;
+ 591:                 }
+ 592: 
+ 593:                 renderIcons();
+ 594:                 setStatus('Icons loaded.', 'success');
+ 595:                 toolStats.textContent = `${currentIcons.length} icons loaded`;
+ 596:                 loadingIndicator.style.display = 'none';
+ 597:             };
+ 598: 
+ 599:             const renderIcons = () => {
+ 600:                 iconsGrid.innerHTML = '';
+ 601:                 iconCount.textContent = currentIcons.length;
+ 602: 
+ 603:                 if (!currentIcons.length) {
+ 604:                     setPlaceholder('No icons found.');
+ 605:                     return;
+ 606:                 }
+ 607: 
+ 608:                 const fragment = document.createDocumentFragment();
+ 609: 
+ 610:                 currentIcons.forEach(icon => {
+ 611:                     const button = document.createElement('button');
+ 612:                     button.type = 'button';
+ 613:                     button.className = 'icon-item';
+ 614:                     button.setAttribute('aria-label', icon.name);
+ 615:                     button.innerHTML = `<i class="fa fa-${icon.name}" aria-hidden="true"></i>`;
+ 616:                     button.addEventListener('click', () => selectIcon(icon, button));
+ 617:                     fragment.appendChild(button);
+ 618:                 });
+ 619: 
+ 620:                 iconsGrid.appendChild(fragment);
+ 621:             };
+ 622: 
+ 623:             const buildSnippet = (icon) => {
+ 624:                 const codepoint = paddedCodepoint(icon.codepoint);
+ 625:                 switch (codeFormatSelect.value) {
+ 626:                     case 'html':
+ 627:                         return `<i class="fa fa-${icon.name}" aria-hidden="true"></i>`;
+ 628:                     case 'css_before':
+ 629:                         return `.icon-${icon.name}::before { content: "\\${codepoint}"; font-family: "FontAwesome"; }`;
+ 630:                     case 'react':
+ 631:                         return `<i className="fa fa-${icon.name}" aria-hidden="true"></i>`;
+ 632:                     case 'js_dom':
+ 633:                         return [
+ 634:                             "const icon = document.createElement('i');",
+ 635:                             `icon.className = 'fa fa-${icon.name}';`,
+ 636:                             "icon.setAttribute('aria-hidden','true');",
+ 637:                             'element.appendChild(icon);'
+ 638:                         ].join('\n');
+ 639:                     case 'icon_name':
+ 640:                         return icon.name;
+ 641:                     case 'codepoint':
+ 642:                         return codepoint;
+ 643:                     default:
+ 644:                         return '';
+ 645:                 }
+ 646:             };
+ 647: 
+ 648:             const selectIcon = (icon, button) => {
+ 649:                 iconsGrid.querySelectorAll('.icon-item').forEach(el => el.classList.remove('active'));
+ 650:                 button.classList.add('active');
+ 651:                 selectedIcon = icon;
+ 652:                 selectedName.textContent = icon.name;
+ 653:                 selectedCodepoint.textContent = paddedCodepoint(icon.codepoint) || '-';
+ 654: 
+ 655:                 tagList.innerHTML = '';
+ 656:                 const tags = new Set(['fa', `fa-${icon.name}`]);
+ 657:                 icon.name.split('-').forEach(part => { if (part) tags.add(part); });
+ 658:                 tags.forEach(tag => {
+ 659:                     const chip = document.createElement('span');
+ 660:                     chip.className = 'chip';
+ 661:                     chip.textContent = tag;
+ 662:                     tagList.appendChild(chip);
+ 663:                 });
+ 664: 
+ 665:                 outputSnippet.textContent = buildSnippet(icon);
+ 666:                 setStatus(`Selected ${icon.name}.`, 'success');
+ 667:             };
+ 668: 
+ 669:             const copySnippet = () => {
+ 670:                 if (!outputSnippet.textContent) {
+ 671:                     setStatus('Nothing to copy.', 'warning');
+ 672:                     return;
+ 673:                 }
+ 674:                 window.textUtilsClipboardWrite(outputSnippet.textContent).then(
+ 675:                     () => setStatus('Copied!', 'success'),
+ 676:                     () => setStatus('Copy failed.', 'error')
+ 677:                 );
+ 678:             };
+ 679: 
+ 680:             const clearSelection = (silent = false) => {
+ 681:                 selectedIcon = null;
+ 682:                 selectedName.textContent = 'None';
+ 683:                 selectedCodepoint.textContent = '-';
+ 684:                 outputSnippet.textContent = '';
+ 685:                 tagList.innerHTML = '';
+ 686:                 iconsGrid.querySelectorAll('.icon-item').forEach(el => el.classList.remove('active'));
+ 687:                 if (!silent) setStatus('Cleared.', 'success');
+ 688:             };
+ 689: 
+ 690:             const handleCategoryChange = (e) => {
+ 691:                 clearSelection(true);
+ 692:                 loadIcons(e.target.value);
+ 693:             };
+ 694: 
+ 695:             const handleCodeFormatChange = () => {
+ 696:                 if (selectedIcon) {
+ 697:                     outputSnippet.textContent = buildSnippet(selectedIcon);
+ 698:                 }
+ 699:             };
+ 700: 
+ 701:             const init = () => {
+ 702:                 populateCategories();
+ 703:                 setPlaceholder('Select a category to view icons.');
+ 704:                 categorySelect.addEventListener('change', handleCategoryChange);
+ 705:                 codeFormatSelect.addEventListener('change', handleCodeFormatChange);
+ 706:                 document.getElementById('backButton').addEventListener('click', () => window.location.href = 'index.html');
+ 707:                 document.getElementById('copyBtn').addEventListener('click', copySnippet);
+ 708:                 document.getElementById('clearBtn').addEventListener('click', () => clearSelection());
+ 709:             };
+ 710: 
+ 711:             if (document.readyState === 'loading') {
+ 712:                 document.addEventListener('DOMContentLoaded', init);
+ 713:             } else {
+ 714:                 init();
+ 715:             }
+ 716:         })();
+ 717:     </script>
+ 718: 
+ 719:     <footer class="site-footer">
+ 720:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 721:     </footer>
+ 722: </body>
+ 723: 
+ 724: </html>
+ 725: 
+```
+----- END FILE: font-awesome-chooser.html -----
+
+----- BEGIN FILE: css/style.css -----
+```css
+   1: :root {
+   2:     --bg-primary: #121212;
+   3:     --bg-secondary: #1e1e1e;
+   4:     --bg-tertiary: #252525;
+   5:     --text-primary: #e0e0e0;
+   6:     --text-secondary: #a0a0a0;
+   7:     --border-color: #333;
+   8:     --accent: #0d9488;
+   9:     --accent-light: #14b8a6;
+  10:     --accent-rgb: 13, 148, 136;
+  11:     --control-icon-filter: invert(1) brightness(1.25);
+  12:     --success: #059669;
+  13:     --warning: #d97706;
+  14:     --error: #dc2626;
+  15:     color-scheme: dark;
+  16: }
+  17: 
+  18: [data-theme="light"] {
+  19:     --bg-primary: #ffffff;
+  20:     --bg-secondary: #f8fafc;
+  21:     --bg-tertiary: #f1f5f9;
+  22:     --text-primary: #1e293b;
+  23:     --text-secondary: #64748b;
+  24:     --border-color: #e2e8f0;
+  25:     --control-icon-filter: none;
+  26:     color-scheme: light;
+  27: }
+  28: 
+  29: * {
+  30:     margin: 0;
+  31:     padding: 0;
+  32:     box-sizing: border-box;
+  33: }
+  34: 
+  35: body {
+  36:     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  37:     background: var(--bg-primary);
+  38:     color: var(--text-primary);
+  39:     line-height: 1.5;
+  40:     min-height: 100vh;
+  41: }
+  42: 
+  43: .container {
+  44:     width: 100%;
+  45:     max-width: none;
+  46:     margin: 0 auto;
+  47:     padding: 1rem 1.5rem;
+  48: }
+  49: 
+  50: /* Header */
+  51: header {
+  52:     display: flex;
+  53:     justify-content: space-between;
+  54:     align-items: center;
+  55:     padding: 1rem 0;
+  56:     border-bottom: 1px solid var(--border-color);
+  57:     margin-bottom: 2rem;
+  58:     position: relative;
+  59: }
+  60: 
+  61: .logo {
+  62:     display: flex;
+  63:     align-items: center;
+  64:     gap: 0.5rem;
+  65:     font-size: 1.5rem;
+  66:     font-weight: 600;
+  67: }
+  68: 
+  69: .logo span {
+  70:     color: var(--accent);
+  71: }
+  72: 
+  73: .controls {
+  74:     display: flex;
+  75:     gap: 1rem;
+  76:     align-items: center;
+  77: }
+  78: 
+  79: .site-network {
+  80:     position: absolute;
+  81:     left: 50%;
+  82:     transform: translateX(-50%);
+  83:     display: flex;
+  84:     flex-direction: column;
+  85:     gap: 0.25rem;
+  86:     align-items: flex-start;
+  87: }
+  88: 
+  89: .site-network-link {
+  90:     color: var(--text-secondary);
+  91:     text-decoration: none;
+  92:     font-size: 0.9rem;
+  93:     display: inline-flex;
+  94:     align-items: center;
+  95:     gap: 0.25rem;
+  96:     line-height: 1.2;
+  97: }
+  98: 
+  99: .site-network-link .material-icons {
+ 100:     font-size: 1rem;
+ 101: }
+ 102: 
+ 103: .site-network-icon {
+ 104:     width: 1rem;
+ 105:     height: 1rem;
+ 106:     object-fit: contain;
+ 107:     flex: 0 0 auto;
+ 108: }
+ 109: 
+ 110: .site-network-link:hover {
+ 111:     color: var(--accent);
+ 112: }
+ 113: 
+ 114: .accent-selector {
+ 115:     display: flex;
+ 116:     align-items: center;
+ 117:     gap: 0.5rem;
+ 118: }
+ 119: 
+ 120: .color-dropdown {
+ 121:     padding: 0.25rem 0.5rem;
+ 122:     background: var(--bg-secondary);
+ 123:     border: 1px solid var(--border-color);
+ 124:     border-radius: 4px;
+ 125:     color: var(--text-primary);
+ 126:     cursor: pointer;
+ 127: }
+ 128: 
+ 129: /* Main Layout */
+ 130: .main-grid {
+ 131:     display: block;
+ 132:     min-height: calc(100vh - 120px);
+ 133: }
+ 134: 
+ 135: /* Sidebar */
+ 136: .sidebar {
+ 137:     background: var(--bg-secondary);
+ 138:     border-radius: 8px;
+ 139:     padding: 1rem;
+ 140:     height: fit-content;
+ 141:     position: sticky;
+ 142:     top: 1rem;
+ 143: }
+ 144: 
+ 145: .search-box {
+ 146:     margin-bottom: 1.5rem;
+ 147: }
+ 148: 
+ 149: .search-box input {
+ 150:     width: 100%;
+ 151:     padding: 0.5rem;
+ 152:     background: var(--bg-tertiary);
+ 153:     border: 1px solid var(--border-color);
+ 154:     border-radius: 4px;
+ 155:     color: var(--text-primary);
+ 156: }
+ 157: 
+ 158: .categories {
+ 159:     display: flex;
+ 160:     flex-direction: column;
+ 161:     gap: 0.5rem;
+ 162: }
+ 163: 
+ 164: .category {
+ 165:     padding: 0.75rem;
+ 166:     border-radius: 4px;
+ 167:     cursor: pointer;
+ 168:     transition: background 0.2s;
+ 169:     display: flex;
+ 170:     align-items: center;
+ 171:     gap: 0.5rem;
+ 172: }
+ 173: 
+ 174: .category:hover {
+ 175:     background: var(--bg-tertiary);
+ 176: }
+ 177: 
+ 178: .category.active {
+ 179:     background: var(--accent);
+ 180:     color: white;
+ 181: }
+ 182: 
+ 183: .recent-tools {
+ 184:     margin-top: 2rem;
+ 185:     padding-top: 1rem;
+ 186:     border-top: 1px solid var(--border-color);
+ 187: }
+ 188: 
+ 189: .recent-tools h4 {
+ 190:     margin-bottom: 0.5rem;
+ 191:     color: var(--text-secondary);
+ 192:     font-size: 0.875rem;
+ 193: }
+ 194: 
+ 195: .tool-chip {
+ 196:     display: inline-block;
+ 197:     background: var(--bg-tertiary);
+ 198:     padding: 0.25rem 0.5rem;
+ 199:     border-radius: 4px;
+ 200:     margin: 0.125rem;
+ 201:     font-size: 0.75rem;
+ 202:     cursor: pointer;
+ 203: }
+ 204: 
+ 205: /* Tool Container */
+ 206: .tool-container {
+ 207:     background: var(--bg-secondary);
+ 208:     border-radius: 8px;
+ 209:     padding: 1.5rem;
+ 210: }
+ 211: 
+ 212: .tool-header {
+ 213:     display: flex;
+ 214:     justify-content: space-between;
+ 215:     align-items: center;
+ 216:     margin-bottom: 1.5rem;
+ 217: }
+ 218: 
+ 219: .tool-title {
+ 220:     display: flex;
+ 221:     align-items: center;
+ 222:     gap: 0.5rem;
+ 223:     font-size: 1.25rem;
+ 224: }
+ 225: 
+ 226: .tool-description {
+ 227:     color: var(--text-secondary);
+ 228:     margin-bottom: 1.5rem;
+ 229:     font-size: 0.95rem;
+ 230: }
+ 231: 
+ 232: .tool-actions {
+ 233:     display: flex;
+ 234:     gap: 0.5rem;
+ 235: }
+ 236: 
+ 237: .btn {
+ 238:     padding: 0.5rem 1rem;
+ 239:     border: none;
+ 240:     border-radius: 4px;
+ 241:     cursor: pointer;
+ 242:     display: inline-flex;
+ 243:     align-items: center;
+ 244:     gap: 0.5rem;
+ 245:     font-size: 0.875rem;
+ 246:     transition: all 0.2s;
+ 247: }
+ 248: 
+ 249: .btn-compact {
+ 250:     padding: 0.35rem 0.75rem;
+ 251:     font-size: 0.85rem;
+ 252: }
+ 253: 
+ 254: .btn-primary {
+ 255:     background: var(--accent);
+ 256:     color: white;
+ 257: }
+ 258: 
+ 259: .btn-secondary {
+ 260:     background: var(--bg-tertiary);
+ 261:     color: var(--text-primary);
+ 262: }
+ 263: 
+ 264: .btn:hover {
+ 265:     transform: translateY(-1px);
+ 266:     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+ 267: }
+ 268: 
+ 269: .btn:disabled {
+ 270:     opacity: 0.55;
+ 271:     cursor: not-allowed;
+ 272: }
+ 273: 
+ 274: .btn:disabled:hover {
+ 275:     transform: none;
+ 276:     box-shadow: none;
+ 277: }
+ 278: 
+ 279: /* Tool I/O */
+ 280: .io-container {
+ 281:     display: grid;
+ 282:     grid-template-columns: 1fr 1fr;
+ 283:     gap: 1rem;
+ 284:     margin-bottom: 1rem;
+ 285: }
+ 286: 
+ 287: @media (max-width: 768px) {
+ 288:     .io-container {
+ 289:         grid-template-columns: 1fr;
+ 290:     }
+ 291: }
+ 292: 
+ 293: .io-panel {
+ 294:     display: flex;
+ 295:     flex-direction: column;
+ 296:     gap: 0.5rem;
+ 297: }
+ 298: 
+ 299: .io-label {
+ 300:     display: flex;
+ 301:     justify-content: space-between;
+ 302:     align-items: center;
+ 303:     font-size: 0.875rem;
+ 304:     color: var(--text-secondary);
+ 305: }
+ 306: 
+ 307: .stats {
+ 308:     font-size: 0.75rem;
+ 309: }
+ 310: 
+ 311: textarea {
+ 312:     width: 100%;
+ 313:     min-height: 300px;
+ 314:     padding: 1rem;
+ 315:     background: var(--bg-tertiary);
+ 316:     border: 1px solid var(--border-color);
+ 317:     border-radius: 4px;
+ 318:     color: var(--text-primary);
+ 319:     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+ 320:     font-size: 0.875rem;
+ 321:     line-height: 1.4;
+ 322:     resize: vertical;
+ 323: }
+ 324: 
+ 325: textarea:focus {
+ 326:     outline: none;
+ 327:     border-color: var(--accent);
+ 328: }
+ 329: 
+ 330: button:focus-visible,
+ 331: select:focus-visible,
+ 332: input:focus-visible,
+ 333: textarea:focus-visible {
+ 334:     outline: 2px solid var(--accent);
+ 335:     outline-offset: 2px;
+ 336: }
+ 337: 
+ 338: .output {
+ 339:     background: var(--bg-primary);
+ 340: }
+ 341: 
+ 342: /* Options Panel */
+ 343: .options-panel {
+ 344:     background: var(--bg-tertiary);
+ 345:     border-radius: 4px;
+ 346:     padding: 1rem;
+ 347:     margin-bottom: 1rem;
+ 348: }
+ 349: 
+ 350: .options-grid {
+ 351:     display: grid;
+ 352:     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+ 353:     gap: 1rem;
+ 354: }
+ 355: 
+ 356: .option-group {
+ 357:     display: flex;
+ 358:     flex-direction: column;
+ 359:     gap: 0.5rem;
+ 360: }
+ 361: 
+ 362: .option-group label {
+ 363:     font-size: 0.875rem;
+ 364:     color: var(--text-secondary);
+ 365: }
+ 366: 
+ 367: select,
+ 368: input[type="range"],
+ 369: input[type="checkbox"],
+ 370: input[type="radio"],
+ 371: input[type="text"],
+ 372: input[type="number"],
+ 373: input[type="search"],
+ 374: input[type="email"],
+ 375: input[type="url"],
+ 376: input[type="tel"],
+ 377: input[type="password"],
+ 378: input[type="date"],
+ 379: input[type="time"],
+ 380: input[type="datetime-local"],
+ 381: input[type="month"],
+ 382: input[type="week"] {
+ 383:     padding: 0.25rem 0.5rem;
+ 384:     background: var(--bg-secondary);
+ 385:     border: 1px solid var(--border-color);
+ 386:     border-radius: 4px;
+ 387:     color: var(--text-primary);
+ 388: }
+ 389: 
+ 390: select,
+ 391: input,
+ 392: textarea,
+ 393: button {
+ 394:     font: inherit;
+ 395: }
+ 396: 
+ 397: input[type="text"]::placeholder,
+ 398: input[type="number"]::placeholder,
+ 399: input[type="search"]::placeholder,
+ 400: input[type="email"]::placeholder,
+ 401: input[type="url"]::placeholder,
+ 402: input[type="tel"]::placeholder,
+ 403: input[type="password"]::placeholder,
+ 404: textarea::placeholder {
+ 405:     color: var(--text-secondary);
+ 406:     opacity: 1;
+ 407: }
+ 408: 
+ 409: select:disabled,
+ 410: input:disabled,
+ 411: textarea:disabled {
+ 412:     opacity: 0.65;
+ 413:     cursor: not-allowed;
+ 414: }
+ 415: 
+ 416: input[type="color"] {
+ 417:     background: var(--bg-secondary);
+ 418:     border: 1px solid var(--border-color);
+ 419:     border-radius: 4px;
+ 420:     color: var(--text-primary);
+ 421: }
+ 422: 
+ 423: input[type="color"]::-webkit-color-swatch-wrapper {
+ 424:     padding: 0;
+ 425: }
+ 426: 
+ 427: input[type="color"]::-webkit-color-swatch {
+ 428:     border: 1px solid var(--border-color);
+ 429:     border-radius: 3px;
+ 430: }
+ 431: 
+ 432: input[type="color"]::-moz-color-swatch {
+ 433:     border: 1px solid var(--border-color);
+ 434:     border-radius: 3px;
+ 435: }
+ 436: 
+ 437: input[type="date"]::-webkit-calendar-picker-indicator,
+ 438: input[type="time"]::-webkit-calendar-picker-indicator,
+ 439: input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+ 440: input[type="month"]::-webkit-calendar-picker-indicator,
+ 441: input[type="week"]::-webkit-calendar-picker-indicator,
+ 442: input[type="search"]::-webkit-search-cancel-button,
+ 443: input[type="number"]::-webkit-inner-spin-button,
+ 444: input[type="number"]::-webkit-outer-spin-button {
+ 445:     filter: var(--control-icon-filter);
+ 446: }
+ 447: 
+ 448: input[type="date"]::-webkit-calendar-picker-indicator,
+ 449: input[type="time"]::-webkit-calendar-picker-indicator,
+ 450: input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+ 451: input[type="month"]::-webkit-calendar-picker-indicator,
+ 452: input[type="week"]::-webkit-calendar-picker-indicator,
+ 453: input[type="search"]::-webkit-search-cancel-button {
+ 454:     cursor: pointer;
+ 455: }
+ 456: 
+ 457: input:-webkit-autofill,
+ 458: input:-webkit-autofill:hover,
+ 459: input:-webkit-autofill:focus,
+ 460: textarea:-webkit-autofill,
+ 461: textarea:-webkit-autofill:hover,
+ 462: textarea:-webkit-autofill:focus,
+ 463: select:-webkit-autofill,
+ 464: select:-webkit-autofill:hover,
+ 465: select:-webkit-autofill:focus {
+ 466:     -webkit-text-fill-color: var(--text-primary);
+ 467:     box-shadow: 0 0 0 1000px var(--bg-secondary) inset;
+ 468:     border: 1px solid var(--border-color);
+ 469:     transition: background-color 9999s ease-in-out 0s;
+ 470: }
+ 471: 
+ 472: input[type="checkbox"], input[type="radio"] {
+ 473:     width: auto;
+ 474:     cursor: pointer;
+ 475: }
+ 476: 
+ 477: /* Status Bar */
+ 478: .status-bar {
+ 479:     display: flex;
+ 480:     justify-content: space-between;
+ 481:     align-items: center;
+ 482:     padding-top: 1rem;
+ 483:     border-top: 1px solid var(--border-color);
+ 484:     font-size: 0.75rem;
+ 485:     color: var(--text-secondary);
+ 486: }
+ 487: 
+ 488: /* Tool Cards (for homepage) */
+ 489: .tool-grid {
+ 490:     display: grid;
+ 491:     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+ 492:     gap: 1rem;
+ 493:     margin-top: 1rem;
+ 494: }
+ 495: 
+ 496: .tool-card {
+ 497:     display: block;
+ 498:     background: var(--bg-tertiary);
+ 499:     border-radius: 8px;
+ 500:     padding: 1.5rem;
+ 501:     cursor: pointer;
+ 502:     transition: all 0.2s;
+ 503:     border: 1px solid transparent;
+ 504:     color: inherit;
+ 505:     text-decoration: none;
+ 506: }
+ 507: 
+ 508: .tool-card:hover {
+ 509:     border-color: var(--accent);
+ 510:     transform: translateY(-2px);
+ 511: }
+ 512: 
+ 513: .tool-icon {
+ 514:     width: 40px;
+ 515:     height: 40px;
+ 516:     background: var(--accent);
+ 517:     border-radius: 8px;
+ 518:     display: flex;
+ 519:     align-items: center;
+ 520:     justify-content: center;
+ 521:     margin-bottom: 1rem;
+ 522:     color: white;
+ 523: }
+ 524: 
+ 525: .tool-card h3 {
+ 526:     margin-bottom: 0.5rem;
+ 527: }
+ 528: 
+ 529: .tool-card p {
+ 530:     font-size: 0.875rem;
+ 531:     color: var(--text-secondary);
+ 532: }
+ 533: 
+ 534: .site-footer {
+ 535:     margin-top: 2rem;
+ 536:     padding: 1.5rem 0;
+ 537:     border-top: 1px solid var(--border-color);
+ 538:     text-align: center;
+ 539:     color: var(--text-secondary);
+ 540:     line-height: 1.5;
+ 541:     font-size: 0.95rem;
+ 542: }
+ 543: 
+ 544: .site-footer p {
+ 545:     margin: 0;
+ 546:     text-align: center;
+ 547: }
+ 548: 
+ 549: 
+ 550: .hidden {
+ 551:     display: none !important;
+ 552: }
+ 553: 
+ 554: .visually-hidden,
+ 555: .sr-only {
+ 556:     position: absolute;
+ 557:     width: 1px;
+ 558:     height: 1px;
+ 559:     padding: 0;
+ 560:     margin: -1px;
+ 561:     overflow: hidden;
+ 562:     clip: rect(0, 0, 0, 0);
+ 563:     white-space: nowrap;
+ 564:     border: 0;
+ 565: }
+ 566: 
+ 567: .pill {
+ 568:     padding: 0.35rem 0.75rem;
+ 569:     border-radius: 999px;
+ 570:     border: 1px solid var(--accent);
+ 571:     background: var(--bg-tertiary);
+ 572:     color: var(--text-primary);
+ 573:     font-size: 0.85rem;
+ 574:     display: inline-flex;
+ 575:     align-items: center;
+ 576:     gap: 0.25rem;
+ 577: }
+ 578: 
+ 579: .pill.muted {
+ 580:     border-color: var(--border-color);
+ 581:     color: var(--text-secondary);
+ 582: }
+ 583: 
+ 584: .success {
+ 585:     color: var(--success);
+ 586: }
+ 587: 
+ 588: .warning {
+ 589:     color: var(--warning);
+ 590: }
+ 591: 
+ 592: .error {
+ 593:     color: var(--error);
+ 594: }
+ 595: 
+ 596: /* Responsive */
+ 597: @media (max-width: 768px) {
+ 598:     .main-grid {
+ 599:         grid-template-columns: 1fr;
+ 600:     }
+ 601:     
+ 602:     .sidebar {
+ 603:         position: static;
+ 604:     }
+ 605:     
+ 606:     .tool-header {
+ 607:         flex-direction: column;
+ 608:         gap: 1rem;
+ 609:         align-items: flex-start;
+ 610:     }
+ 611: 
+ 612:     .site-network {
+ 613:         position: static;
+ 614:         transform: none;
+ 615:         order: 3;
+ 616:         width: 100%;
+ 617:         margin-top: 1rem;
+ 618:         display: flex;
+ 619:         flex-direction: column;
+ 620:         gap: 0.35rem;
+ 621:         justify-content: center;
+ 622:         align-items: center;
+ 623:     }
+ 624: 
+ 625:     header {
+ 626:         flex-wrap: wrap;
+ 627:     }
+ 628: }
+ 629: 
+ 630: @media (prefers-reduced-motion: reduce) {
+ 631:     * {
+ 632:         transition: none !important;
+ 633:         animation: none !important;
+ 634:     }
+ 635: 
+ 636:     .btn:hover {
+ 637:         transform: none !important;
+ 638:         box-shadow: none !important;
+ 639:     }
+ 640: }
+```
+----- END FILE: css/style.css -----
+
+----- BEGIN FILE: index.html -----
+```html
+   1: <!DOCTYPE html>
+   2: <html lang="en">
+   3: <head>
+   4: <!-- Google tag gtag.js -->
+   5: <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+   6: <script>
+   7:   window.dataLayer = window.dataLayer || [];
+   8:   function gtag(){dataLayer.push(arguments);}
+   9:   gtag('js', new Date());
+  10: 
+  11:   gtag('config', 'G-0V2F0V7FWB');
+  12: </script>
+  13:     <meta charset="UTF-8">
+  14:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  15:     <title>Text Utilities</title>
+  16:     <script>
+  17:         (function () {
+  18:             try {
+  19:                 const storedTheme = localStorage.getItem('theme');
+  20:                 const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  21:                 const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+  22:                     ? storedTheme
+  23:                     : (prefersLight ? 'light' : 'dark');
+  24:                 document.documentElement.setAttribute('data-theme', resolvedTheme);
+  25: 
+  26:                 const storedAccent = localStorage.getItem('accentColor');
+  27:                 let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+  28:                 if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+  29:                     normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+  30:                 }
+  31: 
+  32:                 if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+  33:                     const red = parseInt(normalizedAccent.slice(1, 3), 16);
+  34:                     const green = parseInt(normalizedAccent.slice(3, 5), 16);
+  35:                     const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+  36:                     document.documentElement.style.setProperty('--accent', normalizedAccent);
+  37:                     document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+  38:                 }
+  39:             } catch (_) {
+  40:                 document.documentElement.setAttribute('data-theme', 'dark');
+  41:             }
+  42:         })();
+  43:     </script>
+  44:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  45:     <link rel="stylesheet" href="css/style.css">
+  46: </head>
+  47: <body>
+  48:     <div class="container">
+  49:         <header>
+  50:             <div class="logo">
+  51:                 <a href="index.html" style="color: inherit; text-decoration: none;">
+  52:                     <span>Text Utilities</span>
+  53:                 </a>
+  54:             </div>
+  55:             <nav class="site-network" aria-label="Network sites">
+  56:                 <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  57:                     <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+  58:                     <span>Chess Nerd</span>
+  59:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  60:                 </a>
+  61:                 <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+  62:                     <img src="img/github.png" class="site-network-icon" alt="">
+  63:                     <span>GitHub</span>
+  64:                     <span class="material-icons" aria-hidden="true">open_in_new</span>
+  65:                 </a>
+  66:             </nav>
+  67:             <div class="controls">
+  68:                 <div class="accent-selector">
+  69:                     <span class="material-icons">palette</span>
+  70:                     <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+  71:                 </div>
+  72:                 <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+  73:                     <span class="material-icons">dark_mode</span>
+  74:                 </button>
+  75:             </div>
+  76:         </header>
+  77: 
+  78:         <main>
+  79:             <div id="homeView">
+  80:                 <div class="tool-grid" id="toolGrid"></div>
+  81:             </div>
+  82:         </main>
+  83:     </div>
+  84: 
+  85:     <script src="js/theme.js"></script>
+  86:     <script>
+  87: const tools = [
+  88:     { id: 'case-converter', name: 'Case Converter', icon: 'text_format', category: 'text', description: 'Convert text between different cases' },
+  89:     { id: 'text-info', name: 'Text Info', icon: 'analytics', category: 'text', description: 'Detailed statistics and readability scores for text' },
+  90:     { id: 'line-operations', name: 'Line Operations', icon: 'reorder', category: 'text', description: 'Sort, filter, and manipulate lines of text' },
+  91:     { id: 'find-replace', name: 'Find & Replace', icon: 'find_replace', category: 'text', description: 'Search and replace text with regex support' },
+  92:     { id: 'font-chooser', name: 'Font Chooser', icon: 'text_fields', category: 'text', description: 'Preview fonts, check contrast, and generate CSS snippets' },
+  93:     { id: 'ip-info', name: 'IP Info', icon: 'language', category: 'data', description: 'Public IP, provider, location, and device diagnostics' },
+  94:     { id: 'font-awesome-chooser', name: 'Font Awesome Chooser', icon: 'code', category: 'data', description: 'Browse Font Awesome icons and generate code snippets' },
+  95:     { id: 'google-icons-chooser', name: 'Google Icons Chooser', icon: 'apps', category: 'data', description: 'Browse Google Material icons and generate code snippets' },
+  96:     { id: 'color-chooser', name: 'Color Chooser', icon: 'palette', category: 'data', description: 'Pick colors, find matches, and generate code snippets' },
+  97:     { id: 'css-unit-converter', name: 'CSS Unit Converter', icon: 'straighten', category: 'convert', description: 'Convert px, em, rem, %, pt, vw, vh with context' },
+  98:     { id: 'date-time-info', name: 'Date/Time Info', icon: 'schedule', category: 'data', description: 'View date/time across calendars, formats, and time zones' },
+  99:     { id: 'random-numbers', name: 'Random Number Generator', icon: 'casino', category: 'data', description: 'Generate random numbers with range, decimals, uniqueness, and sorting' },
+ 100:     { id: 'hashing-tool', name: 'Hashing Tool', icon: 'lock', category: 'convert', description: 'Hash, encode, and decode text using various algorithms and formats' },
+ 101:     { id: 'json-tool', name: 'JSON Tool', icon: 'data_object', category: 'data', description: 'Format, validate, and convert JSON to JSONL format' },
+ 102:     { id: 'sitemap-generator', name: 'XML Sitemap Generator', icon: 'schema', category: 'data', description: 'Crawl (with optional CORS proxy) and build sitemap.xml' }
+ 103: ];
+ 104: 
+ 105: const toolGrid = document.getElementById('toolGrid');
+ 106: 
+ 107: function renderToolGrid(filter = '', category = 'all') {
+ 108:     toolGrid.innerHTML = '';
+ 109:     const filteredTools = [...tools]
+ 110:         .sort((a, b) => a.name.localeCompare(b.name))
+ 111:         .filter(tool => {
+ 112:         const matchesSearch = tool.name.toLowerCase().includes(filter.toLowerCase()) || tool.description.toLowerCase().includes(filter.toLowerCase());
+ 113:         const matchesCategory = category === 'all' || tool.category === category;
+ 114:         return matchesSearch && matchesCategory;
+ 115:     });
+ 116:     
+ 117:     filteredTools.forEach(tool => {
+ 118:         const card = document.createElement('a');
+ 119:         card.className = 'tool-card';
+ 120:         card.href = `${tool.id}.html`;
+ 121:         card.setAttribute('aria-label', `${tool.name} tool`);
+ 122: 
+ 123:         const iconContainer = document.createElement('div');
+ 124:         iconContainer.className = 'tool-icon';
+ 125:         const icon = document.createElement('span');
+ 126:         icon.className = 'material-icons';
+ 127:         icon.textContent = tool.icon;
+ 128:         iconContainer.appendChild(icon);
+ 129: 
+ 130:         const title = document.createElement('h3');
+ 131:         title.textContent = tool.name;
+ 132: 
+ 133:         const description = document.createElement('p');
+ 134:         description.textContent = tool.description;
+ 135: 
+ 136:         card.appendChild(iconContainer);
+ 137:         card.appendChild(title);
+ 138:         card.appendChild(description);
+ 139:         toolGrid.appendChild(card);
+ 140:     });
+ 141:     
+ 142:     if (filteredTools.length === 0) {
+ 143:         const emptyState = document.createElement('p');
+ 144:         emptyState.textContent = 'No tools found';
+ 145:         emptyState.style.gridColumn = '1 / -1';
+ 146:         emptyState.style.textAlign = 'center';
+ 147:         emptyState.style.color = 'var(--text-secondary)';
+ 148:         toolGrid.appendChild(emptyState);
+ 149:     }
+ 150: }
+ 151: 
+ 152: // No search input or filters on this page; always show all tools
+ 153: 
+ 154: renderToolGrid();
+ 155:     </script>
+ 156:     <footer class="site-footer">
+ 157:         <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+ 158:     </footer>
+ 159: </body>
+ 160: </html>
+```
+----- END FILE: index.html -----
+
+----- BEGIN FILE: js/font-awesome-data.js -----
+```javascript
+   1: window.FONT_AWESOME_DATA={"accessibility.txt":[{"name":"american-sign-language-interpreting","codepoint":"&#xf2a3;"},{"name":"asl-interpreting (alias)","codepoint":"&#xf2a3;"},{"name":"assistive-listening-systems","codepoint":"&#xf2a2;"},{"name":"audio-description","codepoint":"&#xf29e"},{"name":"blind","codepoint":"&#xf29d"},{"name":"braille","codepoint":"&#xf2a1;"},{"name":"cc","codepoint":"&#xf20a"},{"name":"deaf","codepoint":"&#xf2a4;"},{"name":"deafness (alias)","codepoint":"&#xf2a4;"},{"name":"hard-of-hearing (alias)","codepoint":"&#xf2a4;"},{"name":"low-vision","codepoint":"&#xf2a8;"},{"name":"question-circle-o","codepoint":"&#xf29c"},{"name":"sign-language","codepoint":"&#xf2a7;"},{"name":"signing (alias)","codepoint":"&#xf2a7;"},{"name":"tty","codepoint":"&#xf1e4;"},{"name":"universal-access","codepoint":"&#xf29a"},{"name":"volume-control-phone","codepoint":"&#xf2a0;"},{"name":"wheelchair","codepoint":"&#xf193;"},{"name":"wheelchair-alt","codepoint":"&#xf29b"}],"brand.txt":[{"name":"500px","codepoint":"&#xf26e"},{"name":"adn","codepoint":"&#xf170;"},{"name":"amazon","codepoint":"&#xf270;"},{"name":"android","codepoint":"&#xf17b"},{"name":"angellist","codepoint":"&#xf209;"},{"name":"apple","codepoint":"&#xf179;"},{"name":"bandcamp","codepoint":"&#xf2d5;"},{"name":"behance","codepoint":"&#xf1b4;"},{"name":"behance-square","codepoint":"&#xf1b5;"},{"name":"bitbucket","codepoint":"&#xf171;"},{"name":"bitbucket-square","codepoint":"&#xf172;"},{"name":"bitcoin (alias)","codepoint":"&#xf15a"},{"name":"black-tie","codepoint":"&#xf27e"},{"name":"bluetooth","codepoint":"&#xf293;"},{"name":"bluetooth-b","codepoint":"&#xf294;"},{"name":"btc","codepoint":"&#xf15a"},{"name":"buysellads","codepoint":"&#xf20d"},{"name":"cc-amex","codepoint":"&#xf1f3;"},{"name":"cc-diners-club","codepoint":"&#xf24c"},{"name":"cc-discover","codepoint":"&#xf1f2;"},{"name":"cc-jcb","codepoint":"&#xf24b"},{"name":"cc-mastercard","codepoint":"&#xf1f1;"},{"name":"cc-paypal","codepoint":"&#xf1f4;"},{"name":"cc-stripe","codepoint":"&#xf1f5;"},{"name":"cc-visa","codepoint":"&#xf1f0;"},{"name":"chrome","codepoint":"&#xf268;"},{"name":"codepen","codepoint":"&#xf1cb"},{"name":"codiepie","codepoint":"&#xf284;"},{"name":"connectdevelop","codepoint":"&#xf20e"},{"name":"contao","codepoint":"&#xf26d"},{"name":"css3","codepoint":"&#xf13c"},{"name":"dashcube","codepoint":"&#xf210;"},{"name":"delicious","codepoint":"&#xf1a5;"},{"name":"deviantart","codepoint":"&#xf1bd"},{"name":"digg","codepoint":"&#xf1a6;"},{"name":"dribbble","codepoint":"&#xf17d"},{"name":"dropbox","codepoint":"&#xf16b"},{"name":"drupal","codepoint":"&#xf1a9;"},{"name":"edge","codepoint":"&#xf282;"},{"name":"eercast","codepoint":"&#xf2da"},{"name":"empire","codepoint":"&#xf1d1;"},{"name":"envira","codepoint":"&#xf299;"},{"name":"etsy","codepoint":"&#xf2d7;"},{"name":"expeditedssl","codepoint":"&#xf23e"},{"name":"fa (alias)","codepoint":"&#xf2b4;"},{"name":"facebook","codepoint":"&#xf09a"},{"name":"facebook-f (alias)","codepoint":"&#xf09a"},{"name":"facebook-official","codepoint":"&#xf230;"},{"name":"facebook-square","codepoint":"&#xf082;"},{"name":"firefox","codepoint":"&#xf269;"},{"name":"first-order","codepoint":"&#xf2b0;"},{"name":"flickr","codepoint":"&#xf16e"},{"name":"font-awesome","codepoint":"&#xf2b4;"},{"name":"fonticons","codepoint":"&#xf280;"},{"name":"fort-awesome","codepoint":"&#xf286;"},{"name":"forumbee","codepoint":"&#xf211;"},{"name":"foursquare","codepoint":"&#xf180;"},{"name":"free-code-camp","codepoint":"&#xf2c5;"},{"name":"ge (alias)","codepoint":"&#xf1d1;"},{"name":"get-pocket","codepoint":"&#xf265;"},{"name":"gg","codepoint":"&#xf260;"},{"name":"gg-circle","codepoint":"&#xf261;"},{"name":"git","codepoint":"&#xf1d3;"},{"name":"git-square","codepoint":"&#xf1d2;"},{"name":"github","codepoint":"&#xf09b"},{"name":"github-alt","codepoint":"&#xf113;"},{"name":"github-square","codepoint":"&#xf092;"},{"name":"gitlab","codepoint":"&#xf296;"},{"name":"gittip (alias)","codepoint":"&#xf184;"},{"name":"glide","codepoint":"&#xf2a5;"},{"name":"glide-g","codepoint":"&#xf2a6;"},{"name":"google","codepoint":"&#xf1a0;"},{"name":"google-plus","codepoint":"&#xf0d5;"},{"name":"google-plus-circle (alias)","codepoint":"&#xf2b3;"},{"name":"google-plus-official","codepoint":"&#xf2b3;"},{"name":"google-plus-square","codepoint":"&#xf0d4;"},{"name":"google-wallet","codepoint":"&#xf1ee"},{"name":"gratipay","codepoint":"&#xf184;"},{"name":"grav","codepoint":"&#xf2d6;"},{"name":"hacker-news","codepoint":"&#xf1d4;"},{"name":"houzz","codepoint":"&#xf27c"},{"name":"html5","codepoint":"&#xf13b"},{"name":"imdb","codepoint":"&#xf2d8;"},{"name":"instagram","codepoint":"&#xf16d"},{"name":"internet-explorer","codepoint":"&#xf26b"},{"name":"ioxhost","codepoint":"&#xf208;"},{"name":"joomla","codepoint":"&#xf1aa"},{"name":"jsfiddle","codepoint":"&#xf1cc"},{"name":"lastfm","codepoint":"&#xf202;"},{"name":"lastfm-square","codepoint":"&#xf203;"},{"name":"leanpub","codepoint":"&#xf212;"},{"name":"linkedin","codepoint":"&#xf0e1;"},{"name":"linkedin-square","codepoint":"&#xf08c"},{"name":"linode","codepoint":"&#xf2b8;"},{"name":"linux","codepoint":"&#xf17c"},{"name":"maxcdn","codepoint":"&#xf136;"},{"name":"meanpath","codepoint":"&#xf20c"},{"name":"medium","codepoint":"&#xf23a"},{"name":"meetup","codepoint":"&#xf2e0;"},{"name":"mixcloud","codepoint":"&#xf289;"},{"name":"modx","codepoint":"&#xf285;"},{"name":"odnoklassniki","codepoint":"&#xf263;"},{"name":"odnoklassniki-square","codepoint":"&#xf264;"},{"name":"opencart","codepoint":"&#xf23d"},{"name":"openid","codepoint":"&#xf19b"},{"name":"opera","codepoint":"&#xf26a"},{"name":"optin-monster","codepoint":"&#xf23c"},{"name":"pagelines","codepoint":"&#xf18c"},{"name":"paypal","codepoint":"&#xf1ed"},{"name":"pied-piper","codepoint":"&#xf2ae"},{"name":"pied-piper-alt","codepoint":"&#xf1a8;"},{"name":"pied-piper-pp","codepoint":"&#xf1a7;"},{"name":"pinterest","codepoint":"&#xf0d2;"},{"name":"pinterest-p","codepoint":"&#xf231;"},{"name":"pinterest-square","codepoint":"&#xf0d3;"},{"name":"product-hunt","codepoint":"&#xf288;"},{"name":"qq","codepoint":"&#xf1d6;"},{"name":"quora","codepoint":"&#xf2c4;"},{"name":"ra (alias)","codepoint":"&#xf1d0;"},{"name":"ravelry","codepoint":"&#xf2d9;"},{"name":"rebel","codepoint":"&#xf1d0;"},{"name":"reddit","codepoint":"&#xf1a1;"},{"name":"reddit-alien","codepoint":"&#xf281;"},{"name":"reddit-square","codepoint":"&#xf1a2;"},{"name":"renren","codepoint":"&#xf18b"},{"name":"resistance (alias)","codepoint":"&#xf1d0;"},{"name":"safari","codepoint":"&#xf267;"},{"name":"scribd","codepoint":"&#xf28a"},{"name":"sellsy","codepoint":"&#xf213;"},{"name":"share-alt","codepoint":"&#xf1e0;"},{"name":"share-alt-square","codepoint":"&#xf1e1;"},{"name":"shirtsinbulk","codepoint":"&#xf214;"},{"name":"simplybuilt","codepoint":"&#xf215;"},{"name":"skyatlas","codepoint":"&#xf216;"},{"name":"skype","codepoint":"&#xf17e"},{"name":"slack","codepoint":"&#xf198;"},{"name":"slideshare","codepoint":"&#xf1e7;"},{"name":"snapchat","codepoint":"&#xf2ab"},{"name":"snapchat-ghost","codepoint":"&#xf2ac"},{"name":"snapchat-square","codepoint":"&#xf2ad"},{"name":"soundcloud","codepoint":"&#xf1be"},{"name":"spotify","codepoint":"&#xf1bc"},{"name":"stack-exchange","codepoint":"&#xf18d"},{"name":"stack-overflow","codepoint":"&#xf16c"},{"name":"steam","codepoint":"&#xf1b6;"},{"name":"steam-square","codepoint":"&#xf1b7;"},{"name":"stumbleupon","codepoint":"&#xf1a4;"},{"name":"stumbleupon-circle","codepoint":"&#xf1a3;"},{"name":"superpowers","codepoint":"&#xf2dd"},{"name":"telegram","codepoint":"&#xf2c6;"},{"name":"tencent-weibo","codepoint":"&#xf1d5;"},{"name":"themeisle","codepoint":"&#xf2b2;"},{"name":"trello","codepoint":"&#xf181;"},{"name":"tripadvisor","codepoint":"&#xf262;"},{"name":"tumblr","codepoint":"&#xf173;"},{"name":"tumblr-square","codepoint":"&#xf174;"},{"name":"twitch","codepoint":"&#xf1e8;"},{"name":"twitter","codepoint":"&#xf099;"},{"name":"twitter-square","codepoint":"&#xf081;"},{"name":"usb","codepoint":"&#xf287;"},{"name":"viacoin","codepoint":"&#xf237;"},{"name":"viadeo","codepoint":"&#xf2a9;"},{"name":"viadeo-square","codepoint":"&#xf2aa"},{"name":"vimeo","codepoint":"&#xf27d"},{"name":"vimeo-square","codepoint":"&#xf194;"},{"name":"vine","codepoint":"&#xf1ca"},{"name":"vk","codepoint":"&#xf189;"},{"name":"wechat (alias)","codepoint":"&#xf1d7;"},{"name":"weibo","codepoint":"&#xf18a"},{"name":"weixin","codepoint":"&#xf1d7;"},{"name":"whatsapp","codepoint":"&#xf232;"},{"name":"wikipedia-w","codepoint":"&#xf266;"},{"name":"windows","codepoint":"&#xf17a"},{"name":"wordpress","codepoint":"&#xf19a"},{"name":"wpbeginner","codepoint":"&#xf297;"},{"name":"wpexplorer","codepoint":"&#xf2de"},{"name":"wpforms","codepoint":"&#xf298;"},{"name":"xing","codepoint":"&#xf168;"},{"name":"xing-square","codepoint":"&#xf169;"},{"name":"y-combinator","codepoint":"&#xf23b"},{"name":"y-combinator-square (alias)","codepoint":"&#xf1d4;"},{"name":"yahoo","codepoint":"&#xf19e"},{"name":"yc (alias)","codepoint":"&#xf23b"},{"name":"yc-square (alias)","codepoint":"&#xf1d4;"},{"name":"yelp","codepoint":"&#xf1e9;"},{"name":"yoast","codepoint":"&#xf2b1;"},{"name":"youtube","codepoint":"&#xf167;"},{"name":"youtube-play","codepoint":"&#xf16a"},{"name":"youtube-square","codepoint":"&#xf166;"}],"chart.txt":[{"name":"area-chart","codepoint":"&#xf1fe"},{"name":"bar-chart","codepoint":"&#xf080;"},{"name":"bar-chart-o (alias)","codepoint":"&#xf080;"},{"name":"line-chart","codepoint":"&#xf201;"},{"name":"pie-chart","codepoint":"&#xf200;"}],"currency.txt":[{"name":"bitcoin (alias)","codepoint":"&#xf15a"},{"name":"btc","codepoint":"&#xf15a"},{"name":"cny (alias)","codepoint":"&#xf157;"},{"name":"dollar (alias)","codepoint":"&#xf155;"},{"name":"eur","codepoint":"&#xf153;"},{"name":"euro (alias)","codepoint":"&#xf153;"},{"name":"gbp","codepoint":"&#xf154;"},{"name":"gg","codepoint":"&#xf260;"},{"name":"gg-circle","codepoint":"&#xf261;"},{"name":"ils","codepoint":"&#xf20b"},{"name":"inr","codepoint":"&#xf156;"},{"name":"jpy","codepoint":"&#xf157;"},{"name":"krw","codepoint":"&#xf159;"},{"name":"money","codepoint":"&#xf0d6;"},{"name":"rmb (alias)","codepoint":"&#xf157;"},{"name":"rouble (alias)","codepoint":"&#xf158;"},{"name":"rub","codepoint":"&#xf158;"},{"name":"ruble (alias)","codepoint":"&#xf158;"},{"name":"rupee (alias)","codepoint":"&#xf156;"},{"name":"shekel (alias)","codepoint":"&#xf20b"},{"name":"sheqel (alias)","codepoint":"&#xf20b"},{"name":"try","codepoint":"&#xf195;"},{"name":"turkish-lira (alias)","codepoint":"&#xf195;"},{"name":"usd","codepoint":"&#xf155;"},{"name":"viacoin","codepoint":"&#xf237;"},{"name":"won (alias)","codepoint":"&#xf159;"},{"name":"yen (alias)","codepoint":"&#xf157;"}],"directional.txt":[{"name":"angle-double-down","codepoint":"&#xf103;"},{"name":"angle-double-left","codepoint":"&#xf100;"},{"name":"angle-double-right","codepoint":"&#xf101;"},{"name":"angle-double-up","codepoint":"&#xf102;"},{"name":"angle-down","codepoint":"&#xf107;"},{"name":"angle-left","codepoint":"&#xf104;"},{"name":"angle-right","codepoint":"&#xf105;"},{"name":"angle-up","codepoint":"&#xf106;"},{"name":"arrow-circle-down","codepoint":"&#xf0ab"},{"name":"arrow-circle-left","codepoint":"&#xf0a8;"},{"name":"arrow-circle-o-down","codepoint":"&#xf01a"},{"name":"arrow-circle-o-left","codepoint":"&#xf190;"},{"name":"arrow-circle-o-right","codepoint":"&#xf18e"},{"name":"arrow-circle-o-up","codepoint":"&#xf01b"},{"name":"arrow-circle-right","codepoint":"&#xf0a9;"},{"name":"arrow-circle-up","codepoint":"&#xf0aa"},{"name":"arrow-down","codepoint":"&#xf063;"},{"name":"arrow-left","codepoint":"&#xf060;"},{"name":"arrow-right","codepoint":"&#xf061;"},{"name":"arrow-up","codepoint":"&#xf062;"},{"name":"arrows","codepoint":"&#xf047;"},{"name":"arrows-alt","codepoint":"&#xf0b2;"},{"name":"arrows-h","codepoint":"&#xf07e"},{"name":"arrows-v","codepoint":"&#xf07d"},{"name":"caret-down","codepoint":"&#xf0d7;"},{"name":"caret-left","codepoint":"&#xf0d9;"},{"name":"caret-right","codepoint":"&#xf0da"},{"name":"caret-square-o-down","codepoint":"&#xf150;"},{"name":"caret-square-o-left","codepoint":"&#xf191;"},{"name":"caret-square-o-right","codepoint":"&#xf152;"},{"name":"caret-square-o-up","codepoint":"&#xf151;"},{"name":"caret-up","codepoint":"&#xf0d8;"},{"name":"chevron-circle-down","codepoint":"&#xf13a"},{"name":"chevron-circle-left","codepoint":"&#xf137;"},{"name":"chevron-circle-right","codepoint":"&#xf138;"},{"name":"chevron-circle-up","codepoint":"&#xf139;"},{"name":"chevron-down","codepoint":"&#xf078;"},{"name":"chevron-left","codepoint":"&#xf053;"},{"name":"chevron-right","codepoint":"&#xf054;"},{"name":"chevron-up","codepoint":"&#xf077;"},{"name":"exchange","codepoint":"&#xf0ec"},{"name":"hand-o-down","codepoint":"&#xf0a7;"},{"name":"hand-o-left","codepoint":"&#xf0a5;"},{"name":"hand-o-right","codepoint":"&#xf0a4;"},{"name":"hand-o-up","codepoint":"&#xf0a6;"},{"name":"long-arrow-down","codepoint":"&#xf175;"},{"name":"long-arrow-left","codepoint":"&#xf177;"},{"name":"long-arrow-right","codepoint":"&#xf178;"},{"name":"long-arrow-up","codepoint":"&#xf176;"},{"name":"toggle-down (alias)","codepoint":"&#xf150;"},{"name":"toggle-left (alias)","codepoint":"&#xf191;"},{"name":"toggle-right (alias)","codepoint":"&#xf152;"},{"name":"toggle-up (alias)","codepoint":"&#xf151;"}],"file-type.txt":[{"name":"file","codepoint":"&#xf15b"},{"name":"file-archive-o","codepoint":"&#xf1c6;"},{"name":"file-audio-o","codepoint":"&#xf1c7;"},{"name":"file-code-o","codepoint":"&#xf1c9;"},{"name":"file-excel-o","codepoint":"&#xf1c3;"},{"name":"file-image-o","codepoint":"&#xf1c5;"},{"name":"file-movie-o (alias)","codepoint":"&#xf1c8;"},{"name":"file-o","codepoint":"&#xf016;"},{"name":"file-pdf-o","codepoint":"&#xf1c1;"},{"name":"file-photo-o (alias)","codepoint":"&#xf1c5;"},{"name":"file-picture-o (alias)","codepoint":"&#xf1c5;"},{"name":"file-powerpoint-o","codepoint":"&#xf1c4;"},{"name":"file-sound-o (alias)","codepoint":"&#xf1c7;"},{"name":"file-text","codepoint":"&#xf15c"},{"name":"file-text-o","codepoint":"&#xf0f6;"},{"name":"file-video-o","codepoint":"&#xf1c8;"},{"name":"file-word-o","codepoint":"&#xf1c2;"},{"name":"file-zip-o (alias)","codepoint":"&#xf1c6;"}],"form-control.txt":[{"name":"check-square","codepoint":"&#xf14a"},{"name":"check-square-o","codepoint":"&#xf046;"},{"name":"circle","codepoint":"&#xf111;"},{"name":"circle-o","codepoint":"&#xf10c"},{"name":"dot-circle-o","codepoint":"&#xf192;"},{"name":"minus-square","codepoint":"&#xf146;"},{"name":"minus-square-o","codepoint":"&#xf147;"},{"name":"plus-square","codepoint":"&#xf0fe"},{"name":"plus-square-o","codepoint":"&#xf196;"},{"name":"square","codepoint":"&#xf0c8;"},{"name":"square-o","codepoint":"&#xf096;"}],"gender.txt":[{"name":"genderless","codepoint":"&#xf22d"},{"name":"intersex (alias)","codepoint":"&#xf224;"},{"name":"mars","codepoint":"&#xf222;"},{"name":"mars-double","codepoint":"&#xf227;"},{"name":"mars-stroke","codepoint":"&#xf229;"},{"name":"mars-stroke-h","codepoint":"&#xf22b"},{"name":"mars-stroke-v","codepoint":"&#xf22a"},{"name":"mercury","codepoint":"&#xf223;"},{"name":"neuter","codepoint":"&#xf22c"},{"name":"transgender","codepoint":"&#xf224;"},{"name":"transgender-alt","codepoint":"&#xf225;"},{"name":"venus","codepoint":"&#xf221;"},{"name":"venus-double","codepoint":"&#xf226;"},{"name":"venus-mars","codepoint":"&#xf228;"}],"hand.txt":[{"name":"hand-grab-o (alias)","codepoint":"&#xf255;"},{"name":"hand-lizard-o","codepoint":"&#xf258;"},{"name":"hand-o-down","codepoint":"&#xf0a7;"},{"name":"hand-o-left","codepoint":"&#xf0a5;"},{"name":"hand-o-right","codepoint":"&#xf0a4;"},{"name":"hand-o-up","codepoint":"&#xf0a6;"},{"name":"hand-paper-o","codepoint":"&#xf256;"},{"name":"hand-peace-o","codepoint":"&#xf25b"},{"name":"hand-pointer-o","codepoint":"&#xf25a"},{"name":"hand-rock-o","codepoint":"&#xf255;"},{"name":"hand-scissors-o","codepoint":"&#xf257;"},{"name":"hand-spock-o","codepoint":"&#xf259;"},{"name":"hand-stop-o (alias)","codepoint":"&#xf256;"},{"name":"thumbs-down","codepoint":"&#xf165;"},{"name":"thumbs-o-down","codepoint":"&#xf088;"},{"name":"thumbs-o-up","codepoint":"&#xf087;"},{"name":"thumbs-up","codepoint":"&#xf164;"}],"payment.txt":[{"name":"cc-amex","codepoint":"&#xf1f3;"},{"name":"cc-diners-club","codepoint":"&#xf24c"},{"name":"cc-discover","codepoint":"&#xf1f2;"},{"name":"cc-jcb","codepoint":"&#xf24b"},{"name":"cc-mastercard","codepoint":"&#xf1f1;"},{"name":"cc-paypal","codepoint":"&#xf1f4;"},{"name":"cc-stripe","codepoint":"&#xf1f5;"},{"name":"cc-visa","codepoint":"&#xf1f0;"},{"name":"credit-card","codepoint":"&#xf09d"},{"name":"credit-card-alt","codepoint":"&#xf283;"},{"name":"google-wallet","codepoint":"&#xf1ee"},{"name":"paypal","codepoint":"&#xf1ed"}],"spinner.txt":[{"name":"circle-o-notch","codepoint":"&#xf1ce"},{"name":"cog","codepoint":"&#xf013;"},{"name":"gear (alias)","codepoint":"&#xf013;"},{"name":"refresh","codepoint":"&#xf021;"},{"name":"spinner","codepoint":"&#xf110;"}],"text-editor.txt":[{"name":"align-center","codepoint":"&#xf037;"},{"name":"align-justify","codepoint":"&#xf039;"},{"name":"align-left","codepoint":"&#xf036;"},{"name":"align-right","codepoint":"&#xf038;"},{"name":"bold","codepoint":"&#xf032;"},{"name":"chain (alias)","codepoint":"&#xf0c1;"},{"name":"chain-broken","codepoint":"&#xf127;"},{"name":"clipboard","codepoint":"&#xf0ea"},{"name":"columns","codepoint":"&#xf0db"},{"name":"copy (alias)","codepoint":"&#xf0c5;"},{"name":"cut (alias)","codepoint":"&#xf0c4;"},{"name":"dedent (alias)","codepoint":"&#xf03b"},{"name":"eraser","codepoint":"&#xf12d"},{"name":"file","codepoint":"&#xf15b"},{"name":"file-o","codepoint":"&#xf016;"},{"name":"file-text","codepoint":"&#xf15c"},{"name":"file-text-o","codepoint":"&#xf0f6;"},{"name":"files-o","codepoint":"&#xf0c5;"},{"name":"floppy-o","codepoint":"&#xf0c7;"},{"name":"font","codepoint":"&#xf031;"},{"name":"header","codepoint":"&#xf1dc"},{"name":"indent","codepoint":"&#xf03c"},{"name":"italic","codepoint":"&#xf033;"},{"name":"link","codepoint":"&#xf0c1;"},{"name":"list","codepoint":"&#xf03a"},{"name":"list-alt","codepoint":"&#xf022;"},{"name":"list-ol","codepoint":"&#xf0cb"},{"name":"list-ul","codepoint":"&#xf0ca"},{"name":"outdent","codepoint":"&#xf03b"},{"name":"paperclip","codepoint":"&#xf0c6;"},{"name":"paragraph","codepoint":"&#xf1dd"},{"name":"paste (alias)","codepoint":"&#xf0ea"},{"name":"repeat","codepoint":"&#xf01e"},{"name":"rotate-left (alias)","codepoint":"&#xf0e2;"},{"name":"rotate-right (alias)","codepoint":"&#xf01e"},{"name":"save (alias)","codepoint":"&#xf0c7;"},{"name":"scissors","codepoint":"&#xf0c4;"},{"name":"strikethrough","codepoint":"&#xf0cc"},{"name":"subscript","codepoint":"&#xf12c"},{"name":"superscript","codepoint":"&#xf12b"},{"name":"table","codepoint":"&#xf0ce"},{"name":"text-height","codepoint":"&#xf034;"},{"name":"text-width","codepoint":"&#xf035;"},{"name":"th","codepoint":"&#xf00a"},{"name":"th-large","codepoint":"&#xf009;"},{"name":"th-list","codepoint":"&#xf00b"},{"name":"underline","codepoint":"&#xf0cd"},{"name":"undo","codepoint":"&#xf0e2;"},{"name":"unlink (alias)","codepoint":"&#xf127;"}],"transportation.txt":[{"name":"ambulance","codepoint":"&#xf0f9;"},{"name":"automobile (alias)","codepoint":"&#xf1b9;"},{"name":"bicycle","codepoint":"&#xf206;"},{"name":"bus","codepoint":"&#xf207;"},{"name":"cab (alias)","codepoint":"&#xf1ba"},{"name":"car","codepoint":"&#xf1b9;"},{"name":"fighter-jet","codepoint":"&#xf0fb"},{"name":"motorcycle","codepoint":"&#xf21c"},{"name":"plane","codepoint":"&#xf072;"},{"name":"rocket","codepoint":"&#xf135;"},{"name":"ship","codepoint":"&#xf21a"},{"name":"space-shuttle","codepoint":"&#xf197;"},{"name":"subway","codepoint":"&#xf239;"},{"name":"taxi","codepoint":"&#xf1ba"},{"name":"train","codepoint":"&#xf238;"},{"name":"truck","codepoint":"&#xf0d1;"},{"name":"wheelchair","codepoint":"&#xf193;"},{"name":"wheelchair-alt","codepoint":"&#xf29b"}],"video-player.txt":[{"name":"arrows-alt","codepoint":"&#xf0b2;"},{"name":"backward","codepoint":"&#xf04a"},{"name":"compress","codepoint":"&#xf066;"},{"name":"eject","codepoint":"&#xf052;"},{"name":"expand","codepoint":"&#xf065;"},{"name":"fast-backward","codepoint":"&#xf049;"},{"name":"fast-forward","codepoint":"&#xf050;"},{"name":"forward","codepoint":"&#xf04e"},{"name":"pause","codepoint":"&#xf04c"},{"name":"pause-circle","codepoint":"&#xf28b"},{"name":"pause-circle-o","codepoint":"&#xf28c"},{"name":"play","codepoint":"&#xf04b"},{"name":"play-circle","codepoint":"&#xf144;"},{"name":"play-circle-o","codepoint":"&#xf01d"},{"name":"random","codepoint":"&#xf074;"},{"name":"step-backward","codepoint":"&#xf048;"},{"name":"step-forward","codepoint":"&#xf051;"},{"name":"stop","codepoint":"&#xf04d"},{"name":"stop-circle","codepoint":"&#xf28d"},{"name":"stop-circle-o","codepoint":"&#xf28e"},{"name":"youtube-play","codepoint":"&#xf16a"}],"web-application.txt":[{"name":"address-book","codepoint":"&#xf2b9;"},{"name":"address-book-o","codepoint":"&#xf2ba"},{"name":"address-card","codepoint":"&#xf2bb"},{"name":"address-card-o","codepoint":"&#xf2bc"},{"name":"adjust","codepoint":"&#xf042;"},{"name":"american-sign-language-interpreting","codepoint":"&#xf2a3;"},{"name":"anchor","codepoint":"&#xf13d"},{"name":"archive","codepoint":"&#xf187;"},{"name":"area-chart","codepoint":"&#xf1fe"},{"name":"arrows","codepoint":"&#xf047;"},{"name":"arrows-h","codepoint":"&#xf07e"},{"name":"arrows-v","codepoint":"&#xf07d"},{"name":"asl-interpreting (alias)","codepoint":"&#xf2a3;"},{"name":"assistive-listening-systems","codepoint":"&#xf2a2;"},{"name":"asterisk","codepoint":"&#xf069;"},{"name":"at","codepoint":"&#xf1fa"},{"name":"audio-description","codepoint":"&#xf29e"},{"name":"automobile (alias)","codepoint":"&#xf1b9;"},{"name":"balance-scale","codepoint":"&#xf24e"},{"name":"ban","codepoint":"&#xf05e"},{"name":"bank (alias)","codepoint":"&#xf19c"},{"name":"bar-chart","codepoint":"&#xf080;"},{"name":"bar-chart-o (alias)","codepoint":"&#xf080;"},{"name":"barcode","codepoint":"&#xf02a"},{"name":"bars","codepoint":"&#xf0c9;"},{"name":"bath","codepoint":"&#xf2cd"},{"name":"bathtub (alias)","codepoint":"&#xf2cd"},{"name":"battery (alias)","codepoint":"&#xf240;"},{"name":"battery-0 (alias)","codepoint":"&#xf244;"},{"name":"battery-1 (alias)","codepoint":"&#xf243;"},{"name":"battery-2 (alias)","codepoint":"&#xf242;"},{"name":"battery-3 (alias)","codepoint":"&#xf241;"},{"name":"battery-4 (alias)","codepoint":"&#xf240;"},{"name":"battery-empty","codepoint":"&#xf244;"},{"name":"battery-full","codepoint":"&#xf240;"},{"name":"battery-half","codepoint":"&#xf242;"},{"name":"battery-quarter","codepoint":"&#xf243;"},{"name":"battery-three-quarters","codepoint":"&#xf241;"},{"name":"bed","codepoint":"&#xf236;"},{"name":"beer","codepoint":"&#xf0fc"},{"name":"bell","codepoint":"&#xf0f3;"},{"name":"bell-o","codepoint":"&#xf0a2;"},{"name":"bell-slash","codepoint":"&#xf1f6;"},{"name":"bell-slash-o","codepoint":"&#xf1f7;"},{"name":"bicycle","codepoint":"&#xf206;"},{"name":"binoculars","codepoint":"&#xf1e5;"},{"name":"birthday-cake","codepoint":"&#xf1fd"},{"name":"blind","codepoint":"&#xf29d"},{"name":"bluetooth","codepoint":"&#xf293;"},{"name":"bluetooth-b","codepoint":"&#xf294;"},{"name":"bolt","codepoint":"&#xf0e7;"},{"name":"bomb","codepoint":"&#xf1e2;"},{"name":"book","codepoint":"&#xf02d"},{"name":"bookmark","codepoint":"&#xf02e"},{"name":"bookmark-o","codepoint":"&#xf097;"},{"name":"braille","codepoint":"&#xf2a1;"},{"name":"briefcase","codepoint":"&#xf0b1;"},{"name":"bug","codepoint":"&#xf188;"},{"name":"building","codepoint":"&#xf1ad"},{"name":"building-o","codepoint":"&#xf0f7;"},{"name":"bullhorn","codepoint":"&#xf0a1;"},{"name":"bullseye","codepoint":"&#xf140;"},{"name":"bus","codepoint":"&#xf207;"},{"name":"cab (alias)","codepoint":"&#xf1ba"},{"name":"calculator","codepoint":"&#xf1ec"},{"name":"calendar","codepoint":"&#xf073;"},{"name":"calendar-check-o","codepoint":"&#xf274;"},{"name":"calendar-minus-o","codepoint":"&#xf272;"},{"name":"calendar-o","codepoint":"&#xf133;"},{"name":"calendar-plus-o","codepoint":"&#xf271;"},{"name":"calendar-times-o","codepoint":"&#xf273;"},{"name":"camera","codepoint":"&#xf030;"},{"name":"camera-retro","codepoint":"&#xf083;"},{"name":"car","codepoint":"&#xf1b9;"},{"name":"caret-square-o-down","codepoint":"&#xf150;"},{"name":"caret-square-o-left","codepoint":"&#xf191;"},{"name":"caret-square-o-right","codepoint":"&#xf152;"},{"name":"caret-square-o-up","codepoint":"&#xf151;"},{"name":"cart-arrow-down","codepoint":"&#xf218;"},{"name":"cart-plus","codepoint":"&#xf217;"},{"name":"cc","codepoint":"&#xf20a"},{"name":"certificate","codepoint":"&#xf0a3;"},{"name":"check","codepoint":"&#xf00c"},{"name":"check-circle","codepoint":"&#xf058;"},{"name":"check-circle-o","codepoint":"&#xf05d"},{"name":"check-square","codepoint":"&#xf14a"},{"name":"check-square-o","codepoint":"&#xf046;"},{"name":"child","codepoint":"&#xf1ae"},{"name":"circle","codepoint":"&#xf111;"},{"name":"circle-o","codepoint":"&#xf10c"},{"name":"circle-o-notch","codepoint":"&#xf1ce"},{"name":"circle-thin","codepoint":"&#xf1db"},{"name":"clock-o","codepoint":"&#xf017;"},{"name":"clone","codepoint":"&#xf24d"},{"name":"close (alias)","codepoint":"&#xf00d"},{"name":"cloud","codepoint":"&#xf0c2;"},{"name":"cloud-download","codepoint":"&#xf0ed"},{"name":"cloud-upload","codepoint":"&#xf0ee"},{"name":"code","codepoint":"&#xf121;"},{"name":"code-fork","codepoint":"&#xf126;"},{"name":"coffee","codepoint":"&#xf0f4;"},{"name":"cog","codepoint":"&#xf013;"},{"name":"cogs","codepoint":"&#xf085;"},{"name":"comment","codepoint":"&#xf075;"},{"name":"comment-o","codepoint":"&#xf0e5;"},{"name":"commenting","codepoint":"&#xf27a"},{"name":"commenting-o","codepoint":"&#xf27b"},{"name":"comments","codepoint":"&#xf086;"},{"name":"comments-o","codepoint":"&#xf0e6;"},{"name":"compass","codepoint":"&#xf14e"},{"name":"copyright","codepoint":"&#xf1f9;"},{"name":"creative-commons","codepoint":"&#xf25e"},{"name":"credit-card","codepoint":"&#xf09d"},{"name":"credit-card-alt","codepoint":"&#xf283;"},{"name":"crop","codepoint":"&#xf125;"},{"name":"crosshairs","codepoint":"&#xf05b"},{"name":"cube","codepoint":"&#xf1b2;"},{"name":"cubes","codepoint":"&#xf1b3;"},{"name":"cutlery","codepoint":"&#xf0f5;"},{"name":"dashboard (alias)","codepoint":"&#xf0e4;"},{"name":"database","codepoint":"&#xf1c0;"},{"name":"deaf","codepoint":"&#xf2a4;"},{"name":"deafness (alias)","codepoint":"&#xf2a4;"},{"name":"desktop","codepoint":"&#xf108;"},{"name":"diamond","codepoint":"&#xf219;"},{"name":"dot-circle-o","codepoint":"&#xf192;"},{"name":"download","codepoint":"&#xf019;"},{"name":"drivers-license (alias)","codepoint":"&#xf2c2;"},{"name":"drivers-license-o (alias)","codepoint":"&#xf2c3;"},{"name":"edit (alias)","codepoint":"&#xf044;"},{"name":"ellipsis-h","codepoint":"&#xf141;"},{"name":"ellipsis-v","codepoint":"&#xf142;"},{"name":"envelope","codepoint":"&#xf0e0;"},{"name":"envelope-o","codepoint":"&#xf003;"},{"name":"envelope-open","codepoint":"&#xf2b6;"},{"name":"envelope-open-o","codepoint":"&#xf2b7;"},{"name":"envelope-square","codepoint":"&#xf199;"},{"name":"eraser","codepoint":"&#xf12d"},{"name":"exchange","codepoint":"&#xf0ec"},{"name":"exclamation","codepoint":"&#xf12a"},{"name":"exclamation-circle","codepoint":"&#xf06a"},{"name":"exclamation-triangle","codepoint":"&#xf071;"},{"name":"external-link","codepoint":"&#xf08e"},{"name":"external-link-square","codepoint":"&#xf14c"},{"name":"eye","codepoint":"&#xf06e"},{"name":"eye-slash","codepoint":"&#xf070;"},{"name":"eyedropper","codepoint":"&#xf1fb"},{"name":"fax","codepoint":"&#xf1ac"},{"name":"feed (alias)","codepoint":"&#xf09e"},{"name":"female","codepoint":"&#xf182;"},{"name":"fighter-jet","codepoint":"&#xf0fb"},{"name":"file-archive-o","codepoint":"&#xf1c6;"},{"name":"file-audio-o","codepoint":"&#xf1c7;"},{"name":"file-code-o","codepoint":"&#xf1c9;"},{"name":"file-excel-o","codepoint":"&#xf1c3;"},{"name":"file-image-o","codepoint":"&#xf1c5;"},{"name":"file-movie-o (alias)","codepoint":"&#xf1c8;"},{"name":"file-pdf-o","codepoint":"&#xf1c1;"},{"name":"file-photo-o (alias)","codepoint":"&#xf1c5;"},{"name":"file-picture-o (alias)","codepoint":"&#xf1c5;"},{"name":"file-powerpoint-o","codepoint":"&#xf1c4;"},{"name":"file-sound-o (alias)","codepoint":"&#xf1c7;"},{"name":"file-video-o","codepoint":"&#xf1c8;"},{"name":"file-word-o","codepoint":"&#xf1c2;"},{"name":"file-zip-o (alias)","codepoint":"&#xf1c6;"},{"name":"film","codepoint":"&#xf008;"},{"name":"filter","codepoint":"&#xf0b0;"},{"name":"fire","codepoint":"&#xf06d"},{"name":"fire-extinguisher","codepoint":"&#xf134;"},{"name":"flag","codepoint":"&#xf024;"},{"name":"flag-checkered","codepoint":"&#xf11e"},{"name":"flag-o","codepoint":"&#xf11d"},{"name":"flash (alias)","codepoint":"&#xf0e7;"},{"name":"flask","codepoint":"&#xf0c3;"},{"name":"folder","codepoint":"&#xf07b"},{"name":"folder-o","codepoint":"&#xf114;"},{"name":"folder-open","codepoint":"&#xf07c"},{"name":"folder-open-o","codepoint":"&#xf115;"},{"name":"frown-o","codepoint":"&#xf119;"},{"name":"futbol-o","codepoint":"&#xf1e3;"},{"name":"gamepad","codepoint":"&#xf11b"},{"name":"gavel","codepoint":"&#xf0e3;"},{"name":"gear (alias)","codepoint":"&#xf013;"},{"name":"gears (alias)","codepoint":"&#xf085;"},{"name":"gift","codepoint":"&#xf06b"},{"name":"glass","codepoint":"&#xf000;"},{"name":"globe","codepoint":"&#xf0ac"},{"name":"graduation-cap","codepoint":"&#xf19d"},{"name":"group (alias)","codepoint":"&#xf0c0;"},{"name":"hand-grab-o (alias)","codepoint":"&#xf255;"},{"name":"hand-lizard-o","codepoint":"&#xf258;"},{"name":"hand-paper-o","codepoint":"&#xf256;"},{"name":"hand-peace-o","codepoint":"&#xf25b"},{"name":"hand-pointer-o","codepoint":"&#xf25a"},{"name":"hand-rock-o","codepoint":"&#xf255;"},{"name":"hand-scissors-o","codepoint":"&#xf257;"},{"name":"hand-spock-o","codepoint":"&#xf259;"},{"name":"hand-stop-o (alias)","codepoint":"&#xf256;"},{"name":"handshake-o","codepoint":"&#xf2b5;"},{"name":"hard-of-hearing (alias)","codepoint":"&#xf2a4;"},{"name":"hashtag","codepoint":"&#xf292;"},{"name":"hdd-o","codepoint":"&#xf0a0;"},{"name":"headphones","codepoint":"&#xf025;"},{"name":"heart","codepoint":"&#xf004;"},{"name":"heart-o","codepoint":"&#xf08a"},{"name":"heartbeat","codepoint":"&#xf21e"},{"name":"history","codepoint":"&#xf1da"},{"name":"home","codepoint":"&#xf015;"},{"name":"hotel (alias)","codepoint":"&#xf236;"},{"name":"hourglass","codepoint":"&#xf254;"},{"name":"hourglass-1 (alias)","codepoint":"&#xf251;"},{"name":"hourglass-2 (alias)","codepoint":"&#xf252;"},{"name":"hourglass-3 (alias)","codepoint":"&#xf253;"},{"name":"hourglass-end","codepoint":"&#xf253;"},{"name":"hourglass-half","codepoint":"&#xf252;"},{"name":"hourglass-o","codepoint":"&#xf250;"},{"name":"hourglass-start","codepoint":"&#xf251;"},{"name":"i-cursor","codepoint":"&#xf246;"},{"name":"id-badge","codepoint":"&#xf2c1;"},{"name":"id-card","codepoint":"&#xf2c2;"},{"name":"id-card-o","codepoint":"&#xf2c3;"},{"name":"image (alias)","codepoint":"&#xf03e"},{"name":"inbox","codepoint":"&#xf01c"},{"name":"industry","codepoint":"&#xf275;"},{"name":"info","codepoint":"&#xf129;"},{"name":"info-circle","codepoint":"&#xf05a"},{"name":"institution (alias)","codepoint":"&#xf19c"},{"name":"key","codepoint":"&#xf084;"},{"name":"keyboard-o","codepoint":"&#xf11c"},{"name":"language","codepoint":"&#xf1ab"},{"name":"laptop","codepoint":"&#xf109;"},{"name":"leaf","codepoint":"&#xf06c"},{"name":"legal (alias)","codepoint":"&#xf0e3;"},{"name":"lemon-o","codepoint":"&#xf094;"},{"name":"level-down","codepoint":"&#xf149;"},{"name":"level-up","codepoint":"&#xf148;"},{"name":"life-bouy (alias)","codepoint":"&#xf1cd"},{"name":"life-buoy (alias)","codepoint":"&#xf1cd"},{"name":"life-ring","codepoint":"&#xf1cd"},{"name":"life-saver (alias)","codepoint":"&#xf1cd"},{"name":"lightbulb-o","codepoint":"&#xf0eb"},{"name":"line-chart","codepoint":"&#xf201;"},{"name":"location-arrow","codepoint":"&#xf124;"},{"name":"lock","codepoint":"&#xf023;"},{"name":"low-vision","codepoint":"&#xf2a8;"},{"name":"magic","codepoint":"&#xf0d0;"},{"name":"magnet","codepoint":"&#xf076;"},{"name":"mail-forward (alias)","codepoint":"&#xf064;"},{"name":"mail-reply (alias)","codepoint":"&#xf112;"},{"name":"mail-reply-all (alias)","codepoint":"&#xf122;"},{"name":"male","codepoint":"&#xf183;"},{"name":"map","codepoint":"&#xf279;"},{"name":"map-marker","codepoint":"&#xf041;"},{"name":"map-o","codepoint":"&#xf278;"},{"name":"map-pin","codepoint":"&#xf276;"},{"name":"map-signs","codepoint":"&#xf277;"},{"name":"meh-o","codepoint":"&#xf11a"},{"name":"microchip","codepoint":"&#xf2db"},{"name":"microphone","codepoint":"&#xf130;"},{"name":"microphone-slash","codepoint":"&#xf131;"},{"name":"minus","codepoint":"&#xf068;"},{"name":"minus-circle","codepoint":"&#xf056;"},{"name":"minus-square","codepoint":"&#xf146;"},{"name":"minus-square-o","codepoint":"&#xf147;"},{"name":"mobile","codepoint":"&#xf10b"},{"name":"mobile-phone (alias)","codepoint":"&#xf10b"},{"name":"money","codepoint":"&#xf0d6;"},{"name":"moon-o","codepoint":"&#xf186;"},{"name":"mortar-board (alias)","codepoint":"&#xf19d"},{"name":"motorcycle","codepoint":"&#xf21c"},{"name":"mouse-pointer","codepoint":"&#xf245;"},{"name":"music","codepoint":"&#xf001;"},{"name":"navicon (alias)","codepoint":"&#xf0c9;"},{"name":"newspaper-o","codepoint":"&#xf1ea"},{"name":"object-group","codepoint":"&#xf247;"},{"name":"object-ungroup","codepoint":"&#xf248;"},{"name":"paint-brush","codepoint":"&#xf1fc"},{"name":"paper-plane","codepoint":"&#xf1d8;"},{"name":"paper-plane-o","codepoint":"&#xf1d9;"},{"name":"paw","codepoint":"&#xf1b0;"},{"name":"pencil","codepoint":"&#xf040;"},{"name":"pencil-square","codepoint":"&#xf14b"},{"name":"pencil-square-o","codepoint":"&#xf044;"},{"name":"percent","codepoint":"&#xf295;"},{"name":"phone","codepoint":"&#xf095;"},{"name":"phone-square","codepoint":"&#xf098;"},{"name":"photo (alias)","codepoint":"&#xf03e"},{"name":"picture-o","codepoint":"&#xf03e"},{"name":"pie-chart","codepoint":"&#xf200;"},{"name":"plane","codepoint":"&#xf072;"},{"name":"plug","codepoint":"&#xf1e6;"},{"name":"plus","codepoint":"&#xf067;"},{"name":"plus-circle","codepoint":"&#xf055;"},{"name":"plus-square","codepoint":"&#xf0fe"},{"name":"plus-square-o","codepoint":"&#xf196;"},{"name":"podcast","codepoint":"&#xf2ce"},{"name":"power-off","codepoint":"&#xf011;"},{"name":"print","codepoint":"&#xf02f"},{"name":"puzzle-piece","codepoint":"&#xf12e"},{"name":"qrcode","codepoint":"&#xf029;"},{"name":"question","codepoint":"&#xf128;"},{"name":"question-circle","codepoint":"&#xf059;"},{"name":"question-circle-o","codepoint":"&#xf29c"},{"name":"quote-left","codepoint":"&#xf10d"},{"name":"quote-right","codepoint":"&#xf10e"},{"name":"random","codepoint":"&#xf074;"},{"name":"recycle","codepoint":"&#xf1b8;"},{"name":"refresh","codepoint":"&#xf021;"},{"name":"registered","codepoint":"&#xf25d"},{"name":"remove (alias)","codepoint":"&#xf00d"},{"name":"reorder (alias)","codepoint":"&#xf0c9;"},{"name":"reply","codepoint":"&#xf112;"},{"name":"reply-all","codepoint":"&#xf122;"},{"name":"retweet","codepoint":"&#xf079;"},{"name":"road","codepoint":"&#xf018;"},{"name":"rocket","codepoint":"&#xf135;"},{"name":"rss","codepoint":"&#xf09e"},{"name":"rss-square","codepoint":"&#xf143;"},{"name":"s15 (alias)","codepoint":"&#xf2cd"},{"name":"search","codepoint":"&#xf002;"},{"name":"search-minus","codepoint":"&#xf010;"},{"name":"search-plus","codepoint":"&#xf00e"},{"name":"send (alias)","codepoint":"&#xf1d8;"},{"name":"send-o (alias)","codepoint":"&#xf1d9;"},{"name":"server","codepoint":"&#xf233;"},{"name":"share","codepoint":"&#xf064;"},{"name":"share-alt","codepoint":"&#xf1e0;"},{"name":"share-alt-square","codepoint":"&#xf1e1;"},{"name":"share-square","codepoint":"&#xf14d"},{"name":"share-square-o","codepoint":"&#xf045;"},{"name":"shield","codepoint":"&#xf132;"},{"name":"ship","codepoint":"&#xf21a"},{"name":"shopping-bag","codepoint":"&#xf290;"},{"name":"shopping-basket","codepoint":"&#xf291;"},{"name":"shopping-cart","codepoint":"&#xf07a"},{"name":"shower","codepoint":"&#xf2cc"},{"name":"sign-in","codepoint":"&#xf090;"},{"name":"sign-language","codepoint":"&#xf2a7;"},{"name":"sign-out","codepoint":"&#xf08b"},{"name":"signal","codepoint":"&#xf012;"},{"name":"signing (alias)","codepoint":"&#xf2a7;"},{"name":"sitemap","codepoint":"&#xf0e8;"},{"name":"sliders","codepoint":"&#xf1de"},{"name":"smile-o","codepoint":"&#xf118;"},{"name":"snowflake-o","codepoint":"&#xf2dc"},{"name":"soccer-ball-o (alias)","codepoint":"&#xf1e3;"},{"name":"sort","codepoint":"&#xf0dc"},{"name":"sort-alpha-asc","codepoint":"&#xf15d"},{"name":"sort-alpha-desc","codepoint":"&#xf15e"},{"name":"sort-amount-asc","codepoint":"&#xf160;"},{"name":"sort-amount-desc","codepoint":"&#xf161;"},{"name":"sort-asc","codepoint":"&#xf0de"},{"name":"sort-desc","codepoint":"&#xf0dd"},{"name":"sort-down (alias)","codepoint":"&#xf0dd"},{"name":"sort-numeric-asc","codepoint":"&#xf162;"},{"name":"sort-numeric-desc","codepoint":"&#xf163;"},{"name":"sort-up (alias)","codepoint":"&#xf0de"},{"name":"space-shuttle","codepoint":"&#xf197;"},{"name":"spinner","codepoint":"&#xf110;"},{"name":"spoon","codepoint":"&#xf1b1;"},{"name":"square","codepoint":"&#xf0c8;"},{"name":"square-o","codepoint":"&#xf096;"},{"name":"star","codepoint":"&#xf005;"},{"name":"star-half","codepoint":"&#xf089;"},{"name":"star-half-empty (alias)","codepoint":"&#xf123;"},{"name":"star-half-full (alias)","codepoint":"&#xf123;"},{"name":"star-half-o","codepoint":"&#xf123;"},{"name":"star-o","codepoint":"&#xf006;"},{"name":"sticky-note","codepoint":"&#xf249;"},{"name":"sticky-note-o","codepoint":"&#xf24a"},{"name":"street-view","codepoint":"&#xf21d"},{"name":"suitcase","codepoint":"&#xf0f2;"},{"name":"sun-o","codepoint":"&#xf185;"},{"name":"support (alias)","codepoint":"&#xf1cd"},{"name":"tablet","codepoint":"&#xf10a"},{"name":"tachometer","codepoint":"&#xf0e4;"},{"name":"tag","codepoint":"&#xf02b"},{"name":"tags","codepoint":"&#xf02c"},{"name":"tasks","codepoint":"&#xf0ae"},{"name":"taxi","codepoint":"&#xf1ba"},{"name":"television","codepoint":"&#xf26c"},{"name":"terminal","codepoint":"&#xf120;"},{"name":"thermometer (alias)","codepoint":"&#xf2c7;"},{"name":"thermometer-0 (alias)","codepoint":"&#xf2cb"},{"name":"thermometer-1 (alias)","codepoint":"&#xf2ca"},{"name":"thermometer-2 (alias)","codepoint":"&#xf2c9;"},{"name":"thermometer-3 (alias)","codepoint":"&#xf2c8;"},{"name":"thermometer-4 (alias)","codepoint":"&#xf2c7;"},{"name":"thermometer-empty","codepoint":"&#xf2cb"},{"name":"thermometer-full","codepoint":"&#xf2c7;"},{"name":"thermometer-half","codepoint":"&#xf2c9;"},{"name":"thermometer-quarter","codepoint":"&#xf2ca"},{"name":"thermometer-three-quarters","codepoint":"&#xf2c8;"},{"name":"thumb-tack","codepoint":"&#xf08d"},{"name":"thumbs-down","codepoint":"&#xf165;"},{"name":"thumbs-o-down","codepoint":"&#xf088;"},{"name":"thumbs-o-up","codepoint":"&#xf087;"},{"name":"thumbs-up","codepoint":"&#xf164;"},{"name":"ticket","codepoint":"&#xf145;"},{"name":"times","codepoint":"&#xf00d"},{"name":"times-circle","codepoint":"&#xf057;"},{"name":"times-circle-o","codepoint":"&#xf05c"},{"name":"times-rectangle (alias)","codepoint":"&#xf2d3;"},{"name":"times-rectangle-o (alias)","codepoint":"&#xf2d4;"},{"name":"tint","codepoint":"&#xf043;"},{"name":"toggle-down (alias)","codepoint":"&#xf150;"},{"name":"toggle-left (alias)","codepoint":"&#xf191;"},{"name":"toggle-off","codepoint":"&#xf204;"},{"name":"toggle-on","codepoint":"&#xf205;"},{"name":"toggle-right (alias)","codepoint":"&#xf152;"},{"name":"toggle-up (alias)","codepoint":"&#xf151;"},{"name":"trademark","codepoint":"&#xf25c"},{"name":"trash","codepoint":"&#xf1f8;"},{"name":"trash-o","codepoint":"&#xf014;"},{"name":"tree","codepoint":"&#xf1bb"},{"name":"trophy","codepoint":"&#xf091;"},{"name":"truck","codepoint":"&#xf0d1;"},{"name":"tty","codepoint":"&#xf1e4;"},{"name":"tv (alias)","codepoint":"&#xf26c"},{"name":"umbrella","codepoint":"&#xf0e9;"},{"name":"universal-access","codepoint":"&#xf29a"},{"name":"university","codepoint":"&#xf19c"},{"name":"unlock","codepoint":"&#xf09c"},{"name":"unlock-alt","codepoint":"&#xf13e"},{"name":"unsorted (alias)","codepoint":"&#xf0dc"},{"name":"upload","codepoint":"&#xf093;"},{"name":"user","codepoint":"&#xf007;"},{"name":"user-circle","codepoint":"&#xf2bd"},{"name":"user-circle-o","codepoint":"&#xf2be"},{"name":"user-o","codepoint":"&#xf2c0;"},{"name":"user-plus","codepoint":"&#xf234;"},{"name":"user-secret","codepoint":"&#xf21b"},{"name":"user-times","codepoint":"&#xf235;"},{"name":"users","codepoint":"&#xf0c0;"},{"name":"vcard (alias)","codepoint":"&#xf2bb"},{"name":"vcard-o (alias)","codepoint":"&#xf2bc"},{"name":"video-camera","codepoint":"&#xf03d"},{"name":"volume-control-phone","codepoint":"&#xf2a0;"},{"name":"volume-down","codepoint":"&#xf027;"},{"name":"volume-off","codepoint":"&#xf026;"},{"name":"volume-up","codepoint":"&#xf028;"},{"name":"warning (alias)","codepoint":"&#xf071;"},{"name":"wheelchair","codepoint":"&#xf193;"},{"name":"wheelchair-alt","codepoint":"&#xf29b"},{"name":"wifi","codepoint":"&#xf1eb"},{"name":"window-close","codepoint":"&#xf2d3;"},{"name":"window-close-o","codepoint":"&#xf2d4;"},{"name":"window-maximize","codepoint":"&#xf2d0;"},{"name":"window-minimize","codepoint":"&#xf2d1;"},{"name":"window-restore","codepoint":"&#xf2d2;"},{"name":"wrench","codepoint":"&#xf0ad"}]};
+```
+----- END FILE: js/font-awesome-data.js -----
+
+----- BEGIN FILE: js/theme.js -----
+```javascript
+   1: // Theme and accent color management
+   2: var textUtilsStorage = window.__textUtilsStorage || {
+   3:     get(key) {
+   4:         try {
+   5:             return localStorage.getItem(key);
+   6:         } catch (_) {
+   7:             return null;
+   8:         }
+   9:     },
+  10:     set(key, value) {
+  11:         try {
+  12:             localStorage.setItem(key, value);
+  13:         } catch (_) {
+  14:             // Ignore storage write failures (private mode / quota).
+  15:         }
+  16:     },
+  17:     remove(key) {
+  18:         try {
+  19:             localStorage.removeItem(key);
+  20:         } catch (_) {
+  21:             // Ignore storage removal failures.
+  22:         }
+  23:     }
+  24: };
+  25: window.__textUtilsStorage = textUtilsStorage;
+  26: 
+  27: if (typeof window.textUtilsClipboardWrite !== 'function') {
+  28:     window.textUtilsClipboardWrite = async function textUtilsClipboardWrite(value) {
+  29:         const text = String(value ?? '');
+  30: 
+  31:         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+  32:             return navigator.clipboard.writeText(text);
+  33:         }
+  34: 
+  35:         const textarea = document.createElement('textarea');
+  36:         textarea.value = text;
+  37:         textarea.setAttribute('readonly', '');
+  38:         textarea.setAttribute('aria-hidden', 'true');
+  39:         textarea.style.position = 'fixed';
+  40:         textarea.style.top = '0';
+  41:         textarea.style.left = '-9999px';
+  42:         textarea.style.opacity = '0';
+  43: 
+  44:         const previousActive = document.activeElement;
+  45: 
+  46:         document.body.appendChild(textarea);
+  47:         textarea.focus();
+  48:         textarea.select();
+  49:         textarea.setSelectionRange(0, textarea.value.length);
+  50: 
+  51:         let copied = false;
+  52:         try {
+  53:             copied = typeof document.execCommand === 'function'
+  54:                 && document.execCommand('copy');
+  55:         } finally {
+  56:             textarea.remove();
+  57:             if (previousActive && typeof previousActive.focus === 'function') {
+  58:                 previousActive.focus();
+  59:             }
+  60:         }
+  61: 
+  62:         if (!copied) {
+  63:             throw new Error('Clipboard copy unavailable');
+  64:         }
+  65:     };
+  66: }
+  67: 
+  68: (function() {
+  69:     'use strict';
+  70: 
+  71:     if (window.__textUtilsThemeModuleLoaded) {
+  72:         return;
+  73:     }
+  74:     window.__textUtilsThemeModuleLoaded = true;
+  75: 
+  76:     const ACCENT_PALETTE = [
+  77:         { value: '#0d9488', label: 'Teal' },
+  78:         { value: '#3b82f6', label: 'Blue' },
+  79:         { value: '#8b5cf6', label: 'Purple' },
+  80:         { value: '#10b981', label: 'Emerald' },
+  81:         { value: '#f59e0b', label: 'Amber' },
+  82:         { value: '#ef4444', label: 'Red' },
+  83:         { value: '#ec4899', label: 'Soft Pink' },
+  84:         { value: '#fb7185', label: 'Coral' },
+  85:         { value: '#5f9ea0', label: 'Cadet Blue' },
+  86:         { value: '#6495ed', label: 'Cornflower' },
+  87:         { value: '#deb887', label: 'Burlywood' },
+  88:         { value: '#60a5fa', label: 'Sky Blue' },
+  89:         { value: '#7c3aed', label: 'Violet' }
+  90:     ];
+  91:     const DEFAULT_ACCENT = '#0d9488';
+  92: 
+  93:     let themeToggle = null;
+  94:     let accentColor = null;
+  95: 
+  96:     function captureControls() {
+  97:         themeToggle = document.getElementById('themeToggle');
+  98:         accentColor = document.getElementById('accentColor');
+  99: 
+ 100:         if (themeToggle) {
+ 101:             themeToggle.type = 'button';
+ 102:         }
+ 103: 
+ 104:         if (accentColor && !accentColor.getAttribute('aria-label')) {
+ 105:             accentColor.setAttribute('aria-label', 'Accent color');
+ 106:         }
+ 107:     }
+ 108: 
+ 109:     function normalizeHexColor(color) {
+ 110:         if (typeof color !== 'string') {
+ 111:             return DEFAULT_ACCENT;
+ 112:         }
+ 113: 
+ 114:         let candidate = color.trim().toLowerCase();
+ 115:         if (/^#[0-9a-f]{3}$/.test(candidate)) {
+ 116:             candidate = `#${candidate[1]}${candidate[1]}${candidate[2]}${candidate[2]}${candidate[3]}${candidate[3]}`;
+ 117:         }
+ 118: 
+ 119:         if (/^#[0-9a-f]{6}$/.test(candidate)) {
+ 120:             return candidate;
+ 121:         }
+ 122: 
+ 123:         return DEFAULT_ACCENT;
+ 124:     }
+ 125: 
+ 126:     function hexToRgbTuple(hex) {
+ 127:         const normalized = normalizeHexColor(hex).slice(1);
+ 128:         const red = parseInt(normalized.slice(0, 2), 16);
+ 129:         const green = parseInt(normalized.slice(2, 4), 16);
+ 130:         const blue = parseInt(normalized.slice(4, 6), 16);
+ 131:         return `${red}, ${green}, ${blue}`;
+ 132:     }
+ 133: 
+ 134:     function clampUnit(value) {
+ 135:         return Math.min(Math.max(value, 0), 1);
+ 136:     }
+ 137: 
+ 138:     function rgbToHsl(red, green, blue) {
+ 139:         const r = red / 255;
+ 140:         const g = green / 255;
+ 141:         const b = blue / 255;
+ 142:         const max = Math.max(r, g, b);
+ 143:         const min = Math.min(r, g, b);
+ 144:         const delta = max - min;
+ 145: 
+ 146:         let hue = 0;
+ 147:         let saturation = 0;
+ 148:         const lightness = (max + min) / 2;
+ 149: 
+ 150:         if (delta !== 0) {
+ 151:             saturation = delta / (1 - Math.abs((2 * lightness) - 1));
+ 152: 
+ 153:             switch (max) {
+ 154:                 case r:
+ 155:                     hue = ((g - b) / delta) % 6;
+ 156:                     break;
+ 157:                 case g:
+ 158:                     hue = ((b - r) / delta) + 2;
+ 159:                     break;
+ 160:                 default:
+ 161:                     hue = ((r - g) / delta) + 4;
+ 162:                     break;
+ 163:             }
+ 164: 
+ 165:             hue *= 60;
+ 166:             if (hue < 0) {
+ 167:                 hue += 360;
+ 168:             }
+ 169:         }
+ 170: 
+ 171:         return { hue, saturation, lightness };
+ 172:     }
+ 173: 
+ 174:     function hslToRgb(hue, saturation, lightness) {
+ 175:         const chroma = (1 - Math.abs((2 * lightness) - 1)) * saturation;
+ 176:         const huePrime = (hue % 360) / 60;
+ 177:         const x = chroma * (1 - Math.abs((huePrime % 2) - 1));
+ 178:         let r1 = 0;
+ 179:         let g1 = 0;
+ 180:         let b1 = 0;
+ 181: 
+ 182:         if (huePrime >= 0 && huePrime < 1) {
+ 183:             r1 = chroma;
+ 184:             g1 = x;
+ 185:         } else if (huePrime < 2) {
+ 186:             r1 = x;
+ 187:             g1 = chroma;
+ 188:         } else if (huePrime < 3) {
+ 189:             g1 = chroma;
+ 190:             b1 = x;
+ 191:         } else if (huePrime < 4) {
+ 192:             g1 = x;
+ 193:             b1 = chroma;
+ 194:         } else if (huePrime < 5) {
+ 195:             r1 = x;
+ 196:             b1 = chroma;
+ 197:         } else {
+ 198:             r1 = chroma;
+ 199:             b1 = x;
+ 200:         }
+ 201: 
+ 202:         const match = lightness - (chroma / 2);
+ 203:         const red = Math.round((r1 + match) * 255);
+ 204:         const green = Math.round((g1 + match) * 255);
+ 205:         const blue = Math.round((b1 + match) * 255);
+ 206:         return { red, green, blue };
+ 207:     }
+ 208: 
+ 209:     function adjustColor(color, amount) {
+ 210:         const normalized = normalizeHexColor(color).slice(1);
+ 211:         const parsed = parseInt(normalized, 16);
+ 212: 
+ 213:         if (Number.isNaN(parsed)) {
+ 214:             return DEFAULT_ACCENT;
+ 215:         }
+ 216: 
+ 217:         const red = (parsed >> 16) & 0xFF;
+ 218:         const green = (parsed >> 8) & 0xFF;
+ 219:         const blue = parsed & 0xFF;
+ 220:         const hsl = rgbToHsl(red, green, blue);
+ 221:         const adjustedLightness = clampUnit(hsl.lightness + (amount / 255));
+ 222:         const adjusted = hslToRgb(hsl.hue, hsl.saturation, adjustedLightness);
+ 223: 
+ 224:         return `#${((adjusted.red << 16) | (adjusted.green << 8) | adjusted.blue).toString(16).padStart(6, '0')}`;
+ 225:     }
+ 226: 
+ 227:     function applyAccent(color) {
+ 228:         const normalized = normalizeHexColor(color);
+ 229:         document.documentElement.style.setProperty('--accent', normalized);
+ 230:         document.documentElement.style.setProperty('--accent-light', adjustColor(normalized, 20));
+ 231:         document.documentElement.style.setProperty('--accent-rgb', hexToRgbTuple(normalized));
+ 232:         return normalized;
+ 233:     }
+ 234: 
+ 235:     function ensureAccentOptionExists(value) {
+ 236:         if (!accentColor) {
+ 237:             return;
+ 238:         }
+ 239: 
+ 240:         const normalized = normalizeHexColor(value);
+ 241:         if (accentColor.querySelector(`option[value="${normalized}"]`)) {
+ 242:             return;
+ 243:         }
+ 244: 
+ 245:         const customOption = document.createElement('option');
+ 246:         customOption.value = normalized;
+ 247:         customOption.textContent = `Custom (${normalized})`;
+ 248:         accentColor.appendChild(customOption);
+ 249:     }
+ 250: 
+ 251:     function populateAccentDropdown(selectedColor) {
+ 252:         if (!accentColor) {
+ 253:             return;
+ 254:         }
+ 255: 
+ 256:         accentColor.replaceChildren();
+ 257: 
+ 258:         ACCENT_PALETTE.forEach(({ value, label }) => {
+ 259:             const option = document.createElement('option');
+ 260:             option.value = value;
+ 261:             option.textContent = label;
+ 262:             accentColor.appendChild(option);
+ 263:         });
+ 264: 
+ 265:         const normalizedSelected = normalizeHexColor(selectedColor);
+ 266:         const hasSavedColor = ACCENT_PALETTE.some(
+ 267:             ({ value }) => value.toLowerCase() === normalizedSelected
+ 268:         );
+ 269: 
+ 270:         if (!hasSavedColor) {
+ 271:             ensureAccentOptionExists(normalizedSelected);
+ 272:         }
+ 273: 
+ 274:         accentColor.value = normalizedSelected;
+ 275:     }
+ 276: 
+ 277:     function updateThemeToggleIcon(theme) {
+ 278:         if (!themeToggle) {
+ 279:             return;
+ 280:         }
+ 281: 
+ 282:         const icon = document.createElement('span');
+ 283:         icon.className = 'material-icons';
+ 284:         icon.setAttribute('aria-hidden', 'true');
+ 285:         icon.textContent = theme === 'dark' ? 'dark_mode' : 'light_mode';
+ 286: 
+ 287:         themeToggle.replaceChildren(icon);
+ 288: 
+ 289:         const isDark = theme === 'dark';
+ 290:         themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+ 291:         themeToggle.setAttribute('title', isDark ? 'Dark mode' : 'Light mode');
+ 292:         themeToggle.setAttribute(
+ 293:             'aria-label',
+ 294:             isDark ? 'Switch to light theme' : 'Switch to dark theme'
+ 295:         );
+ 296:     }
+ 297: 
+ 298:     function getDefaultTheme() {
+ 299:         const prefersLight = window.matchMedia
+ 300:             && window.matchMedia('(prefers-color-scheme: light)').matches;
+ 301:         return prefersLight ? 'light' : 'dark';
+ 302:     }
+ 303: 
+ 304:     function loadPreferences() {
+ 305:         const storedTheme = textUtilsStorage.get('theme');
+ 306:         const savedTheme = storedTheme === 'light' || storedTheme === 'dark'
+ 307:             ? storedTheme
+ 308:             : getDefaultTheme();
+ 309: 
+ 310:         document.documentElement.setAttribute('data-theme', savedTheme);
+ 311:         updateThemeToggleIcon(savedTheme);
+ 312: 
+ 313:         const storedColor = textUtilsStorage.get('accentColor');
+ 314:         const savedColor = normalizeHexColor(storedColor || DEFAULT_ACCENT);
+ 315:         const appliedColor = applyAccent(savedColor);
+ 316:         populateAccentDropdown(appliedColor);
+ 317:     }
+ 318: 
+ 319:     function toggleTheme() {
+ 320:         const currentTheme = document.documentElement.getAttribute('data-theme');
+ 321:         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+ 322:         document.documentElement.setAttribute('data-theme', newTheme);
+ 323:         textUtilsStorage.set('theme', newTheme);
+ 324:         updateThemeToggleIcon(newTheme);
+ 325:     }
+ 326: 
+ 327:     function changeAccentColor(color) {
+ 328:         const normalized = applyAccent(color);
+ 329:         textUtilsStorage.set('accentColor', normalized);
+ 330:         if (accentColor) {
+ 331:             ensureAccentOptionExists(normalized);
+ 332:             accentColor.value = normalized;
+ 333:         }
+ 334:     }
+ 335: 
+ 336:     function setupEventListeners() {
+ 337:         if (themeToggle && themeToggle.dataset.themeBound !== '1') {
+ 338:             themeToggle.addEventListener('click', toggleTheme);
+ 339:             themeToggle.dataset.themeBound = '1';
+ 340:         }
+ 341: 
+ 342:         if (accentColor && accentColor.dataset.accentBound !== '1') {
+ 343:             accentColor.addEventListener('change', (event) => {
+ 344:                 changeAccentColor(event.target.value);
+ 345:             });
+ 346:             accentColor.dataset.accentBound = '1';
+ 347:         }
+ 348:     }
+ 349: 
+ 350:     function init() {
+ 351:         captureControls();
+ 352:         loadPreferences();
+ 353:         setupEventListeners();
+ 354:     }
+ 355: 
+ 356:     if (document.readyState === 'loading') {
+ 357:         document.addEventListener('DOMContentLoaded', init);
+ 358:     } else {
+ 359:         init();
+ 360:     }
+ 361: 
+ 362:     window.themeUtils = {
+ 363:         adjustColor,
+ 364:         applyAccent,
+ 365:         normalizeHexColor,
+ 366:         toggleTheme() {
+ 367:             captureControls();
+ 368:             toggleTheme();
+ 369:         },
+ 370:         changeAccentColor(color) {
+ 371:             captureControls();
+ 372:             changeAccentColor(color);
+ 373:         },
+ 374:         loadPreferences() {
+ 375:             captureControls();
+ 376:             loadPreferences();
+ 377:         }
+ 378:     };
+ 379: })();
+ 380: 
+ 381: (function() {
+ 382:     'use strict';
+ 383: 
+ 384:     if (window.__textUtilsSnowModuleLoaded) {
+ 385:         return;
+ 386:     }
+ 387:     window.__textUtilsSnowModuleLoaded = true;
+ 388: 
+ 389:     const STORAGE_KEY = 'holiday_snow_enabled';
+ 390:     const BTN_CLASS = 'btn btn-secondary';
+ 391:     const BTN_ID = 'snowToggle';
+ 392: 
+ 393:     let canvas = null;
+ 394:     let ctx = null;
+ 395:     let width = 0;
+ 396:     let height = 0;
+ 397:     let particles = [];
+ 398:     let animationId = null;
+ 399:     let isSnowing = false;
+ 400:     let resizeAttached = false;
+ 401: 
+ 402:     function isHolidaySeason() {
+ 403:         const now = new Date();
+ 404:         const month = now.getMonth();
+ 405:         const date = now.getDate();
+ 406: 
+ 407:         if (month === 0 && date === 1) {
+ 408:             return true;
+ 409:         }
+ 410: 
+ 411:         if (month === 11) {
+ 412:             return true;
+ 413:         }
+ 414: 
+ 415:         if (month === 10) {
+ 416:             const firstOfNovember = new Date(now.getFullYear(), 10, 1);
+ 417:             const firstDay = firstOfNovember.getDay();
+ 418:             const daysToFirstThursday = (4 - firstDay + 7) % 7;
+ 419:             const thanksgivingDate = 1 + daysToFirstThursday + 21;
+ 420:             return date >= thanksgivingDate;
+ 421:         }
+ 422: 
+ 423:         return false;
+ 424:     }
+ 425: 
+ 426:     if (!isHolidaySeason()) {
+ 427:         return;
+ 428:     }
+ 429: 
+ 430:     function resize() {
+ 431:         if (!canvas || !ctx) {
+ 432:             return;
+ 433:         }
+ 434: 
+ 435:         const dpr = window.devicePixelRatio || 1;
+ 436:         width = window.innerWidth;
+ 437:         height = window.innerHeight;
+ 438: 
+ 439:         canvas.width = Math.floor(width * dpr);
+ 440:         canvas.height = Math.floor(height * dpr);
+ 441:         canvas.style.width = '100%';
+ 442:         canvas.style.height = '100%';
+ 443:         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+ 444:     }
+ 445: 
+ 446:     function buildParticles() {
+ 447:         const particleCount = Math.min(Math.floor(window.innerWidth / 10), 50);
+ 448:         particles = [];
+ 449: 
+ 450:         for (let index = 0; index < particleCount; index++) {
+ 451:             particles.push({
+ 452:                 x: Math.random() * width,
+ 453:                 y: Math.random() * height,
+ 454:                 r: 1 + Math.random() * 2.5,
+ 455:                 v: 0.4 + Math.random() * 1.2,
+ 456:                 drift: (Math.random() * 2 - 1) * 0.5
+ 457:             });
+ 458:         }
+ 459:     }
+ 460: 
+ 461:     function draw() {
+ 462:         if (!isSnowing || !ctx) {
+ 463:             return;
+ 464:         }
+ 465: 
+ 466:         ctx.clearRect(0, 0, width, height);
+ 467: 
+ 468:         const theme = document.documentElement.getAttribute('data-theme');
+ 469:         ctx.fillStyle = theme === 'light'
+ 470:             ? 'rgba(0, 0, 0, 0.25)'
+ 471:             : 'rgba(255, 255, 255, 0.65)';
+ 472: 
+ 473:         for (const particle of particles) {
+ 474:             ctx.beginPath();
+ 475:             ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
+ 476:             ctx.fill();
+ 477: 
+ 478:             particle.y += particle.v;
+ 479:             particle.x += particle.drift;
+ 480: 
+ 481:             if (particle.y > height + 5) {
+ 482:                 particle.y = -5;
+ 483:                 particle.x = Math.random() * width;
+ 484:             }
+ 485: 
+ 486:             if (particle.x < -5) {
+ 487:                 particle.x = width + 5;
+ 488:             } else if (particle.x > width + 5) {
+ 489:                 particle.x = -5;
+ 490:             }
+ 491:         }
+ 492: 
+ 493:         animationId = requestAnimationFrame(draw);
+ 494:     }
+ 495: 
+ 496:     function startSnow() {
+ 497:         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+ 498:             isSnowing = false;
+ 499:             return;
+ 500:         }
+ 501: 
+ 502:         isSnowing = true;
+ 503: 
+ 504:         if (!canvas) {
+ 505:             canvas = document.createElement('canvas');
+ 506:             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;';
+ 507:             document.body.appendChild(canvas);
+ 508:             ctx = canvas.getContext('2d');
+ 509:         }
+ 510: 
+ 511:         if (!resizeAttached) {
+ 512:             window.addEventListener('resize', resize, { passive: true });
+ 513:             resizeAttached = true;
+ 514:         }
+ 515: 
+ 516:         resize();
+ 517:         buildParticles();
+ 518: 
+ 519:         if (!animationId) {
+ 520:             animationId = requestAnimationFrame(draw);
+ 521:         }
+ 522:     }
+ 523: 
+ 524:     function stopSnow() {
+ 525:         isSnowing = false;
+ 526: 
+ 527:         if (animationId) {
+ 528:             cancelAnimationFrame(animationId);
+ 529:             animationId = null;
+ 530:         }
+ 531: 
+ 532:         particles = [];
+ 533: 
+ 534:         if (resizeAttached) {
+ 535:             window.removeEventListener('resize', resize);
+ 536:             resizeAttached = false;
+ 537:         }
+ 538: 
+ 539:         if (canvas) {
+ 540:             canvas.remove();
+ 541:             canvas = null;
+ 542:             ctx = null;
+ 543:         }
+ 544:     }
+ 545: 
+ 546:     function handleVisibilityChange() {
+ 547:         if (!isSnowing) {
+ 548:             return;
+ 549:         }
+ 550: 
+ 551:         if (document.hidden) {
+ 552:             if (animationId) {
+ 553:                 cancelAnimationFrame(animationId);
+ 554:                 animationId = null;
+ 555:             }
+ 556:         } else if (!animationId) {
+ 557:             animationId = requestAnimationFrame(draw);
+ 558:         }
+ 559:     }
+ 560: 
+ 561:     function updateSnowButtonState(button, snowEnabled) {
+ 562:         const icon = document.createElement('span');
+ 563:         icon.className = 'material-icons';
+ 564:         icon.setAttribute('aria-hidden', 'true');
+ 565:         icon.textContent = 'ac_unit';
+ 566: 
+ 567:         button.replaceChildren(
+ 568:             icon,
+ 569:             document.createTextNode(snowEnabled ? ' Disable Snow' : ' Enable Snow')
+ 570:         );
+ 571: 
+ 572:         button.setAttribute('aria-pressed', snowEnabled ? 'true' : 'false');
+ 573:         button.setAttribute(
+ 574:             'aria-label',
+ 575:             snowEnabled ? 'Disable snow effect' : 'Enable snow effect'
+ 576:         );
+ 577:     }
+ 578: 
+ 579:     function createSnowButton() {
+ 580:         const controls = document.querySelector('.controls');
+ 581:         if (!controls) {
+ 582:             return null;
+ 583:         }
+ 584: 
+ 585:         const existingButton = document.getElementById(BTN_ID);
+ 586:         if (existingButton) {
+ 587:             return existingButton;
+ 588:         }
+ 589: 
+ 590:         const button = document.createElement('button');
+ 591:         button.className = BTN_CLASS;
+ 592:         button.id = BTN_ID;
+ 593:         button.type = 'button';
+ 594:         button.style.marginLeft = '0.5rem';
+ 595:         controls.appendChild(button);
+ 596:         return button;
+ 597:     }
+ 598: 
+ 599:     function init() {
+ 600:         document.addEventListener('visibilitychange', handleVisibilityChange);
+ 601: 
+ 602:         const persistedState = textUtilsStorage.get(STORAGE_KEY) === 'true';
+ 603:         if (persistedState) {
+ 604:             startSnow();
+ 605:         }
+ 606: 
+ 607:         const button = createSnowButton();
+ 608:         if (!button) {
+ 609:             return;
+ 610:         }
+ 611: 
+ 612:         updateSnowButtonState(button, isSnowing);
+ 613:         button.addEventListener('click', () => {
+ 614:             if (isSnowing) {
+ 615:                 stopSnow();
+ 616:             } else {
+ 617:                 startSnow();
+ 618:             }
+ 619: 
+ 620:             textUtilsStorage.set(STORAGE_KEY, isSnowing ? 'true' : 'false');
+ 621:             updateSnowButtonState(button, isSnowing);
+ 622:         });
+ 623:     }
+ 624: 
+ 625:     if (document.readyState === 'loading') {
+ 626:         document.addEventListener('DOMContentLoaded', init);
+ 627:     } else {
+ 628:         init();
+ 629:     }
+ 630: })();
+```
+----- END FILE: js/theme.js -----
+
+----- BEGIN FILE: sitemap.xml -----
+```xml
+   1: <?xml version="1.0" encoding="UTF-8"?>
+   2: <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   3:   <url>
+   4:     <loc>https://text-utils.net/</loc>
+   5:     <lastmod>2026-02-18</lastmod>
+   6:     <changefreq>weekly</changefreq>
+   7:     <priority>1.0</priority>
+   8:   </url>
+   9: 
+  10:   <url>
+  11:     <loc>https://text-utils.net/case-converter.html</loc>
+  12:     <lastmod>2026-02-18</lastmod>
+  13:     <changefreq>monthly</changefreq>
+  14:     <priority>0.8</priority>
+  15:   </url>
+  16:   <url>
+  17:     <loc>https://text-utils.net/color-chooser.html</loc>
+  18:     <lastmod>2026-02-18</lastmod>
+  19:     <changefreq>monthly</changefreq>
+  20:     <priority>0.8</priority>
+  21:   </url>
+  22:   <url>
+  23:     <loc>https://text-utils.net/css-unit-converter.html</loc>
+  24:     <lastmod>2026-02-18</lastmod>
+  25:     <changefreq>monthly</changefreq>
+  26:     <priority>0.8</priority>
+  27:   </url>
+  28:   <url>
+  29:     <loc>https://text-utils.net/date-time-info.html</loc>
+  30:     <lastmod>2026-02-18</lastmod>
+  31:     <changefreq>monthly</changefreq>
+  32:     <priority>0.8</priority>
+  33:   </url>
+  34:   <url>
+  35:     <loc>https://text-utils.net/find-replace.html</loc>
+  36:     <lastmod>2026-02-18</lastmod>
+  37:     <changefreq>monthly</changefreq>
+  38:     <priority>0.8</priority>
+  39:   </url>
+  40:   <url>
+  41:     <loc>https://text-utils.net/font-awesome-chooser.html</loc>
+  42:     <lastmod>2026-02-18</lastmod>
+  43:     <changefreq>monthly</changefreq>
+  44:     <priority>0.8</priority>
+  45:   </url>
+  46:   <url>
+  47:     <loc>https://text-utils.net/font-chooser.html</loc>
+  48:     <lastmod>2026-02-18</lastmod>
+  49:     <changefreq>monthly</changefreq>
+  50:     <priority>0.8</priority>
+  51:   </url>
+  52:   <url>
+  53:     <loc>https://text-utils.net/google-icons-chooser.html</loc>
+  54:     <lastmod>2026-02-18</lastmod>
+  55:     <changefreq>monthly</changefreq>
+  56:     <priority>0.8</priority>
+  57:   </url>
+  58:   <url>
+  59:     <loc>https://text-utils.net/hashing-tool.html</loc>
+  60:     <lastmod>2026-02-18</lastmod>
+  61:     <changefreq>monthly</changefreq>
+  62:     <priority>0.8</priority>
+  63:   </url>
+  64:   <url>
+  65:     <loc>https://text-utils.net/ip-info.html</loc>
+  66:     <lastmod>2026-02-18</lastmod>
+  67:     <changefreq>monthly</changefreq>
+  68:     <priority>0.8</priority>
+  69:   </url>
+  70:   <url>
+  71:     <loc>https://text-utils.net/json-tool.html</loc>
+  72:     <lastmod>2026-02-18</lastmod>
+  73:     <changefreq>monthly</changefreq>
+  74:     <priority>0.8</priority>
+  75:   </url>
+  76:   <url>
+  77:     <loc>https://text-utils.net/line-operations.html</loc>
+  78:     <lastmod>2026-02-18</lastmod>
+  79:     <changefreq>monthly</changefreq>
+  80:     <priority>0.8</priority>
+  81:   </url>
+  82:   <url>
+  83:     <loc>https://text-utils.net/random-numbers.html</loc>
+  84:     <lastmod>2026-02-18</lastmod>
+  85:     <changefreq>monthly</changefreq>
+  86:     <priority>0.8</priority>
+  87:   </url>
+  88:   <url>
+  89:     <loc>https://text-utils.net/sitemap-generator.html</loc>
+  90:     <lastmod>2026-02-18</lastmod>
+  91:     <changefreq>monthly</changefreq>
+  92:     <priority>0.8</priority>
+  93:   </url>
+  94:   <url>
+  95:     <loc>https://text-utils.net/text-info.html</loc>
+  96:     <lastmod>2026-02-18</lastmod>
+  97:     <changefreq>monthly</changefreq>
+  98:     <priority>0.8</priority>
+  99:   </url>
+ 100: </urlset>
+```
+----- END FILE: sitemap.xml -----
+
+## Referenced Text Excerpts
+
+----- BEGIN EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
+```text
+   7: ## Current Tool Set
+   8: 
+   9: The dashboard (`index.html`) currently exposes these tools:
+  10: 
+  11: | Tool | File | Category | Description |
+  12: | --- | --- | --- | --- |
+  13: | Case Converter | `case-converter.html` | Text | Convert text between different letter cases. |
+  14: | Text Info | `text-info.html` | Text | Show detailed text metrics and readability info. |
+  15: | Line Operations | `line-operations.html` | Text | Sort, filter, and transform lines of text. |
+  16: | Find and Replace | `find-replace.html` | Text | Search and replace text with regex support. |
+  17: | Font Chooser | `font-chooser.html` | Text | Preview fonts, contrast, and CSS snippets. |
+  18: | IP Info | `ip-info.html` | Data | Show public IP, provider, location, and device details. |
+  19: | Font Awesome Chooser | `font-awesome-chooser.html` | Data | Browse Font Awesome icons and generate snippets. |
+  20: | Google Icons Chooser | `google-icons-chooser.html` | Data | Browse Material icons and generate snippets. |
+  21: | Color Chooser | `color-chooser.html` | Data | Pick colors, match closest named colors, and export snippets/PNG. |
+  22: | CSS Unit Converter | `css-unit-converter.html` | Convert | Convert CSS units (`px`, `em`, `rem`, `%`, `pt`, `vw`, `vh`). |
+  23: | Date/Time Info | `date-time-info.html` | Data | Display date/time formats, calendar views, and timezone output. |
+  24: | Random Number Generator | `random-numbers.html` | Data | Generate random numbers with range/uniqueness/sorting options. |
+  25: | Hashing Tool | `hashing-tool.html` | Convert | Hash, encode, and decode text with multiple algorithms. |
+  26: | JSON Tool | `json-tool.html` | Data | Format, validate, and convert JSON/JSONL. |
+  27: | XML Sitemap Generator | `sitemap-generator.html` | Data | Crawl a site and generate `sitemap.xml` output. |
+```
+----- END EXCERPT: README.md | Section: Current Tool Set (lines 7-28) -----
+
+----- BEGIN EXCERPT: README.md | Section: Network and External Dependencies (lines 122-128) -----
+```text
+ 122: ## Network and External Dependencies
+ 123: 
+ 124: - Material Icons: loaded from Google Fonts.
+ 125: - Google Analytics tag: present in pages.
+ 126: - Font Awesome Chooser: loads Font Awesome CSS from CDN.
+ 127: - IP Info and Sitemap Generator: depend on external network requests and may be limited by CORS rules.
+```
+----- END EXCERPT: README.md | Section: Network and External Dependencies (lines 122-128) -----
+
+----- BEGIN EXCERPT: tmp.txt | Reference lines 1-21 (lines 1-21) -----
+```text
+   1: <!DOCTYPE html>
+   2: 
+   3: <html lang="en" data-theme="dark">
+   4: 
+   5: <head>
+   6: 
+   7:     <meta charset="UTF-8">
+   8: 
+   9:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  10: 
+  11:     <title>Font Awesome Chooser - Text Utilities</title>
+  12: 
+  13:     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  14: 
+  15:     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  16: 
+  17:     <link rel="stylesheet" href="css/style.css">
+  18: 
+  19:     <style>
+  20: 
+  21:         .tool-layout {
+```
+----- END EXCERPT: tmp.txt | Reference lines 1-21 (lines 1-21) -----
+
+----- BEGIN EXCERPT: tmp.txt | Reference lines 277-297 (lines 277-297) -----
+```text
+ 277:         <main>
+ 278: 
+ 279:             <div class="tool-container">
+ 280: 
+ 281:                 <div class="tool-header">
+ 282: 
+ 283:                     <div class="tool-title">
+ 284: 
+ 285:                         <span class="material-icons">code</span>
+ 286: 
+ 287:                         <h2>Font Awesome Chooser</h2>
+ 288: 
+ 289:                     </div>
+ 290: 
+ 291:                     <div class="tool-actions">
+ 292: 
+ 293:                         <button id="backButton" class="btn btn-secondary">
+ 294: 
+ 295:                             <span class="material-icons">arrow_back</span>
+ 296: 
+ 297:                             Back
+```
+----- END EXCERPT: tmp.txt | Reference lines 277-297 (lines 277-297) -----

@@ -17,7 +17,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Font Awesome Chooser - Text Utilities</title>
+    <title>Font Awesome 4 Chooser - Text Utilities</title>
 
     <script>
         (function () {
@@ -88,6 +88,16 @@
             margin-bottom: 0.75rem;
 
             font-size: 1rem;
+
+        }
+
+        .panel-flex {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 1rem;
 
         }
 
@@ -313,7 +323,7 @@
 
                         <span class="material-icons">code</span>
 
-                        <h2>Font Awesome Chooser</h2>
+                        <h2>Font Awesome 4 Chooser</h2>
 
                     </div>
 
@@ -349,7 +359,7 @@
 
 
 
-                <p class="tool-description">Browse Font Awesome icons, filter by name, and generate usage snippets for HTML, CSS, React, and more.</p>
+                <p class="tool-description">Browse Font Awesome 4 icons, filter by name, and generate usage snippets for HTML, CSS, React, and more.</p>
 
 
 
@@ -368,6 +378,14 @@
                                 <option value="">-- Select a Category --</option>
 
                             </select>
+
+                        </div>
+
+                        <div class="option-group">
+
+                            <label for="iconSearch">Search</label>
+
+                            <input type="search" id="iconSearch" placeholder="Filter icons by name...">
 
                         </div>
 
@@ -427,7 +445,7 @@
 
 
 
-                    <div class="panel" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="panel panel-flex">
 
                         <div>
 
@@ -435,7 +453,7 @@
 
                             <div id="loadingIndicator" class="muted" style="display:none;">Loading...</div>
 
-                            <div id="iconsGrid" class="icons-grid" role="grid" aria-label="Icon Selection Grid">
+                            <div id="iconsGrid" class="icons-grid" role="listbox" aria-label="Icon selection list">
 
                                 <div id="gridPlaceholder" class="muted" style="grid-column:1/-1; text-align:center;">Select a category to view icons.</div>
 
@@ -500,6 +518,7 @@
             ];
 
             const categorySelect = document.getElementById('categorySelect');
+            const iconSearch = document.getElementById('iconSearch');
             const codeFormatSelect = document.getElementById('codeFormatSelect');
             const iconsGrid = document.getElementById('iconsGrid');
             const iconCount = document.getElementById('iconCount');
@@ -513,6 +532,10 @@
 
             let currentIcons = [];
             let selectedIcon = null;
+
+            const getVisibleIconItems = () => Array
+                .from(iconsGrid.querySelectorAll('.icon-item'))
+                .filter(item => item.style.display !== 'none');
 
             const setStatus = (msg, type = 'success') => {
                 statusMessage.textContent = msg;
@@ -562,6 +585,7 @@
 
                 if (!file) {
                     setPlaceholder('Select a category to view icons.');
+                    toolStats.textContent = 'Select a category to start';
                     return;
                 }
 
@@ -592,13 +616,11 @@
 
                 renderIcons();
                 setStatus('Icons loaded.', 'success');
-                toolStats.textContent = `${currentIcons.length} icons loaded`;
                 loadingIndicator.style.display = 'none';
             };
 
             const renderIcons = () => {
                 iconsGrid.innerHTML = '';
-                iconCount.textContent = currentIcons.length;
 
                 if (!currentIcons.length) {
                     setPlaceholder('No icons found.');
@@ -611,13 +633,33 @@
                     const button = document.createElement('button');
                     button.type = 'button';
                     button.className = 'icon-item';
+                    button.setAttribute('role', 'option');
                     button.setAttribute('aria-label', icon.name);
+                    button.setAttribute('aria-selected', 'false');
                     button.innerHTML = `<i class="fa fa-${icon.name}" aria-hidden="true"></i>`;
                     button.addEventListener('click', () => selectIcon(icon, button));
                     fragment.appendChild(button);
                 });
 
                 iconsGrid.appendChild(fragment);
+                filterIcons();
+            };
+
+            const filterIcons = () => {
+                const term = iconSearch.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                iconsGrid.querySelectorAll('.icon-item').forEach(button => {
+                    const name = (button.getAttribute('aria-label') || '').toLowerCase();
+                    const isMatch = !term || name.includes(term);
+                    button.style.display = isMatch ? '' : 'none';
+                    if (isMatch) visibleCount += 1;
+                });
+
+                iconCount.textContent = String(visibleCount);
+                toolStats.textContent = currentIcons.length
+                    ? `${visibleCount} shown of ${currentIcons.length} icons`
+                    : 'Select a category to start';
             };
 
             const buildSnippet = (icon) => {
@@ -646,8 +688,12 @@
             };
 
             const selectIcon = (icon, button) => {
-                iconsGrid.querySelectorAll('.icon-item').forEach(el => el.classList.remove('active'));
+                iconsGrid.querySelectorAll('.icon-item').forEach(el => {
+                    el.classList.remove('active');
+                    el.setAttribute('aria-selected', 'false');
+                });
                 button.classList.add('active');
+                button.setAttribute('aria-selected', 'true');
                 selectedIcon = icon;
                 selectedName.textContent = icon.name;
                 selectedCodepoint.textContent = paddedCodepoint(icon.codepoint) || '-';
@@ -684,6 +730,7 @@
                 outputSnippet.textContent = '';
                 tagList.innerHTML = '';
                 iconsGrid.querySelectorAll('.icon-item').forEach(el => el.classList.remove('active'));
+                iconsGrid.querySelectorAll('.icon-item').forEach(el => el.setAttribute('aria-selected', 'false'));
                 if (!silent) setStatus('Cleared.', 'success');
             };
 
@@ -702,8 +749,36 @@
                 populateCategories();
                 setPlaceholder('Select a category to view icons.');
                 categorySelect.addEventListener('change', handleCategoryChange);
+                iconSearch.addEventListener('input', filterIcons);
                 codeFormatSelect.addEventListener('change', handleCodeFormatChange);
-                document.getElementById('backButton').addEventListener('click', () => window.location.href = 'index.html');
+                iconsGrid.addEventListener('keydown', (e) => {
+                    if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(e.key)) {
+                        return;
+                    }
+
+                    const items = getVisibleIconItems();
+                    if (!items.length) return;
+
+                    const current = document.activeElement;
+                    const index = items.indexOf(current);
+
+                    e.preventDefault();
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        const next = items[index >= 0 ? (index + 1) % items.length : 0];
+                        next.focus();
+                        return;
+                    }
+
+                    const prev = items[index >= 0 ? (index - 1 + items.length) % items.length : items.length - 1];
+                    prev.focus();
+                });
+                document.getElementById('backButton').addEventListener('click', () => {
+                    if (window.history.length > 1) {
+                        window.history.back();
+                        return;
+                    }
+                    window.location.href = 'index.html';
+                });
                 document.getElementById('copyBtn').addEventListener('click', copySnippet);
                 document.getElementById('clearBtn').addEventListener('click', () => clearSelection());
             };
