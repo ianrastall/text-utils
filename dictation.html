@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag gtag.js -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0V2F0V7FWB');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictation - Text Utilities</title>
+    <script>
+        (function () {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                const resolvedTheme = storedTheme === 'light' || storedTheme === 'dark'
+                    ? storedTheme
+                    : (prefersLight ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', resolvedTheme);
+
+                const storedAccent = localStorage.getItem('accentColor');
+                let normalizedAccent = typeof storedAccent === 'string' ? storedAccent.trim().toLowerCase() : '';
+                if (/^#[0-9a-f]{3}$/.test(normalizedAccent)) {
+                    normalizedAccent = `#${normalizedAccent[1]}${normalizedAccent[1]}${normalizedAccent[2]}${normalizedAccent[2]}${normalizedAccent[3]}${normalizedAccent[3]}`;
+                }
+
+                if (/^#[0-9a-f]{6}$/.test(normalizedAccent)) {
+                    const red = parseInt(normalizedAccent.slice(1, 3), 16);
+                    const green = parseInt(normalizedAccent.slice(3, 5), 16);
+                    const blue = parseInt(normalizedAccent.slice(5, 7), 16);
+                    document.documentElement.style.setProperty('--accent', normalizedAccent);
+                    document.documentElement.style.setProperty('--accent-rgb', `${red}, ${green}, ${blue}`);
+                }
+            } catch (_) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tool-actions {
+            flex-wrap: wrap;
+        }
+
+        .dictation-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .dictation-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .dictation-primary-actions,
+        .quick-insert-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .record-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            min-height: 2rem;
+        }
+
+        .record-indicator {
+            width: 0.7rem;
+            height: 0.7rem;
+            border-radius: 50%;
+            background: var(--border-color);
+            box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+        }
+
+        .record-indicator.active {
+            background: var(--error);
+            animation: dictation-pulse 1.3s infinite;
+        }
+
+        .checkbox-option {
+            justify-content: end;
+        }
+
+        .checkbox-option label {
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-height: 2rem;
+        }
+
+        .dictation-textarea {
+            min-height: 420px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-size: 1rem;
+            line-height: 1.55;
+        }
+
+        @keyframes dictation-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 0.55rem rgba(220, 38, 38, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dictation-row {
+                align-items: stretch;
+            }
+
+            .dictation-primary-actions,
+            .quick-insert-row,
+            .dictation-row {
+                flex-direction: column;
+            }
+
+            .dictation-primary-actions .btn,
+            .quick-insert-row .btn {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .record-status {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="index.html" style="color: inherit; text-decoration: none;">
+                    <span>Text Utilities</span>
+                </a>
+            </div>
+            <nav class="site-network" aria-label="Network sites">
+                <a href="https://chessnerd.net" class="site-network-link" target="_blank" rel="noopener noreferrer">
+                    <img src="img/chessnerd-icon.png" class="site-network-icon" alt="">
+                    <span>Chess Nerd</span>
+                    <span class="material-icons" aria-hidden="true">open_in_new</span>
+                </a>
+                <a href="https://github.com/ianrastall/text-utils" class="site-network-link" target="_blank" rel="noopener noreferrer">
+                    <img src="img/github.png" class="site-network-icon" alt="">
+                    <span>GitHub</span>
+                    <span class="material-icons" aria-hidden="true">open_in_new</span>
+                </a>
+            </nav>
+            <div class="controls">
+                <div class="accent-selector">
+                    <span class="material-icons">palette</span>
+                    <select id="accentColor" class="color-dropdown" aria-label="Accent color"></select>
+                </div>
+                <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme" aria-pressed="false">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <span class="material-icons">mic</span>
+                        <h2>Dictation</h2>
+                    </div>
+                    <div class="tool-actions">
+                        <button type="button" id="backButton" class="btn btn-secondary btn-compact">
+                            <span class="material-icons">arrow_back</span>
+                            Back
+                        </button>
+                        <button type="button" id="clearAll" class="btn btn-secondary btn-compact">
+                            <span class="material-icons">delete</span>
+                            Clear
+                        </button>
+                        <button type="button" id="copyOutput" class="btn btn-secondary btn-compact">
+                            <span class="material-icons">content_copy</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="options-panel dictation-controls">
+                    <div class="dictation-row">
+                        <div class="dictation-primary-actions">
+                            <button type="button" id="startDictation" class="btn btn-primary">
+                                <span class="material-icons">mic</span>
+                                Start
+                            </button>
+                            <button type="button" id="stopDictation" class="btn btn-secondary" disabled>
+                                <span class="material-icons">stop</span>
+                                Stop
+                            </button>
+                        </div>
+                        <div class="record-status" aria-live="polite" aria-atomic="true">
+                            <span id="recordIndicator" class="record-indicator" aria-hidden="true"></span>
+                            <span id="listeningState">Idle</span>
+                        </div>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-group">
+                            <label for="languageSelect">Language</label>
+                            <select id="languageSelect">
+                                <option value="en-US" selected>English (US)</option>
+                                <option value="en-GB">English (UK)</option>
+                                <option value="en-CA">English (Canada)</option>
+                                <option value="en-AU">English (Australia)</option>
+                                <option value="es-ES">Spanish</option>
+                                <option value="fr-FR">French</option>
+                                <option value="de-DE">German</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label for="dictationMode">Start Mode</label>
+                            <select id="dictationMode">
+                                <option value="append" selected>Append to transcript</option>
+                                <option value="replace">Replace transcript</option>
+                            </select>
+                        </div>
+                        <div class="option-group checkbox-option">
+                            <label for="continuousMode">
+                                <input type="checkbox" id="continuousMode" checked>
+                                Continuous
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="io-container" style="grid-template-columns: 1fr;">
+                    <div class="io-panel">
+                        <div class="io-label">
+                            <span>Transcript</span>
+                            <span class="stats pill muted" id="transcriptStats">0 chars, 0 words</span>
+                        </div>
+                        <textarea id="transcriptText" class="dictation-textarea" aria-label="Dictation transcript" placeholder="Your dictated text will appear here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="quick-insert-row" aria-label="Transcript editing actions">
+                    <button type="button" id="newLineButton" class="btn btn-secondary btn-compact">
+                        <span class="material-icons">keyboard_return</span>
+                        New Line
+                    </button>
+                    <button type="button" id="newParagraphButton" class="btn btn-secondary btn-compact">
+                        <span class="material-icons">format_line_spacing</span>
+                        New Paragraph
+                    </button>
+                </div>
+
+                <div class="status-bar">
+                    <div id="statusMessage" class="success" role="status" aria-live="polite">Ready</div>
+                    <div id="toolStats">No dictation yet</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script>
+        'use strict';
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognitionSupported = typeof SpeechRecognition === 'function';
+
+        const transcriptText = document.getElementById('transcriptText');
+        const transcriptStats = document.getElementById('transcriptStats');
+        const statusMessage = document.getElementById('statusMessage');
+        const toolStats = document.getElementById('toolStats');
+        const copyButton = document.getElementById('copyOutput');
+        const clearButton = document.getElementById('clearAll');
+        const backButton = document.getElementById('backButton');
+        const startButton = document.getElementById('startDictation');
+        const stopButton = document.getElementById('stopDictation');
+        const languageSelect = document.getElementById('languageSelect');
+        const dictationMode = document.getElementById('dictationMode');
+        const continuousMode = document.getElementById('continuousMode');
+        const recordIndicator = document.getElementById('recordIndicator');
+        const listeningState = document.getElementById('listeningState');
+        const newLineButton = document.getElementById('newLineButton');
+        const newParagraphButton = document.getElementById('newParagraphButton');
+
+        let recognition = null;
+        let committedTranscript = '';
+        let interimTranscript = '';
+        let isListening = false;
+        let restartOnEnd = false;
+        let stopRequested = false;
+        let statusResetTimer = null;
+        let statsTimer = null;
+        let sessionStartedAt = 0;
+        let programmaticUpdate = false;
+
+        function setStatus(message, level = 'success', resetMs = 0) {
+            if (statusResetTimer) {
+                clearTimeout(statusResetTimer);
+                statusResetTimer = null;
+            }
+
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('success', 'warning', 'error');
+            statusMessage.classList.add(level);
+
+            if (resetMs > 0) {
+                statusResetTimer = setTimeout(() => {
+                    statusResetTimer = null;
+                    statusMessage.textContent = isListening ? 'Listening...' : 'Ready';
+                    statusMessage.classList.remove('warning', 'error');
+                    statusMessage.classList.add('success');
+                }, resetMs);
+            }
+        }
+
+        function countWords(text) {
+            return (text.trim().match(/\S+/g) || []).length;
+        }
+
+        function formatDuration(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            if (minutes === 0) {
+                return `${seconds}s`;
+            }
+            return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
+        }
+
+        function updateStats() {
+            const text = transcriptText.value;
+            const chars = text.length;
+            const words = countWords(text);
+            transcriptStats.textContent = `${chars} chars, ${words} words`;
+            copyButton.disabled = chars === 0;
+
+            if (isListening) {
+                const elapsed = Math.max(0, Math.round((Date.now() - sessionStartedAt) / 1000));
+                toolStats.textContent = `${formatDuration(elapsed)} listening, ${words} words`;
+            } else if (chars > 0) {
+                toolStats.textContent = `${words} words in transcript`;
+            } else {
+                toolStats.textContent = 'No dictation yet';
+            }
+        }
+
+        function setListeningState(listening) {
+            isListening = listening;
+            startButton.disabled = listening || !recognitionSupported || !window.isSecureContext;
+            stopButton.disabled = !listening;
+            languageSelect.disabled = listening;
+            dictationMode.disabled = listening;
+            continuousMode.disabled = listening;
+            recordIndicator.classList.toggle('active', listening);
+            listeningState.textContent = listening ? 'Listening' : 'Idle';
+            startButton.setAttribute('aria-pressed', listening ? 'true' : 'false');
+
+            if (listening && !statsTimer) {
+                statsTimer = setInterval(updateStats, 1000);
+            } else if (!listening && statsTimer) {
+                clearInterval(statsTimer);
+                statsTimer = null;
+            }
+
+            updateStats();
+        }
+
+        function normalizeVoiceCommand(segment) {
+            const normalized = segment.trim().toLowerCase();
+            if (normalized === 'new line' || normalized === 'newline') {
+                return '\n';
+            }
+            if (normalized === 'new paragraph') {
+                return '\n\n';
+            }
+            return segment.replace(/\s+/g, ' ').trim();
+        }
+
+        function appendSegment(baseText, segment) {
+            const text = normalizeVoiceCommand(segment);
+            if (!text) return baseText;
+            if (!baseText) return text.trimStart();
+            if (text.startsWith('\n')) return `${baseText.trimEnd()}${text}`;
+            if (/^[,.;:!?)]/.test(text)) return `${baseText.trimEnd()}${text}`;
+            if (/\s$/.test(baseText)) return `${baseText}${text}`;
+            return `${baseText} ${text}`;
+        }
+
+        function renderTranscript() {
+            const rendered = interimTranscript
+                ? appendSegment(committedTranscript, interimTranscript)
+                : committedTranscript;
+
+            programmaticUpdate = true;
+            transcriptText.value = rendered;
+            programmaticUpdate = false;
+            updateStats();
+        }
+
+        function createRecognition() {
+            const instance = new SpeechRecognition();
+            instance.lang = languageSelect.value;
+            instance.continuous = continuousMode.checked;
+            instance.interimResults = true;
+            instance.maxAlternatives = 1;
+
+            instance.addEventListener('start', () => {
+                setListeningState(true);
+                setStatus('Listening...');
+            });
+
+            instance.addEventListener('result', (event) => {
+                let currentInterim = '';
+
+                for (let index = event.resultIndex; index < event.results.length; index += 1) {
+                    const result = event.results[index];
+                    const phrase = result[0]?.transcript || '';
+                    if (result.isFinal) {
+                        committedTranscript = appendSegment(committedTranscript, phrase);
+                    } else {
+                        currentInterim = appendSegment(currentInterim, phrase);
+                    }
+                }
+
+                interimTranscript = currentInterim;
+                renderTranscript();
+            });
+
+            instance.addEventListener('error', (event) => {
+                const messages = {
+                    'audio-capture': 'No microphone found.',
+                    'not-allowed': 'Microphone permission denied.',
+                    'service-not-allowed': 'Speech recognition service denied.',
+                    'network': 'Speech recognition network error.',
+                    'no-speech': 'No speech detected.',
+                    'aborted': 'Dictation stopped.'
+                };
+                const message = messages[event.error] || 'Speech recognition error.';
+                const fatalErrors = ['audio-capture', 'not-allowed', 'service-not-allowed', 'network'];
+
+                if (fatalErrors.includes(event.error)) {
+                    restartOnEnd = false;
+                }
+
+                setStatus(message, event.error === 'no-speech' || event.error === 'aborted' ? 'warning' : 'error', 3000);
+            });
+
+            instance.addEventListener('end', () => {
+                interimTranscript = '';
+                renderTranscript();
+                setListeningState(false);
+
+                if (restartOnEnd && !stopRequested) {
+                    window.setTimeout(() => startDictation(true), 200);
+                    return;
+                }
+
+                restartOnEnd = false;
+                stopRequested = false;
+                if (statusMessage.classList.contains('success')) {
+                    setStatus('Stopped', 'success', 1800);
+                }
+            });
+
+            return instance;
+        }
+
+        function startDictation(isRestart = false) {
+            if (!recognitionSupported) {
+                setStatus('Speech recognition is not available in this browser.', 'error');
+                return;
+            }
+
+            if (!window.isSecureContext) {
+                setStatus('Use HTTPS or localhost for microphone access.', 'error');
+                return;
+            }
+
+            if (isListening) return;
+
+            if (!isRestart) {
+                stopRequested = false;
+                sessionStartedAt = Date.now();
+                interimTranscript = '';
+                committedTranscript = dictationMode.value === 'replace' ? '' : transcriptText.value;
+                renderTranscript();
+            }
+
+            restartOnEnd = continuousMode.checked;
+            recognition = createRecognition();
+
+            try {
+                recognition.start();
+            } catch (error) {
+                restartOnEnd = false;
+                setListeningState(false);
+                setStatus('Could not start dictation.', 'error');
+            }
+        }
+
+        function stopDictation() {
+            stopRequested = true;
+            restartOnEnd = false;
+            if (!recognition) {
+                setListeningState(false);
+                return;
+            }
+
+            setStatus('Stopping...', 'success');
+            try {
+                recognition.stop();
+            } catch (error) {
+                recognition.abort();
+                setListeningState(false);
+                setStatus('Stopped', 'success', 1800);
+            }
+        }
+
+        async function copyTranscript() {
+            if (!transcriptText.value) {
+                setStatus('Nothing to copy.', 'warning', 1800);
+                return;
+            }
+
+            try {
+                await window.textUtilsClipboardWrite(transcriptText.value);
+                setStatus('Copied to clipboard.', 'success', 2000);
+            } catch (error) {
+                setStatus('Failed to copy.', 'error', 3000);
+            }
+        }
+
+        function insertAtCursor(text) {
+            const start = transcriptText.selectionStart ?? transcriptText.value.length;
+            const end = transcriptText.selectionEnd ?? transcriptText.value.length;
+            const before = transcriptText.value.slice(0, start);
+            const after = transcriptText.value.slice(end);
+
+            transcriptText.value = `${before}${text}${after}`;
+            const newPosition = start + text.length;
+            transcriptText.focus();
+            transcriptText.setSelectionRange(newPosition, newPosition);
+            committedTranscript = transcriptText.value;
+            interimTranscript = '';
+            updateStats();
+        }
+
+        function clearAll() {
+            if (isListening) {
+                stopDictation();
+            }
+
+            committedTranscript = '';
+            interimTranscript = '';
+            transcriptText.value = '';
+            updateStats();
+            setStatus('Cleared', 'success', 1500);
+            transcriptText.focus();
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        startButton.addEventListener('click', () => startDictation(false));
+        stopButton.addEventListener('click', stopDictation);
+        copyButton.addEventListener('click', copyTranscript);
+        clearButton.addEventListener('click', clearAll);
+        backButton.addEventListener('click', goBack);
+        newLineButton.addEventListener('click', () => insertAtCursor('\n'));
+        newParagraphButton.addEventListener('click', () => insertAtCursor('\n\n'));
+
+        transcriptText.addEventListener('input', () => {
+            if (programmaticUpdate) return;
+            committedTranscript = transcriptText.value;
+            interimTranscript = '';
+            updateStats();
+        });
+
+        if (!recognitionSupported) {
+            startButton.disabled = true;
+            stopButton.disabled = true;
+            setStatus('Speech recognition is not available in this browser.', 'error');
+        } else if (!window.isSecureContext) {
+            startButton.disabled = true;
+            setStatus('Use HTTPS or localhost for microphone access.', 'error');
+        }
+
+        updateStats();
+    </script>
+    <footer class="site-footer">
+        <p>&copy; Ian Rastall 2025<br>Contact: moving.form.of.dust@gmail.com<br>Donate: PayPal to merastall@gmail.com</p>
+    </footer>
+</body>
+</html>

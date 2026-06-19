@@ -21,6 +21,7 @@ The dashboard (`index.html`) currently exposes these tools:
 | Color Chooser | `color-chooser.html` | Data | Pick colors, match closest named colors, and export snippets/PNG. |
 | CSS Unit Converter | `css-unit-converter.html` | Convert | Convert CSS units (`px`, `em`, `rem`, `%`, `pt`, `vw`, `vh`). |
 | Date/Time Info | `date-time-info.html` | Data | Display date/time formats, calendar views, and timezone output. |
+| Dictation | `dictation.html` | Text | Dictate speech into an editable transcript for copying elsewhere. |
 | Random Number Generator | `random-numbers.html` | Data | Generate random numbers with range/uniqueness/sorting options. |
 | Hashing Tool | `hashing-tool.html` | Convert | Hash, encode, and decode text with multiple algorithms. |
 | JSON Tool | `json-tool.html` | Data | Format, validate, and convert JSON/JSONL. |
