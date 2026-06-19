@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Case Converter" description="Convert text between common letter cases.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Case Converter</h1>
+        <p>Convert text between common case formats.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+    <section class="panel">
+      <div class="control-row">
+        <div class="field">
+          <label for="case-mode">Case</label>
+          <select id="case-mode">
+            <option value="upper">Uppercase</option>
+            <option value="lower">Lowercase</option>
+            <option value="title">Title Case</option>
+            <option value="sentence">Sentence case</option>
+            <option value="camel">camelCase</option>
+            <option value="pascal">PascalCase</option>
+            <option value="snake">snake_case</option>
+            <option value="kebab">kebab-case</option>
+          </select>
+        </div>
+        <button id="copy-output" type="button">Copy Output</button>
+        <button id="clear-all" type="button">Clear</button>
+      </div>
+      <div class="two-column">
+        <div class="field">
+          <label for="input-text">Input</label>
+          <textarea id="input-text" placeholder="Paste or type text here"></textarea>
+        </div>
+        <div class="field">
+          <label for="output-text">Output</label>
+          <textarea id="output-text" readonly placeholder="Converted text appears here"></textarea>
+        </div>
+      </div>
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats">0 characters</span>
+      </div>
+    </section>
+  </main>
+  <script>
+    import { convertCase } from '../lib/text';
+
+    const input = document.getElementById('input-text') as HTMLTextAreaElement;
+    const output = document.getElementById('output-text') as HTMLTextAreaElement;
+    const mode = document.getElementById('case-mode') as HTMLSelectElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+    const copy = document.getElementById('copy-output') as HTMLButtonElement;
+    const clear = document.getElementById('clear-all') as HTMLButtonElement;
+
+    function render() {
+      output.value = convertCase(input.value, mode.value as Parameters<typeof convertCase>[1]);
+      stats.textContent = `${input.value.length} input characters, ${output.value.length} output characters`;
+    }
+
+    input.addEventListener('input', render);
+    mode.addEventListener('change', render);
+    clear.addEventListener('click', () => {
+      input.value = '';
+      output.value = '';
+      render();
+      input.focus();
+    });
+    copy.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(output.value);
+      status.textContent = 'Copied';
+      window.setTimeout(() => status.textContent = 'Ready', 1200);
+    });
+    render();
+  </script>
+</BaseLayout>

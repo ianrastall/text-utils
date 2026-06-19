@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Text Info" description="Count words, characters, lines, sentences, and reading time.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Text Info</h1>
+        <p>Measure the structure of any text you paste in.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+    <section class="panel">
+      <div class="control-row">
+        <button id="copy-text" type="button">Copy Text</button>
+        <button id="clear-all" type="button">Clear</button>
+      </div>
+      <div class="field">
+        <label for="source-text">Text</label>
+        <textarea id="source-text" placeholder="Paste or type text here"></textarea>
+      </div>
+      <div class="stats-grid" id="stats-grid" aria-live="polite"></div>
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+      </div>
+    </section>
+  </main>
+  <script>
+    import { getTextStats } from '../lib/text';
+
+    const source = document.getElementById('source-text') as HTMLTextAreaElement;
+    const grid = document.getElementById('stats-grid') as HTMLDivElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const copy = document.getElementById('copy-text') as HTMLButtonElement;
+    const clear = document.getElementById('clear-all') as HTMLButtonElement;
+
+    const labels = {
+      characters: 'Characters',
+      words: 'Words',
+      lines: 'Lines',
+      sentences: 'Sentences',
+      paragraphs: 'Paragraphs',
+      readingMinutes: 'Reading minutes'
+    };
+
+    function render() {
+      const stats = getTextStats(source.value);
+      grid.innerHTML = Object.entries(stats).map(([key, value]) => `
+        <div class="stat">
+          <strong>${value}</strong>
+          <span>${labels[key as keyof typeof labels]}</span>
+        </div>
+      `).join('');
+    }
+
+    source.addEventListener('input', render);
+    clear.addEventListener('click', () => {
+      source.value = '';
+      render();
+      source.focus();
+    });
+    copy.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(source.value);
+      status.textContent = 'Copied';
+      window.setTimeout(() => status.textContent = 'Ready', 1200);
+    });
+    render();
+  </script>
+</BaseLayout>

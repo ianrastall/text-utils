@@ -1,5 +1,0 @@
-circle-o-notch	&#xf1ce
-cog	&#xf013;
-gear (alias)	&#xf013;
-refresh	&#xf021;
-spinner	&#xf110;
