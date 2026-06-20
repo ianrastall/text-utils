@@ -35,6 +35,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'color-combinations',
+    name: 'Color Combinations Tool',
+    href: '/color-combinations.html',
+    category: 'design',
+    description: 'Generate harmonious color palettes — monochromatic, analogous, triadic, complementary, and split-complementary — from any base color.',
+    status: 'ready'
+  },
+  {
     id: 'css-gradient-generator',
     name: 'CSS Gradient Generator',
     href: '/css-gradient-generator.html',

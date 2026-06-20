@@ -1,0 +1,533 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Color Combinations Tool" description="Generate harmonious color palettes with WCAG contrast checks.">
+  <main class="shell comb-main">
+    <header class="comb-page-header">
+      <h1>Color Combinations Tool</h1>
+      <p>Harmonious palettes · Monochromatic · Analogous · Triadic · Complementary</p>
+    </header>
+
+    <div class="comb-grid">
+      <!-- ── LEFT COLUMN: Controls ── -->
+      <div class="comb-col-left">
+        <section class="comb-panel">
+          <h2 class="comb-section-heading">Harmony Type</h2>
+          <select id="harmonyTypeSelect" class="comb-select">
+            <option value="monochromatic" selected>Monochromatic</option>
+            <option value="analogous">Analogous</option>
+            <option value="triadic">Triadic</option>
+            <option value="complementary">Complementary</option>
+            <option value="splitComplementary">Split Complementary</option>
+          </select>
+        </section>
+
+        <section class="comb-panel">
+          <h2 class="comb-section-heading">Base Color</h2>
+          <div class="comb-pick-row">
+            <label class="comb-picker-label" title="Open color picker">
+              <span class="comb-picker-swatch" id="pickerSwatch"></span>
+              <input type="color" id="baseColorInput" value="#4A90E2" />
+              <span>Picker</span>
+            </label>
+            <div class="comb-hex-field">
+              <span class="comb-hash">#</span>
+              <input type="text" id="baseColorText" maxlength="6" value="4A90E2"
+                spellcheck="false" autocomplete="off" title="Type a hex value" />
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:0.6rem;">
+            <label class="comb-field-label" for="namedColorsSelect">Named Color</label>
+            <select id="namedColorsSelect" class="comb-select">
+              <option value="">— Select a named color —</option>
+            </select>
+          </div>
+
+          <button type="button" class="button comb-random-btn" id="randomBtn">
+            ⚄ Random Color
+          </button>
+        </section>
+      </div>
+
+      <!-- ── RIGHT COLUMN: Palette preview ── -->
+      <div class="comb-col-right">
+        <section class="comb-panel comb-preview-panel">
+          <h2 class="comb-section-heading">Palette Preview</h2>
+          <div id="previewContainer" class="comb-swatches">
+            <div id="preview1" class="comb-swatch" role="status"></div>
+            <div id="preview2" class="comb-swatch" role="status"></div>
+            <div id="preview3" class="comb-swatch" role="status"></div>
+          </div>
+          <div id="color-update-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .comb-main {
+      padding: 1rem 0 2rem;
+    }
+    .comb-page-header {
+      margin-bottom: 1rem;
+    }
+    .comb-page-header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: 0;
+    }
+    .comb-page-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* Two-column grid */
+    .comb-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    /* Panels */
+    .comb-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .comb-panel:last-child { margin-bottom: 0; }
+
+    .comb-section-heading {
+      margin: 0 0 0.6rem;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    /* Select */
+    .comb-select {
+      width: 100%;
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+    }
+
+    /* Picker row */
+    .comb-pick-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .comb-picker-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.6rem;
+      background: var(--panel-muted);
+      position: relative;
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .comb-picker-label:hover { border-color: var(--accent); }
+    .comb-picker-swatch {
+      display: inline-block;
+      width: 1.1rem;
+      height: 1.1rem;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      transition: background 0.1s;
+      flex-shrink: 0;
+    }
+    .comb-picker-label input[type="color"] {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+    }
+
+    .comb-hex-field {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+    .comb-hash {
+      padding: 0 0.3rem 0 0.55rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+      font-size: 0.95rem;
+      line-height: 2.1rem;
+      flex-shrink: 0;
+    }
+    #baseColorText {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.95rem;
+      min-height: 2.1rem;
+      padding: 0.35rem 0.5rem 0.35rem 0;
+      width: 100%;
+      outline: none;
+    }
+
+    .comb-field-label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .comb-random-btn {
+      width: 100%;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    /* Preview swatches */
+    .comb-preview-panel { height: 100%; }
+    .comb-swatches {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .comb-swatch {
+      border-radius: 8px;
+      padding: 1.25rem 1rem;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.25rem;
+      transition: background-color 0.15s;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .comb-swatch .swatch-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.75;
+    }
+    .comb-swatch .swatch-hex {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .comb-swatch .swatch-copy {
+      margin-top: 0.35rem;
+      background: transparent;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      opacity: 0.7;
+      align-self: flex-start;
+      min-height: unset;
+      color: inherit;
+    }
+    .comb-swatch .swatch-copy:hover { opacity: 1; }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 700px) {
+      .comb-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script>
+    // ── Named colors (CSS named color set, sorted) ─────────────────────────────
+    const NAMED_COLORS: Record<string, string> = {
+      AliceBlue: '#F0F8FF', AntiqueWhite: '#FAEBD7', Aqua: '#00FFFF',
+      Aquamarine: '#7FFFD4', Azure: '#F0FFFF', Beige: '#F5F5DC',
+      Bisque: '#FFE4C4', Black: '#000000', BlanchedAlmond: '#FFEBCD',
+      Blue: '#0000FF', BlueViolet: '#8A2BE2', Brown: '#A52A2A',
+      BurlyWood: '#DEB887', CadetBlue: '#5F9EA0', Chartreuse: '#7FFF00',
+      Chocolate: '#D2691E', Coral: '#FF7F50', CornflowerBlue: '#6495ED',
+      Cornsilk: '#FFF8DC', Crimson: '#DC143C', Cyan: '#00FFFF',
+      DarkBlue: '#00008B', DarkCyan: '#008B8B', DarkGoldenRod: '#B8860B',
+      DarkGray: '#A9A9A9', DarkGreen: '#006400', DarkKhaki: '#BDB76B',
+      DarkMagenta: '#8B008B', DarkOliveGreen: '#556B2F', DarkOrange: '#FF8C00',
+      DarkOrchid: '#9932CC', DarkRed: '#8B0000', DarkSalmon: '#E9967A',
+      DarkSeaGreen: '#8FBC8F', DarkSlateBlue: '#483D8B', DarkSlateGray: '#2F4F4F',
+      DarkTurquoise: '#00CED1', DarkViolet: '#9400D3', DeepPink: '#FF1493',
+      DeepSkyBlue: '#00BFFF', DimGray: '#696969', DodgerBlue: '#1E90FF',
+      FireBrick: '#B22222', FloralWhite: '#FFFAF0', ForestGreen: '#228B22',
+      Fuchsia: '#FF00FF', Gainsboro: '#DCDCDC', GhostWhite: '#F8F8FF',
+      Gold: '#FFD700', GoldenRod: '#DAA520', Gray: '#808080',
+      Green: '#008000', GreenYellow: '#ADFF2F', HoneyDew: '#F0FFF0',
+      HotPink: '#FF69B4', IndianRed: '#CD5C5C', Indigo: '#4B0082',
+      Ivory: '#FFFFF0', Khaki: '#F0E68C', Lavender: '#E6E6FA',
+      LavenderBlush: '#FFF0F5', LawnGreen: '#7CFC00', LemonChiffon: '#FFFACD',
+      LightBlue: '#ADD8E6', LightCoral: '#F08080', LightCyan: '#E0FFFF',
+      LightGoldenRodYellow: '#FAFAD2', LightGray: '#D3D3D3', LightGreen: '#90EE90',
+      LightPink: '#FFB6C1', LightSalmon: '#FFA07A', LightSeaGreen: '#20B2AA',
+      LightSkyBlue: '#87CEFA', LightSlateGray: '#778899', LightSteelBlue: '#B0C4DE',
+      LightYellow: '#FFFFE0', Lime: '#00FF00', LimeGreen: '#32CD32',
+      Linen: '#FAF0E6', Magenta: '#FF00FF', Maroon: '#800000',
+      MediumAquaMarine: '#66CDAA', MediumBlue: '#0000CD', MediumOrchid: '#BA55D3',
+      MediumPurple: '#9370DB', MediumSeaGreen: '#3CB371', MediumSlateBlue: '#7B68EE',
+      MediumSpringGreen: '#00FA9A', MediumTurquoise: '#48D1CC', MediumVioletRed: '#C71585',
+      MidnightBlue: '#191970', MintCream: '#F5FFFA', MistyRose: '#FFE4E1',
+      Moccasin: '#FFE4B5', NavajoWhite: '#FFDEAD', Navy: '#000080',
+      OldLace: '#FDF5E6', Olive: '#808000', OliveDrab: '#6B8E23',
+      Orange: '#FFA500', OrangeRed: '#FF4500', Orchid: '#DA70D6',
+      PaleGoldenRod: '#EEE8AA', PaleGreen: '#98FB98', PaleTurquoise: '#AFEEEE',
+      PaleVioletRed: '#DB7093', PapayaWhip: '#FFEFD5', PeachPuff: '#FFDAB9',
+      Peru: '#CD853F', Pink: '#FFC0CB', Plum: '#DDA0DD',
+      PowderBlue: '#B0E0E6', Purple: '#800080', RebeccaPurple: '#663399',
+      Red: '#FF0000', RosyBrown: '#BC8F8F', RoyalBlue: '#4169E1',
+      SaddleBrown: '#8B4513', Salmon: '#FA8072', SandyBrown: '#F4A460',
+      SeaGreen: '#2E8B57', SeaShell: '#FFF5EE', Sienna: '#A0522D',
+      Silver: '#C0C0C0', SkyBlue: '#87CEEB', SlateBlue: '#6A5ACD',
+      SlateGray: '#708090', Snow: '#FFFAFA', SpringGreen: '#00FF7F',
+      SteelBlue: '#4682B4', Tan: '#D2B48C', Teal: '#008080',
+      Thistle: '#D8BFD8', Tomato: '#FF6347', Turquoise: '#40E0D0',
+      Violet: '#EE82EE', Wheat: '#F5DEB3', White: '#FFFFFF',
+      WhiteSmoke: '#F5F5F5', Yellow: '#FFFF00', YellowGreen: '#9ACD32',
+    };
+
+    // ── DOM refs ──────────────────────────────────────────────────────────────
+    const harmonySelect    = document.getElementById('harmonyTypeSelect') as HTMLSelectElement;
+    const namedColorSelect = document.getElementById('namedColorsSelect') as HTMLSelectElement;
+    const baseColorInput   = document.getElementById('baseColorInput') as HTMLInputElement;
+    const baseColorText    = document.getElementById('baseColorText') as HTMLInputElement;
+    const pickerSwatch     = document.getElementById('pickerSwatch') as HTMLElement;
+    const randomBtn        = document.getElementById('randomBtn') as HTMLButtonElement;
+    const announcer        = document.getElementById('color-update-announcer') as HTMLElement;
+
+    // ── Color math ────────────────────────────────────────────────────────────
+    const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
+
+    function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : null;
+    }
+
+    function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return { h: h * 360, s: s * 100, l: l * 100 };
+    }
+
+    function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
+      s /= 100; l /= 100;
+      const c = (1 - Math.abs(2 * l - 1)) * s;
+      const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      const m = l - c / 2;
+      let r = 0, g = 0, b = 0;
+      if (h < 60)       { r = c; g = x; }
+      else if (h < 120) { r = x; g = c; }
+      else if (h < 180) { g = c; b = x; }
+      else if (h < 240) { g = x; b = c; }
+      else if (h < 300) { r = x; b = c; }
+      else              { r = c; b = x; }
+      return {
+        r: Math.round((r + m) * 255),
+        g: Math.round((g + m) * 255),
+        b: Math.round((b + m) * 255),
+      };
+    }
+
+    function rgbToHex(r: number, g: number, b: number): string {
+      return '#' + [r, g, b].map(n => n.toString(16).padStart(2, '0')).join('');
+    }
+
+    function hslToHex(h: number, s: number, l: number): string {
+      const { r, g, b } = hslToRgb(h, s, l);
+      return rgbToHex(r, g, b);
+    }
+
+    function getTextColor(hex: string): 'white' | 'black' {
+      const rgb = hexToRgb(hex);
+      if (!rgb) return 'black';
+      const luma = 0.2126 * rgb.r + 0.7155 * rgb.g + 0.0722 * rgb.b;
+      return luma < 128 ? 'white' : 'black';
+    }
+
+    // ── Palette generation ────────────────────────────────────────────────────
+    type Swatch = { hex: string; label: string };
+
+    function generatePalette(): Swatch[] | null {
+      const rgb = hexToRgb(baseColorInput.value);
+      if (!rgb) return null;
+      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+      const { h, s, l } = hsl;
+
+      switch (harmonySelect.value) {
+        case 'monochromatic': {
+          const dL = clamp(l * 0.5, 15, Math.max(l - 30, 15));
+          const lL = clamp(l + (100 - l) * 0.6, Math.min(l + 30, 85), 90);
+          const dS = clamp(s + (l < 50 ? 15 : 5), 0, 95);
+          const lS = clamp(s - (lL > 80 ? 10 : 0), 20, 100);
+          return [
+            { hex: hslToHex(h, dS, dL), label: 'Darker' },
+            { hex: hslToHex(h, s, l),   label: 'Base' },
+            { hex: hslToHex(h, lS, lL), label: 'Lighter' },
+          ];
+        }
+        case 'analogous':
+          return [
+            { hex: hslToHex((h + 330) % 360, s, l), label: 'Analogous' },
+            { hex: hslToHex(h, s, l),                label: 'Base' },
+            { hex: hslToHex((h + 30) % 360, s, l),  label: 'Analogous' },
+          ];
+        case 'triadic':
+          return [
+            { hex: hslToHex((h + 120) % 360, s, l), label: 'Triadic' },
+            { hex: hslToHex(h, s, l),                label: 'Base' },
+            { hex: hslToHex((h + 240) % 360, s, l), label: 'Triadic' },
+          ];
+        case 'complementary': {
+          const tintL = clamp(l + (100 - l) * 0.5, 0, 95);
+          return [
+            { hex: hslToHex((h + 180) % 360, s, l), label: 'Complement' },
+            { hex: hslToHex(h, s, l),                label: 'Base' },
+            { hex: hslToHex(h, s, tintL),            label: 'Tint' },
+          ];
+        }
+        case 'splitComplementary':
+          return [
+            { hex: hslToHex((h + 150) % 360, s, l), label: 'Split' },
+            { hex: hslToHex(h, s, l),                label: 'Base' },
+            { hex: hslToHex((h + 210) % 360, s, l), label: 'Split' },
+          ];
+        default:
+          return null;
+      }
+    }
+
+    // ── Render palette ────────────────────────────────────────────────────────
+    function renderPalette(palette: Swatch[]) {
+      const swatches = document.querySelectorAll<HTMLElement>('#previewContainer .comb-swatch');
+      let announcement = '';
+
+      swatches.forEach((swatch, i) => {
+        const item = palette[i];
+        if (!item) return;
+        const { hex, label } = item;
+        const fg = getTextColor(hex);
+        swatch.style.backgroundColor = hex;
+        swatch.style.color = fg;
+        swatch.style.borderColor = fg === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)';
+        swatch.innerHTML = `
+          <div class="swatch-label">${label}</div>
+          <div class="swatch-hex">${hex.toUpperCase()}</div>
+          <button class="swatch-copy button" data-hex="${hex.toUpperCase()}" title="Copy ${hex.toUpperCase()}">⎘ Copy</button>
+        `;
+        announcement += `${label}: ${hex}. `;
+      });
+
+      announcer.textContent = `Palette updated. ${announcement}`;
+
+      // Attach copy handlers
+      document.querySelectorAll<HTMLButtonElement>('.swatch-copy').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const hexVal = btn.dataset.hex ?? '';
+          try {
+            await navigator.clipboard.writeText(hexVal);
+            const orig = btn.textContent ?? '';
+            btn.textContent = '✓ Copied';
+            setTimeout(() => { btn.textContent = orig; }, 1500);
+          } catch { /* ignore */ }
+        });
+      });
+    }
+
+    function refresh() {
+      const palette = generatePalette();
+      if (palette) renderPalette(palette);
+    }
+
+    // ── Sync all inputs to a new color ───────────────────────────────────────
+    function applyColor(hex: string, source: 'picker' | 'text' | 'named' | 'random') {
+      const normalized = hex.startsWith('#') ? hex : '#' + hex;
+      if (source !== 'picker') baseColorInput.value = normalized;
+      if (source !== 'text')   baseColorText.value  = normalized.replace('#', '').toUpperCase();
+      if (source !== 'named')  namedColorSelect.value = '';
+      pickerSwatch.style.background = normalized;
+      refresh();
+    }
+
+    // ── Populate named color select ───────────────────────────────────────────
+    function populateNamedColors() {
+      const sorted = Object.keys(NAMED_COLORS).sort();
+      for (const name of sorted) {
+        const opt = document.createElement('option');
+        opt.value = NAMED_COLORS[name];
+        opt.textContent = name;
+        namedColorSelect.appendChild(opt);
+      }
+    }
+
+    // ── Event listeners ───────────────────────────────────────────────────────
+    harmonySelect.addEventListener('change', refresh);
+
+    baseColorInput.addEventListener('input', (e) => {
+      applyColor((e.target as HTMLInputElement).value, 'picker');
+    });
+
+    baseColorText.addEventListener('change', (e) => {
+      const raw = (e.target as HTMLInputElement).value.replace(/^#/, '');
+      if (/^[0-9a-fA-F]{6}$/.test(raw) || /^[0-9a-fA-F]{3}$/.test(raw)) {
+        applyColor(raw, 'text');
+      } else {
+        baseColorText.value = baseColorInput.value.replace('#', '').toUpperCase();
+      }
+    });
+
+    namedColorSelect.addEventListener('change', (e) => {
+      const val = (e.target as HTMLSelectElement).value;
+      if (val) applyColor(val, 'named');
+    });
+
+    randomBtn.addEventListener('click', () => {
+      const hex = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+      applyColor(hex, 'random');
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    populateNamedColors();
+    applyColor('#4A90E2', 'picker');
+  </script>
+</BaseLayout>
