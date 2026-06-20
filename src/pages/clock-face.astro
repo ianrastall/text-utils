@@ -157,7 +157,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       clockPreview.src = url;
       downloadLink.href = url;
-      downloadLink.setAttribute('download', \`clock-\${timeValue.replace(/:/g, '-')}.svg\`);
+      downloadLink.setAttribute('download', `clock-${timeValue.replace(/:/g, '-')}.svg`);
     }
 
     function updateFromMouse(e: MouseEvent) {
@@ -200,7 +200,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const hours = String(now.getHours() % 12 || 12).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
-      timeInput.value = \`\${hours}:\${minutes}:\${seconds}\`;
+      timeInput.value = `${hours}:${minutes}:${seconds}`;
       updateClock();
     });
 

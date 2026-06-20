@@ -35,6 +35,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'css-gradient-generator',
+    name: 'CSS Gradient Generator',
+    href: '/css-gradient-generator',
+    category: 'design',
+    description: 'Visually create linear, radial, and conic CSS gradients. Drag color stops, copy code, or download PNG.',
+    status: 'ready'
+  },
+  {
     id: 'dictation',
     name: 'Dictation',
     href: '/dictation.html',
