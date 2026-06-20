@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="HTML Tag Remover" description="Removes HTML/XML tags from text content and trims extra blank lines.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>HTML Tag Remover</h1>
+        <p>Removes HTML/XML tags from text content and trims extra blank lines.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="field">
+        <label for="mainText">HTML Content</label>
+        <textarea id="mainText" class="text-input" rows="12" placeholder="Paste HTML content here..." autofocus></textarea>
+      </div>
+
+      <div class="control-row" style="margin-top: 1rem;">
+        <button type="button" class="button button-primary" id="stripBtn">Strip HTML Tags</button>
+        <button type="button" class="button" id="trimLinesBtn">Trim Blank Lines</button>
+        <button type="button" class="button" id="pasteBtn">Paste</button>
+        <button type="button" class="button" id="copyBtn">Copy Result</button>
+        <button type="button" class="button button-danger" id="clearBtn">Clear</button>
+      </div>
+
+      <div class="control-row" style="margin-top: 1rem; gap: 1.5rem; justify-content: flex-start;">
+        <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;">
+          <input type="checkbox" id="autoStripOnPaste"> Auto-strip on paste
+        </label>
+        <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;">
+          <input type="checkbox" id="autoTrimAfterStrip"> Trim blank lines after stripping
+        </label>
+      </div>
+
+      <div id="resultInfo" style="margin-top: 1rem; color: var(--text-muted); min-height: 1.5em;"></div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const mainText = document.getElementById('mainText') as HTMLTextAreaElement;
+  const stripBtn = document.getElementById('stripBtn') as HTMLButtonElement;
+  const trimLinesBtn = document.getElementById('trimLinesBtn') as HTMLButtonElement;
+  const pasteBtn = document.getElementById('pasteBtn') as HTMLButtonElement;
+  const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement;
+  const clearBtn = document.getElementById('clearBtn') as HTMLButtonElement;
+  const resultInfo = document.getElementById('resultInfo') as HTMLDivElement;
+  const autoStripCheck = document.getElementById('autoStripOnPaste') as HTMLInputElement;
+  const autoTrimCheck = document.getElementById('autoTrimAfterStrip') as HTMLInputElement;
+
+  function stripHTML() {
+      const originalValue = mainText.value;
+      if (!originalValue.trim()) {
+          resultInfo.textContent = '';
+          return false;
+      }
+      try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(originalValue, 'text/html');
+          doc.querySelectorAll('script, style').forEach(el => el.remove());
+          const strippedText = doc.body.textContent || "";
+          const charDiff = originalValue.length - strippedText.length;
+
+          mainText.value = strippedText;
+
+          if (charDiff > 0) {
+              resultInfo.textContent = `Removed ${charDiff} character${charDiff !== 1 ? 's' : ''} of HTML.`;
+          } else {
+              resultInfo.textContent = 'No tags found.';
+          }
+          mainText.focus();
+          return true;
+      } catch (error) {
+          resultInfo.textContent = 'Error processing content.';
+          return false;
+      }
+  }
+
+  function trimBlankLines() {
+      const originalValue = mainText.value;
+      if (!originalValue.trim()) {
+          return false;
+      }
+      const trimmedText = originalValue.replace(/(?:\\n[ \\t]*){3,}/g, '\n\n');
+      const charDiff = originalValue.length - trimmedText.length;
+      mainText.value = trimmedText;
+
+      if (charDiff > 0) {
+          resultInfo.textContent = `Removed ${charDiff} character${charDiff !== 1 ? 's' : ''} from extra blank lines.`;
+      } else {
+          resultInfo.textContent = 'No extra blank lines found.';
+      }
+      mainText.focus();
+      return true;
+  }
+
+  async function copyText() {
+      if (!mainText.value) {
+          return;
+      }
+      try {
+          await navigator.clipboard.writeText(mainText.value);
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => copyBtn.textContent = originalText, 2000);
+      } catch (err) {
+          console.error('Copy failed', err);
+      }
+  }
+
+  async function pasteText() {
+      try {
+          const text = await navigator.clipboard.readText();
+          mainText.value = text;
+          resultInfo.textContent = '';
+          
+          if (autoStripCheck.checked) {
+              setTimeout(() => {
+                  if (stripHTML() && autoTrimCheck.checked) {
+                      setTimeout(trimBlankLines, 50);
+                  }
+              }, 50);
+          } else {
+              mainText.focus();
+          }
+      } catch (err) {
+          console.error('Paste failed', err);
+      }
+  }
+
+  function clearText() {
+      mainText.value = '';
+      resultInfo.textContent = '';
+      mainText.focus();
+  }
+
+  stripBtn.addEventListener('click', () => {
+      if (stripHTML() && autoTrimCheck.checked) {
+          setTimeout(trimBlankLines, 50);
+      }
+  });
+  
+  trimLinesBtn.addEventListener('click', trimBlankLines);
+  copyBtn.addEventListener('click', copyText);
+  pasteBtn.addEventListener('click', pasteText);
+  clearBtn.addEventListener('click', clearText);
+
+  mainText.addEventListener('paste', () => {
+      if (autoStripCheck.checked) {
+          setTimeout(() => {
+              if (stripHTML() && autoTrimCheck.checked) {
+                   setTimeout(trimBlankLines, 50);
+              }
+          }, 10);
+      }
+  });
+
+  mainText.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+           e.preventDefault();
+           stripBtn.click();
+      }
+  });
+</script>

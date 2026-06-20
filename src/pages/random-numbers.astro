@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Random Number Generator" description="Generate random numbers with options for range, quantity, decimals, uniqueness, and sorting.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Random Number Generator</h1>
+        <p>Generate random numbers with options for range, quantity, decimals, uniqueness, and sorting.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <form id="randomForm">
+        <fieldset id="form-fieldset" style="border: none; padding: 0; margin: 0;">
+          <div class="control-row">
+            <div class="field">
+              <label for="minInput">Minimum Value</label>
+              <input type="number" id="minInput" class="text-input" value="1" required>
+            </div>
+            <div class="field">
+              <label for="maxInput">Maximum Value</label>
+              <input type="number" id="maxInput" class="text-input" value="100" required>
+            </div>
+            <div class="field">
+              <label for="quantityInput">Quantity</label>
+              <input type="number" id="quantityInput" class="text-input" min="1" max="50000" value="10" required>
+            </div>
+          </div>
+          <div style="font-size: 0.85em; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Integers are [min, max] inclusive. Decimals are [min, max) exclusive of max.
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;" />
+
+          <div class="control-row">
+            <div class="field">
+              <label>Options</label>
+              <label style="font-weight: normal; display: flex; gap: 5px; align-items: center; margin-top: 0.5rem;">
+                <input type="checkbox" id="floatCheck"> Allow Decimals
+              </label>
+              <label style="font-weight: normal; display: flex; gap: 5px; align-items: center; margin-top: 0.5rem;">
+                <input type="checkbox" id="uniqueCheck"> Unique Numbers
+              </label>
+            </div>
+            <div class="field" id="decimalGroup" style="display: none;">
+              <label for="decimalInput">Decimal Places</label>
+              <input type="number" id="decimalInput" class="text-input" min="0" max="15" value="2">
+            </div>
+            <div class="field">
+              <label for="sortSelect">Sorting</label>
+              <select id="sortSelect">
+                <option value="none">None (Generated Order)</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="separatorSelect">Separator</label>
+              <select id="separatorSelect">
+                <option value=", ">Comma + Space</option>
+                <option value="\n">Newline</option>
+                <option value=" ">Space</option>
+              </select>
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;" />
+
+          <div class="field">
+            <label>Presets</label>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <button type="button" class="button" id="preset-d6">Dice Roll (D6)</button>
+              <button type="button" class="button" id="preset-d20">Dice Roll (D20)</button>
+              <button type="button" class="button" id="preset-lotto">Lottery Picks (1-70)</button>
+              <button type="button" class="button" id="preset-powerball">Powerball (1-26)</button>
+            </div>
+          </div>
+
+          <div class="control-row" style="margin-top: 2rem;">
+            <button type="submit" id="generateBtn" class="button button-primary">
+              <span id="generateBtn-text">Generate Numbers</span>
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="panel" style="margin-top: 2rem;">
+      <div class="control-row" style="margin-bottom: 1rem; align-items: center;">
+        <label for="numberOutput" style="margin: 0;">Generated Numbers:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" id="copyBtn" class="button">Copy</button>
+          <button type="button" id="clearBtn" class="button button-danger">Clear</button>
+        </div>
+      </div>
+      <textarea id="numberOutput" class="text-input" style="min-height: 150px; font-family: monospace;" readonly aria-label="Generated random numbers"></textarea>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const dom = {
+      form: document.getElementById('randomForm') as HTMLFormElement,
+      fieldset: document.getElementById('form-fieldset') as HTMLFieldSetElement,
+      minInput: document.getElementById('minInput') as HTMLInputElement,
+      maxInput: document.getElementById('maxInput') as HTMLInputElement,
+      quantityInput: document.getElementById('quantityInput') as HTMLInputElement,
+      floatCheck: document.getElementById('floatCheck') as HTMLInputElement,
+      uniqueCheck: document.getElementById('uniqueCheck') as HTMLInputElement,
+      decimalInput: document.getElementById('decimalInput') as HTMLInputElement,
+      decimalGroup: document.getElementById('decimalGroup') as HTMLDivElement,
+      separatorSelect: document.getElementById('separatorSelect') as HTMLSelectElement,
+      sortSelect: document.getElementById('sortSelect') as HTMLSelectElement,
+      numberOutput: document.getElementById('numberOutput') as HTMLTextAreaElement,
+      generateBtn: document.getElementById('generateBtn') as HTMLButtonElement,
+      generateBtnText: document.getElementById('generateBtn-text') as HTMLSpanElement,
+      copyBtn: document.getElementById('copyBtn') as HTMLButtonElement,
+      clearBtn: document.getElementById('clearBtn') as HTMLButtonElement,
+      
+      presetD6: document.getElementById('preset-d6') as HTMLButtonElement,
+      presetD20: document.getElementById('preset-d20') as HTMLButtonElement,
+      presetLotto: document.getElementById('preset-lotto') as HTMLButtonElement,
+      presetPowerball: document.getElementById('preset-powerball') as HTMLButtonElement,
+  };
+
+  let isProcessing = false;
+
+  function toggleDecimalPlaces() {
+      const show = dom.floatCheck.checked;
+      dom.decimalGroup.style.display = show ? 'block' : 'none';
+      dom.uniqueCheck.disabled = show;
+      if (show) dom.uniqueCheck.checked = false;
+  }
+
+  function applyPreset(min: number, max: number, qty: number, isFloat: boolean, isUnique: boolean, sort = 'none') {
+      dom.minInput.value = min.toString();
+      dom.maxInput.value = max.toString();
+      dom.quantityInput.value = qty.toString();
+      dom.floatCheck.checked = isFloat;
+      dom.uniqueCheck.checked = isUnique;
+      dom.sortSelect.value = sort;
+      toggleDecimalPlaces();
+      handleGenerate();
+  }
+
+  function validateInputs() {
+      const min = Number(dom.minInput.value);
+      const max = Number(dom.maxInput.value);
+      const quantity = Number(dom.quantityInput.value);
+      
+      if (min >= max) {
+          return { isValid: false, error: "Min must be less than Max." };
+      }
+      if (quantity < 1) {
+          return { isValid: false, error: "Quantity must be at least 1." };
+      }
+      if (dom.uniqueCheck.checked && !dom.floatCheck.checked) {
+          const intMin = Math.ceil(min);
+          const intMax = Math.floor(max);
+          const rangeSize = intMax - intMin + 1;
+          if (quantity > rangeSize) {
+              return { isValid: false, error: `Cannot generate ${quantity} unique integers from a range of only ${rangeSize} numbers.` };
+          }
+      }
+      return { isValid: true };
+  }
+
+  function fisherYatesShuffle(arr: number[]) {
+      for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+  }
+
+  function handleGenerate(e?: Event) {
+      if(e) e.preventDefault();
+      if (isProcessing) return;
+
+      const validation = validateInputs();
+      if (!validation.isValid) {
+          dom.numberOutput.value = validation.error || 'Invalid input.';
+          return;
+      }
+
+      isProcessing = true;
+      dom.fieldset.disabled = true;
+      dom.generateBtnText.textContent = 'Generating...';
+
+      setTimeout(() => {
+          const min = Number(dom.minInput.value);
+          const max = Number(dom.maxInput.value);
+          const quantity = Number(dom.quantityInput.value);
+          const isFloat = dom.floatCheck.checked;
+          const decimalPlaces = Number(dom.decimalInput.value) || 0;
+          const unique = dom.uniqueCheck.checked && !isFloat;
+
+          let numbers = [];
+          
+          if (unique) {
+              const intMin = Math.ceil(min);
+              const intMax = Math.floor(max);
+              const range = Array.from({ length: intMax - intMin + 1 }, (_, i) => intMin + i);
+              numbers = fisherYatesShuffle(range).slice(0, quantity);
+          } else {
+              for (let i = 0; i < quantity; i++) {
+                  let num;
+                  if (isFloat) {
+                      const rand = Math.random() * (max - min) + min;
+                      num = Number(rand.toFixed(decimalPlaces));
+                  } else {
+                      const intMin = Math.ceil(min);
+                      const intMax = Math.floor(max);
+                      num = Math.floor(Math.random() * (intMax - intMin + 1)) + intMin;
+                  }
+                  numbers.push(num);
+              }
+          }
+          
+          const sortType = dom.sortSelect.value;
+          if (sortType === 'asc') numbers.sort((a, b) => a - b);
+          else if (sortType === 'desc') numbers.sort((a, b) => b - a);
+          
+          const separator = dom.separatorSelect.value === '\\n' ? '\n' : dom.separatorSelect.value;
+          dom.numberOutput.value = numbers.join(separator);
+          
+          isProcessing = false;
+          dom.fieldset.disabled = false;
+          dom.generateBtnText.textContent = 'Generate Numbers';
+      }, 50);
+  }
+
+  dom.form.addEventListener('submit', handleGenerate);
+  dom.floatCheck.addEventListener('change', toggleDecimalPlaces);
+  
+  dom.copyBtn.addEventListener('click', () => {
+      if (!dom.numberOutput.value) return;
+      navigator.clipboard.writeText(dom.numberOutput.value);
+  });
+  
+  dom.clearBtn.addEventListener('click', () => {
+      dom.numberOutput.value = '';
+  });
+  
+  dom.presetD6.addEventListener('click', () => applyPreset(1, 6, 1, false, false));
+  dom.presetD20.addEventListener('click', () => applyPreset(1, 20, 1, false, false));
+  dom.presetLotto.addEventListener('click', () => applyPreset(1, 70, 5, false, true, 'asc'));
+  dom.presetPowerball.addEventListener('click', () => applyPreset(1, 26, 1, false, false));
+
+  toggleDecimalPlaces();
+</script>

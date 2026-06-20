@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Sequence Generator" description="Creates sequences of numbers with or without additional text.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Sequence Generator</h1>
+        <p>Creates sequences of numbers with or without additional text.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <form id="sequenceForm">
+        <fieldset style="border: none; padding: 0; margin: 0;">
+          <div class="control-row">
+            <div class="field">
+              <label for="startNumber">Start Number</label>
+              <input type="number" id="startNumber" class="text-input" value="1" step="any" required>
+            </div>
+            <div class="field">
+              <label for="count">Number of Items</label>
+              <input type="number" id="count" class="text-input" value="10" min="1" max="50000" required>
+            </div>
+            <div class="field">
+              <label for="step">Step</label>
+              <input type="number" id="step" class="text-input" value="1" step="any" required>
+            </div>
+            <div class="field">
+              <label for="order">Order</label>
+              <select id="order">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-row" style="margin-top: 1.5rem;">
+            <div class="field">
+              <label for="prependText">Prepend Text</label>
+              <input type="text" id="prependText" class="text-input" placeholder="Optional">
+            </div>
+            <div class="field">
+              <label for="appendText">Append Text</label>
+              <input type="text" id="appendText" class="text-input" placeholder="Optional">
+            </div>
+            <div class="field">
+              <label for="separator">Separator</label>
+              <select id="separator">
+                <option value="\n">Newline</option>
+                <option value=" ">Space</option>
+                <option value=", ">Comma + Space</option>
+                <option value=";">Semicolon</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-row" style="margin-top: 2rem;">
+            <button type="submit" class="button button-primary">Generate Sequence</button>
+            <button type="reset" class="button button-danger" id="resetBtn">Reset Form</button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="panel" style="margin-top: 2rem;">
+      <div class="control-row" style="margin-bottom: 1rem; align-items: center;">
+        <label for="outputText" style="margin: 0;">Result:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" id="copyBtn" class="button">Copy Result</button>
+        </div>
+      </div>
+      <textarea id="outputText" class="text-input" rows="10" placeholder="Your sequence will appear here..." readonly style="font-family: monospace;"></textarea>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const dom = {
+      form: document.getElementById('sequenceForm') as HTMLFormElement,
+      order: document.getElementById('order') as HTMLSelectElement,
+      start: document.getElementById('startNumber') as HTMLInputElement,
+      count: document.getElementById('count') as HTMLInputElement,
+      step: document.getElementById('step') as HTMLInputElement,
+      prepend: document.getElementById('prependText') as HTMLInputElement,
+      append: document.getElementById('appendText') as HTMLInputElement,
+      separator: document.getElementById('separator') as HTMLSelectElement,
+      output: document.getElementById('outputText') as HTMLTextAreaElement,
+      copyBtn: document.getElementById('copyBtn') as HTMLButtonElement,
+      resetBtn: document.getElementById('resetBtn') as HTMLButtonElement,
+  };
+
+  function validateInputs(start: number, count: number, step: number) {
+      if (isNaN(start) || isNaN(count) || isNaN(step)) {
+          return false;
+      }
+      if (count < 1) {
+          return false;
+      }
+      if (step === 0) {
+          return false;
+      }
+      return true;
+  }
+
+  function handleGenerate(e: Event) {
+      e.preventDefault();
+      
+      const start = parseFloat(dom.start.value);
+      const count = parseInt(dom.count.value, 10);
+      const step = parseFloat(dom.step.value);
+      
+      if (!validateInputs(start, count, step)) return;
+
+      const order = dom.order.value;
+      const prepend = dom.prepend.value;
+      const append = dom.append.value;
+      const separator = dom.separator.value === '\\n' ? '\n' : dom.separator.value;
+      
+      const items = [];
+      let currentNum = start;
+
+      for (let i = 0; i < count; i++) {
+          const formattedNum = Number.isInteger(currentNum) ? currentNum.toString() : currentNum.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
+          items.push(prepend + formattedNum + append);
+          currentNum += (order === 'asc' ? step : -step);
+      }
+
+      dom.output.value = items.join(separator);
+  }
+  
+  dom.form.addEventListener('submit', handleGenerate);
+  
+  dom.copyBtn.addEventListener('click', async () => {
+      const text = dom.output.value;
+      if (!text) return;
+      try {
+          await navigator.clipboard.writeText(text);
+          const originalText = dom.copyBtn.textContent;
+          dom.copyBtn.textContent = 'Copied!';
+          setTimeout(() => dom.copyBtn.textContent = originalText, 2000);
+      } catch (err) {
+          console.error('Failed to copy text.');
+      }
+  });
+
+  dom.resetBtn.addEventListener('click', () => {
+      dom.output.value = '';
+  });
+</script>

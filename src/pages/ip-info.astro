@@ -1,0 +1,231 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="IP Info" description="Displays your current IP address, location, and browser details.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>IP Info & System Details</h1>
+        <p>Displays your current IP address, estimated location, and browser environment details.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="control-row" style="margin-bottom: 1.5rem;">
+        <button id="refreshBtn" class="button button-primary">Refresh Data</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        
+        <!-- Network Info -->
+        <details open style="background: var(--surface-2); padding: 1rem; border-radius: 4px; border: 1px solid var(--border);">
+          <summary style="cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">Network</summary>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Public IP Address</span>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <code id="public-ip-val" style="font-size: 1.1em; color: var(--accent);">Loading...</code>
+                <button class="button copy-btn" style="padding: 2px 8px; font-size: 0.8em;" data-target="public-ip-val">Copy</button>
+              </div>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Hostname (PTR)</span>
+              <span id="hostname-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">ISP / Organization</span>
+              <span id="isp-val">Loading...</span>
+            </div>
+          </div>
+        </details>
+
+        <!-- Location Info -->
+        <details open style="background: var(--surface-2); padding: 1rem; border-radius: 4px; border: 1px solid var(--border);">
+          <summary style="cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">Geolocation</summary>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">City & Region</span>
+              <span id="location-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Country</span>
+              <span id="country-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Approx. Coordinates</span>
+              <span id="coords-val">Loading...</span>
+            </div>
+          </div>
+        </details>
+
+        <!-- System & Browser Info -->
+        <details open style="background: var(--surface-2); padding: 1rem; border-radius: 4px; border: 1px solid var(--border); grid-column: 1 / -1;">
+          <summary style="cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">System & Browser Environment</summary>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">User Agent</span>
+              <code id="user-agent-val" style="word-break: break-all; font-size: 0.85em;">Loading...</code>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Operating System</span>
+              <span id="os-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Browser</span>
+              <span id="browser-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Screen Resolution</span>
+              <span id="screen-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Local Timezone</span>
+              <span id="timezone-val">Loading...</span>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 0.9em; display: block;">Language</span>
+              <span id="language-val">Loading...</span>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const publicIpEl = document.getElementById('public-ip-val');
+  const hostnameEl = document.getElementById('hostname-val');
+  const ispEl = document.getElementById('isp-val');
+  
+  const locationEl = document.getElementById('location-val');
+  const countryEl = document.getElementById('country-val');
+  const coordsEl = document.getElementById('coords-val');
+
+  const userAgentEl = document.getElementById('user-agent-val');
+  const osEl = document.getElementById('os-val');
+  const browserEl = document.getElementById('browser-val');
+  const screenEl = document.getElementById('screen-val');
+  const timezoneEl = document.getElementById('timezone-val');
+  const languageEl = document.getElementById('language-val');
+
+  const refreshBtn = document.getElementById('refreshBtn');
+
+  // Basic OS / Browser detection from User Agent
+  function parseUserAgent(ua: string) {
+      let os = "Unknown OS";
+      if (ua.indexOf("Win") !== -1) os = "Windows";
+      else if (ua.indexOf("Mac") !== -1) os = "MacOS";
+      else if (ua.indexOf("Linux") !== -1) os = "Linux";
+      else if (ua.indexOf("Android") !== -1) os = "Android";
+      else if (ua.indexOf("like Mac") !== -1) os = "iOS";
+
+      let browser = "Unknown Browser";
+      if (ua.indexOf("Chrome") !== -1 && ua.indexOf("Edg") === -1 && ua.indexOf("OPR") === -1) browser = "Chrome";
+      else if (ua.indexOf("Safari") !== -1 && ua.indexOf("Chrome") === -1) browser = "Safari";
+      else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+      else if (ua.indexOf("Edg") !== -1) browser = "Edge";
+      else if (ua.indexOf("OPR") !== -1) browser = "Opera";
+      
+      return { os, browser };
+  }
+
+  const fetchClientInfo = async () => {
+      if (publicIpEl) publicIpEl.textContent = 'Fetching...';
+      if (hostnameEl) hostnameEl.textContent = 'Fetching...';
+      if (ispEl) ispEl.textContent = 'Fetching...';
+      if (locationEl) locationEl.textContent = 'Fetching...';
+      if (countryEl) countryEl.textContent = 'Fetching...';
+      if (coordsEl) coordsEl.textContent = 'Fetching...';
+
+      // Set local system details immediately
+      if (userAgentEl) userAgentEl.textContent = navigator.userAgent;
+      if (osEl && browserEl) {
+          const { os, browser } = parseUserAgent(navigator.userAgent);
+          osEl.textContent = os;
+          browserEl.textContent = browser;
+      }
+      if (screenEl) screenEl.textContent = `${window.screen.width} x ${window.screen.height} (Color: ${window.screen.colorDepth}-bit)`;
+      if (timezoneEl) {
+          try {
+              timezoneEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          } catch(e) {
+              timezoneEl.textContent = 'Unavailable';
+          }
+      }
+      if (languageEl) languageEl.textContent = navigator.language;
+
+      try {
+          // Use ipwho.is for free HTTPS geolocation including ASN and IP
+          const ipResponse = await fetch('https://ipwho.is/');
+          if (!ipResponse.ok) throw new Error('Failed to fetch IP');
+          const ipData = await ipResponse.json();
+          
+          const publicIp = ipData.ip;
+          if (publicIpEl) publicIpEl.textContent = publicIp;
+
+          if (ipData.success) {
+              if (ispEl) ispEl.textContent = ipData.connection ? `${ipData.connection.isp} (${ipData.connection.asn})` : 'Unavailable';
+              if (locationEl) locationEl.textContent = `${ipData.city}, ${ipData.region}`;
+              if (countryEl) countryEl.textContent = ipData.country;
+              if (coordsEl) coordsEl.textContent = `${ipData.latitude}, ${ipData.longitude}`;
+          } else {
+              if (ispEl) ispEl.textContent = 'Unavailable';
+              if (locationEl) locationEl.textContent = 'Unavailable';
+              if (countryEl) countryEl.textContent = 'Unavailable';
+              if (coordsEl) coordsEl.textContent = 'Unavailable';
+          }
+
+          try {
+              const ptrResponse = await fetch(`https://dns.google/resolve?name=${publicIp.split('.').reverse().join('.')}.in-addr.arpa&type=PTR`);
+              if (!ptrResponse.ok) throw new Error('Failed to fetch hostname');
+              const ptrData = await ptrResponse.json();
+              
+              if (ptrData.Answer && ptrData.Answer.length > 0) {
+                  if (hostnameEl) hostnameEl.textContent = ptrData.Answer[0].data.slice(0, -1);
+              } else {
+                  if (hostnameEl) hostnameEl.textContent = 'No PTR Record Found';
+              }
+          } catch (e) {
+              if (hostnameEl) hostnameEl.textContent = 'Hostname lookup failed';
+          }
+          
+      } catch (error) {
+          if (publicIpEl) publicIpEl.textContent = 'Unavailable';
+          if (hostnameEl) hostnameEl.textContent = 'Unavailable';
+          if (ispEl) ispEl.textContent = 'Unavailable';
+          if (locationEl) locationEl.textContent = 'Unavailable';
+          if (countryEl) countryEl.textContent = 'Unavailable';
+          if (coordsEl) coordsEl.textContent = 'Unavailable';
+      }
+  };
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+          const button = btn as HTMLButtonElement;
+          const targetEl = document.getElementById(button.dataset.target || '');
+          const textToCopy = targetEl ? targetEl.textContent : '';
+
+          if (!textToCopy || textToCopy.toLowerCase().includes('loading') || textToCopy.toLowerCase().includes('fetching')) {
+              return;
+          }
+          
+          try {
+              await navigator.clipboard.writeText(textToCopy);
+              const originalText = button.textContent;
+              button.textContent = 'Copied!';
+              setTimeout(() => {
+                  button.textContent = originalText;
+              }, 2000);
+          } catch (err) {
+              console.error('Copy failed');
+          }
+      });
+  });
+
+  if (refreshBtn) refreshBtn.addEventListener('click', fetchClientInfo);
+  
+  fetchClientInfo();
+</script>

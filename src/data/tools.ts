@@ -123,6 +123,22 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'html-tag-remover',
+    name: 'HTML Tag Remover',
+    href: '/html-tag-remover.html',
+    category: 'convert',
+    description: 'Removes HTML/XML tags from text content and trims extra blank lines.',
+    status: 'ready'
+  },
+  {
+    id: 'ip-info',
+    name: 'IP Info & System Details',
+    href: '/ip-info.html',
+    category: 'inspect',
+    description: 'Displays your current IP address, estimated location, and browser environment details.',
+    status: 'ready'
+  },
+  {
     id: 'json-csv-converter',
     name: 'JSON & CSV Converter',
     href: '/json-csv-converter.html',
@@ -179,11 +195,27 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'random-numbers',
+    name: 'Random Number Generator',
+    href: '/random-numbers.html',
+    category: 'write',
+    description: 'Generate random numbers with options for range, quantity, decimals, uniqueness, and sorting.',
+    status: 'ready'
+  },
+  {
     id: 'regex-tester',
     name: 'Regex Tester',
     href: '/regex-tester.html',
     category: 'inspect',
     description: 'Test regular expressions, explore matches and groups in real-time.',
+    status: 'ready'
+  },
+  {
+    id: 'sequence-generator',
+    name: 'Sequence Generator',
+    href: '/sequence-generator.html',
+    category: 'write',
+    description: 'Creates sequences of numbers with or without additional text.',
     status: 'ready'
   },
   {
