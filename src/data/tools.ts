@@ -19,6 +19,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'clock-face',
+    name: 'Clock Face Generator',
+    href: '/clock-face',
+    category: 'design',
+    description: 'Generate an SVG of an analog clock. Interactively drag hands to set the time.',
+    status: 'ready'
+  },
+  {
     id: 'color-chooser',
     name: 'Color Chooser',
     href: '/color-chooser',

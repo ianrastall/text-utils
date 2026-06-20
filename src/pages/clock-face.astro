@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Clock Face Generator"
+  description="Generate an SVG of an analog clock. Interactively drag hands to set the time.">
+
+  <main class="shell fac-main">
+    <header class="fac-page-header">
+      <h1>Clock Face Generator</h1>
+      <p>Generates an SVG of an analog clock. Drag the hands to change the time!</p>
+    </header>
+
+    <!-- Controls bar -->
+    <div class="fac-controls" style="align-items: flex-end; gap: 1rem;">
+      <div class="fac-ctl">
+        <label for="timeInput">Time (HH:MM or HH:MM:SS)</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="timeInput" value="02:41:20" style="padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: var(--panel-muted); color: var(--text);" />
+          <button class="button primary" id="currentTimeBtn" title="Set to current time">Now</button>
+        </div>
+      </div>
+      <div class="fac-ctl" style="flex-direction: row; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+        <input type="checkbox" id="secondsInput" checked />
+        <label for="secondsInput" style="margin: 0; color: var(--text);">Show Second Hand</label>
+      </div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="fac-workspace" style="display: block; margin-top: 2rem;">
+      <div class="fac-grid-wrap" style="padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--panel); border: 1px solid var(--border); border-radius: 8px;">
+        <div id="preview-container" style="text-align: center;">
+          <img id="clockPreview" src="" alt="Clock preview" style="max-height: 400px; cursor: pointer; user-select: none;" draggable="false">
+          <div style="margin-top: 2rem;">
+            <a id="downloadLink" href="#" class="button primary" download="clock.svg">
+              ⎘ Download SVG
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <style is:global>
+    /* ── Page ──────────────────────────────────────────── */
+    .fac-main { padding: 1rem 0 1rem; }
+    .fac-page-header { margin-bottom: 0.6rem; }
+    .fac-page-header h1 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+    .fac-page-header p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    /* Keeping basic controls styles */
+    .fac-controls {
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .fac-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
+    .fac-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+  </style>
+
+  <script>
+    const timeInput = document.getElementById('timeInput') as HTMLInputElement;
+    const secondsInput = document.getElementById('secondsInput') as HTMLInputElement;
+    const clockPreview = document.getElementById('clockPreview') as HTMLImageElement;
+    const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
+    const currentTimeBtn = document.getElementById('currentTimeBtn');
+
+    let isDragging: 'hour' | 'minute' | null = null;
+
+    function parseClockTime(t: string) {
+      const match = t.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+      if (!match) return [2, 41, 20];
+      const h = parseInt(match[1] || '0', 10);
+      const m = parseInt(match[2] || '0', 10);
+      const s = parseInt(match[3] || '0', 10);
+      return [h % 12, m % 60, s % 60];
+    }
+
+    function generateClockSVG(hour: number, minute: number, second: number, drawSec: boolean) {
+      const angH = (hour % 12) * 30 + minute * 0.5;
+      const angM = minute * 6;
+      const angS = second * 6;
+
+      let ticks = '';
+      let numerals = '';
+      for (let i = 1; i <= 60; i++) {
+        const ang = i * 6;
+        if (i % 5 === 0) {
+          ticks += `<line class="tick-hr" transform="rotate(${ang})" x1="80" x2="90"/>\n`;
+          const numAng = (ang - 90) * (Math.PI / 180);
+          const n = i / 5;
+          const tx = Math.cos(numAng) * 68;
+          const ty = Math.sin(numAng) * 68;
+          numerals += `<text x="${tx}" y="${ty}">${n}</text>\n`;
+        } else {
+          ticks += `<line class="tick-min" transform="rotate(${ang})" x1="85" x2="90"/>\n`;
+        }
+      }
+
+      let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Analog clock">
+  <defs>
+    <style>
+      .face { fill: #212529; }
+      .bezel { stroke: white; stroke-width: 1.5; fill: none; }
+      .tick-hr { stroke: white; stroke-width: 1; }
+      .tick-min { stroke: #b4b4b4; stroke-width: 0.5; }
+      .hand-hr { stroke: #f0f0f0; stroke-width: 5; stroke-linecap: round; }
+      .hand-min { stroke: #c8c8c8; stroke-width: 3; stroke-linecap: round; }
+      .hand-sec { stroke: #dc4646; stroke-width: 1.5; stroke-linecap: round; }
+      .hub { fill: white; }
+      text {
+        fill: white;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+  </defs>
+  <g>
+    <circle class="face" r="100"/>
+    <circle class="bezel" r="90"/>
+    ${ticks}
+    ${numerals}
+    <g transform="rotate(${angH})"><line class="hand-hr" y1="10" y2="-55"/></g>
+    <g transform="rotate(${angM})"><line class="hand-min" y1="10" y2="-80"/></g>\n`;
+
+      if (drawSec) {
+        svg += `    <g transform="rotate(${angS})"><line class="hand-sec" y1="15" y2="-85"/></g>\n`;
+      }
+
+      svg += `    <circle class="hub" r="5"/>
+  </g>
+</svg>`;
+
+      return svg;
+    }
+
+    function updateClock() {
+      const timeValue = timeInput.value.trim();
+      if (!timeValue) return;
+
+      const [h, m, s] = parseClockTime(timeValue);
+      const svgString = generateClockSVG(h, m, s, secondsInput.checked);
+      
+      const blob = new Blob([svgString], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+
+      // Clean up previous blob URL to avoid memory leak
+      if (clockPreview.src && clockPreview.src.startsWith('blob:')) {
+        URL.revokeObjectURL(clockPreview.src);
+      }
+
+      clockPreview.src = url;
+      downloadLink.href = url;
+      downloadLink.setAttribute('download', \`clock-\${timeValue.replace(/:/g, '-')}.svg\`);
+    }
+
+    function updateFromMouse(e: MouseEvent) {
+      const rect = clockPreview.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      const angle = (Math.atan2(y, x) * (180 / Math.PI) + 90 + 360) % 360;
+
+      const timeParts = timeInput.value.split(':');
+      const currentH = parseInt(timeParts[0] || '0', 10);
+      const currentM = parseInt(timeParts[1] || '0', 10);
+      const currentS = timeParts[2] ? parseInt(timeParts[2], 10) : 0;
+      
+      let newH = currentH;
+      let newM = currentM;
+
+      if (isDragging === 'hour') {
+        newH = Math.round(angle / 30);
+        if (newH === 0) newH = 12; // Adjust for 12 o'clock
+      } else if (isDragging === 'minute') {
+        newM = Math.round(angle / 6) % 60;
+      }
+
+      timeInput.value = [
+        String(newH).padStart(2, '0'),
+        String(newM).padStart(2, '0'),
+        String(currentS).padStart(2, '0')
+      ].join(':');
+
+      updateClock();
+    }
+
+    // --- Event Listeners ---
+    timeInput.addEventListener('input', updateClock);
+    secondsInput.addEventListener('change', updateClock);
+
+    currentTimeBtn?.addEventListener('click', () => {
+      const now = new Date();
+      const hours = String(now.getHours() % 12 || 12).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      timeInput.value = \`\${hours}:\${minutes}:\${seconds}\`;
+      updateClock();
+    });
+
+    clockPreview.addEventListener('mousedown', (e) => {
+      const rect = clockPreview.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const distance = Math.sqrt(x * x + y * y);
+      const maxRadius = rect.width / 2;
+
+      if (distance > maxRadius) return; 
+
+      isDragging = distance < maxRadius * 0.5 ? 'hour' : 'minute';
+      updateFromMouse(e);
+    });
+
+    clockPreview.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        e.preventDefault();
+        updateFromMouse(e);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = null;
+    });
+
+    // Initial load
+    updateClock();
+  </script>
+</BaseLayout>
