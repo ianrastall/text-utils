@@ -1,0 +1,376 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="HTML Entity Encoder / Decoder" description="Encode and decode HTML entities in hex, decimal, or named format. Choose your scope: HTML-unsafe characters, non-ASCII, or all printable.">
+  <main class="shell he-main">
+    <header class="he-page-header">
+      <h1>HTML Entity Encoder / Decoder</h1>
+      <p>Encode special characters to HTML entities — or decode them back</p>
+    </header>
+
+    <div class="he-layout">
+
+      <!-- Textarea -->
+      <div class="he-panel">
+        <div class="he-textarea-header">
+          <label class="he-section-heading" for="mainText">Text</label>
+          <span class="he-charcount" id="charCount">0 chars</span>
+        </div>
+        <textarea id="mainText" class="he-textarea" rows="10"
+          placeholder="Paste or type text here, then click Encode or Decode…"
+          spellcheck="false" autocomplete="off"></textarea>
+      </div>
+
+      <!-- Controls -->
+      <div class="he-panel he-controls">
+
+        <!-- Selects row -->
+        <div class="he-selects-row">
+          <div class="he-field">
+            <label class="he-field-label" for="scopeSelect">Scope</label>
+            <select id="scopeSelect" class="he-select">
+              <option value="html">HTML-unsafe (&lt; &gt; &amp; " ')</option>
+              <option value="nonascii" selected>Non-ASCII (code point &gt; 127)</option>
+              <option value="both">HTML-unsafe + Non-ASCII</option>
+              <option value="all">All printable (encode everything)</option>
+            </select>
+          </div>
+          <div class="he-field">
+            <label class="he-field-label" for="formatSelect">Format</label>
+            <select id="formatSelect" class="he-select">
+              <option value="hex" selected>Hex (&#x26;#x20AC;)</option>
+              <option value="decimal">Decimal (&#x26;#8364;)</option>
+              <option value="named">Named (&#x26;euro;)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Primary actions -->
+        <div class="he-action-row">
+          <button type="button" id="encodeBtn" class="button primary he-btn-wide">&#x2193; Encode</button>
+          <button type="button" id="decodeBtn" class="button he-btn-wide">&#x2191; Decode</button>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="he-stats" id="statsBar" aria-live="polite">
+          <span id="statBefore"></span>
+          <span id="statAfter"></span>
+          <span id="statEntities"></span>
+        </div>
+
+        <!-- Utility actions -->
+        <div class="he-util-row">
+          <button type="button" id="pasteBtn" class="button he-btn-sm">&#x2398; Paste</button>
+          <button type="button" id="copyBtn" class="button he-btn-sm">&#x2398; Copy</button>
+          <button type="button" id="clearBtn" class="button he-btn-sm">&#x2715; Clear</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Toast -->
+    <div id="he-toast" class="he-toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <style>
+    .he-main {
+      padding: 1rem 0 2rem;
+    }
+    .he-page-header {
+      margin-bottom: 1rem;
+    }
+    .he-page-header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+    .he-page-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .he-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 760px;
+    }
+
+    /* Panel */
+    .he-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+
+    .he-section-heading {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    /* Textarea */
+    .he-textarea-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+    .he-charcount {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+    .he-textarea {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .he-textarea:focus { border-color: var(--accent); }
+
+    /* Controls panel */
+    .he-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .he-selects-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .he-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      flex: 1 1 180px;
+    }
+    .he-field-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .he-select {
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+      width: 100%;
+    }
+
+    .he-action-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .he-btn-wide {
+      flex: 1;
+      font-size: 0.9rem;
+      justify-content: center;
+    }
+
+    /* Stats */
+    .he-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+      min-height: 1.2em;
+    }
+    .he-stats span:not(:empty)::before {
+      content: '';
+    }
+
+    .he-util-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .he-btn-sm {
+      font-size: 0.82rem;
+      min-height: 1.9rem;
+      padding: 0.25rem 0.7rem;
+    }
+
+    /* Toast */
+    .he-toast {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(0.5rem);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.88rem;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s, transform 0.18s;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    .he-toast.he-toast-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      .he-selects-row { flex-direction: column; }
+      .he-stats { flex-direction: column; gap: 0.2rem; }
+    }
+  </style>
+
+  <script>
+    // ── Named entity map ──────────────────────────────────────────────────────
+    const NAMED: Record<string, string> = {"'":"&apos;","<":"&lt;",">":"&gt;","&":"&amp;","\"":"&quot;"," ":"&nbsp;","¡":"&iexcl;","¢":"&cent;","£":"&pound;","¤":"&curren;","¥":"&yen;","¦":"&brvbar;","§":"&sect;","¨":"&uml;","©":"&copy;","ª":"&ordf;","«":"&laquo;","¬":"&not;","­":"&shy;","®":"&reg;","¯":"&macr;","°":"&deg;","±":"&plusmn;","²":"&sup2;","³":"&sup3;","´":"&acute;","µ":"&micro;","¶":"&para;","·":"&middot;","¸":"&cedil;","¹":"&sup1;","º":"&ordm;","»":"&raquo;","¼":"&frac14;","½":"&frac12;","¾":"&frac34;","¿":"&iquest;","À":"&Agrave;","Á":"&Aacute;","Â":"&Acirc;","Ã":"&Atilde;","Ä":"&Auml;","Å":"&Aring;","Æ":"&AElig;","Ç":"&Ccedil;","È":"&Egrave;","É":"&Eacute;","Ê":"&Ecirc;","Ë":"&Euml;","Ì":"&Igrave;","Í":"&Iacute;","Î":"&Icirc;","Ï":"&Iuml;","Ð":"&ETH;","Ñ":"&Ntilde;","Ò":"&Ograve;","Ó":"&Oacute;","Ô":"&Ocirc;","Õ":"&Otilde;","Ö":"&Ouml;","×":"&times;","Ø":"&Oslash;","Ù":"&Ugrave;","Ú":"&Uacute;","Û":"&Ucirc;","Ü":"&Uuml;","Ý":"&Yacute;","Þ":"&THORN;","ß":"&szlig;","à":"&agrave;","á":"&aacute;","â":"&acirc;","ã":"&atilde;","ä":"&auml;","å":"&aring;","æ":"&aelig;","ç":"&ccedil;","è":"&egrave;","é":"&eacute;","ê":"&ecirc;","ë":"&euml;","ì":"&igrave;","í":"&iacute;","î":"&icirc;","ï":"&iuml;","ð":"&eth;","ñ":"&ntilde;","ò":"&ograve;","ó":"&oacute;","ô":"&ocirc;","õ":"&otilde;","ö":"&ouml;","÷":"&divide;","ø":"&oslash;","ù":"&ugrave;","ú":"&uacute;","û":"&ucirc;","ü":"&uuml;","ý":"&yacute;","þ":"&thorn;","ÿ":"&yuml;","Œ":"&OElig;","œ":"&oelig;","Š":"&Scaron;","š":"&scaron;","Ÿ":"&Yuml;","ƒ":"&fnof;","ˆ":"&circ;","˜":"&tilde;","–":"&ndash;","—":"&mdash;","‘":"&lsquo;","’":"&rsquo;","‚":"&sbquo;","“":"&ldquo;","”":"&rdquo;","„":"&bdquo;","†":"&dagger;","‡":"&Dagger;","•":"&bull;","…":"&hellip;","‰":"&permil;","′":"&prime;","″":"&Prime;","‹":"&lsaquo;","›":"&rsaquo;","‾":"&oline;","⁄":"&frasl;","€":"&euro;","ℑ":"&image;","℘":"&weierp;","ℜ":"&real;","™":"&trade;","ℵ":"&alefsym;","←":"&larr;","↑":"&uarr;","→":"&rarr;","↓":"&darr;","↔":"&harr;","↵":"&crarr;","⇐":"&lArr;","⇑":"&uArr;","⇒":"&rArr;","⇓":"&dArr;","⇔":"&hArr;","∀":"&forall;","∂":"&part;","∃":"&exist;","∅":"&empty;","∇":"&nabla;","∈":"&isin;","∉":"&notin;","∋":"&ni;","∏":"&prod;","∑":"&sum;","−":"&minus;","∗":"&lowast;","√":"&radic;","∝":"&prop;","∞":"&infin;","∠":"&ang;","∧":"&and;","∨":"&or;","∩":"&cap;","∪":"&cup;","∫":"&int;","∴":"&there4;","∼":"&sim;","≅":"&cong;","≈":"&asymp;","≠":"&ne;","≡":"&equiv;","≤":"&le;","≥":"&ge;","⊂":"&sub;","⊃":"&sup;","⊄":"&nsub;","⊆":"&sube;","⊇":"&supe;","⊕":"&oplus;","⊗":"&otimes;","⊥":"&perp;","⋅":"&sdot;","⌈":"&lceil;","⌉":"&rceil;","⌊":"&lfloor;","⌋":"&rfloor;","⟨":"&lang;","⟩":"&rang;","◊":"&loz;","♠":"&spades;","♣":"&clubs;","♥":"&hearts;","♦":"&diams;"};
+
+    const HTML_UNSAFE = new Set(['<', '>', '&', '"', "'"]);
+
+    // ── DOM refs ──────────────────────────────────────────────────────────────
+    const textarea    = document.getElementById('mainText') as HTMLTextAreaElement;
+    const scopeSel    = document.getElementById('scopeSelect') as HTMLSelectElement;
+    const formatSel   = document.getElementById('formatSelect') as HTMLSelectElement;
+    const encodeBtn   = document.getElementById('encodeBtn') as HTMLButtonElement;
+    const decodeBtn   = document.getElementById('decodeBtn') as HTMLButtonElement;
+    const pasteBtn    = document.getElementById('pasteBtn') as HTMLButtonElement;
+    const copyBtn     = document.getElementById('copyBtn') as HTMLButtonElement;
+    const clearBtn    = document.getElementById('clearBtn') as HTMLButtonElement;
+    const charCount   = document.getElementById('charCount') as HTMLElement;
+    const statBefore  = document.getElementById('statBefore') as HTMLElement;
+    const statAfter   = document.getElementById('statAfter') as HTMLElement;
+    const statEntities = document.getElementById('statEntities') as HTMLElement;
+    const toastEl     = document.getElementById('he-toast') as HTMLElement;
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    let toastTimer: ReturnType<typeof setTimeout>;
+    function toast(msg: string) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('he-toast-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('he-toast-visible'), 2200);
+    }
+
+    // ── Char count ────────────────────────────────────────────────────────────
+    function updateCharCount() {
+      const n = [...textarea.value].length;
+      charCount.textContent = `${n.toLocaleString()} char${n === 1 ? '' : 's'}`;
+    }
+    textarea.addEventListener('input', updateCharCount);
+
+    // ── Scope predicate ───────────────────────────────────────────────────────
+    function shouldEncode(char: string, cp: number, scope: string): boolean {
+      switch (scope) {
+        case 'html':     return HTML_UNSAFE.has(char);
+        case 'nonascii': return cp > 127;
+        case 'both':     return HTML_UNSAFE.has(char) || cp > 127;
+        case 'all':      return cp > 32; // keep control chars and space as-is
+        default:         return false;
+      }
+    }
+
+    // ── Encode ────────────────────────────────────────────────────────────────
+    function encode() {
+      const input = textarea.value;
+      if (!input) { toast('Nothing to encode.'); return; }
+
+      const scope  = scopeSel.value;
+      const format = formatSel.value;
+      let count = 0;
+
+      const output = [...input].map(char => {
+        const cp = char.codePointAt(0)!;
+        if (!shouldEncode(char, cp, scope)) return char;
+        count++;
+        if (format === 'named' && NAMED[char]) return NAMED[char];
+        if (format === 'decimal') return `&#${cp};`;
+        return `&#x${cp.toString(16).toUpperCase()};`;
+      }).join('');
+
+      const before = [...input].length;
+      const after  = [...output].length;
+      textarea.value = output;
+      updateCharCount();
+      setStats(before, after, count, 'encoded');
+      toast(`Encoded ${count} character${count === 1 ? '' : 's'}.`);
+    }
+
+    // ── Decode ────────────────────────────────────────────────────────────────
+    function decode() {
+      const input = textarea.value;
+      if (!input) { toast('Nothing to decode.'); return; }
+
+      const before = [...input].length;
+      // DOMParser is safe — textContent never executes scripts
+      const doc = new DOMParser().parseFromString(input, 'text/html');
+      const output = doc.body.textContent ?? '';
+      const after = [...output].length;
+      const diff = before - after;
+
+      textarea.value = output;
+      updateCharCount();
+      setStats(before, after, diff > 0 ? diff : 0, 'decoded');
+      toast('Decoded HTML entities.');
+    }
+
+    // ── Stats bar ─────────────────────────────────────────────────────────────
+    function setStats(before: number, after: number, entities: number, op: 'encoded' | 'decoded') {
+      statBefore.textContent  = `before: ${before.toLocaleString()} chars`;
+      statAfter.textContent   = `after: ${after.toLocaleString()} chars`;
+      statEntities.textContent = entities > 0
+        ? `${entities} ${op === 'encoded' ? 'entit' + (entities === 1 ? 'y' : 'ies') + ' encoded' : 'entit' + (entities === 1 ? 'y' : 'ies') + ' decoded'}`
+        : op === 'encoded' ? 'nothing matched scope' : '';
+    }
+
+    function clearStats() {
+      statBefore.textContent = statAfter.textContent = statEntities.textContent = '';
+    }
+
+    // ── Events ────────────────────────────────────────────────────────────────
+    encodeBtn.addEventListener('click', encode);
+    decodeBtn.addEventListener('click', decode);
+
+    copyBtn.addEventListener('click', async () => {
+      if (!textarea.value) { toast('Nothing to copy.'); return; }
+      try {
+        await navigator.clipboard.writeText(textarea.value);
+        toast('Copied to clipboard.');
+      } catch { toast('Copy failed — check permissions.'); }
+    });
+
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        textarea.value = await navigator.clipboard.readText();
+        updateCharCount();
+        clearStats();
+        toast('Pasted from clipboard.');
+      } catch { toast('Paste failed — check permissions.'); }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      textarea.value = '';
+      updateCharCount();
+      clearStats();
+      textarea.focus();
+      toast('Cleared.');
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    updateCharCount();
+  </script>
+</BaseLayout>

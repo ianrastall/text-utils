@@ -370,6 +370,11 @@ textarea {
   padding: 1.5rem 0 2rem;
 }
 
+.support-blurb {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
 @media (max-width: 760px) {
   .site-header,
   .tool-bar,

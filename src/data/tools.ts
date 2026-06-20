@@ -35,6 +35,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'color-combinations',
+    name: 'Color Combinations Tool',
+    href: '/color-combinations.html',
+    category: 'design',
+    description: 'Generate harmonious color palettes — monochromatic, analogous, triadic, complementary, and split-complementary — from any base color.',
+    status: 'ready'
+  },
+  {
     id: 'css-gradient-generator',
     name: 'CSS Gradient Generator',
     href: '/css-gradient-generator.html',
@@ -73,6 +81,14 @@ export const tools: ToolMeta[] = [
     href: '/hashing-tool.html',
     category: 'convert',
     description: 'A comprehensive suite for text transformations including Base64, Hex, URL, Binary, MD5, SHA hashes, ROT13, Morse Code, and more.',
+    status: 'ready'
+  },
+  {
+    id: 'html-entities',
+    name: 'HTML Entity Encoder / Decoder',
+    href: '/html-entities.html',
+    category: 'convert',
+    description: 'Encode text to HTML entities (hex, decimal, or named) and decode them back. Choose your scope: HTML-unsafe characters, non-ASCII, or all printable.',
     status: 'ready'
   },
   {

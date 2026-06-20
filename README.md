@@ -26,3 +26,9 @@ npm test
 ```
 
 The deployed custom domain is configured through `public/CNAME`.
+
+## Support
+
+If this software saved you a few hours of work, or is something you would have paid $5 for, consider throwing something my way.
+
+[Buy me a coffee on Ko-fi](https://ko-fi.com/ianrastall)
