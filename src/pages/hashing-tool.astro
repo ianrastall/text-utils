@@ -446,8 +446,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           }
         }
         
+        dom.textInput.value = result;
         dom.textOutput.value = result;
-        uiFeedback.showToast(`Success: ${operation}d with ${algorithm}`, 'success');
+        uiFeedback.showToast(`Success: ${operation}d with ${algorithm}. Ready to chain!`, 'success');
       } catch (err: any) {
         console.error(err);
         uiFeedback.showToast(`Error: ${err.message}`, 'danger');
