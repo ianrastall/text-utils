@@ -1,0 +1,15 @@
+{
+  "categoryDisplayName": "Clojure",
+  "skeletons": [
+    {
+      "key": "clojure-hello-world",
+      "displayName": "Hello World",
+      "template": "(println \"Hello, world!\")"
+    },
+    {
+      "key": "clojure-basic-function",
+      "displayName": "Basic Function (defn)",
+      "template": "(defn function-name\n  \"Docstring: Describes what the function does.\"\n  [arg1 arg2]\n  ; Function body goes here\n  (+ arg1 arg2))"
+    }
+  ]
+}

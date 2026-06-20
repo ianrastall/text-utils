@@ -1,0 +1,281 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Grateful Dead Archive Search" description="Advanced search tool for Grateful Dead recordings on Archive.org">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Grateful Dead Archive Search</h1>
+        <p>Search the Internet Archive's extensive collection of Grateful Dead recordings. Filter by recording type, taper, date, venue, and more.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <form id="gdSearchForm">
+        
+        <!-- Basic Search -->
+        <div class="control-row">
+          <div class="field" style="flex: 1;">
+            <label for="searchQuery">Search Terms</label>
+            <input type="text" id="searchQuery" class="text-input" placeholder="e.g., Dark Star, Europe 72, MSG">
+            <small style="color: var(--text-muted); margin-top: 5px; display: block;">General search terms (song titles, venues, etc.)</small>
+          </div>
+        </div>
+
+        <!-- Date Range -->
+        <div class="control-row">
+          <div class="field">
+            <label for="dateFrom">Date From</label>
+            <input type="date" id="dateFrom" class="text-input" min="1965-05-05" max="1995-07-09">
+          </div>
+          <div class="field">
+            <label for="dateTo">Date To</label>
+            <input type="date" id="dateTo" class="text-input" min="1965-05-05" max="1995-07-09">
+          </div>
+          <div class="field">
+            <label for="year">Specific Year</label>
+            <select id="year">
+              <option value="">All Years</option>
+              {Array.from({length: 31}, (_, i) => 1965 + i).map(y => <option value={y}>{y}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <!-- Recording Type -->
+        <div class="field">
+          <label>Recording Type</label>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" id="typeSBD" value="sbd"> SBD <small style="color: var(--text-muted)">(Soundboard)</small>
+            </label>
+            <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" id="typeAUD" value="aud"> AUD <small style="color: var(--text-muted)">(Audience)</small>
+            </label>
+            <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" id="typeMTX" value="matrix"> Matrix <small style="color: var(--text-muted)">(SBD+AUD Mix)</small>
+            </label>
+            <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" id="typeFM" value="fm"> FM/Pre-FM <small style="color: var(--text-muted)">(Broadcast)</small>
+            </label>
+          </div>
+        </div>
+
+        <!-- Notable Sources/Tapers -->
+        <div class="field" style="margin-top: 1rem;">
+          <label>Notable Sources & Tapers</label>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 0.5rem;">
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceMiller" value="miller"> Charlie Miller</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceCantor" value="cantor"> David Cantor</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceHunter" value="hunter seamons"> Hunter Seamons</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceBetty" value="betty boards"> Betty Boards</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceUltra" value="ultramatrix"> Ultra Matrix</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceDusborne" value="dusborne"> Dusborne Matrix</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceGans" value="gans"> David Gans</label>
+            <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="sourceLatvala" value="latvala"> Dick Latvala</label>
+          </div>
+        </div>
+
+        <!-- Venue -->
+        <div class="control-row" style="margin-top: 1rem;">
+          <div class="field" style="flex: 1;">
+            <label for="venue">Venue</label>
+            <input type="text" id="venue" class="text-input" placeholder="e.g., Madison Square Garden, Winterland, Red Rocks">
+          </div>
+        </div>
+
+        <!-- Advanced Options -->
+        <details style="margin-bottom: 1.5rem; background: var(--surface-2); padding: 1rem; border-radius: 4px; border: 1px solid var(--border);">
+          <summary style="cursor: pointer; font-weight: bold;">Advanced Options</summary>
+          <div style="margin-top: 1rem;">
+            <div class="control-row">
+              <div class="field">
+                <label for="lineage">Lineage/Equipment</label>
+                <input type="text" id="lineage" class="text-input" placeholder="e.g., Schoeps, Nak, AKG">
+              </div>
+              <div class="field">
+                <label for="uploader">Uploader</label>
+                <input type="text" id="uploader" class="text-input" placeholder="Archive username">
+              </div>
+            </div>
+            <div class="control-row" style="margin-top: 1rem;">
+              <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="flacOnly"> FLAC/Lossless only</label>
+              <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="highRated"> High ratings only (4+ stars)</label>
+            </div>
+          </div>
+        </details>
+
+        <!-- Sort -->
+        <div class="control-row mb-3">
+          <div class="field" style="flex: 1;">
+            <label for="sortBy">Sort By</label>
+            <select id="sortBy">
+              <option value="-downloads">Most Downloaded</option>
+              <option value="-avg_rating">Highest Rated</option>
+              <option value="-publicdate">Recently Added</option>
+              <option value="date">Date (Oldest First)</option>
+              <option value="-date">Date (Newest First)</option>
+              <option value="title">Title (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="control-row" style="margin-top: 2rem;">
+          <button type="submit" class="button button-primary">Search Archive</button>
+          <button type="button" class="button" id="luckyBtn">I'm Feeling Lucky</button>
+          <button type="button" class="button button-danger" id="resetBtn">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="panel" style="margin-top: 2rem;">
+      <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Quick Searches</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <button class="button quick-search" data-search="cornell 1977-05-08">Cornell '77</button>
+        <button class="button quick-search" data-search="veneta 1972-08-27">Veneta '72</button>
+        <button class="button quick-search" data-search="europe 72">Europe '72</button>
+        <button class="button quick-search" data-search="barton hall">Barton Hall</button>
+        <button class="button quick-search" data-search="egypt 1978">Egypt '78</button>
+        <button class="button quick-search" data-search="fare thee well">Fare Thee Well</button>
+        <button class="button quick-search" data-type="sbd" data-year="1974">1974 SBDs</button>
+        <button class="button quick-search" data-source="miller">Charlie Miller</button>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('gdSearchForm') as HTMLFormElement;
+  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+  const luckyBtn = document.getElementById('luckyBtn') as HTMLButtonElement;
+  
+  function buildSearchUrl() {
+      const baseUrl = 'https://archive.org/search.php';
+      const params = new URLSearchParams();
+      
+      let query = 'collection:GratefulDead';
+      
+      const searchQuery = (document.getElementById('searchQuery') as HTMLInputElement).value.trim();
+      if (searchQuery) {
+          query += ` AND (${searchQuery})`;
+      }
+      
+      const dateFrom = (document.getElementById('dateFrom') as HTMLInputElement).value;
+      const dateTo = (document.getElementById('dateTo') as HTMLInputElement).value;
+      if (dateFrom && dateTo) {
+          query += ` AND date:[${dateFrom} TO ${dateTo}]`;
+      } else if (dateFrom) {
+          query += ` AND date:[${dateFrom} TO *]`;
+      } else if (dateTo) {
+          query += ` AND date:[* TO ${dateTo}]`;
+      }
+      
+      const year = (document.getElementById('year') as HTMLSelectElement).value;
+      if (year && !dateFrom && !dateTo) {
+          query += ` AND date:${year}`;
+      }
+      
+      const types = [];
+      if ((document.getElementById('typeSBD') as HTMLInputElement).checked) types.push('sbd', 'soundboard');
+      if ((document.getElementById('typeAUD') as HTMLInputElement).checked) types.push('aud', 'audience');
+      if ((document.getElementById('typeMTX') as HTMLInputElement).checked) types.push('matrix', 'mtx');
+      if ((document.getElementById('typeFM') as HTMLInputElement).checked) types.push('fm', 'pre-fm', 'broadcast');
+      
+      if (types.length > 0) {
+          query += ` AND (${types.map(t => `description:${t} OR subject:${t} OR title:${t}`).join(' OR ')})`;
+      }
+      
+      const sources: string[] = [];
+      document.querySelectorAll<HTMLInputElement>('input[type="checkbox"][id^="source"]:checked').forEach(cb => {
+          sources.push(cb.value);
+      });
+      
+      if (sources.length > 0) {
+          query += ` AND (${sources.map(s => `description:"${s}" OR subject:"${s}" OR title:"${s}"`).join(' OR ')})`;
+      }
+      
+      const venue = (document.getElementById('venue') as HTMLInputElement).value.trim();
+      if (venue) {
+          query += ` AND (venue:"${venue}" OR coverage:"${venue}" OR title:"${venue}")`;
+      }
+      
+      const lineage = (document.getElementById('lineage') as HTMLInputElement).value.trim();
+      if (lineage) {
+          query += ` AND (lineage:"${lineage}" OR description:"${lineage}")`;
+      }
+      
+      const uploader = (document.getElementById('uploader') as HTMLInputElement).value.trim();
+      if (uploader) {
+          query += ` AND uploader:"${uploader}"`;
+      }
+      
+      if ((document.getElementById('flacOnly') as HTMLInputElement).checked) {
+          query += ` AND format:(flac OR shn)`;
+      }
+      
+      if ((document.getElementById('highRated') as HTMLInputElement).checked) {
+          query += ` AND avg_rating:[4 TO 5]`;
+      }
+      
+      params.append('query', query);
+      
+      const sortBy = (document.getElementById('sortBy') as HTMLSelectElement).value;
+      params.append('sort', sortBy);
+      
+      return `${baseUrl}?${params.toString()}`;
+  }
+  
+  form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const url = buildSearchUrl();
+      window.open(url, '_blank');
+  });
+  
+  resetBtn.addEventListener('click', function() {
+      form.reset();
+  });
+  
+  luckyBtn.addEventListener('click', function() {
+      const years = [];
+      for (let y = 1965; y <= 1995; y++) years.push(y);
+      const randomYear = years[Math.floor(Math.random() * years.length)];
+      const randomMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      
+      const url = `https://archive.org/search.php?query=collection:GratefulDead AND date:${randomYear}-${randomMonth}&sort=-avg_rating`;
+      window.open(url, '_blank');
+  });
+  
+  document.querySelectorAll<HTMLButtonElement>('.quick-search').forEach(btn => {
+      btn.addEventListener('click', function() {
+          form.reset();
+          
+          if (this.dataset.search) {
+              (document.getElementById('searchQuery') as HTMLInputElement).value = this.dataset.search;
+          }
+          if (this.dataset.type) {
+              const typeElem = document.getElementById('type' + this.dataset.type.toUpperCase()) as HTMLInputElement;
+              if (typeElem) typeElem.checked = true;
+          }
+          if (this.dataset.year) {
+              (document.getElementById('year') as HTMLSelectElement).value = this.dataset.year;
+          }
+          if (this.dataset.source) {
+              const sourceMap: Record<string, string> = {
+                  'miller': 'sourceMiller',
+                  'cantor': 'sourceCantor',
+                  'betty': 'sourceBetty'
+              };
+              const targetId = sourceMap[this.dataset.source];
+              if (targetId) {
+                  const sourceElem = document.getElementById(targetId) as HTMLInputElement;
+                  if (sourceElem) sourceElem.checked = true;
+              }
+          }
+          
+          form.dispatchEvent(new Event('submit'));
+      });
+  });
+</script>

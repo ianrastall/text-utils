@@ -1,0 +1,45 @@
+{
+  "categoryDisplayName": "C#",
+  "skeletons": [
+    {
+      "key": "csharp-hello-world",
+      "displayName": "Hello World (Top-Level Statements)",
+      "template": "// .NET 6 and later support top-level statements for simple programs.\nConsole.WriteLine(\"Hello, C#!\");"
+    },
+    {
+      "key": "csharp-class-and-object",
+      "displayName": "Class and Object",
+      "template": "var myCar = new Car(\"Toyota\", \"Camry\", 2022);\nmyCar.DisplayInfo();\n\npublic class Car\n{\n    // Properties\n    public string Make { get; set; }\n    public string Model { get; set; }\n    public int Year { get; private set; }\n\n    // Constructor\n    public Car(string make, string model, int year)\n    {\n        Make = make;\n        Model = model;\n        Year = year;\n    }\n\n    // Method\n    public void DisplayInfo()\n    {\n        Console.WriteLine($\"Car Info: {Year} {Make} {Model}\");\n    }\n}"
+    },
+    {
+      "key": "csharp-list-and-linq",
+      "displayName": "List and LINQ Queries",
+      "template": "var fruits = new List<string> { \"Apple\", \"Banana\", \"Cherry\", \"Apricot\", \"Blueberry\" };\n\n// 1. Filter fruits that start with 'A'\nvar a_fruits = fruits.Where(f => f.StartsWith(\"A\"));\nConsole.WriteLine(\"Fruits starting with 'A': \" + string.Join(\", \", a_fruits));\n\n// 2. Project to a list of fruit lengths\nvar fruitLengths = fruits.Select(f => f.Length);\nConsole.WriteLine(\"\\nFruit name lengths: \" + string.Join(\", \", fruitLengths));\n\n// 3. Filter and order by name\nvar longFruitsSorted = fruits\n    .Where(f => f.Length > 5)\n    .OrderBy(f => f);\n\nConsole.WriteLine(\"\\nLong fruits, sorted: \" + string.Join(\", \", longFruitsSorted));"
+    },
+    {
+      "key": "csharp-file-io",
+      "displayName": "File I/O (Read/Write Text)",
+      "template": "string filePath = \"example.txt\";\nstring content = \"Hello from C#!\\nThis is the second line.\";\n\n// Write to a file, overwriting it if it exists.\nFile.WriteAllText(filePath, content);\nConsole.WriteLine($\"Successfully wrote to {filePath}\");\n\n// Read all text from a file.\nif (File.Exists(filePath))\n{\n    string readContent = File.ReadAllText(filePath);\n    Console.WriteLine($\"\\n--- Contents of {filePath} ---\");\n    Console.WriteLine(readContent);\n}\nelse\n{\n    Console.WriteLine($\"File not found: {filePath}\");\n}"
+    },
+    {
+      "key": "csharp-async-await",
+      "displayName": "Async/Await with HttpClient",
+      "template": "using var client = new HttpClient();\n\n// The Main method can be async in modern C#\nawait FetchDataAsync();\n\nasync Task FetchDataAsync()\n{\n    string url = \"https://jsonplaceholder.typicode.com/todos/1\";\n    Console.WriteLine($\"Fetching data from {url}...\");\n\n    try\n    {\n        HttpResponseMessage response = await client.GetAsync(url);\n        response.EnsureSuccessStatusCode(); // Throws if status is not 2xx\n\n        string responseBody = await response.Content.ReadAsStringAsync();\n        Console.WriteLine(\"\\n--- Response ---\");\n        Console.WriteLine(responseBody);\n    }\n    catch (HttpRequestException e)\n    {\n        Console.WriteLine($\"\\nError: {e.Message}\");\n    }\n}"
+    },
+    {
+      "key": "csharp-exception-handling",
+      "displayName": "Exception Handling (try-catch-finally)",
+      "template": "try\n{\n    Console.WriteLine(\"Enter a number:\");\n    string input = Console.ReadLine() ?? \"0\";\n    int number = int.Parse(input);\n    Console.WriteLine($\"You entered: {number}\");\n}\ncatch (FormatException e)\n{\n    Console.WriteLine(\"Error: That was not a valid number.\");\n    Console.WriteLine(e.Message);\n}\ncatch (Exception e) // A general catch block for other exceptions\n{\n    Console.WriteLine($\"An unexpected error occurred: {e.GetType().Name}\");\n}\nfinally\n{\n    Console.WriteLine(\"This 'finally' block always executes.\");\n}"
+    },
+    {
+      "key": "csharp-interface-di",
+      "displayName": "Interfaces and Basic Dependency Injection",
+      "template": "// 1. Define the interface (the contract)\npublic interface IMessageService\n{\n    void SendMessage(string message);\n}\n\n// 2. Implement the interface\npublic class EmailService : IMessageService\n{\n    public void SendMessage(string message)\n    {\n        Console.WriteLine($\"Sending email: {message}\");\n    }\n}\n\n// 3. Use the interface (Dependency Injection via constructor)\npublic class NotificationManager\n{\n    private readonly IMessageService _messageService;\n\n    public NotificationManager(IMessageService messageService)\n    {\n        _messageService = messageService;\n    }\n\n    public void Notify(string notification)\n    {\n        _messageService.SendMessage(notification);\n    }\n}\n\n// --- Usage ---\nvar emailService = new EmailService();\nvar notificationManager = new NotificationManager(emailService);\nnotificationManager.Notify(\"Your order has shipped!\");"
+    },
+    {
+      "key": "csharp-aspnetcore-api",
+      "displayName": "ASP.NET Core Minimal API",
+      "template": "var builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\n\n// Define a record for our data structure\npublic record Product(int Id, string Name, decimal Price);\n\n// Create a sample list of products\nvar products = new List<Product>\n{\n    new Product(1, \"Laptop\", 1200.00m),\n    new Product(2, \"Mouse\", 25.50m),\n    new Product(3, \"Keyboard\", 75.00m)\n};\n\n// Define a GET endpoint for the root URL\napp.MapGet(\"/\", () => \"Hello, Minimal API!\");\n\n// Define a GET endpoint to return all products as JSON\napp.MapGet(\"/products\", () => products);\n\n// Define a GET endpoint for a single product by ID\napp.MapGet(\"/products/{id}\", (int id) =>\n{\n    var product = products.FirstOrDefault(p => p.Id == id);\n    return product is not null ? Results.Ok(product) : Results.NotFound();\n});\n\napp.Run();"
+    }
+  ]
+}

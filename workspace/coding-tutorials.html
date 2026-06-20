@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Tutorials</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V2F0V7FWB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0V2F0V7FWB');
+    </script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css?v=1.1">
+    <link rel="stylesheet" href="css/tutorials.css?v=1.2">
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container-fluid my-4">
+        <div class="row gx-3 gy-3">
+            <main class="col-md-9">
+                <div class="card bg-dark border-secondary shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Dynamic Title -->
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="material-icons me-3" aria-hidden="true" style="font-size: 36px;" id="tool-icon">school</span>
+                            <h2 class="m-0" id="tool-name">Coding Tutorials</h2>
+                        </div>
+                        <p class="text-white-50 mb-4" id="tool-description">Learn programming languages through interactive examples and exercises.</p>
+
+                        <!-- Tutorial Navigation -->
+                        <div class="tutorial-nav mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <select class="form-select bg-dark text-light border-secondary" id="languageSelect">
+                                        <option value="">Select a Language...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select bg-dark text-light border-secondary" id="topicSelect" disabled>
+                                        <option value="">Select a Topic...</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tutorial Content -->
+                        <div id="mainOutput" class="tutorial-content flex-grow-1">
+                            <div class="text-white-50 text-center p-5">
+                                Select a language and topic to begin learning
+                            </div>
+                        </div>
+
+                        <!-- Tutorial Controls -->
+                        <div class="tutorial-controls mt-3">
+                            <button id="copyBtn" class="btn btn-outline-primary" disabled>
+                                <i class="material-icons">content_copy</i> Copy Content
+                            </button>
+                            <button id="resetBtn" class="btn btn-outline-secondary">
+                                <i class="material-icons">refresh</i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <aside class="col-md-3">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-body p-0">
+                        <nav class="sidebar nav flex-column" id="dynamic-sidebar">
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/component-loader.js"></script>
+
+    <script>
+        // Tutorial structure mapping - each language to its topics
+        const tutorialStructure = {
+            ada: {
+                'introduction': 'Introduction',
+                'strong-typing': 'Strong Typing System',
+                'subprograms': 'Procedures, Functions, and Packages',
+                'design-by-contract': 'Design by Contract',
+                'exception-handling': 'Exception Handling and Error Management',
+                'concurrency': 'Concurrency and Protected Objects',
+                'real-time': 'Real-Time Systems Programming',
+                'certification': 'Certification and Integration'
+            }
+        };
+
+        // Language display names
+        const languageNames = {
+            ada: 'Ada'
+            // Add more languages here
+        };
+
+        let currentRawContent = '';
+
+        // DOM element references
+        const languageSelect = document.getElementById('languageSelect');
+        const topicSelect = document.getElementById('topicSelect');
+        const mainOutput = document.getElementById('mainOutput');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Load the HTML tutorial content for a specific topic
+        async function loadTutorialContent(language, topic) {
+            try {
+                // Handle the new naming convention with tutorial-language-XX-topic.html
+                // This will look for files with the new format first
+                let response;
+                
+                // Try the new naming format first (finding the matching number prefix)
+                const fileList = await getTopicFileList(language);
+                const matchingFile = fileList.find(file => file.includes(`-${topic}.html`));
+                
+                if (matchingFile) {
+                    // Use the exact filename found
+                    response = await fetch(`tutorials/${language}/${matchingFile}`);
+                } else {
+                    // Fallback to the old format
+                    response = await fetch(`tutorials/${language}/${topic}.html`);
+                }
+                
+                if (!response.ok) throw new Error('Failed to load tutorial content');
+                return await response.text();
+            } catch (error) {
+                console.error('Error loading tutorial content:', error);
+                showToast('Failed to load tutorial content', 'danger');
+                return null;
+            }
+        }
+        
+        // Get a list of tutorial files for a language
+        async function getTopicFileList(language) {
+            try {
+                // This is a simple fetch to get a directory listing - you may need to adapt this
+                // to your server's capabilities, or create a dedicated endpoint that returns file lists
+                const response = await fetch(`tutorials/${language}/index.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.files || [];
+                }
+                
+                // If no index is available, return an empty array
+                // The system will fall back to the basic naming convention
+                return [];
+            } catch (error) {
+                console.error('Error getting file list:', error);
+                return [];
+            }
+        }
+
+        // Display the selected tutorial section
+        async function displayTutorialSection(language, topicKey) {
+            // Track the start time to calculate loading time for analytics
+            const startTime = performance.now();
+            
+            // Show loading state
+            mainOutput.innerHTML = `<div class="text-white-50 text-center p-5">
+                <div class="spinner-border text-secondary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading tutorial content...</p>
+            </div>`;
+            
+            const content = await loadTutorialContent(language, topicKey);
+            
+            if (!content) {
+                mainOutput.innerHTML = `<span class="text-white-50">Tutorial section "${topicKey}" not found.</span>`;
+                currentRawContent = '';
+                copyBtn.disabled = true;
+                return;
+            }
+
+            // Extract the inner content, removing the outer tutorial-content div
+            let innerContent = content;
+            const tutorialContentRegex = /<div\s+class=["']tutorial-content["']>([\s\S]*)<\/div>\s*$/;
+            const match = content.match(tutorialContentRegex);
+            
+            if (match && match[1]) {
+                innerContent = match[1].trim();
+            }
+
+            // Insert the HTML content directly
+            mainOutput.innerHTML = innerContent;
+            
+            // Initialize any interactive elements
+            initializeInteractiveElements();
+            
+            // Store content for copying (remove scripts and styles)
+            currentRawContent = innerContent.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                                          .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+            copyBtn.disabled = false;
+        }
+
+        // Initialize interactive elements in the tutorial
+        function initializeInteractiveElements() {
+            // Initialize code runners
+            document.querySelectorAll('.run-code-btn').forEach(btn => {
+                if (!btn.hasListener) {
+                    btn.addEventListener('click', function() {
+                        const codeBlock = this.closest('.code-block');
+                        const output = codeBlock.querySelector('.code-output');
+                        if (!output) return;
+
+                        output.style.display = 'block';
+                        // For now, just show a message - later we can add actual code execution
+                        output.innerHTML = '<div class="alert alert-info">Code execution simulation</div>';
+                    });
+                    btn.hasListener = true;
+                }
+            });
+
+            // Initialize quizzes
+            document.querySelectorAll('.quiz-question').forEach(quiz => {
+                const checkBtn = quiz.querySelector('button');
+                if (checkBtn && !checkBtn.hasListener) {
+                    checkBtn.addEventListener('click', function() {
+                        const selected = Array.from(quiz.querySelectorAll('input:checked')).map(cb => cb.value);
+                        const correct = quiz.dataset.correct ? JSON.parse(quiz.dataset.correct) : [];
+                        
+                        const isCorrect = correct.length === selected.length && 
+                                        correct.every(val => selected.includes(val));
+                        
+                        quiz.querySelectorAll('.alert').forEach(el => el.remove());
+                        
+                        const alert = document.createElement('div');
+                        alert.className = `alert alert-${isCorrect ? 'success' : 'danger'} mt-3`;
+                        alert.textContent = isCorrect ? 'Correct!' : 'Try again!';
+                        quiz.appendChild(alert);
+                    });
+                    checkBtn.hasListener = true;
+                }
+            });
+        }
+
+        // Populate languages dropdown
+        function populateLanguages() {
+            languageSelect.innerHTML = '<option value="">Select a Language...</option>';
+            Object.entries(languageNames).forEach(([key, name]) => {
+                const option = new Option(name, key);
+                languageSelect.appendChild(option);
+            });
+        }
+
+        // Populate topics based on selected language
+        function populateTopics(language) {
+            topicSelect.innerHTML = '<option value="">Select a Topic...</option>';
+            topicSelect.disabled = true;
+            
+            if (!language || !tutorialStructure[language]) return;
+            
+            Object.entries(tutorialStructure[language]).forEach(([key, title]) => {
+                const option = new Option(title, key);
+                topicSelect.appendChild(option);
+            });
+            
+            topicSelect.disabled = false;
+        }
+
+        // Event Listeners
+        languageSelect.addEventListener('change', (e) => {
+            const language = e.target.value;
+            populateTopics(language);
+            mainOutput.innerHTML = '<div class="text-white-50 text-center p-5">Select a topic to begin learning</div>';
+            copyBtn.disabled = true;
+        });
+
+        topicSelect.addEventListener('change', async (e) => {
+            const topic = e.target.value;
+            const language = languageSelect.value;
+            
+            if (topic && language) {
+                await displayTutorialSection(language, topic);
+            } else {
+                mainOutput.innerHTML = '<div class="text-white-50 text-center p-5">Select a topic to begin learning</div>';
+                copyBtn.disabled = true;
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            if (!currentRawContent) return;
+            navigator.clipboard.writeText(currentRawContent).then(() => {
+                showToast('Tutorial content copied to clipboard!', 'success');
+            }).catch(err => {
+                showToast('Failed to copy content', 'danger');
+            });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            languageSelect.value = '';
+            populateTopics('');
+            mainOutput.innerHTML = '<div class="text-white-50 text-center p-5">Select a language and topic to begin learning</div>';
+            currentRawContent = '';
+            copyBtn.disabled = true;
+        });
+
+        // Toast notification utility
+        function showToast(message, variant = 'info') {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            toastContainer.style.zIndex = '1100';
+
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${variant} border-0`;
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+
+            const toastBody = document.createElement('div');
+            toastBody.className = 'toast-body';
+            toastBody.textContent = message;
+
+            const closeButton = document.createElement('button');
+            closeButton.type = 'button';
+            closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+            closeButton.setAttribute('data-bs-dismiss', 'toast');
+            closeButton.setAttribute('aria-label', 'Close');
+            
+            const flexContainer = document.createElement('div');
+            flexContainer.className = 'd-flex';
+            flexContainer.appendChild(toastBody);
+            flexContainer.appendChild(closeButton);
+            toastEl.appendChild(flexContainer);
+
+            document.body.appendChild(toastContainer);
+            toastContainer.appendChild(toastEl);
+            
+            const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 3000 });
+            toast.show();
+            toastEl.addEventListener('hidden.bs.toast', () => { toastContainer.remove(); });
+        }
+
+        // Theme switcher initialization
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 
+                          'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+
+            // Populate dropdown with themes
+            themes.forEach(theme => {
+                const option = document.createElement('a');
+                option.className = 'dropdown-item';
+                option.href = '#';
+                option.textContent = theme;
+                option.onclick = (e) => {
+                    e.preventDefault();
+                    htmlElement.style.setProperty('--accent-color', theme);
+                    localStorage.setItem('accent-color', theme);
+                    document.getElementById('accentColorButton').textContent = theme;
+                };
+                themeDropdown.appendChild(option);
+            });
+
+            // Initialize with saved theme or first theme
+            const savedTheme = localStorage.getItem('accent-color') || themes[0];
+            htmlElement.style.setProperty('--accent-color', savedTheme);
+            document.getElementById('accentColorButton').textContent = savedTheme;
+        }
+
+        // Initialize page metadata
+        async function initPageMetadata() {
+            const currentSlug = 'code-tutorials'; // Hardcoded for this specific page
+
+            try {
+                const response = await fetch('config/tools.json');
+                if (!response.ok) throw new Error('Failed to load tools.json');
+                const tools = await response.json();
+
+                const currentTool = tools.find(tool => tool.slug === currentSlug) || {};
+
+                // Set page title and description
+                document.getElementById('tool-name').textContent = currentTool.name || 'Coding Tutorials';
+                document.getElementById('tool-description').textContent = currentTool.description || 
+                    'Reference guides and examples for various programming languages';
+
+                // Set icon
+                const iconEl = document.getElementById('tool-icon');
+                if (currentTool.icon) {
+                    if (currentTool.icon.endsWith('.svg') || currentTool.icon.endsWith('.png')) {
+                        iconEl.outerHTML = `<img src="${currentTool.icon}" alt="" style="height: 36px; margin-right: 15px;" id="tool-icon" aria-hidden="true" />`;
+                    } else {
+                        iconEl.textContent = currentTool.icon;
+                    }
+                }
+
+                // Generate sidebar, marking current page as active
+                const sidebarHtml = tools
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(tool => {
+                        const isActive = tool.slug === currentSlug;
+                        const activeClass = isActive ? ' active' : '';
+                        const iconHtml = tool.icon.endsWith('.svg') || tool.icon.endsWith('.png')
+                            ? `<img src="${tool.icon}" alt="" style="width: 24px; height: 24px;" aria-hidden="true" />`
+                            : `<i class="material-icons" aria-hidden="true">${tool.icon}</i>`;
+                        
+                        return `<a class="nav-link${activeClass}" href="${tool.slug}.html">
+                            ${iconHtml}
+                            ${tool.name}
+                        </a>`;
+                    }).join('');
+
+                document.getElementById('dynamic-sidebar').innerHTML = sidebarHtml;
+
+            } catch (error) {
+                console.error('Error initializing page meta:', error);
+            }
+        }
+
+        // Theme switcher initialization
+        function initThemeSwitcher() {
+            const themes = ['burlywood', 'cadetblue', 'cornflowerblue', 'dodgerblue', 
+                          'lightcoral', 'lightgreen', 'plum', 'thistle', 'tomato', 'violet'];
+            const themeDropdown = document.getElementById('accentColorDropdownMenu');
+            const htmlElement = document.documentElement;
+
+            function applyTheme(theme) {
+                htmlElement.className = ''; // Remove all existing classes
+                htmlElement.classList.add('theme-' + theme);
+                localStorage.setItem('accentTheme', theme);
+            }
+
+            // Populate the dropdown menu with theme options
+            if (themeDropdown) {
+                themes.forEach(theme => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.type = 'button';
+                    button.textContent = theme;
+                    button.onclick = () => applyTheme(theme);
+                    li.appendChild(button);
+                    themeDropdown.appendChild(li);
+                });
+            }
+
+            // Set the initial theme on page load
+            const savedTheme = localStorage.getItem('accentTheme') || 'burlywood';
+            applyTheme(savedTheme);
+        }
+
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Load header and footer components
+            await ComponentLoader.loadAll();
+            
+            // Initialize theme switcher
+            initThemeSwitcher();
+            
+            // Initialize page metadata
+            await initPageMetadata();
+            
+            // Populate language dropdown
+            populateLanguages();
+        });
+    </script>
+</body>
+</html>

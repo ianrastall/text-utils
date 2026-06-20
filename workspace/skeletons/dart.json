@@ -1,0 +1,15 @@
+{
+  "categoryDisplayName": "Dart",
+  "skeletons": [
+    {
+      "key": "dart-hello-world",
+      "displayName": "Hello World (Console App)",
+      "template": "void main() {\n  print('Hello, world!');\n}"
+    },
+    {
+      "key": "dart-class-structure",
+      "displayName": "Basic Class Structure",
+      "template": "class MyClass {\n  // Public instance variable\n  String name;\n\n  // Private instance variable (by convention)\n  int _internalValue;\n\n  // Constructor\n  MyClass(this.name, this._internalValue);\n\n  // Public method\n  void greet() {\n    print('Hello, my name is $name.');\n  }\n\n  // A method demonstrating access to a private variable\n  void showInternalValue() {\n     print('The internal value is $_internalValue.');\n  }\n}"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "categoryDisplayName": "Assembly (MASM x86_64)",
+  "skeletons": [
+    {
+      "key": "masm-hello-world",
+      "displayName": "Hello World (Windows API)",
+      "template": "EXTERN ExitProcess:PROC\nEXTERN GetStdHandle:PROC\nEXTERN WriteConsoleA:PROC\n\n.data\n    message BYTE \"Hello, MASM!\", 0dh, 0ah ; 0dh, 0ah is CRLF\n    messageLen EQU $ - message\n    bytesWritten QWORD ?\n\n.code\nmain PROC\n    ; hStdOut = GetStdHandle(STD_OUTPUT_HANDLE)\n    mov rcx, -11 ; STD_OUTPUT_HANDLE\n    sub rsp, 32  ; Shadow space\n    call GetStdHandle\n    add rsp, 32\n    mov rbx, rax ; Save handle in rbx\n\n    ; WriteConsole(hStdOut, &message, messageLen, &bytesWritten, NULL)\n    mov rcx, rbx\n    lea rdx, message\n    mov r8, messageLen\n    lea r9, bytesWritten\n    push 0\n    sub rsp, 32\n    call WriteConsoleA\n    add rsp, 40\n\n    ; ExitProcess(0)\n    xor rcx, rcx\n    sub rsp, 32\n    call ExitProcess\nmain ENDP\nEND"
+    },
+    {
+      "key": "masm-procedure-definition",
+      "displayName": "Procedure / Function",
+      "template": "EXTERN ExitProcess:PROC\n\n; A function that adds two numbers\n; Input: rcx = first number, rdx = second number\n; Output: rax = sum\nAddNumbers PROC\n    mov rax, rcx\n    add rax, rdx\n    ret\nAddNumbers ENDP\n\n.code\nmain PROC\n    ; Example of calling the function\n    mov rcx, 10\n    mov rdx, 32\n    sub rsp, 32 ; Shadow space for call\n    call AddNumbers\n    add rsp, 32\n\n    ; rax now holds 42\n    ; Exit with the result\n    mov rcx, rax\n    call ExitProcess\nmain ENDP\nEND"
+    },
+    {
+      "key": "masm-loop-example",
+      "displayName": "Basic Loop",
+      "template": "EXTERN ExitProcess:PROC\n\n.code\nmain PROC\n    mov rcx, 5  ; Set loop counter to 5\n    xor rax, rax ; Initialize accumulator\n\nLoopStart:\n    add rax, rcx\n    dec rcx\n    jnz LoopStart\n\n    ; After loop, rax = 5 + 4 + 3 + 2 + 1 = 15\n\n    ; Exit with the result\n    mov rcx, rax\n    call ExitProcess\nmain ENDP\nEND"
+    },
+    {
+      "key": "masm-user-input",
+      "displayName": "Reading User Input",
+      "template": "EXTERN ExitProcess:PROC\nEXTERN GetStdHandle:PROC\nEXTERN ReadConsoleA:PROC\nEXTERN WriteConsoleA:PROC\n\n.data\n    prompt BYTE \"Enter text: \"\n    promptLen EQU $ - prompt\n    bytesWritten QWORD ?\n    bytesRead QWORD ?\n.bss\n    buffer BYTE 100 DUP(?)\n\n.code\nmain PROC\n    sub rsp, 64 ; Shadow space and local variables\n\n    ; Get handles for input and output\n    mov rcx, -10 ; STD_INPUT_HANDLE\n    call GetStdHandle\n    mov r10, rax ; Save stdin handle\n    mov rcx, -11 ; STD_OUTPUT_HANDLE\n    call GetStdHandle\n    mov r11, rax ; Save stdout handle\n\n    ; Write prompt to console\n    mov rcx, r11\n    lea rdx, prompt\n    mov r8, promptLen\n    lea r9, bytesWritten\n    push 0\n    call WriteConsoleA\n\n    ; Read from console\n    mov rcx, r10\n    lea rdx, buffer\n    mov r8, 100\n    lea r9, bytesRead\n    push 0\n    call ReadConsoleA\n\n    ; Exit\n    xor rcx, rcx\n    call ExitProcess\nmain ENDP\nEND"
+    },
+    {
+      "key": "masm-c-library-call",
+      "displayName": "Calling C Function (printf)",
+      "template": "; To link, use a C runtime like msvcrt.lib\n; mlink /subsystem:console /entry:main /defaultlib:msvcrt.lib yourfile.obj\n\nEXTERN printf:PROC\nEXTERN ExitProcess:PROC\n\n.data\n    format_str BYTE \"The number is %d\", 0dh, 0ah, 0\n\n.code\nmain PROC\n    sub rsp, 40 ; Shadow space + alignment\n\n    ; Call printf(format_str, 123)\n    lea rcx, format_str ; First argument (format string)\n    mov rdx, 123        ; Second argument (the number)\n    call printf\n\n    xor rcx, rcx\n    call ExitProcess\nmain ENDP\nEND"
+    }
+  ]
+}

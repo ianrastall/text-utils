@@ -1,0 +1,40 @@
+{
+  "categoryDisplayName": "Python",
+  "skeletons": [
+    {
+      "key": "python-hello-world",
+      "displayName": "Hello World",
+      "template": "print(\"Hello, World!\")"
+    },
+    {
+      "key": "python-class-definition",
+      "displayName": "Class Definition",
+      "template": "class Dog:\n    # Class attribute\n    species = \"Canis familiaris\"\n\n    def __init__(self, name: str, age: int):\n        # Instance attributes\n        self.name = name\n        self.age = age\n\n    def __str__(self) -> str:\n        return f\"{self.name} is {self.age} years old.\"\n\n    # Instance method\n    def bark(self):\n        return \"Woof!\"\n\n# Instantiate the class\nmy_dog = Dog(\"Buddy\", 5)\n\n# Access attributes and methods\nprint(my_dog)\nprint(f\"{my_dog.name}'s species is {my_dog.species}.\")\nprint(f\"{my_dog.name} says: {my_dog.bark()}\")"
+    },
+    {
+      "key": "python-file-io",
+      "displayName": "File I/O Operations",
+      "template": "# Writing to a file\ntry:\n    with open(\"example.txt\", \"w\") as f:\n        f.write(\"Hello, file!\\n\")\n        f.write(\"This is the second line.\\n\")\n    print(\"File 'example.txt' created successfully.\")\nexcept IOError as e:\n    print(f\"Error writing to file: {e}\")\n\n# Reading from a file\ntry:\n    with open(\"example.txt\", \"r\") as f:\n        print(\"\\nContents of 'example.txt':\")\n        for line in f:\n            print(line.strip())\nexcept FileNotFoundError:\n    print(\"Error: File not found.\")\nexcept IOError as e:\n    print(f\"Error reading file: {e}\")"
+    },
+    {
+      "key": "python-list-comprehension",
+      "displayName": "List & Dict Comprehensions",
+      "template": "# List comprehension to get squares of numbers\nnumbers = [1, 2, 3, 4, 5]\nsquares = [n**2 for n in numbers]\nprint(f\"Squares: {squares}\")\n\n# List comprehension with a condition\neven_numbers = [n for n in numbers if n % 2 == 0]\nprint(f\"Even Numbers: {even_numbers}\")\n\n# Dictionary comprehension\nwords = [\"apple\", \"banana\", \"cherry\"]\nword_lengths = {word: len(word) for word in words}\nprint(f\"Word Lengths: {word_lengths}\")\n\n# Set comprehension for unique squares of numbers\nnums = [-2, -1, 0, 1, 2]\nunique_squares = {n**2 for n in nums}\nprint(f\"Unique Squares: {unique_squares}\")"
+    },
+    {
+      "key": "python-requests-example",
+      "displayName": "HTTP GET Request (requests)",
+      "template": "# Make sure to install the library first: pip install requests\nimport requests\n\n# The URL for the JSONPlaceholder API\nurl = \"https://jsonplaceholder.typicode.com/posts/1\"\n\ntry:\n    # Make the GET request\n    response = requests.get(url)\n\n    # Check if the request was successful (status code 200)\n    response.raise_for_status()\n\n    # Parse the JSON response\n    data = response.json()\n\n    # Print the results\n    print(f\"Successfully fetched data for post ID: {data['id']}\")\n    print(f\"Title: {data['title']}\")\n    print(f\"\\nBody:\\n{data['body']}\")\n\nexcept requests.exceptions.RequestException as e:\n    print(f\"An error occurred: {e}\")"
+    },
+    {
+      "key": "python-argparse",
+      "displayName": "Command-Line Arguments",
+      "template": "import argparse\n\n# Example Usage:\n# python your_script_name.py John -a 30 --verbose\n# python your_script_name.py Jane -a 25 -o output.txt\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"A simple command-line argument parser example.\")\n\n    # Positional argument\n    parser.add_argument(\"name\", type=str, help=\"The name of the user\")\n\n    # Optional argument with a short and long form\n    parser.add_argument(\"-a\", \"--age\", type=int, required=True, help=\"The age of the user\")\n\n    # Optional argument with a default value\n    parser.add_argument(\"-o\", \"--output\", type=str, default=\"stdout\", help=\"Output file name (default: stdout)\")\n\n    # Flag (boolean) argument\n    parser.add_argument(\"-v\", \"--verbose\", action=\"store_true\", help=\"Enable verbose output\")\n\n    args = parser.parse_args()\n\n    if args.verbose:\n        print(\"Verbose mode enabled.\")\n        print(\"Parsing command-line arguments...\")\n\n    greeting = f\"Hello, {args.name}! You are {args.age} years old.\"\n\n    if args.output == \"stdout\":\n        print(greeting)\n    else:\n        with open(args.output, \"w\") as f:\n            f.write(greeting + \"\\n\")\n        print(f\"Output written to {args.output}\")\n\nif __name__ == \"__main__\":\n    main()"
+    },
+    {
+      "key": "python-flask-app",
+      "displayName": "Simple Flask Web App",
+      "template": "# Make sure to install the library first: pip install Flask\nfrom flask import Flask, jsonify\n\n# Create a Flask web server\napp = Flask(__name__)\n\n# Define a route for the root URL ('/')\n@app.route('/')\ndef home():\n    return \"<h1>Welcome to the Flask API!</h1><p>Try the /api/data endpoint.</p>\"\n\n# Define a route that returns JSON data\n@app.route('/api/data')\ndef get_data():\n    sample_data = {\n        'id': 1,\n        'name': 'Sample Item',\n        'values': [10, 20, 30]\n    }\n    return jsonify(sample_data)\n\n# Run the app if the script is executed directly\nif __name__ == '__main__':\n    # To run: flask --app your_script_name run\n    # Or in debug mode: python your_script_name.py\n    app.run(debug=True)"
+    }
+  ]
+}

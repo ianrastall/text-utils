@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="JSON & CSV Converter" description="Convert data seamlessly between JSON and CSV formats.">
+  <!-- Load PapaParse for robust CSV handling -->
+  <script is:inline src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>JSON & CSV Converter</h1>
+        <p>Convert tabular data seamlessly between JSON and CSV formats.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="control-row">
+        <div class="field" style="margin-bottom: 0;">
+          <select id="conversion-mode" aria-label="Conversion Mode">
+            <option value="json-to-csv" selected>JSON to CSV</option>
+            <option value="csv-to-json">CSV to JSON</option>
+          </select>
+        </div>
+        <button id="convert-btn" class="button primary" type="button">Convert</button>
+        <button id="paste-btn" class="button" type="button">Paste</button>
+        <button id="copy-btn" class="button" type="button">Copy Output</button>
+        <button id="clear-btn" class="button" type="button" style="color: var(--danger); border-color: var(--danger);">Clear</button>
+      </div>
+
+      <div class="two-column" style="margin-top: 1.5rem;">
+        <div class="field">
+          <label id="input-label" for="data-input">JSON Input</label>
+          <textarea id="data-input" placeholder='[ {"name": "John", "age": 30}, {"name": "Jane", "age": 25} ]' style="min-height: 400px; font-family: ui-monospace, Consolas, monospace; line-height: 1.6; white-space: pre;"></textarea>
+        </div>
+        <div class="field">
+          <label id="output-label" for="data-output">CSV Output</label>
+          <textarea id="data-output" readonly placeholder="name,age&#10;John,30&#10;Jane,25" style="min-height: 400px; font-family: ui-monospace, Consolas, monospace; line-height: 1.6; white-space: pre; background: var(--bg); border: 1px solid var(--border);"></textarea>
+        </div>
+      </div>
+
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const modeSelect = document.getElementById('conversion-mode') as HTMLSelectElement;
+    const inputLabel = document.getElementById('input-label') as HTMLLabelElement;
+    const outputLabel = document.getElementById('output-label') as HTMLLabelElement;
+    const dataInput = document.getElementById('data-input') as HTMLTextAreaElement;
+    const dataOutput = document.getElementById('data-output') as HTMLTextAreaElement;
+    const convertBtn = document.getElementById('convert-btn') as HTMLButtonElement;
+    const pasteBtn = document.getElementById('paste-btn') as HTMLButtonElement;
+    const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+    const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+
+    function showStatus(message: string, isError = false) {
+      status.textContent = message;
+      status.style.color = isError ? 'var(--danger)' : 'var(--success)';
+      setTimeout(() => {
+        status.textContent = 'Ready';
+        status.style.color = 'var(--text-muted)';
+      }, 3000);
+    }
+
+    modeSelect.addEventListener('change', () => {
+      if (modeSelect.value === 'json-to-csv') {
+        inputLabel.textContent = 'JSON Input';
+        outputLabel.textContent = 'CSV Output';
+        dataInput.placeholder = '[ {"name": "John", "age": 30}, {"name": "Jane", "age": 25} ]';
+        dataOutput.placeholder = 'name,age\nJohn,30\nJane,25';
+      } else {
+        inputLabel.textContent = 'CSV Input';
+        outputLabel.textContent = 'JSON Output';
+        dataInput.placeholder = 'name,age\nJohn,30\nJane,25';
+        dataOutput.placeholder = '[\n  {\n    "name": "John",\n    "age": "30"\n  },\n  {\n    "name": "Jane",\n    "age": "25"\n  }\n]';
+      }
+      // Optional: Swap contents if user wants to reverse
+      const temp = dataInput.value;
+      dataInput.value = dataOutput.value;
+      dataOutput.value = temp;
+    });
+
+    function convert() {
+      const mode = modeSelect.value;
+      const input = dataInput.value.trim();
+      
+      if (!input) {
+        showStatus('Nothing to convert.', true);
+        return;
+      }
+
+      // @ts-ignore
+      if (typeof Papa === 'undefined') {
+        showStatus('CSV Library not loaded yet. Please wait.', true);
+        return;
+      }
+
+      try {
+        if (mode === 'json-to-csv') {
+          // JSON to CSV
+          const parsedJson = JSON.parse(input);
+          
+          // PapaParse unparse expects an array of objects or an array of arrays
+          if (!Array.isArray(parsedJson) && typeof parsedJson !== 'object') {
+            throw new Error('JSON must be an object or an array of objects.');
+          }
+
+          // @ts-ignore
+          const csv = Papa.unparse(parsedJson);
+          dataOutput.value = csv;
+          showStatus('Converted JSON to CSV successfully!');
+          
+        } else {
+          // CSV to JSON
+          // @ts-ignore
+          const result = Papa.parse(input, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: true // Converts numbers and booleans automatically
+          });
+
+          if (result.errors && result.errors.length > 0) {
+            console.warn('CSV Parsing Warnings/Errors:', result.errors);
+            // We'll still try to output whatever was parsed
+          }
+
+          dataOutput.value = JSON.stringify(result.data, null, 2);
+          showStatus('Converted CSV to JSON successfully!');
+        }
+        
+        updateStats();
+      } catch (err: any) {
+        console.error('Conversion Error:', err);
+        dataOutput.value = `ERROR:\n${err.message}`;
+        showStatus('Conversion failed. Check your syntax.', true);
+      }
+    }
+
+    function updateStats() {
+      const text = dataOutput.value;
+      stats.textContent = `${text.length} characters output`;
+    }
+
+    convertBtn.addEventListener('click', convert);
+    
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        const clipText = await navigator.clipboard.readText();
+        dataInput.value = clipText;
+        showStatus('Pasted from clipboard.');
+        convert();
+      } catch (err) {
+        console.error('Paste error:', err);
+        showStatus('Paste failed. Check permissions.', true);
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = dataOutput.value;
+      if (!text || text.startsWith('ERROR')) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        showStatus('Copied to clipboard!');
+      } catch (err) {
+        showStatus('Copy failed.', true);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      dataInput.value = '';
+      dataOutput.value = '';
+      showStatus('Cleared text.');
+      stats.textContent = '';
+      dataInput.focus();
+    });
+
+  </script>
+</BaseLayout>

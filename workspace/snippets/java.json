@@ -1,0 +1,74 @@
+{
+  "helloWorld": {
+    "displayName": "Hello World",
+    "template": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}"
+  },
+  "classAndObject": {
+    "displayName": "Class and Object",
+    "template": "class Car {\n    // Fields (instance variables)\n    private String make;\n    private String model;\n\n    // Constructor\n    public Car(String make, String model) {\n        this.make = make;\n        this.model = model;\n    }\n\n    // Method\n    public void displayInfo() {\n        System.out.println(\"Car: \" + make + \" \" + model);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        // Create an instance (object) of the Car class\n        Car myCar = new Car(\"Toyota\", \"Corolla\");\n        myCar.displayInfo();\n    }\n}"
+  },
+  "inheritance": {
+    "displayName": "Inheritance",
+    "template": "// Superclass (Parent)\nclass Animal {\n    public void makeSound() {\n        System.out.println(\"Some generic animal sound\");\n    }\n}\n\n// Subclass (Child)\nclass Dog extends Animal {\n    @Override\n    public void makeSound() {\n        System.out.println(\"Woof woof!\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Animal myAnimal = new Animal();\n        Dog myDog = new Dog();\n\n        myAnimal.makeSound();\n        myDog.makeSound(); // This calls the overridden method\n    }\n}"
+  },
+  "interfaces": {
+    "displayName": "Interfaces",
+    "template": "// The interface defines a contract\ninterface Drivable {\n    void drive(); // All implementing classes must have this method\n}\n\nclass Bicycle implements Drivable {\n    @Override\n    public void drive() {\n        System.out.println(\"Riding the bicycle\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Drivable myVehicle = new Bicycle();\n        myVehicle.drive();\n    }\n}"
+  },
+  "collections": {
+    "displayName": "Collections (ArrayList & HashMap)",
+    "template": "import java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.Map;\n\npublic class CollectionsDemo {\n    public static void main(String[] args) {\n        // ArrayList (dynamic array)\n        ArrayList<String> fruits = new ArrayList<>();\n        fruits.add(\"Apple\");\n        fruits.add(\"Banana\");\n        System.out.println(\"ArrayList: \" + fruits);\n\n        // HashMap (key-value pairs)\n        HashMap<String, Integer> cityPopulations = new HashMap<>();\n        cityPopulations.put(\"New York\", 8_400_000);\n        cityPopulations.put(\"Tokyo\", 14_000_000);\n        System.out.println(\"Population of Tokyo: \" + cityPopulations.get(\"Tokyo\"));\n\n        // Iterating over a map\n        for (Map.Entry<String, Integer> entry : cityPopulations.entrySet()) {\n            System.out.println(entry.getKey() + \": \" + entry.getValue());\n        }\n    }\n}"
+  },
+  "loops": {
+    "displayName": "Loops (For, For-Each, While)",
+    "template": "import java.util.ArrayList;\n\npublic class LoopsDemo {\n    public static void main(String[] args) {\n        // Standard for loop\n        System.out.println(\"Standard for loop:\");\n        for (int i = 0; i < 5; i++) {\n            System.out.print(i + \" \");\n        }\n        System.out.println();\n\n        // Enhanced for-each loop\n        ArrayList<String> names = new ArrayList<>();\n        names.add(\"Alice\");\n        names.add(\"Bob\");\n        System.out.println(\"\\nFor-each loop:\");\n        for (String name : names) {\n            System.out.print(name + \" \");\n        }\n        System.out.println();\n\n        // While loop\n        int count = 5;\n        System.out.println(\"\\nWhile loop:\");\n        while (count > 0) {\n            System.out.print(count + \" \");\n            count--;\n        }\n        System.out.println();\n    }\n}"
+  },
+  "fileIO": {
+    "displayName": "File I/O (NIO)",
+    "template": "import java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.Paths;\n\npublic class FileIODemo {\n    public static void main(String[] args) {\n        Path filePath = Paths.get(\"example.txt\");\n        String content = \"Hello from Java NIO!\\nThis is a new line.\";\n\n        try {\n            // Write to a file\n            Files.writeString(filePath, content);\n            System.out.println(\"Successfully wrote to \" + filePath);\n\n            // Read from a file\n            String readContent = Files.readString(filePath);\n            System.out.println(\"\\nContent read from file:\");\n            System.out.println(readContent);\n\n        } catch (IOException e) {\n            System.err.println(\"An I/O error occurred: \" + e.getMessage());\n            e.printStackTrace();\n        }\n    }\n}"
+  },
+  "exceptionHandling": {
+    "displayName": "Exception Handling (Try-With-Resources)",
+    "template": "import java.io.BufferedReader;\nimport java.io.FileReader;\nimport java.io.IOException;\n\npublic class ExceptionDemo {\n    public static void main(String[] args) {\n        // The try-with-resources statement automatically closes the resource\n        // when the block is exited, which is much safer than manual closing.\n        try (BufferedReader reader = new BufferedReader(new FileReader(\"nonexistent.txt\"))) {\n            String line = reader.readLine();\n            System.out.println(line);\n        } catch (IOException e) {\n            // This block catches the file-not-found error\n            System.err.println(\"Error reading file: \" + e.getMessage());\n        }\n    }\n}"
+  },
+  "basicThreading": {
+    "displayName": "Basic Threading",
+    "template": "// A task that can be run on a new thread\nclass Worker implements Runnable {\n    @Override\n    public void run() {\n        System.out.println(\"Worker thread starting...\");\n        try {\n            Thread.sleep(1000); // Simulate some work\n        } catch (InterruptedException e) {\n            System.err.println(\"Worker thread interrupted.\");\n        }\n        System.out.println(\"Worker thread finished.\");\n    }\n}\n\npublic class ThreadingDemo {\n    public static void main(String[] args) {\n        System.out.println(\"Main thread starting...\");\n\n        Thread workerThread = new Thread(new Worker());\n        workerThread.start(); // Start the new thread\n\n        try {\n            workerThread.join(); // Wait for the worker thread to finish\n        } catch (InterruptedException e) {\n            System.err.println(\"Main thread interrupted while waiting.\");\n        }\n\n        System.out.println(\"Main thread finished.\");\n    }\n}"
+  },
+  "generics": {
+    "displayName": "Generics (Class & Method)",
+    "template": "// A generic class that can hold any type\nclass Box<T> {\n    private T content;\n\n    public void set(T content) {\n        this.content = content;\n    }\n\n    public T get() {\n        return content;\n    }\n}\n\npublic class GenericsDemo {\n    // A generic method\n    public static <E> void printArray(E[] inputArray) {\n        for (E element : inputArray) {\n            System.out.printf(\"%s \", element);\n        }\n        System.out.println();\n    }\n\n    public static void main(String[] args) {\n        Box<Integer> integerBox = new Box<>();\n        integerBox.set(10);\n        System.out.println(\"Integer value: \" + integerBox.get());\n\n        Integer[] intArray = { 1, 2, 3 };\n        String[] stringArray = { \"Hello\", \"World\" };\n        printArray(intArray);\n        printArray(stringArray);\n    }\n}"
+  },
+  "streamsApi": {
+    "displayName": "Streams API (Java 8+)",
+    "template": "import java.util.Arrays;\nimport java.util.List;\nimport java.util.stream.Collectors;\n\npublic class StreamsDemo {\n    public static void main(String[] args) {\n        List<String> words = Arrays.asList(\"apple\", \"banana\", \"apricot\", \"cherry\", \"blueberry\");\n\n        // Use a stream to filter, transform, and collect results\n        List<String> longWordsStartingWithA = words.stream()\n                .filter(s -> s.startsWith(\"a\")) // Keep words starting with 'a'\n                .filter(s -> s.length() > 5)   // Keep words longer than 5 chars\n                .map(String::toUpperCase)      // Convert to uppercase\n                .sorted()                      // Sort alphabetically\n                .collect(Collectors.toList()); // Collect results into a new list\n\n        System.out.println(longWordsStartingWithA);\n    }\n}"
+  },
+  "lambdaExpressions": {
+    "displayName": "Lambda Expressions",
+    "template": "import java.util.ArrayList;\nimport java.util.Collections;\n\npublic class LambdaDemo {\n    public static void main(String[] args) {\n        // A simple lambda expression for a Runnable\n        Runnable myRunnable = () -> System.out.println(\"Running in a lambda!\");\n        new Thread(myRunnable).start();\n\n        // Using a lambda for sorting\n        ArrayList<String> names = new ArrayList<>();\n        names.add(\"Charlie\");\n        names.add(\"Alice\");\n        names.add(\"Bob\");\n\n        // Sort using a lambda expression for the comparator\n        Collections.sort(names, (a, b) -> a.compareTo(b));\n        System.out.println(\"Sorted names: \" + names);\n    }\n}"
+  },
+  "enumsWithFields": {
+    "displayName": "Enums (with Fields & Methods)",
+    "template": "enum Planet {\n    MERCURY (3.303e+23, 2.4397e6),\n    VENUS   (4.869e+24, 6.0518e6),\n    EARTH   (5.976e+24, 6.37814e6);\n\n    private final double mass;   // in kilograms\n    private final double radius; // in meters\n\n    Planet(double mass, double radius) {\n        this.mass = mass;\n        this.radius = radius;\n    }\n\n    public double surfaceGravity() {\n        final double G = 6.67300E-11;\n        return G * mass / (radius * radius);\n    }\n}\n\npublic class EnumDemo {\n    public static void main(String[] args) {\n        Planet earth = Planet.EARTH;\n        System.out.printf(\"Surface gravity on Earth is %.2f m/s^2\\n\", earth.surfaceGravity());\n    }\n}"
+  },
+  "abstractClasses": {
+    "displayName": "Abstract Classes",
+    "template": "abstract class Shape {\n    // An abstract method must be implemented by subclasses\n    public abstract double getArea();\n\n    // A concrete method is inherited as-is\n    public void printDescription() {\n        System.out.println(\"This is a shape.\");\n    }\n}\n\nclass Circle extends Shape {\n    private double radius;\n\n    public Circle(double radius) {\n        this.radius = radius;\n    }\n\n    @Override\n    public double getArea() {\n        return Math.PI * radius * radius;\n    }\n}\n\npublic class AbstractDemo {\n    public static void main(String[] args) {\n        Shape myCircle = new Circle(5.0);\n        myCircle.printDescription();\n        System.out.printf(\"The area is %.2f\\n\", myCircle.getArea());\n    }\n}"
+  },
+  "scannerInput": {
+    "displayName": "Reading User Input (Scanner)",
+    "template": "import java.util.Scanner;\n\npublic class ScannerDemo {\n    public static void main(String[] args) {\n        // Create a Scanner object to read from standard input\n        Scanner scanner = new Scanner(System.in);\n\n        System.out.print(\"Enter your name: \");\n        String name = scanner.nextLine(); // Read a full line of text\n\n        System.out.print(\"Enter your age: \");\n        int age = scanner.nextInt(); // Read an integer\n\n        System.out.println(\"Hello, \" + name + \"! You are \" + age + \" years old.\");\n\n        // Always close the scanner when you're done\n        scanner.close();\n    }\n}"
+  },
+  "stringBuilder": {
+    "displayName": "StringBuilder",
+    "template": "public class StringBuilderDemo {\n    public static void main(String[] args) {\n        // Using StringBuilder is more efficient for concatenating many strings\n        StringBuilder sb = new StringBuilder();\n\n        sb.append(\"Hello\");\n        sb.append(\", \");\n        sb.append(\"World\");\n        sb.append(\"!\");\n\n        // You can also chain the calls\n        sb.append(\" This is a long string.\").append(\" Built efficiently.\");\n\n        // Convert the StringBuilder to a final String\n        String finalString = sb.toString();\n\n        System.out.println(finalString);\n    }\n}"
+  },
+  "staticMembers": {
+    "displayName": "Static Members",
+    "template": "class MathUtil {\n    // A static field (constant) belongs to the class, not an instance\n    public static final double PI = 3.14159;\n\n    // A static method is called on the class itself\n    public static int add(int a, int b) {\n        return a + b;\n    }\n}\n\npublic class StaticDemo {\n    public static void main(String[] args) {\n        // Access static members using the class name\n        System.out.println(\"Value of PI: \" + MathUtil.PI);\n        int sum = MathUtil.add(5, 10);\n        System.out.println(\"5 + 10 = \" + sum);\n    }\n}"
+  },
+  "dateTimeApi": {
+    "displayName": "Date & Time API (Java 8+)",
+    "template": "import java.time.LocalDate;\nimport java.time.LocalDateTime;\nimport java.time.format.DateTimeFormatter;\n\npublic class DateTimeDemo {\n    public static void main(String[] args) {\n        // Get the current date\n        LocalDate today = LocalDate.now();\n        System.out.println(\"Today's date: \" + today);\n\n        // Get the current date and time\n        LocalDateTime now = LocalDateTime.now();\n        System.out.println(\"Current date and time: \" + now);\n\n        // Formatting dates and times\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"MM/dd/yyyy HH:mm:ss\");\n        String formattedDateTime = now.format(formatter);\n        System.out.println(\"Formatted: \" + formattedDateTime);\n    }\n}"
+  }
+}

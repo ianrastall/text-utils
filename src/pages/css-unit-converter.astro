@@ -1,0 +1,303 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="CSS Unit Converter" description="Convert between various CSS units based on context values like root font size and viewport dimensions.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>CSS Unit Converter</h1>
+        <p>Convert between px, em, rem, %, pt, vw, vh based on your current layout context.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="two-column" style="margin-bottom: 2rem;">
+        <div class="field">
+          <label for="input-value">Input Value</label>
+          <input type="number" step="any" id="input-value" value="16" />
+        </div>
+        <div class="field">
+          <label for="source-unit">Source Unit</label>
+          <select id="source-unit">
+            <option value="px" selected>Pixels (px)</option>
+            <option value="em">Em</option>
+            <option value="rem">Rem</option>
+            <option value="percent">%</option>
+            <option value="pt">Points (pt)</option>
+            <option value="vw">Viewport Width (vw)</option>
+            <option value="vh">Viewport Height (vh)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="property-type">CSS Property</label>
+          <select id="property-type">
+            <option value="font-size" selected>Font Size</option>
+            <option value="dimension">Width / Height / Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two-column" style="margin-bottom: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+        <div class="field-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: var(--accent);">Font Context</h3>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;">
+              <input type="checkbox" id="sync-parent-font" checked>
+              Sync Parent with Root
+            </label>
+          </div>
+          <div class="field">
+            <label for="root-font-size" title="Base font size on the HTML element. Affects 'rem' units.">Root Font Size (px) ℹ️</label>
+            <input type="number" step="any" min="0.01" id="root-font-size" value="16" />
+          </div>
+          <div class="field">
+            <label for="parent-font-size" title="Font size of the direct parent element. Affects 'em' and '%' units.">Parent Font Size (px) ℹ️</label>
+            <input type="number" step="any" min="0.01" id="parent-font-size" value="16" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: var(--accent);">Viewport Context</h3>
+          <div class="field">
+            <label for="viewport-width" title="Width of the browser viewport. Affects 'vw' units.">Viewport Width (px) ℹ️</label>
+            <input type="number" step="1" min="1" id="viewport-width" value="1920" />
+          </div>
+          <div class="field">
+            <label for="viewport-height" title="Height of the browser viewport. Affects 'vh' units.">Viewport Height (px) ℹ️</label>
+            <input type="number" step="1" min="1" id="viewport-height" value="1080" />
+          </div>
+        </div>
+      </div>
+
+      <div class="control-row" style="margin-bottom: 2rem;">
+        <button id="reset-btn" class="button" type="button" style="color: var(--danger); border-color: var(--danger);">Reset Context Defaults</button>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Conversion Results</h3>
+        <div id="results-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+          <!-- Results populated by JS -->
+        </div>
+      </div>
+
+      <div class="status-line" style="margin-top: 2rem;">
+        <span id="status" class="status-good">Ready</span>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .result-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 1rem;
+      position: relative;
+    }
+    .result-card h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .result-card p.value {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.5rem;
+      font-family: ui-monospace, Consolas, monospace;
+    }
+    .result-card small {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .btn-copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+    .btn-copy:hover {
+      color: var(--accent);
+    }
+    .highlight-input {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+  </style>
+
+  <script>
+    const inputValue = document.getElementById('input-value') as HTMLInputElement;
+    const sourceUnit = document.getElementById('source-unit') as HTMLSelectElement;
+    const propertyType = document.getElementById('property-type') as HTMLSelectElement;
+    
+    const rootFontSize = document.getElementById('root-font-size') as HTMLInputElement;
+    const parentFontSize = document.getElementById('parent-font-size') as HTMLInputElement;
+    const syncParentFont = document.getElementById('sync-parent-font') as HTMLInputElement;
+    
+    const viewportWidth = document.getElementById('viewport-width') as HTMLInputElement;
+    const viewportHeight = document.getElementById('viewport-height') as HTMLInputElement;
+    
+    const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+    const resultsList = document.getElementById('results-list') as HTMLDivElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+
+    const TARGET_UNITS = ['px', 'em', 'rem', 'percent', 'pt', 'vw', 'vh'];
+    const UNIT_HELP_TEXTS: Record<string, string> = {
+      px: "Absolute pixels", 
+      em: "Relative to parent font size",
+      rem: "Relative to HTML root font size", 
+      percent: "% of parent",
+      pt: "Points (1pt = 1/72 inch)", 
+      vw: "1% of viewport width", 
+      vh: "1% of viewport height",
+    };
+
+    function showStatus(message: string, isError = false) {
+      status.textContent = message;
+      status.style.color = isError ? 'var(--danger)' : 'var(--success)';
+      setTimeout(() => {
+        status.textContent = 'Ready';
+        status.style.color = 'var(--text-muted)';
+      }, 3000);
+    }
+
+    const converters = {
+      toPx: {
+        px: (val: number) => val, 
+        em: (val: number, ctx: any) => val * ctx.parent, 
+        rem: (val: number, ctx: any) => val * ctx.root,
+        percent: (val: number, ctx: any) => (val / 100) * ctx.parent, 
+        pt: (val: number) => val * (96 / 72),
+        vw: (val: number, ctx: any) => (val / 100) * ctx.vw, 
+        vh: (val: number, ctx: any) => (val / 100) * ctx.vh,
+      },
+      fromPx: {
+        px: (px: number) => px, 
+        em: (px: number, ctx: any) => px / ctx.parent, 
+        rem: (px: number, ctx: any) => px / ctx.root,
+        percent: (px: number, ctx: any) => (px / ctx.parent) * 100, 
+        pt: (px: number) => px * (72 / 96),
+        vw: (px: number, ctx: any) => (px / ctx.vw) * 100, 
+        vh: (px: number, ctx: any) => (px / ctx.vh) * 100,
+      }
+    };
+
+    function calculateAndDisplay() {
+      const sourceValue = parseFloat(inputValue.value);
+      if (isNaN(sourceValue)) {
+        resultsList.innerHTML = '<p style="color: var(--text-muted)">Please enter a valid input value.</p>';
+        return;
+      }
+
+      const context = {
+        root: Math.max(0.01, parseFloat(rootFontSize.value) || 16),
+        parent: Math.max(0.01, parseFloat(parentFontSize.value) || 16),
+        vw: Math.max(1, parseFloat(viewportWidth.value) || 1920),
+        vh: Math.max(1, parseFloat(viewportHeight.value) || 1080),
+      };
+
+      const unitType = sourceUnit.value as keyof typeof converters.toPx;
+      const valueInPx = converters.toPx[unitType](sourceValue, context);
+      
+      const results: Record<string, string> = {};
+      TARGET_UNITS.forEach(unit => {
+        const result = converters.fromPx[unit as keyof typeof converters.fromPx](valueInPx, context);
+        results[unit] = isNaN(result) ? 'N/A' : parseFloat(result.toFixed(4)).toString();
+      });
+
+      displayResults(results);
+      highlightDependencies();
+    }
+
+    function displayResults(results: Record<string, string>) {
+      resultsList.innerHTML = '';
+      
+      TARGET_UNITS.forEach(unit => {
+        const isPercentForDimension = (unit === 'percent' && propertyType.value === 'dimension');
+        const value = isPercentForDimension ? 'N/A' : (results[unit] ?? 'N/A');
+        const helpText = UNIT_HELP_TEXTS[unit] || '';
+        const unitSymbol = unit === 'percent' ? '%' : unit;
+        
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.innerHTML = `
+          <button class="btn-copy" title="Copy ${unitSymbol}" ${value === 'N/A' ? 'disabled' : ''}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7.242a2 2 0 0 0-.602-1.43L16.083 2.57A2 2 0 0 0 14.685 2H10a2 2 0 0 0-2 2Z"></path><path d="M16 18v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2"></path></svg>
+          </button>
+          <h4>${unitSymbol}</h4>
+          <p class="value">${value}</p>
+          <small>${helpText}</small>
+        `;
+
+        if (value !== 'N/A') {
+          const copyBtn = card.querySelector('.btn-copy') as HTMLButtonElement;
+          copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(value);
+            showStatus(`Copied ${value}${unitSymbol}`);
+          });
+        }
+        
+        resultsList.appendChild(card);
+      });
+    }
+
+    function handleFontSync() {
+      parentFontSize.disabled = syncParentFont.checked;
+      if (syncParentFont.checked) {
+        parentFontSize.value = rootFontSize.value;
+      }
+      calculateAndDisplay();
+    }
+
+    function highlightDependencies() {
+      [rootFontSize, parentFontSize, viewportWidth, viewportHeight].forEach(el => el.classList.remove('highlight-input'));
+      
+      const deps: Record<string, HTMLInputElement[]> = { 
+        em: [parentFontSize], 
+        rem: [rootFontSize], 
+        percent: [parentFontSize], 
+        vw: [viewportWidth], 
+        vh: [viewportHeight] 
+      };
+      
+      const activeDeps = deps[sourceUnit.value];
+      if (activeDeps) {
+        activeDeps.forEach(el => {
+          if (!el.disabled) el.classList.add('highlight-input');
+        });
+      }
+    }
+
+    function resetDefaults() {
+      inputValue.value = '16'; 
+      sourceUnit.value = 'px'; 
+      propertyType.value = 'font-size';
+      rootFontSize.value = '16'; 
+      viewportWidth.value = '1920'; 
+      viewportHeight.value = '1080';
+      syncParentFont.checked = true;
+      handleFontSync();
+      showStatus('Context reset to defaults.');
+    }
+
+    // Bind events
+    [inputValue, sourceUnit, propertyType, rootFontSize, parentFontSize, viewportWidth, viewportHeight].forEach(el => {
+      el.addEventListener('input', calculateAndDisplay);
+    });
+    
+    syncParentFont.addEventListener('change', handleFontSync);
+    rootFontSize.addEventListener('input', () => { 
+      if (syncParentFont.checked) parentFontSize.value = rootFontSize.value; 
+    });
+    
+    resetBtn.addEventListener('click', resetDefaults);
+
+    // Initial calculation
+    calculateAndDisplay();
+  </script>
+</BaseLayout>

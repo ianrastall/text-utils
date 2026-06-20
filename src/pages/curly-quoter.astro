@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Curly Quoter" description="Convert straight quotes to curly quotes and back for various languages.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Curly Quoter</h1>
+        <p>Convert straight quotes to curly quotes and back for various languages.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+    
+    <section class="panel">
+      <div class="control-row">
+        <div class="field">
+          <label for="languageType">Language Style</label>
+          <select id="languageType">
+            <option value="en" selected>English (“ ” ‘ ’)</option>
+            <option value="fr">French (« » ‹ ›)</option>
+            <option value="de">German („ “ ‚ ‘)</option>
+            <option value="sv">Swedish (” ” ’ ’)</option>
+            <option value="no">Norwegian (« » ‘ ’)</option>
+            <option value="fi">Finnish (” ” ’ ’)</option>
+            <option value="ja">Japanese (「 」『 』)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Output Type</label>
+          <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
+            <label style="font-weight: normal;"><input type="radio" name="quoteOutputType" id="literalOutput" value="literal" checked> Literal Characters</label>
+            <label style="font-weight: normal;"><input type="radio" name="quoteOutputType" id="htmlOutput" value="html"> HTML Entities</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="entityType">Entity Type</label>
+          <select id="entityType" disabled>
+            <option value="named">Named (&amp;ldquo;)</option>
+            <option value="numeric">Numeric (&amp;#8220;)</option>
+            <option value="unicode">Hex (&amp;#x201C;)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="control-row" style="margin-bottom: 1rem;">
+        <button type="button" id="convertBtn" class="button button-primary">To Curly</button>
+        <button type="button" id="convertBackBtn" class="button">To Straight</button>
+        <button type="button" id="copyBtn" class="button">Copy Output</button>
+        <button type="button" id="clearBtn" class="button button-danger">Clear</button>
+      </div>
+
+      <div class="field">
+        <textarea id="mainTextArea" class="text-input" placeholder="Enter text with 'straight' and &quot;double&quot; quotes here..." rows="12"></textarea>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const dom = {
+      mainTextArea: document.getElementById('mainTextArea') as HTMLTextAreaElement,
+      languageSelect: document.getElementById('languageType') as HTMLSelectElement,
+      entitySelect: document.getElementById('entityType') as HTMLSelectElement,
+      outputTypeRadios: document.querySelectorAll('input[name="quoteOutputType"]') as NodeListOf<HTMLInputElement>,
+      convertBtn: document.getElementById('convertBtn') as HTMLButtonElement,
+      convertBackBtn: document.getElementById('convertBackBtn') as HTMLButtonElement,
+      copyBtn: document.getElementById('copyBtn') as HTMLButtonElement,
+      clearBtn: document.getElementById('clearBtn') as HTMLButtonElement,
+  };
+
+  const quotesMap: Record<string, { d: string[], s: string[], h: { d: string[], s: string[] } }> = {
+      en: { d: ["“", "”"], s: ["‘", "’"], h: { d: ["&ldquo;", "&rdquo;"], s: ["&lsquo;", "&rsquo;"] } },
+      fr: { d: ["«\u00A0", "\u00A0»"], s: ["‹\u00A0", "\u00A0›"], h: { d: ["&laquo;&nbsp;", "&nbsp;&raquo;"], s: ["&lsaquo;&nbsp;", "&nbsp;&rsaquo;"] } },
+      de: { d: ["„", "“"], s: ["‚", "‘"], h: { d: ["&bdquo;", "&ldquo;"], s: ["&sbquo;", "&lsquo;"] } },
+      sv: { d: ["”", "”"], s: ["’", "’"], h: { d: ["&rdquo;", "&rdquo;"], s: ["&rsquo;", "&rsquo;"] } },
+      no: { d: ["«", "»"], s: ["‘", "’"], h: { d: ["&laquo;", "&raquo;"], s: ["&lsquo;", "&rsquo;"] } },
+      fi: { d: ["”", "”"], s: ["’", "’"], h: { d: ["&rdquo;", "&rdquo;"], s: ["&rsquo;", "&rsquo;"] } },
+      ja: { d: ["「", "」"], s: ["『", "』"], h: { d: ["&#x300C;", "&#x300D;"], s: ["&#x300E;", "&#x300F;"] } }
+  };
+
+  const backConverter = {
+      double: /[“”„”「」]/g, single: /[‘’‚’『』]/g,
+      doubleEntity: /&ldquo;|&rdquo;|&bdquo;|&#8220;|&#8221;|&#8222;|&#x300C;|&#x300D;|&#x201C;|&#x201D;|&#x201E;/g,
+      singleEntity: /&lsquo;|&rsquo;|&sbquo;|&#8216;|&#8217;|&#8218;|&#x2018;|&#x2019;|&#x201A;/g
+  };
+
+  function getQuoteStyle() {
+      const checkedRadio = Array.from(dom.outputTypeRadios).find(r => r.checked);
+      const mode = checkedRadio ? checkedRadio.value : 'literal';
+      const lang = dom.languageSelect.value;
+      const entity = dom.entitySelect.value;
+      const map = quotesMap[lang];
+      const [dOpenLit, dCloseLit] = map.d;
+      const [sOpenLit, sCloseLit] = map.s;
+
+      if (mode === 'literal') { return { d: [dOpenLit, dCloseLit], s: [sOpenLit, sCloseLit] }; }
+      if (mode === 'html') {
+          if (entity === 'named') { return map.h; }
+          if (entity === 'numeric') {
+              const toNumeric = (str: string) => [...str].map(char => `&#${char.charCodeAt(0)};`).join('');
+              return { d: [toNumeric(dOpenLit), toNumeric(dCloseLit)], s: [toNumeric(sOpenLit), toNumeric(sCloseLit)] };
+          }
+          if (entity === 'unicode') { // Hex
+              const toHex = (str: string) => [...str].map(char => `&#x${char.charCodeAt(0).toString(16).toUpperCase()};`).join('');
+              return { d: [toHex(dOpenLit), toHex(dCloseLit)], s: [toHex(sOpenLit), toHex(sCloseLit)] };
+          }
+      }
+      return { d: [dOpenLit, dCloseLit], s: [sOpenLit, sCloseLit] };
+  }
+
+  function isApostrophe(text: string, i: number) {
+      if (text[i] !== "'") return false;
+      const prev = text[i - 1] || ' ';
+      const next = text[i + 1] || ' ';
+      if (/\\s/.test(prev) && /\\s/.test(next)) return false;
+      if (/\\w/.test(prev) && (next === 's' || next === 't' || next === 'm' || next === 'd' || next === 'v' && text[i+2] === 'e' || next === 'l' && text[i+2] === 'l' || next === 'r' && text[i+2] === 'e')) return true;
+      if (prev.toLowerCase() === 'n' && next.toLowerCase() === 't' && text[i-2] && /\\w/.test(text[i-2])) return true;
+      if (/\\d/.test(prev) && next === 's') return true;
+      return false;
+  }
+
+  function convertToCurly() {
+      const text = dom.mainTextArea.value;
+      const style = getQuoteStyle();
+      if (!style) return;
+
+      const [dOpen, dClose] = style.d;
+      const [sOpen, sClose] = style.s;
+      
+      let result = [];
+      let stack = [];
+
+      for (let i = 0; i < text.length; i++) {
+          let char = text[i];
+          
+          if (isApostrophe(text, i)) {
+              result.push(sClose); continue;
+          }
+          if (char === "'") {
+              const top = stack[stack.length - 1];
+              if (top === "'") { result.push(sClose); stack.pop(); } 
+              else { result.push(sOpen); stack.push("'"); }
+          } else if (char === '"') {
+              const top = stack[stack.length - 1];
+              if (top === '"') { result.push(dClose); stack.pop(); } 
+              else { result.push(dOpen); stack.push('"'); }
+          } else {
+              result.push(char);
+          }
+      }
+      dom.mainTextArea.value = result.join('');
+  }
+
+  function convertToStraight() {
+      let text = dom.mainTextArea.value;
+      
+      text = text.replace(/«[ \\t\\u00A0]*/g, '"');
+      text = text.replace(/[ \\t\\u00A0]*»/g, '"');
+      text = text.replace(/‹[ \\t\\u00A0]*/g, "'");
+      text = text.replace(/[ \\t\\u00A0]*›/g, "'");
+      text = text.replace(/&laquo;&nbsp;/g, '"').replace(/&nbsp;&raquo;/g, '"');
+      text = text.replace(/&lsaquo;&nbsp;/g, "'").replace(/&nbsp;&rsaquo;/g, "'");
+
+      text = text.replace(backConverter.double, '"').replace(backConverter.doubleEntity, '"');
+      text = text.replace(backConverter.single, "'").replace(backConverter.singleEntity, "'");
+
+      dom.mainTextArea.value = text;
+  }
+
+  dom.convertBtn.addEventListener('click', convertToCurly);
+  dom.convertBackBtn.addEventListener('click', convertToStraight);
+  dom.copyBtn.addEventListener('click', () => {
+      if (!dom.mainTextArea.value) return;
+      navigator.clipboard.writeText(dom.mainTextArea.value);
+  });
+  dom.clearBtn.addEventListener('click', () => {
+      dom.mainTextArea.value = '';
+      dom.mainTextArea.focus();
+  });
+  dom.outputTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+          const checkedRadio = Array.from(dom.outputTypeRadios).find(r => r.checked);
+          dom.entitySelect.disabled = checkedRadio?.value !== "html";
+      });
+  });
+
+  dom.entitySelect.disabled = true;
+</script>

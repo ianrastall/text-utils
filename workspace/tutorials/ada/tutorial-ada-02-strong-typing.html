@@ -1,0 +1,428 @@
+<div class="tutorial-content">
+    <h1 class="tutorial-title">Ada's Strong Typing System: Preventing Errors at Compile Time</h1>
+    
+    <div class="tutorial-section">
+        <p class="tutorial-intro">
+            While most programming languages treat types as mere documentation, Ada transforms them into powerful compile-time verification tools. This tutorial explores how Ada's rigorous type system eliminates entire categories of errors before code ever runs, with practical examples demonstrating how constrained types, subtypes, and strong equivalence prevent bugs that plague other languages. You'll learn to leverage Ada's type system as your first line of defense in building reliable software.
+        </p>
+        
+        <div class="ada-concept">
+            <div class="icon-block">
+                <i class="material-icons critical-system-icon">verified</i>
+                <span><strong>Key Principle:</strong> In Ada, types aren't just labels - they're contracts that the compiler enforces.</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-block">
+        <h2>Why Strong Typing Matters: Beyond Syntax Checking</h2>
+        <p>
+            Most languages use types primarily for memory allocation decisions. Ada uses types as <span class="text-highlight">semantic validators</span> that catch logical errors during compilation. Consider this critical distinction:
+        </p>
+        
+        <div class="comparison-grid">
+            <div class="grid-item">
+                <h4>C/C++ Type System</h4>
+                <ul>
+                    <li>Primarily for memory layout</li>
+                    <li>Implicit conversions common</li>
+                    <li>Numeric types often interchangeable</li>
+                    <li>Pointer arithmetic encouraged</li>
+                    <li>Errors often surface at runtime</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-c">// C code - compiles without warnings
+int voltage = 240;
+float current = 15.5;
+double power = voltage * current; // Implicit conversion</code></pre>
+                </div>
+            </div>
+            <div class="grid-item">
+                <h4>Ada Type System</h4>
+                <ul>
+                    <li>Enforces semantic correctness</li>
+                    <li>No implicit conversions</li>
+                    <li>Numeric types strictly separated</li>
+                    <li>Pointer arithmetic prohibited</li>
+                    <li>Errors caught at compile time</li>
+                </ul>
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Ada code - compilation error
+Voltage : Integer := 240;
+Current : Float := 15.5;
+Power   : Float := Voltage * Current; -- ERROR: type mismatch</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>The Mars Climate Orbiter Lesson</h3>
+            <p>
+                In 1999, NASA lost a $125 million spacecraft because one team used metric units while another used imperial units. The error went undetected because both systems used the same <code class="code-inline">double</code> type. Ada's strong typing would have required explicit unit conversion with distinct types, making this error impossible:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">subtype Meters is Float;
+subtype Feet   is Float;
+
+-- These are completely incompatible types
+M : Meters := 1000.0;
+F : Feet   := M; -- Compile-time error: type mismatch</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Core Typing Mechanisms in Depth</h2>
+        
+        <div class="two-column">
+            <div class="column">
+                <h3>1. Type Equivalence vs. Name Equivalence</h3>
+                <p>
+                    Most languages use <em>structural equivalence</em> (types are compatible if their structures match). Ada uses <em>name equivalence</em> - two types are compatible only if they share the same name declaration.
+                </p>
+                
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Two identical structures are still incompatible types
+type Sensor_ID is new Integer;
+type Device_ID is new Integer;
+
+S : Sensor_ID := 100;
+D : Device_ID := S; -- ERROR: type mismatch despite same structure</code></pre>
+                </div>
+                
+                <div class="note-box">
+                    <h3>Why Name Equivalence Matters</h3>
+                    <p>
+                        This prevents accidental substitution of conceptually different values that happen to have the same representation. A sensor ID and device ID might both be integers, but they represent fundamentally different concepts in your system.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="column">
+                <h3>2. Subtypes with Constraints</h3>
+                <p>
+                    Subtypes add constraints to existing types, creating compile-time validation:
+                </p>
+                
+                <div class="code-block">
+                    <pre><code class="language-ada">-- Constrained numeric subtypes
+subtype Percentage is Integer range 0..100;
+subtype Latitude  is Float range -90.0..90.0;
+subtype Port      is Positive range 1024..65535;
+
+P : Percentage := 150; -- Compile-time error
+L : Latitude  := 100.0; -- Compile-time error</code></pre>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>Constraint Best Practices</h3>
+                    <ul>
+                        <li>Use subtypes for all domain-specific values</li>
+                        <li>Name constraints meaningfully (<code class="code-inline">Valid_Temperature</code> vs <code class="code-inline">T</code>)</li>
+                        <li>Constraints become automatic runtime checks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Advanced Type Features for Reliability</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Derived Types for Semantic Safety</h3>
+                <p>
+                    When you need to create a new type that has similar properties but distinct meaning:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">type Voltage is new Integer;
+type Current is new Integer;
+
+V : Voltage := 240;
+C : Current := 15;
+
+-- This is now a type error, as it should be:
+Power : Integer := V * C; -- ERROR: no operator for mixed types</code></pre>
+                </div>
+                <p>
+                    To enable operations between derived types, you must explicitly define the semantics:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">function "*" (Left : Voltage; Right : Current) 
+   return Power is
+begin
+   return Power (Left) * Power (Right);
+end "*";</code></pre>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Tagged Types for Safe Polymorphism</h3>
+                <p>
+                    Ada's approach to OOP with built-in runtime checks:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">type Sensor is tagged record
+   ID      : Sensor_ID;
+   Status  : Status_Type;
+end record;
+
+type Temperature_Sensor is new Sensor with record
+   Units   : Temperature_Units;
+   Reading : Float;
+end record;
+
+-- Safe dispatching call
+procedure Process (S : Sensor'Class) is
+begin
+   -- Compiler inserts runtime tag check
+   if S in Temperature_Sensor then
+      Handle_Temperature (Temperature_Sensor (S));
+   end if;
+end Process;</code></pre>
+                </div>
+                <p>
+                    Unlike C++, Ada automatically inserts runtime checks when converting between tagged types.
+                </p>
+            </div>
+        </div>
+        
+        <div class="callout-primary">
+            <h4>Practical Application: Medical Device Safety</h4>
+            <p>
+                In an infusion pump system:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">subtype Milliliters is Float range 0.0..5000.0;
+subtype Milligrams is Float range 0.0..1000.0;
+subtype Flow_Rate  is Float range 0.0..500.0; -- mL/hour
+
+-- These prevent dangerous unit confusion:
+procedure Set_Dose (Volume : Milliliters);
+procedure Set_Concentration (Mass : Milligrams; Volume : Milliliters);
+procedure Set_Flow_Rate (Rate : Flow_Rate);</code></pre>
+            </div>
+            <p>
+                A developer cannot accidentally set flow rate in mg/hour instead of mL/hour - the compiler enforces unit correctness.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Practical Type System Patterns</h2>
+        
+        <h3>Pattern 1: Range Constraints for State Safety</h3>
+        <p>
+            Prevent invalid state transitions through constrained types:
+        </p>
+        <div class="code-block">
+            <pre><code class="language-ada">type System_State is (Off, Starting, Running, Stopping);
+subtype Operational_State is System_State range Starting..Running;
+
+procedure Transition (Current : System_State; Next : out System_State) is
+begin
+   case Current is
+      when Off =>
+         Next := Starting; -- Valid transition
+      when Running =>
+         Next := Stopping; -- Valid transition
+      when others =>
+         raise Invalid_Transition;
+   end case;
+end Transition;
+
+-- Usage with compile-time state validation:
+Current_State : System_State := Off;
+Next_State    : Operational_State; -- Must be valid operational state
+
+Transition (Current_State, Next_State); -- Compiler verifies state validity</code></pre>
+        </div>
+        
+        <div class="section-block">
+            <h3>Pattern 2: Physical Units with Derived Types</h3>
+            <p>
+                Create a type-safe physical units system:
+            </p>
+            
+            <div class="code-block">
+                <pre><code class="language-ada">type Meters is new Float;
+type Seconds is new Float;
+type Meters_Per_Second is new Float;
+
+-- Explicit conversion functions
+function To_MPS (M : Meters; S : Seconds) return Meters_Per_Second is
+   (Meters_Per_Second (M) / Meters_Per_Second (S));
+
+-- Safe calculation
+Distance : Meters  := 100.0;
+Time     : Seconds := 10.0;
+Velocity : Meters_Per_Second := To_MPS (Distance, Time);</code></pre>
+            </div>
+            
+            <div class="note-box">
+                <h3>Extending with SPARK</h3>
+                <p>
+                    In the SPARK subset of Ada, you can add formal proofs about your units:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-ada">function To_MPS (M : Meters; S : Seconds) return Meters_Per_Second
+   with Pre  => S > 0.0,
+        Post => To_MPS'Result = Meters_Per_Second (M) / Meters_Per_Second (S);</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Common Pitfalls and Solutions</h2>
+        
+        <div class="warning-box">
+            <h3>Pitfall 1: Overusing Integer and Float</h3>
+            <p>
+                New Ada developers often fall back to basic numeric types instead of creating domain-specific types. This defeats the purpose of Ada's type system.
+            </p>
+            <div class="two-column">
+                <div class="column">
+                    <h4>Avoid This:</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">procedure Set_Parameters (
+   Param1 : Integer;
+   Param2 : Integer;
+   Param3 : Float);</code></pre>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4>Prefer This:</h4>
+                    <div class="code-block">
+                        <pre><code class="language-ada">subtype Pressure   is Integer range 0..1000;
+subtype Temperature is Integer range -40..125;
+subtype Humidity    is Float range 0.0..1.0;
+
+procedure Set_Parameters (
+   P : Pressure;
+   T : Temperature;
+   H : Humidity);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tip-box">
+            <h3>Pitfall 2: Type Conversions as Workarounds</h3>
+            <p>
+                When you find yourself writing many type conversions, it's usually a sign that your type model doesn't match your domain. Instead of:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">V : Integer := Integer (Voltage_Value); -- Avoid this pattern</code></pre>
+            </div>
+            <p>
+                Redesign your types to eliminate the need for conversions:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">type Voltage is range 0..1000;
+type Current is range 0..500;
+
+function Calculate_Power (V : Voltage; I : Current) return Integer is
+   (Integer (V) * Integer (I)); -- Single conversion at interface</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Exercises: Building a Type-Safe System</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Exercise 1: Aircraft Control System</h3>
+                <p>
+                    Design a type-safe system for aircraft control surfaces:
+                </p>
+                <ul>
+                    <li>Create distinct types for <code class="code-inline">Aileron</code>, <code class="code-inline">Elevator</code>, and <code class="code-inline">Rudder</code></li>
+                    <li>Define appropriate range constraints</li>
+                    <li>Prevent accidental mixing of control surfaces</li>
+                    <li>Implement a safe mixing function for coordinated turns</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Exercise 2: Chemical Processing Plant</h3>
+                <p>
+                    Create a type system for a chemical processing system:
+                </p>
+                <ul>
+                    <li>Define types for different chemical compounds</li>
+                    <li>Create safe temperature and pressure ranges for each</li>
+                    <li>Prevent incompatible chemical combinations</li>
+                    <li>Implement a reaction validation function using subtypes</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="callout-secondary">
+            <h4>Solution Guidance</h4>
+            <p>
+                For the aircraft system, your solution should prevent code like:
+            </p>
+            <div class="code-block">
+                <pre><code class="language-ada">Set_Aileron (Elevator_Value); -- Should be a compile-time error</code></pre>
+            </div>
+            <p>
+                The type system should enforce that each control surface receives only values appropriate for its specific range and physical constraints.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-divider"></div>
+    
+    <div class="tutorial-section">
+        <h2>Next Steps: From Types to Contracts</h2>
+        <p>
+            Now that you've mastered Ada's strong typing system, you're ready to combine these techniques with Ada 2012's formal contract features. In the next tutorial, we'll explore how to:
+        </p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Upcoming: Design by Contract</h3>
+                <ul>
+                    <li>Write precise preconditions and postconditions</li>
+                    <li>Use type invariants to protect data integrity</li>
+                    <li>Combine contracts with strong typing for maximum safety</li>
+                    <li>Transition from runtime checks to formal verification</li>
+                    <li>Apply contracts to real-world safety-critical scenarios</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Practice Challenge</h3>
+                <p>
+                    Take your aircraft control system from the exercise and enhance it with contracts:
+                </p>
+                <ul>
+                    <li>Add preconditions to prevent invalid control inputs</li>
+                    <li>Define postconditions for coordinated turn maneuvers</li>
+                    <li>Create invariants for system state consistency</li>
+                    <li>Document the safety properties your contracts enforce</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="note-box">
+            <h3>Key Insight</h3>
+            <p>
+                Strong typing is Ada's foundation, but contracts are its superpower. When you combine constrained types with formal specifications, you create software that's not just less error-prone, but <em>provably correct</em> within its specified domain. This is why Ada remains the language of choice when failure is not an option.
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+{
+  "categoryDisplayName": "C",
+  "skeletons": [
+    {
+      "key": "c-hello-world",
+      "displayName": "Hello World",
+      "template": "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, world!\\n\");\n    return 0;\n}"
+    },
+    {
+      "key": "c-header-source-pair",
+      "displayName": "Header/Source File Pair",
+      "template": "/* --- my_functions.h --- */\n\n#ifndef MY_FUNCTIONS_H\n#define MY_FUNCTIONS_H\n\n// Function declarations go here\nint add(int a, int b);\nvoid print_array(int arr[], int size);\n\n#endif // MY_FUNCTIONS_H\n\n\n/* --- my_functions.c --- */\n\n#include \"my_functions.h\"\n#include <stdio.h>\n\n// Function definitions go here\nint add(int a, int b) {\n    return a + b;\n}\n\nvoid print_array(int arr[], int size) {\n    for (int i = 0; i < size; i++) {\n        printf(\"%d \", arr[i]);\n    }\n    printf(\"\\n\");\n}"
+    },
+    {
+      "key": "c-command-line-args",
+      "displayName": "Command Line Arguments",
+      "template": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(int argc, char *argv[]) {\n    if (argc < 2) {\n        printf(\"Usage: %s <arguments>\\n\", argv[0]);\n        return 1;\n    }\n\n    printf(\"Program name: %s\\n\", argv[0]);\n    printf(\"Number of arguments: %d\\n\", argc - 1);\n\n    for (int i = 1; i < argc; i++) {\n        printf(\"Argument %d: %s\\n\", i, argv[i]);\n    }\n\n    return 0;\n}"
+    },
+    {
+      "key": "c-file-io",
+      "displayName": "File I/O Operations",
+      "template": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    FILE *file;\n    char buffer[256];\n    \n    // Writing to file\n    file = fopen(\"example.txt\", \"w\");\n    if (file == NULL) {\n        fprintf(stderr, \"Error: Could not open file for writing\\n\");\n        return 1;\n    }\n    \n    fprintf(file, \"Hello, file!\\n\");\n    fprintf(file, \"This is line 2\\n\");\n    fclose(file);\n    \n    // Reading from file\n    file = fopen(\"example.txt\", \"r\");\n    if (file == NULL) {\n        fprintf(stderr, \"Error: Could not open file for reading\\n\");\n        return 1;\n    }\n    \n    printf(\"File contents:\\n\");\n    while (fgets(buffer, sizeof(buffer), file) != NULL) {\n        printf(\"%s\", buffer);\n    }\n    \n    fclose(file);\n    return 0;\n}"
+    },
+    {
+      "key": "c-dynamic-memory",
+      "displayName": "Dynamic Memory Management",
+      "template": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int *arr;\n    int size = 5;\n    \n    // Allocate memory\n    arr = (int*)malloc(size * sizeof(int));\n    if (arr == NULL) {\n        fprintf(stderr, \"Memory allocation failed\\n\");\n        return 1;\n    }\n    \n    // Initialize array\n    for (int i = 0; i < size; i++) {\n        arr[i] = i * 2;\n    }\n    \n    // Print array\n    printf(\"Array contents: \");\n    for (int i = 0; i < size; i++) {\n        printf(\"%d \", arr[i]);\n    }\n    printf(\"\\n\");\n    \n    // Reallocate to larger size\n    size = 10;\n    arr = (int*)realloc(arr, size * sizeof(int));\n    if (arr == NULL) {\n        fprintf(stderr, \"Memory reallocation failed\\n\");\n        return 1;\n    }\n    \n    // Initialize new elements\n    for (int i = 5; i < size; i++) {\n        arr[i] = i * 3;\n    }\n    \n    // Print expanded array\n    printf(\"Expanded array: \");\n    for (int i = 0; i < size; i++) {\n        printf(\"%d \", arr[i]);\n    }\n    printf(\"\\n\");\n    \n    // Free memory\n    free(arr);\n    return 0;\n}"
+    },
+    {
+      "key": "c-struct-definition",
+      "displayName": "Structure Definition & Usage",
+      "template": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n// Structure definition\ntypedef struct {\n    char name[50];\n    int age;\n    float salary;\n} Employee;\n\n// Function to create and initialize employee\nEmployee* create_employee(const char* name, int age, float salary) {\n    Employee* emp = (Employee*)malloc(sizeof(Employee));\n    if (emp == NULL) {\n        return NULL;\n    }\n    \n    strncpy(emp->name, name, sizeof(emp->name) - 1);\n    emp->name[sizeof(emp->name) - 1] = '\\0';\n    emp->age = age;\n    emp->salary = salary;\n    \n    return emp;\n}\n\n// Function to print employee information\nvoid print_employee(const Employee* emp) {\n    if (emp != NULL) {\n        printf(\"Employee: %s, Age: %d, Salary: $%.2f\\n\", \n               emp->name, emp->age, emp->salary);\n    }\n}\n\nint main() {\n    Employee emp1;\n    Employee* emp2;\n    \n    // Static initialization\n    strcpy(emp1.name, \"John Doe\");\n    emp1.age = 30;\n    emp1.salary = 50000.0;\n    \n    // Dynamic initialization\n    emp2 = create_employee(\"Jane Smith\", 28, 55000.0);\n    \n    printf(\"Employee Information:\\n\");\n    print_employee(&emp1);\n    print_employee(emp2);\n    \n    // Clean up\n    free(emp2);\n    return 0;\n}"
+    },
+    {
+      "key": "c-linked-list",
+      "displayName": "Linked List Implementation",
+      "template": "#include <stdio.h>\n#include <stdlib.h>\n\n// Node structure\ntypedef struct Node {\n    int data;\n    struct Node* next;\n} Node;\n\n// Function to create a new node\nNode* create_node(int data) {\n    Node* new_node = (Node*)malloc(sizeof(Node));\n    if (new_node == NULL) {\n        fprintf(stderr, \"Memory allocation failed\\n\");\n        exit(1);\n    }\n    new_node->data = data;\n    new_node->next = NULL;\n    return new_node;\n}\n\n// Function to insert at beginning\nNode* insert_front(Node* head, int data) {\n    Node* new_node = create_node(data);\n    new_node->next = head;\n    return new_node;\n}\n\n// Function to print the list\nvoid print_list(Node* head) {\n    Node* current = head;\n    printf(\"List: \");\n    while (current != NULL) {\n        printf(\"%d -> \", current->data);\n        current = current->next;\n    }\n    printf(\"NULL\\n\");\n}\n\n// Function to free the list\nvoid free_list(Node* head) {\n    Node* current = head;\n    while (current != NULL) {\n        Node* temp = current;\n        current = current->next;\n        free(temp);\n    }\n}\n\nint main() {\n    Node* head = NULL;\n    \n    // Insert some elements\n    head = insert_front(head, 10);\n    head = insert_front(head, 20);\n    head = insert_front(head, 30);\n    \n    print_list(head);\n    \n    // Clean up\n    free_list(head);\n    return 0;\n}"
+    },
+    {
+      "key": "c-string-manipulation",
+      "displayName": "String Manipulation",
+      "template": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n#include <ctype.h>\n\n// Function to convert string to uppercase\nvoid to_uppercase(char* str) {\n    for (int i = 0; str[i]; i++) {\n        str[i] = toupper(str[i]);\n    }\n}\n\n// Function to reverse a string\nvoid reverse_string(char* str) {\n    int len = strlen(str);\n    for (int i = 0; i < len / 2; i++) {\n        char temp = str[i];\n        str[i] = str[len - 1 - i];\n        str[len - 1 - i] = temp;\n    }\n}\n\n// Function to count words in a string\nint count_words(const char* str) {\n    int count = 0;\n    int in_word = 0;\n    \n    for (int i = 0; str[i]; i++) {\n        if (isspace(str[i])) {\n            in_word = 0;\n        } else if (!in_word) {\n            in_word = 1;\n            count++;\n        }\n    }\n    \n    return count;\n}\n\nint main() {\n    char text[] = \"Hello, World! This is a test string.\";\n    char copy[100];\n    \n    printf(\"Original string: %s\\n\", text);\n    printf(\"Length: %zu\\n\", strlen(text));\n    printf(\"Word count: %d\\n\", count_words(text));\n    \n    // Make a copy for manipulation\n    strcpy(copy, text);\n    to_uppercase(copy);\n    printf(\"Uppercase: %s\\n\", copy);\n    \n    // Reverse the copy\n    reverse_string(copy);\n    printf(\"Reversed: %s\\n\", copy);\n    \n    return 0;\n}"
+    },
+    {
+      "key": "c-function-pointers",
+      "displayName": "Function Pointers",
+      "template": "#include <stdio.h>\n\n// Sample functions\nint add(int a, int b) {\n    return a + b;\n}\n\nint multiply(int a, int b) {\n    return a * b;\n}\n\nint subtract(int a, int b) {\n    return a - b;\n}\n\n// Function that takes a function pointer as parameter\nint calculate(int x, int y, int (*operation)(int, int)) {\n    return operation(x, y);\n}\n\n// Array of function pointers\ntypedef int (*MathOperation)(int, int);\n\nint main() {\n    // Direct function pointer usage\n    int (*func_ptr)(int, int) = add;\n    printf(\"Using function pointer directly: %d\\n\", func_ptr(5, 3));\n    \n    // Using function pointer as parameter\n    printf(\"Addition: %d\\n\", calculate(10, 5, add));\n    printf(\"Multiplication: %d\\n\", calculate(10, 5, multiply));\n    printf(\"Subtraction: %d\\n\", calculate(10, 5, subtract));\n    \n    // Array of function pointers\n    MathOperation operations[] = {add, subtract, multiply};\n    const char* op_names[] = {\"Add\", \"Subtract\", \"Multiply\"};\n    \n    int a = 12, b = 4;\n    printf(\"\\nOperations on %d and %d:\\n\", a, b);\n    for (int i = 0; i < 3; i++) {\n        printf(\"%s: %d\\n\", op_names[i], operations[i](a, b));\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "key": "c-makefile-template",
+      "displayName": "Makefile Template",
+      "template": "# Makefile for C project\n\n# Compiler and flags\nCC = gcc\nCFLAGS = -Wall -Wextra -std=c99 -g\nLDFLAGS = \n\n# Directories\nSRCDIR = src\nOBJDIR = obj\nBINDIR = bin\nINCDIR = include\n\n# Target executable\nTARGET = $(BINDIR)/program\n\n# Source files\nSRCS = $(wildcard $(SRCDIR)/*.c)\nOBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)\n\n# Include directories\nINCLUDES = -I$(INCDIR)\n\n# Default target\nall: $(TARGET)\n\n# Create target executable\n$(TARGET): $(OBJS) | $(BINDIR)\n\t$(CC) $(OBJS) -o $@ $(LDFLAGS)\n\n# Compile source files to object files\n$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@\n\n# Create directories if they don't exist\n$(OBJDIR):\n\tmkdir -p $(OBJDIR)\n\n$(BINDIR):\n\tmkdir -p $(BINDIR)\n\n# Clean build artifacts\nclean:\n\trm -rf $(OBJDIR) $(BINDIR)\n\n# Clean and rebuild\nrebuild: clean all\n\n# Install (modify as needed)\ninstall: $(TARGET)\n\tcp $(TARGET) /usr/local/bin/\n\n# Uninstall\nuninstall:\n\trm -f /usr/local/bin/$(notdir $(TARGET))\n\n# Show help\nhelp:\n\t@echo \"Available targets:\"\n\t@echo \"  all      - Build the program (default)\"\n\t@echo \"  clean    - Remove build artifacts\"\n\t@echo \"  rebuild  - Clean and build\"\n\t@echo \"  install  - Install the program\"\n\t@echo \"  uninstall - Remove installed program\"\n\t@echo \"  help     - Show this help message\"\n\n.PHONY: all clean rebuild install uninstall help"
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Markdown Flavor Converter" description="Parse, format, and translate Markdown across CommonMark, GFM, and Pandoc flavors using an AST.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Markdown Flavor Converter</h1>
+        <p>Translate and format Markdown grammar across flavors using a core AST engine.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="control-row">
+        <div class="field" style="margin-bottom: 0;">
+          <select id="flavor-select" aria-label="Markdown Flavor">
+            <option value="commonmark">CommonMark (Standard)</option>
+            <option value="gfm" selected>GitHub Flavored (GFM)</option>
+            <option value="pandoc">Pandoc / MultiMarkdown</option>
+          </select>
+        </div>
+        <button id="format-btn" class="button primary" type="button">Format & Convert</button>
+        <button id="normalize-btn" class="button" type="button" title="Shifts all headers up so the highest header is H1">Normalize Headers to H1</button>
+        <button id="copy-btn" class="button" type="button">Copy Output</button>
+        <button id="clear-btn" class="button" type="button" style="color: var(--danger); border-color: var(--danger);">Clear</button>
+      </div>
+
+      <div class="two-column" style="margin-top: 1.5rem;">
+        <div class="field">
+          <label for="markdown-input">Markdown Input</label>
+          <textarea id="markdown-input" placeholder="Paste your Markdown here..." style="min-height: 400px; font-family: ui-monospace, Consolas, monospace; line-height: 1.6;"></textarea>
+        </div>
+        <div class="field">
+          <label for="markdown-output">Translated Output</label>
+          <textarea id="markdown-output" readonly placeholder="Translated and formatted AST output will appear here..." style="min-height: 400px; font-family: ui-monospace, Consolas, monospace; line-height: 1.6; background: var(--bg); border: 1px solid var(--border);"></textarea>
+        </div>
+      </div>
+
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { unified } from 'https://cdn.jsdelivr.net/npm/unified@11/+esm';
+    import remarkParse from 'https://cdn.jsdelivr.net/npm/remark-parse@11/+esm';
+    import remarkStringify from 'https://cdn.jsdelivr.net/npm/remark-stringify@11/+esm';
+    import remarkGfm from 'https://cdn.jsdelivr.net/npm/remark-gfm@4/+esm';
+    import remarkFrontmatter from 'https://cdn.jsdelivr.net/npm/remark-frontmatter@5/+esm';
+    import { visit } from 'https://cdn.jsdelivr.net/npm/unist-util-visit@5/+esm';
+
+    const flavorSelect = document.getElementById('flavor-select');
+    const markdownInput = document.getElementById('markdown-input');
+    const markdownOutput = document.getElementById('markdown-output');
+    const formatBtn = document.getElementById('format-btn');
+    const normalizeBtn = document.getElementById('normalize-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const status = document.getElementById('status');
+    const stats = document.getElementById('stats');
+
+    function showStatus(message, isError = false) {
+      status.textContent = message;
+      status.style.color = isError ? 'var(--danger)' : 'var(--success)';
+      if (!isError && message !== 'Formatting AST...') {
+        setTimeout(() => {
+          status.textContent = 'Ready';
+          status.style.color = 'var(--text-muted)';
+        }, 3000);
+      }
+    }
+
+    async function formatAndConvert() {
+      const text = markdownInput.value;
+      const flavor = flavorSelect.value;
+      
+      if (!text.trim()) {
+        showStatus('Nothing to format.', true);
+        return;
+      }
+
+      status.textContent = 'Formatting AST...';
+      status.style.color = 'var(--accent)';
+      formatBtn.disabled = true;
+      markdownOutput.value = 'Parsing AST and applying node transformations...';
+
+      try {
+        let processor = unified().use(remarkParse);
+
+        // Core parsing features based on flavor
+        if (flavor === 'gfm' || flavor === 'pandoc') {
+           processor = processor.use(remarkGfm).use(remarkFrontmatter, ['yaml']);
+        } else {
+           // CommonMark doesn't support GFM tables, so remarkParse handles them as plain text.
+           // We do parse frontmatter so we can explicitly strip it out, as CM doesn't support it natively.
+           processor = processor.use(remarkFrontmatter, ['yaml']); 
+        }
+
+        // Custom AST Transformer
+        processor = processor.use(() => (tree) => {
+           if (flavor === 'commonmark') {
+              // Strip YAML frontmatter
+              visit(tree, 'yaml', (node, index, parent) => {
+                 parent.children.splice(index, 1);
+                 return [visit.SKIP, index];
+              });
+              // Note: Tables and strikethrough are naturally parsed as literal text by standard remarkParse, 
+              // which aligns perfectly with CommonMark specs!
+           } 
+           else if (flavor === 'gfm') {
+              // Strip YAML frontmatter as GFM officially ignores it
+              visit(tree, 'yaml', (node, index, parent) => {
+                 parent.children.splice(index, 1);
+                 return [visit.SKIP, index];
+              });
+           }
+           else if (flavor === 'pandoc') {
+              // Pandoc supports yaml natively.
+              // We need to ensure sub/sup/highlight syntax is NOT escaped by remark-stringify.
+              // To do this, we intercept text nodes that contain these specific Pandoc markers
+              // and convert them to 'html' nodes so remark-stringify outputs them raw.
+              visit(tree, 'text', (node) => {
+                  let changed = false;
+                  // Convert generic HTML subscript/superscript tags to native Pandoc syntax
+                  let val = node.value;
+                  val = val.replace(/<sub>(.*?)<\/sub>/g, '~$1~');
+                  val = val.replace(/<sup>(.*?)<\/sup>/g, '^$1^');
+                  val = val.replace(/<mark>(.*?)<\/mark>/g, '==$1==');
+
+                  if (/~.+?~/.test(val) || /\^.+?\^/.test(val) || /==.+?==/.test(val)) {
+                      changed = true;
+                  }
+                  
+                  if (changed) {
+                      node.type = 'html'; // Prevents escaping of ~ and ^ and =
+                      node.value = val; 
+                  }
+              });
+
+              visit(tree, 'html', (node) => {
+                  let val = node.value;
+                  val = val.replace(/<sub>(.*?)<\/sub>/g, '~$1~');
+                  val = val.replace(/<sup>(.*?)<\/sup>/g, '^$1^');
+                  val = val.replace(/<mark>(.*?)<\/mark>/g, '==$1==');
+                  node.value = val;
+              });
+           }
+        });
+
+        // Serialization
+        processor = processor.use(remarkStringify, {
+           bullet: '-',
+           fences: true,
+           incrementListMarker: false,
+        });
+
+        const file = await processor.process(text);
+        markdownOutput.value = String(file);
+        showStatus('Translated & Formatted successfully!');
+        updateStats();
+
+      } catch (err) {
+        console.error('AST Pipeline Error:', err);
+        showStatus('Formatting error. Check console.', true);
+        markdownOutput.value = `ERROR:\n${err.message}`;
+      } finally {
+        formatBtn.disabled = false;
+      }
+    }
+
+    function normalizeHeaders() {
+      let text = markdownInput.value;
+      if (!text.trim()) {
+        showStatus('Nothing to normalize.', true);
+        return;
+      }
+
+      const headerRegex = /^#{1,6}\s+.+$/gm;
+      const headers = text.match(headerRegex);
+
+      if (!headers || headers.length === 0) {
+        showStatus('No headers found to normalize.', true);
+        return;
+      }
+
+      let minLevel = 6;
+      for (const header of headers) {
+        const level = header.match(/^#+/)?.[0].length || 6;
+        if (level < minLevel) {
+          minLevel = level;
+        }
+      }
+
+      if (minLevel === 1) {
+        showStatus('Headers are already normalized to H1.', false);
+        return;
+      }
+
+      const offset = minLevel - 1;
+      text = text.replace(/^#{1,6}(\s+.+)$/gm, (match, content) => {
+        const currentLevel = match.match(/^#+/)?.[0].length || 6;
+        let newLevel = currentLevel - offset;
+        if (newLevel < 1) newLevel = 1;
+        return '#'.repeat(newLevel) + content;
+      });
+
+      markdownInput.value = text;
+      showStatus(`Shifted headers up by ${offset} level(s).`);
+      updateStats();
+      
+      // Auto-format after normalizing
+      formatAndConvert();
+    }
+
+    function updateStats() {
+      const text = markdownInput.value;
+      stats.textContent = `${text.length} characters, ${text.split(/\s+/).filter(w => w.length > 0).length} words`;
+    }
+
+    formatBtn.addEventListener('click', formatAndConvert);
+    normalizeBtn.addEventListener('click', normalizeHeaders);
+    markdownInput.addEventListener('input', updateStats);
+    
+    copyBtn.addEventListener('click', async () => {
+      const text = markdownOutput.value;
+      if (!text || text.startsWith('ERROR')) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        showStatus('Copied to clipboard!');
+      } catch (err) {
+        showStatus('Copy failed.', true);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      markdownInput.value = '';
+      markdownOutput.value = '';
+      showStatus('Cleared text.');
+      stats.textContent = '';
+      markdownInput.focus();
+    });
+
+  </script>
+</BaseLayout>

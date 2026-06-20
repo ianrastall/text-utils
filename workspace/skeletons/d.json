@@ -1,0 +1,15 @@
+{
+  "categoryDisplayName": "D",
+  "skeletons": [
+    {
+      "key": "d-hello-world",
+      "displayName": "Hello World",
+      "template": "import std.stdio;\n\nvoid main()\n{\n    writeln(\"Hello, world!\");\n}"
+    },
+    {
+      "key": "d-class-structure",
+      "displayName": "Basic Class Structure",
+      "template": "import std.stdio;\n\nclass MyClass\n{\n    // Private member variable\n    private int _value;\n\n    // Constructor\n    this(int startingValue)\n    {\n        this._value = startingValue;\n    }\n\n    // Public method\n    public void printValue()\n    {\n        writeln(\"The value is: \", _value);\n    }\n}\n\nvoid main()\n{\n    auto instance = new MyClass(42);\n    instance.printValue();\n}"
+    }
+  ]
+}

@@ -27,6 +27,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'code-snippets',
+    name: 'Code Snippets & Templates',
+    href: '/code-snippets.html',
+    category: 'write',
+    description: 'Pick from reusable code snippets for common programming tasks.',
+    status: 'ready'
+  },
+  {
     id: 'color-chooser',
     name: 'Color Chooser',
     href: '/color-chooser.html',
@@ -50,7 +58,22 @@ export const tools: ToolMeta[] = [
     description: 'Visually create linear, radial, and conic CSS gradients. Drag color stops, copy code, or download PNG.',
     status: 'ready'
   },
-
+  {
+    id: 'css-unit-converter',
+    name: 'CSS Unit Converter',
+    href: '/css-unit-converter.html',
+    category: 'design',
+    description: 'Convert between various CSS units based on context values like root font size and viewport dimensions.',
+    status: 'ready'
+  },
+  {
+    id: 'curly-quoter',
+    name: 'Curly Quoter',
+    href: '/curly-quoter.html',
+    category: 'convert',
+    description: 'Convert straight quotes to curly quotes and back for various languages.',
+    status: 'ready'
+  },
   {
     id: 'font-awesome-chooser',
     name: 'Font Awesome Chooser',
@@ -76,6 +99,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'grateful-dead-archive',
+    name: 'Grateful Dead Archive Search',
+    href: '/grateful-dead-archive.html',
+    category: 'inspect',
+    description: 'Advanced search tool for Grateful Dead recordings on Archive.org',
+    status: 'ready'
+  },
+  {
     id: 'hashing-tool',
     name: 'Hashing & Encoding Tool',
     href: '/hashing-tool.html',
@@ -92,11 +123,75 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'json-csv-converter',
+    name: 'JSON & CSV Converter',
+    href: '/json-csv-converter.html',
+    category: 'convert',
+    description: 'Convert tabular data seamlessly between JSON and CSV formats.',
+    status: 'ready'
+  },
+  {
+    id: 'json-formatter',
+    name: 'JSON Formatter & Validator',
+    href: '/json-formatter.html',
+    category: 'inspect',
+    description: 'Format, validate, and minify JSON data with real-time error checking.',
+    status: 'ready'
+  },
+  {
     id: 'line-operations',
     name: 'Line Operations',
     href: '/line-operations.html',
     category: 'write',
     description: 'Sort, filter, reverse, shuffle, number, and modify lines of text. Undo/redo support.',
+    status: 'ready'
+  },
+  {
+    id: 'lorem-ipsum',
+    name: 'Lorem Ipsum Generator',
+    href: '/lorem-ipsum.html',
+    category: 'write',
+    description: 'Generate placeholder text by words, sentences, or paragraphs.',
+    status: 'ready'
+  },
+  {
+    id: 'markdown-formatter',
+    name: 'Markdown Formatter',
+    href: '/markdown-formatter.html',
+    category: 'write',
+    description: 'Format Markdown text and normalize headers automatically using Prettier.',
+    status: 'ready'
+  },
+  {
+    id: 'markdown-previewer',
+    name: 'Markdown Previewer',
+    href: '/markdown-previewer.html',
+    category: 'write',
+    description: 'Edit and preview Markdown in real-time with an interactive two-pane layout.',
+    status: 'ready'
+  },
+  {
+    id: 'pretty-printer',
+    name: 'Pretty Printer',
+    href: '/pretty-printer.html',
+    category: 'write',
+    description: 'Formats code snippets for various programming languages using Prettier.',
+    status: 'ready'
+  },
+  {
+    id: 'regex-tester',
+    name: 'Regex Tester',
+    href: '/regex-tester.html',
+    category: 'inspect',
+    description: 'Test regular expressions, explore matches and groups in real-time.',
+    status: 'ready'
+  },
+  {
+    id: 'text-diff',
+    name: 'Text Diff Tool',
+    href: '/text-diff.html',
+    category: 'inspect',
+    description: 'Compare two texts to find and highlight added, removed, or changed words and lines.',
     status: 'ready'
   },
   {
@@ -113,54 +208,6 @@ export const tools: ToolMeta[] = [
     href: '/unicode-chooser.html',
     category: 'design',
     description: 'Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.',
-    status: 'ready'
-  },
-  {
-    id: 'json-formatter',
-    name: 'JSON Formatter & Validator',
-    href: '/json-formatter.html',
-    category: 'inspect',
-    description: 'Format, validate, and minify JSON data with real-time error checking.',
-    status: 'ready'
-  },
-  {
-    id: 'regex-tester',
-    name: 'Regex Tester',
-    href: '/regex-tester.html',
-    category: 'inspect',
-    description: 'Test regular expressions, explore matches and groups in real-time.',
-    status: 'ready'
-  },
-  {
-    id: 'lorem-ipsum',
-    name: 'Lorem Ipsum Generator',
-    href: '/lorem-ipsum.html',
-    category: 'write',
-    description: 'Generate placeholder text by words, sentences, or paragraphs.',
-    status: 'ready'
-  },
-  {
-    id: 'markdown-previewer',
-    name: 'Markdown Previewer',
-    href: '/markdown-previewer.html',
-    category: 'write',
-    description: 'Edit and preview Markdown in real-time with an interactive two-pane layout.',
-    status: 'ready'
-  },
-  {
-    id: 'text-diff',
-    name: 'Text Diff Tool',
-    href: '/text-diff.html',
-    category: 'inspect',
-    description: 'Compare two texts to find and highlight added, removed, or changed words and lines.',
-    status: 'ready'
-  },
-  {
-    id: 'pretty-printer',
-    name: 'Pretty Printer',
-    href: '/pretty-printer.html',
-    category: 'write',
-    description: 'Formats code snippets for various programming languages using Prettier.',
     status: 'ready'
   }
 ];

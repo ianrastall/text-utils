@@ -1,0 +1,15 @@
+{
+  "categoryDisplayName": "JavaScript",
+  "skeletons": [
+    {
+      "key": "js-iife-module",
+      "displayName": "IIFE Module Pattern",
+      "template": "/**\n * @file [File Name]\n * @brief [Brief description of the file's purpose]\n * @author [Your Name]\n */\n\n(function() {\n    'use strict';\n\n    // --- PRIVATE VARIABLES ---\n    \n    \n    // --- PRIVATE FUNCTIONS ---\n\n    \n    // --- PUBLIC INTERFACE ---\n    \n    \n    // --- INITIALIZATION ---\n    document.addEventListener('DOMContentLoaded', () => {\n        // Code to run after the DOM is fully loaded.\n    });\n\n})();"
+    },
+    {
+      "key": "js-web-component",
+      "displayName": "Web Component Class",
+      "template": "class MyComponent extends HTMLElement {\n  constructor() {\n    super();\n    this.attachShadow({ mode: 'open' });\n  }\n\n  connectedCallback() {\n    this.shadowRoot.innerHTML = `\n      <style>\n        /* Component styles here */\n        :host {\n          display: block;\n        }\n      </style>\n      <div>\n        \n        Hello, World!\n      </div>\n    `;\n  }\n\n  disconnectedCallback() {\n    // Cleanup code here\n  }\n}\n\ncustomElements.define('my-component', MyComponent);"
+    }
+  ]
+}

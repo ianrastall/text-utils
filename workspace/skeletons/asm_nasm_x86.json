@@ -1,0 +1,30 @@
+{
+  "categoryDisplayName": "Assembly (NASM x86_64)",
+  "skeletons": [
+    {
+      "key": "nasm-hello-world",
+      "displayName": "Hello World (Linux Syscall)",
+      "template": "section .data\n    hello_msg db 'Hello, NASM!', 0x0a ; 0x0a is newline\n    len equ $ - hello_msg\n\nsection .text\n    global _start\n\n_start:\n    ; sys_write syscall\n    mov rax, 1          ; syscall number for write\n    mov rdi, 1          ; file descriptor 1 (stdout)\n    mov rsi, hello_msg  ; message address\n    mov rdx, len        ; message length\n    syscall\n\n    ; sys_exit syscall\n    mov rax, 60         ; syscall number for exit\n    xor rdi, rdi        ; exit code 0\n    syscall"
+    },
+    {
+      "key": "nasm-procedure-definition",
+      "displayName": "Procedure / Function",
+      "template": "; A function that adds two numbers\n; Input: rdi = first number, rsi = second number\n; Output: rax = sum\n\nsection .text\n    global _start\n    global add_numbers\n\n_start:\n    ; Example of calling the function\n    mov rdi, 10\n    mov rsi, 32\n    call add_numbers\n\n    ; rax now holds 42\n    ; Exit with the result as the status code\n    mov rax, 60\n    mov rdi, rax\n    syscall\n\nadd_numbers:\n    push rbp            ; Save the base pointer\n    mov rbp, rsp        ; Set up the new stack frame\n\n    mov rax, rdi        ; Move the first argument into rax\n    add rax, rsi        ; Add the second argument to rax\n\n    mov rsp, rbp        ; Restore the stack pointer\n    pop rbp             ; Restore the base pointer\n    ret"
+    },
+    {
+      "key": "nasm-loop-example",
+      "displayName": "Basic Loop",
+      "template": "section .text\n    global _start\n\n_start:\n    mov rcx, 5          ; Set loop counter to 5\n    mov rax, 0          ; Initialize accumulator\n\nloop_start:\n    add rax, rcx        ; Add current counter value to rax\n    dec rcx             ; Decrement counter\n    jnz loop_start      ; If counter is not zero, jump to loop_start\n\n    ; After loop, rax = 5 + 4 + 3 + 2 + 1 = 15\n\n    ; Exit with the result\n    mov rax, 60\n    mov rdi, rax\n    syscall"
+    },
+    {
+      "key": "nasm-user-input",
+      "displayName": "Reading User Input",
+      "template": "section .bss\n    buffer resb 100     ; Reserve 100 bytes for input\n\nsection .data\n    prompt_msg db 'Enter your name: '\n    prompt_len equ $ - prompt_msg\n\nsection .text\n    global _start\n\n_start:\n    ; Print prompt\n    mov rax, 1\n    mov rdi, 1\n    mov rsi, prompt_msg\n    mov rdx, prompt_len\n    syscall\n\n    ; sys_read syscall\n    mov rax, 0          ; syscall number for read\n    mov rdi, 0          ; file descriptor 0 (stdin)\n    mov rsi, buffer     ; buffer to store input\n    mov rdx, 100        ; max bytes to read\n    syscall\n\n    ; rax now contains number of bytes read\n    ; Print the input back to the user\n    mov rdx, rax        ; Use the length returned by sys_read\n    mov rax, 1\n    mov rdi, 1\n    mov rsi, buffer\n    syscall\n\n    ; Exit\n    mov rax, 60\n    xor rdi, rdi\n    syscall"
+    },
+    {
+      "key": "nasm-c-library-call",
+      "displayName": "Calling C Function (printf)",
+      "template": "section .data\n    format_str db \"The number is %d\", 0x0a, 0\n\nsection .text\n    global main\n    extern printf\n\nmain:\n    push rbp\n    mov rbp, rsp\n\n    ; Call printf(format_str, 123)\n    mov rdi, format_str ; First argument (format string)\n    mov rsi, 123        ; Second argument (the number)\n    mov rax, 0          ; No vector registers used\n    call printf\n\n    mov rax, 0\n    leave\n    ret"
+    }
+  ]
+}

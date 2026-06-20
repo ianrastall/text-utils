@@ -1,0 +1,30 @@
+{
+  "categoryDisplayName": "Assembly (GAS x86_64)",
+  "skeletons": [
+    {
+      "key": "gas-hello-world",
+      "displayName": "Hello World (Linux Syscall)",
+      "template": ".section .data\nhello_msg:\n    .ascii \"Hello, GAS!\\n\"\n    len = . - hello_msg\n\n.section .text\n.global _start\n\n_start:\n    # sys_write syscall\n    mov $1, %rax        # syscall number for write\n    mov $1, %rdi        # file descriptor 1 (stdout)\n    lea hello_msg(%rip), %rsi # message address\n    mov $len, %rdx      # message length\n    syscall\n\n    # sys_exit syscall\n    mov $60, %rax       # syscall number for exit\n    xor %rdi, %rdi      # exit code 0\n    syscall"
+    },
+    {
+      "key": "gas-procedure-definition",
+      "displayName": "Procedure / Function",
+      "template": "# A function that adds two numbers\n# Input: %rdi = first number, %rsi = second number\n# Output: %rax = sum\n\n.section .text\n.global _start\n.global add_numbers\n\n_start:\n    # Example of calling the function\n    mov $10, %rdi\n    mov $32, %rsi\n    call add_numbers\n\n    # %rax now holds 42\n    # Exit with the result as the status code\n    mov $60, %rax\n    mov %rax, %rdi\n    syscall\n\nadd_numbers:\n    push %rbp           # Save the base pointer\n    mov %rsp, %rbp      # Set up the new stack frame\n\n    mov %rdi, %rax      # Move the first argument into rax\n    add %rsi, %rax      # Add the second argument to rax\n\n    mov %rbp, %rsp      # Restore the stack pointer\n    pop %rbp            # Restore the base pointer\n    ret"
+    },
+    {
+      "key": "gas-loop-example",
+      "displayName": "Basic Loop",
+      "template": ".section .text\n.global _start\n\n_start:\n    mov $5, %rcx        # Set loop counter to 5\n    mov $0, %rax        # Initialize accumulator\n\nloop_start:\n    add %rcx, %rax      # Add current counter value to rax\n    dec %rcx            # Decrement counter\n    jnz loop_start      # If counter is not zero, jump to loop_start\n\n    # After loop, rax = 5 + 4 + 3 + 2 + 1 = 15\n\n    # Exit with the result\n    mov $60, %rax\n    mov %rax, %rdi\n    syscall"
+    },
+    {
+      "key": "gas-user-input",
+      "displayName": "Reading User Input",
+      "template": ".section .bss\n    .lcomm buffer, 100 # Reserve 100 bytes for input\n\n.section .data\n    prompt_msg: .ascii \"Enter your name: \"\n    prompt_len = . - prompt_msg\n\n.section .text\n.global _start\n\n_start:\n    # Print prompt\n    mov $1, %rax\n    mov $1, %rdi\n    lea prompt_msg(%rip), %rsi\n    mov $prompt_len, %rdx\n    syscall\n\n    # sys_read syscall\n    mov $0, %rax                # syscall number for read\n    mov $0, %rdi                # file descriptor 0 (stdin)\n    lea buffer(%rip), %rsi      # buffer to store input\n    mov $100, %rdx              # max bytes to read\n    syscall\n\n    # rax now contains number of bytes read\n    # Print the input back to the user\n    mov $1, %rax\n    mov $1, %rdi\n    lea buffer(%rip), %rsi\n    mov %rax, %rdx # Use the length returned by sys_read\n    syscall\n\n    # Exit\n    mov $60, %rax\n    xor %rdi, %rdi\n    syscall"
+    },
+    {
+      "key": "gas-c-library-call",
+      "displayName": "Calling C Function (printf)",
+      "template": ".section .data\n    format_str: .asciz \"The number is %d\\n\"\n\n.section .text\n.global main\n.extern printf\n\nmain:\n    push %rbp\n    mov %rsp, %rbp\n\n    # Call printf(format_str, 123)\n    lea format_str(%rip), %rdi  # First argument (format string)\n    mov $123, %rsi              # Second argument (the number)\n    mov $0, %rax                # No vector registers used\n    call printf\n\n    mov $0, %rax\n    leave\n    ret"
+    }
+  ]
+}

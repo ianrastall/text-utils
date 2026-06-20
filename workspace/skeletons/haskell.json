@@ -1,0 +1,15 @@
+{
+  "categoryDisplayName": "Haskell",
+  "skeletons": [
+    {
+      "key": "haskell-hello-world",
+      "displayName": "Hello World",
+      "template": "main :: IO ()\nmain = putStrLn \"Hello, world!\""
+    },
+    {
+      "key": "haskell-basic-function",
+      "displayName": "Basic Function Definition",
+      "template": "-- Function type signature\nadd :: Int -> Int -> Int\n\n-- Function definition\nadd x y = x + y"
+    }
+  ]
+}
