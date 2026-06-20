@@ -1,0 +1,239 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Regex Tester" description="Test regular expressions and highlight matches in real-time.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Regex Tester</h1>
+        <p>Test regular expressions and highlight matches in real-time.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+    
+    <section class="panel">
+      <div class="regex-container">
+        <div class="field" style="flex: 1;">
+          <label for="regex-pattern">Regular Expression</label>
+          <div class="regex-input-wrapper">
+            <span class="regex-slash">/</span>
+            <input type="text" id="regex-pattern" placeholder="pattern" value="([a-zA-Z]+)\s+">
+            <span class="regex-slash">/</span>
+            <input type="text" id="regex-flags" placeholder="gim" value="g" title="Flags (e.g. g, i, m)">
+          </div>
+        </div>
+      </div>
+      
+      <div class="two-column" style="margin-top: 1.5rem;">
+        <div class="field">
+          <label for="input-text">Test String</label>
+          <textarea id="input-text" placeholder="Type text to test against...">Hello world, this is a test string.</textarea>
+        </div>
+        
+        <div class="field">
+          <label>Matches</label>
+          <div id="match-output" class="match-output-area"></div>
+        </div>
+      </div>
+      
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+    </section>
+  </main>
+  
+  <style>
+    .regex-container {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    .regex-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    .regex-slash {
+      padding: 0.5rem;
+      background: var(--panel-muted);
+      color: var(--text-muted);
+      user-select: none;
+    }
+    #regex-pattern {
+      flex: 1;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      outline: none;
+      font-size: 1.1rem;
+    }
+    #regex-flags {
+      width: 60px;
+      border: none;
+      border-left: 1px solid var(--border);
+      border-radius: 0;
+      background: transparent;
+      outline: none;
+      font-size: 1.1rem;
+    }
+    .match-output-area {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      min-height: 200px;
+      overflow-y: auto;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .match-highlight {
+      background-color: rgba(59, 130, 246, 0.3);
+      border-radius: 2px;
+      outline: 1px solid rgba(59, 130, 246, 0.5);
+    }
+    .match-highlight:nth-child(even) {
+      background-color: rgba(16, 185, 129, 0.3);
+      outline: 1px solid rgba(16, 185, 129, 0.5);
+    }
+    .matches-list {
+      margin-top: 1rem;
+      border-top: 1px dashed var(--border);
+      padding-top: 1rem;
+    }
+    .match-item {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: var(--panel-muted);
+      border-radius: 4px;
+    }
+    .match-group {
+      margin-left: 1rem;
+      font-size: 0.9em;
+      color: var(--text-muted);
+    }
+  </style>
+  
+  <script>
+    const patternInput = document.getElementById('regex-pattern') as HTMLInputElement;
+    const flagsInput = document.getElementById('regex-flags') as HTMLInputElement;
+    const textInput = document.getElementById('input-text') as HTMLTextAreaElement;
+    const matchOutput = document.getElementById('match-output') as HTMLDivElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+
+    function renderMatches() {
+      const patternStr = patternInput.value;
+      const flagsStr = flagsInput.value;
+      const text = textInput.value;
+      
+      if (!patternStr) {
+        matchOutput.textContent = text;
+        status.textContent = 'Ready';
+        status.style.color = 'var(--text-muted)';
+        stats.textContent = '';
+        return;
+      }
+      
+      try {
+        const regex = new RegExp(patternStr, flagsStr);
+        let match;
+        let resultHtml = '';
+        let lastIndex = 0;
+        let matchCount = 0;
+        const matchesData = [];
+        
+        // Ensure global flag for matchAll logic or loop
+        const isGlobal = regex.global;
+        
+        if (isGlobal) {
+          while ((match = regex.exec(text)) !== null) {
+            matchCount++;
+            matchesData.push(match);
+            
+            // Text before match
+            const before = text.substring(lastIndex, match.index);
+            resultHtml += escapeHtml(before);
+            
+            // The match itself
+            resultHtml += `<span class="match-highlight">${escapeHtml(match[0])}</span>`;
+            
+            lastIndex = regex.lastIndex;
+            // Prevent infinite loop on empty matches
+            if (match.index === regex.lastIndex) {
+              regex.lastIndex++;
+            }
+          }
+          // Remaining text
+          resultHtml += escapeHtml(text.substring(lastIndex));
+        } else {
+          match = regex.exec(text);
+          if (match) {
+            matchCount = 1;
+            matchesData.push(match);
+            const before = text.substring(0, match.index);
+            resultHtml += escapeHtml(before);
+            resultHtml += `<span class="match-highlight">${escapeHtml(match[0])}</span>`;
+            resultHtml += escapeHtml(text.substring(match.index + match[0].length));
+          } else {
+            resultHtml = escapeHtml(text);
+          }
+        }
+        
+        let outHtml = `<div>${resultHtml || escapeHtml(text)}</div>`;
+        
+        // Append groups breakdown
+        if (matchesData.length > 0) {
+          outHtml += `<div class="matches-list">`;
+          matchesData.forEach((m, i) => {
+            outHtml += `<div class="match-item"><strong>Match ${i + 1}</strong>: <code>${escapeHtml(m[0])}</code>`;
+            if (m.length > 1) {
+              for (let g = 1; g < m.length; g++) {
+                if (m[g] !== undefined) {
+                  outHtml += `<div class="match-group">Group ${g}: <code>${escapeHtml(m[g])}</code></div>`;
+                }
+              }
+            }
+            outHtml += `</div>`;
+          });
+          outHtml += `</div>`;
+        }
+        
+        matchOutput.innerHTML = outHtml;
+        status.textContent = 'Valid Pattern';
+        status.style.color = 'var(--success)';
+        stats.textContent = `${matchCount} match${matchCount !== 1 ? 'es' : ''}`;
+      } catch (err: any) {
+        matchOutput.textContent = text; // Just show text if invalid regex
+        status.textContent = `Error: ${err.message}`;
+        status.style.color = 'var(--danger)';
+        stats.textContent = '';
+      }
+    }
+    
+    function escapeHtml(str: string) {
+      return str.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[m] as string;
+      });
+    }
+
+    patternInput.addEventListener('input', renderMatches);
+    flagsInput.addEventListener('input', renderMatches);
+    textInput.addEventListener('input', renderMatches);
+    
+    // Initial render
+    renderMatches();
+  </script>
+</BaseLayout>

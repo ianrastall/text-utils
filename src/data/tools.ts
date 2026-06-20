@@ -114,5 +114,53 @@ export const tools: ToolMeta[] = [
     category: 'design',
     description: 'Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.',
     status: 'ready'
+  },
+  {
+    id: 'json-formatter',
+    name: 'JSON Formatter & Validator',
+    href: '/json-formatter.html',
+    category: 'inspect',
+    description: 'Format, validate, and minify JSON data with real-time error checking.',
+    status: 'ready'
+  },
+  {
+    id: 'regex-tester',
+    name: 'Regex Tester',
+    href: '/regex-tester.html',
+    category: 'inspect',
+    description: 'Test regular expressions, explore matches and groups in real-time.',
+    status: 'ready'
+  },
+  {
+    id: 'lorem-ipsum',
+    name: 'Lorem Ipsum Generator',
+    href: '/lorem-ipsum.html',
+    category: 'write',
+    description: 'Generate placeholder text by words, sentences, or paragraphs.',
+    status: 'ready'
+  },
+  {
+    id: 'markdown-previewer',
+    name: 'Markdown Previewer',
+    href: '/markdown-previewer.html',
+    category: 'write',
+    description: 'Edit and preview Markdown in real-time with an interactive two-pane layout.',
+    status: 'ready'
+  },
+  {
+    id: 'text-diff',
+    name: 'Text Diff Tool',
+    href: '/text-diff.html',
+    category: 'inspect',
+    description: 'Compare two texts to find and highlight added, removed, or changed words and lines.',
+    status: 'ready'
+  },
+  {
+    id: 'pretty-printer',
+    name: 'Pretty Printer',
+    href: '/pretty-printer.html',
+    category: 'write',
+    description: 'Formats code snippets for various programming languages using Prettier.',
+    status: 'ready'
   }
 ];

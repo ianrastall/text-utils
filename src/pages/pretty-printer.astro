@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Pretty Printer" description="Formats code snippets for various programming languages using Prettier.">
+  <!-- Load Prettier libraries -->
+  <script is:inline src="https://unpkg.com/prettier@3.0.3/standalone.js"></script>
+  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/estree.js"></script>
+  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/html.js"></script>
+  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/babel.js"></script>
+  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/typescript.js"></script>
+  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/postcss.js"></script>
+
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Pretty Printer</h1>
+        <p>Formats code snippets for various programming languages using Prettier.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="control-row">
+        <div class="field">
+          <label for="language-select">Language</label>
+          <select id="language-select">
+            <option value="">Select a language to format</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="less">Less</option>
+            <option value="scss">SCSS</option>
+            <option value="babel">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+          </select>
+        </div>
+        <button id="format-btn" class="button primary" type="button" style="margin-top: auto;">Format</button>
+        <button id="paste-btn" class="button" type="button" style="margin-top: auto;">Paste</button>
+        <button id="copy-btn" class="button" type="button" style="margin-top: auto; display: none;">Copy Output</button>
+        <button id="clear-btn" class="button" type="button" style="margin-top: auto; color: var(--danger); border-color: var(--danger);">Clear</button>
+      </div>
+
+      <div class="two-column" style="margin-top: 1.5rem;">
+        <div class="field">
+          <label for="input-code">Input Code</label>
+          <textarea id="input-code" placeholder="Paste or type your code..." style="min-height: 250px; font-family: ui-monospace, Consolas, monospace; white-space: pre;"></textarea>
+        </div>
+        <div class="field">
+          <label for="output-code">Formatted Output</label>
+          <textarea id="output-code" readonly placeholder="Formatted code will appear here..." style="min-height: 250px; font-family: ui-monospace, Consolas, monospace; white-space: pre; background: var(--bg); border: 1px solid var(--border);"></textarea>
+        </div>
+      </div>
+
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const languageSelect = document.getElementById('language-select') as HTMLSelectElement;
+    const inputCode = document.getElementById('input-code') as HTMLTextAreaElement;
+    const outputCode = document.getElementById('output-code') as HTMLTextAreaElement;
+    const formatBtn = document.getElementById('format-btn') as HTMLButtonElement;
+    const pasteBtn = document.getElementById('paste-btn') as HTMLButtonElement;
+    const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+    const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+
+    function showStatus(message: string, isError = false) {
+      status.textContent = message;
+      status.style.color = isError ? 'var(--danger)' : 'var(--success)';
+      if (!isError && message !== 'Formatting...') {
+        setTimeout(() => {
+          status.textContent = 'Ready';
+          status.style.color = 'var(--text-muted)';
+        }, 3000);
+      }
+    }
+
+    async function formatCode() {
+      const language = languageSelect.value;
+      if (!language) {
+        showStatus('Please select a language first.', true);
+        return;
+      }
+      
+      const code = inputCode.value;
+      if (!code.trim()) {
+        showStatus('Nothing to format.', true);
+        outputCode.value = '';
+        return;
+      }
+
+      // @ts-ignore
+      if (typeof prettier === 'undefined' || typeof prettierPlugins === 'undefined') {
+        showStatus('Libraries not loaded yet. Please wait or check your connection.', true);
+        return;
+      }
+
+      const parserMap: Record<string, { parser: string, plugins: string[] }> = {
+        'html': { parser: 'html', plugins: ['html'] },
+        'css': { parser: 'css', plugins: ['postcss'] },
+        'less': { parser: 'less', plugins: ['postcss'] },
+        'scss': { parser: 'scss', plugins: ['postcss'] },
+        'babel': { parser: 'babel', plugins: ['babel', 'estree'] },
+        'typescript': { parser: 'typescript', plugins: ['typescript', 'estree'] }
+      };
+
+      const config = parserMap[language];
+      // @ts-ignore
+      const pluginsToUse = config.plugins.map(p => prettierPlugins[p]);
+      
+      status.textContent = 'Formatting...';
+      status.style.color = 'var(--accent)';
+      formatBtn.disabled = true;
+      copyBtn.style.display = 'none';
+
+      try {
+        // @ts-ignore
+        const formatted = await prettier.format(code, {
+          parser: config.parser,
+          plugins: pluginsToUse,
+          tabWidth: 2, 
+          printWidth: 100,
+        });
+        
+        outputCode.value = formatted;
+        showStatus('Formatted successfully!');
+        stats.textContent = `${formatted.length} characters`;
+        copyBtn.style.display = 'inline-block';
+      } catch (err: any) {
+        console.error('Formatting Error:', err);
+        outputCode.value = `ERROR:\n${err.message}\n\nIs the correct language selected?`;
+        showStatus('Formatting error. See output.', true);
+      } finally {
+        formatBtn.disabled = false;
+      }
+    }
+
+    formatBtn.addEventListener('click', formatCode);
+    
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        const clipText = await navigator.clipboard.readText();
+        inputCode.value = clipText;
+        showStatus('Pasted from clipboard.');
+      } catch (err) {
+        console.error('Paste error:', err);
+        showStatus('Paste failed. Check permissions.', true);
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = outputCode.value;
+      if (!text || text.startsWith('ERROR')) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        showStatus('Copied output to clipboard!');
+      } catch (err) {
+        showStatus('Copy failed.', true);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      inputCode.value = '';
+      outputCode.value = '';
+      copyBtn.style.display = 'none';
+      status.textContent = 'Ready';
+      status.style.color = 'var(--text-muted)';
+      stats.textContent = '';
+    });
+
+    inputCode.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        formatCode();
+      }
+    });
+  </script>
+</BaseLayout>

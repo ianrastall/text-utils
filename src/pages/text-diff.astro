@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Text Diff Tool" description="Compare two texts and highlight the differences.">
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/7.0.0/diff.min.js"></script>
+  
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Text Diff Tool</h1>
+        <p>Compare two texts and highlight the differences.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+    
+    <section class="panel">
+      <div class="control-row">
+        <div class="field" style="width: 150px;">
+          <label for="diff-mode">Comparison Mode</label>
+          <select id="diff-mode">
+            <option value="words">Words</option>
+            <option value="lines">Lines</option>
+            <option value="chars">Characters</option>
+          </select>
+        </div>
+        <button id="compare-btn" class="button primary" type="button" style="margin-top: auto;">Compare</button>
+        <button id="clear-btn" class="button" type="button" style="margin-top: auto; color: var(--danger); border-color: var(--danger);">Clear</button>
+      </div>
+      
+      <div class="two-column" style="margin-top: 1.5rem;">
+        <div class="field">
+          <label for="text-old">Original Text</label>
+          <textarea id="text-old" placeholder="Paste original text here..." style="min-height: 250px; font-family: ui-monospace, Consolas, monospace;"></textarea>
+        </div>
+        <div class="field">
+          <label for="text-new">Modified Text</label>
+          <textarea id="text-new" placeholder="Paste modified text here..." style="min-height: 250px; font-family: ui-monospace, Consolas, monospace;"></textarea>
+        </div>
+      </div>
+      
+      <div class="field" style="margin-top: 1.5rem;">
+        <label>Diff Result</label>
+        <div id="diff-output" class="diff-output-area"></div>
+      </div>
+      
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+    </section>
+  </main>
+  
+  <style>
+    .diff-output-area {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      min-height: 200px;
+      font-family: ui-monospace, Consolas, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.6;
+    }
+    
+    .diff-added {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+    
+    .diff-removed {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      text-decoration: line-through;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+  </style>
+  
+  <script>
+    const textOld = document.getElementById('text-old') as HTMLTextAreaElement;
+    const textNew = document.getElementById('text-new') as HTMLTextAreaElement;
+    const diffMode = document.getElementById('diff-mode') as HTMLSelectElement;
+    const diffOutput = document.getElementById('diff-output') as HTMLDivElement;
+    const compareBtn = document.getElementById('compare-btn') as HTMLButtonElement;
+    const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+
+    function escapeHtml(str: string) {
+      return str.replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m] as string;
+      });
+    }
+
+    function computeDiff() {
+      if (!textOld.value && !textNew.value) {
+        diffOutput.innerHTML = '';
+        status.textContent = 'Ready';
+        status.style.color = 'var(--text-muted)';
+        stats.textContent = '';
+        return;
+      }
+
+      // @ts-ignore
+      if (typeof Diff === 'undefined') {
+        diffOutput.innerHTML = '<span style="color:var(--danger)">Error: Diff library not loaded yet. Please try again.</span>';
+        return;
+      }
+
+      const oldVal = textOld.value;
+      const newVal = textNew.value;
+      const mode = diffMode.value;
+
+      let diff;
+      try {
+        if (mode === 'lines') {
+          // @ts-ignore
+          diff = Diff.diffLines(oldVal, newVal);
+        } else if (mode === 'words') {
+          // @ts-ignore
+          diff = Diff.diffWords(oldVal, newVal);
+        } else {
+          // @ts-ignore
+          diff = Diff.diffChars(oldVal, newVal);
+        }
+
+        let additions = 0;
+        let deletions = 0;
+        let html = '';
+
+        diff.forEach((part: any) => {
+          const escapedVal = escapeHtml(part.value);
+          if (part.added) {
+            html += `<span class="diff-added">${escapedVal}</span>`;
+            additions++;
+          } else if (part.removed) {
+            html += `<span class="diff-removed">${escapedVal}</span>`;
+            deletions++;
+          } else {
+            html += `<span>${escapedVal}</span>`;
+          }
+        });
+
+        diffOutput.innerHTML = html;
+        status.textContent = 'Comparison complete';
+        status.style.color = 'var(--success)';
+        stats.textContent = `${additions} additions, ${deletions} deletions`;
+      } catch (err: any) {
+        console.error(err);
+        status.textContent = 'Error computing diff';
+        status.style.color = 'var(--danger)';
+      }
+    }
+
+    compareBtn.addEventListener('click', computeDiff);
+    
+    // Auto compute on input if they want (optional, but compare button is explicit)
+    // We can listen to input events for real-time diffing
+    let timeout: number;
+    function debounceCompare() {
+      clearTimeout(timeout);
+      timeout = window.setTimeout(computeDiff, 300);
+    }
+
+    textOld.addEventListener('input', debounceCompare);
+    textNew.addEventListener('input', debounceCompare);
+    diffMode.addEventListener('change', computeDiff);
+
+    clearBtn.addEventListener('click', () => {
+      textOld.value = '';
+      textNew.value = '';
+      diffOutput.innerHTML = '';
+      status.textContent = 'Ready';
+      status.style.color = 'var(--text-muted)';
+      stats.textContent = '';
+      textOld.focus();
+    });
+  </script>
+</BaseLayout>
