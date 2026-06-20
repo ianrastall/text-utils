@@ -400,7 +400,7 @@ import blocksRaw from '../data/unicode-blocks.json';
         const block = BLOCKS[blockIdx];
         if (block) {
           for (let i = block.start; i <= block.end; i++) {
-            items.push(i.toString(16).toUpperCase());
+            items.push(i.toString(16).toUpperCase().padStart(4, '0'));
             if (items.length >= MAX_RENDER) {
               willLimit = true;
               break;
