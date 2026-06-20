@@ -11,14 +11,6 @@ export interface ToolMeta {
 
 export const tools: ToolMeta[] = [
   {
-    id: 'dictation',
-    name: 'Dictation',
-    href: '/dictation.html',
-    category: 'write',
-    description: 'Speak into the microphone and copy the editable transcript anywhere.',
-    status: 'ready'
-  },
-  {
     id: 'case-converter',
     name: 'Case Converter',
     href: '/case-converter.html',
@@ -27,19 +19,19 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
-    id: 'text-info',
-    name: 'Text Info',
-    href: '/text-info.html',
-    category: 'inspect',
-    description: 'Count words, characters, lines, sentences, and estimated reading time.',
-    status: 'ready'
-  },
-  {
     id: 'color-chooser',
     name: 'Color Chooser',
     href: '/color-chooser',
     category: 'design',
     description: 'Pick named HTML colors by family, use the eyedropper or color picker, get CSS/HTML/hex output, find the closest named color, and generate solid-color PNGs.',
+    status: 'ready'
+  },
+  {
+    id: 'dictation',
+    name: 'Dictation',
+    href: '/dictation.html',
+    category: 'write',
+    description: 'Speak into the microphone and copy the editable transcript anywhere.',
     status: 'ready'
   },
   {
@@ -56,6 +48,22 @@ export const tools: ToolMeta[] = [
     href: '/google-icons-chooser',
     category: 'design',
     description: 'Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.',
+    status: 'ready'
+  },
+  {
+    id: 'text-info',
+    name: 'Text Info',
+    href: '/text-info.html',
+    category: 'inspect',
+    description: 'Count words, characters, lines, sentences, and estimated reading time.',
+    status: 'ready'
+  },
+  {
+    id: 'unicode-chooser',
+    name: 'Unicode Chooser',
+    href: '/unicode-chooser',
+    category: 'design',
+    description: 'Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.',
     status: 'ready'
   }
 ];

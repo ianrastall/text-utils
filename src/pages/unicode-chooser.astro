@@ -1,0 +1,509 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import blocksRaw from '../data/unicode-blocks.json';
+
+// Import blocks statically
+---
+<BaseLayout
+  title="Unicode Chooser"
+  description="Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.">
+
+  <main class="shell fac-main">
+    <header class="fac-page-header">
+      <h1>Unicode Chooser</h1>
+      <p>Browse Unicode characters by block · search by name · click to get code</p>
+    </header>
+
+    <!-- Controls bar -->
+    <div class="fac-controls">
+      <div class="fac-ctl" style="flex: 1; min-width: 200px;">
+        <label for="uc-block">Unicode Block</label>
+        <select id="uc-block">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+      <div class="fac-ctl fac-ctl-search">
+        <label for="uc-search">Search by Name</label>
+        <div class="fac-search-wrap">
+          <input type="search" id="uc-search" placeholder="e.g., GRINNING FACE" autocomplete="off" spellcheck="false" style="padding-left: 0.6rem;" />
+        </div>
+      </div>
+      <span class="fac-count" id="uc-count"></span>
+    </div>
+
+    <!-- Workspace: scrollable grid + detail sidebar -->
+    <div class="fac-workspace">
+      <div class="fac-grid-wrap">
+        <div id="uc-loading" class="fac-no-results" style="display:none">Loading Unicode names database...</div>
+        <div class="fac-grid" id="uc-grid"></div>
+        <p class="fac-no-results" id="uc-no-results" style="display:none">No characters match your filters.</p>
+        <p class="fac-no-results" id="uc-limit-msg" style="display:none; padding-top: 0; padding-bottom: 2rem;">Showing first 500 results. Please narrow your search.</p>
+      </div>
+
+      <aside class="fac-sidebar">
+        <div class="fac-empty-state" id="uc-empty-state">
+          <p>Click any character to see details</p>
+        </div>
+        <div class="fac-detail" id="uc-detail" style="display:none">
+          <div class="fac-preview" id="uc-preview"></div>
+          <div class="fac-icon-meta">
+            <strong id="uc-name-display"></strong>
+            <code id="uc-class-display" class="fac-code-inline"></code>
+          </div>
+          <div class="fac-ctl fac-lang-ctl">
+            <label for="uc-lang">Format</label>
+            <select id="uc-lang">
+              <option value="html">HTML Entity (Hex)</option>
+              <option value="html-dec">HTML Entity (Decimal)</option>
+              <option value="css">CSS Content</option>
+              <option value="js">JavaScript / JSON</option>
+              <option value="python">Python</option>
+              <option value="csharp">C# / Java / C++</option>
+              <option value="url">URL Encoded</option>
+            </select>
+          </div>
+          <div class="fac-code-wrap">
+            <pre id="uc-code-out" class="fac-code"></pre>
+          </div>
+          <button class="button primary fac-copy-btn" id="uc-copy-code">⎘ Copy code</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <style is:global>
+    /* ── Page ──────────────────────────────────────────── */
+    .fac-main { padding: 1rem 0 1rem; }
+    .fac-page-header { margin-bottom: 0.6rem; }
+    .fac-page-header h1 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+    .fac-page-header p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+    /* ── Controls ──────────────────────────────────────── */
+    .fac-controls {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.65rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .fac-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
+    .fac-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .fac-ctl select {
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      padding: 0.3rem 0.6rem;
+      font: inherit;
+    }
+    .fac-ctl-search { flex: 1; min-width: 160px; }
+    .fac-search-wrap { position: relative; }
+    #uc-search {
+      width: 100%;
+      min-height: 2.1rem;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      font-size: 0.88rem;
+      font: inherit;
+    }
+    #uc-search:focus {
+      outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+      outline-offset: 1px;
+    }
+    .fac-count {
+      color: var(--muted);
+      font-size: 0.8rem;
+      align-self: flex-end;
+      padding-bottom: 0.4rem;
+      white-space: nowrap;
+      min-width: 6rem;
+    }
+
+    /* ── Workspace ─────────────────────────────────────── */
+    .fac-workspace {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 0.75rem;
+      height: calc(100vh - 230px);
+      min-height: 420px;
+      margin-top: 0.65rem;
+    }
+
+    /* ── Icon grid ─────────────────────────────────────── */
+    .fac-grid-wrap {
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      position: relative;
+    }
+    .fac-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 0.25rem;
+      padding: 0.6rem;
+    }
+    .fac-no-results {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .uc-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.28rem;
+      padding: 0.6rem 0.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: transparent;
+      color: var(--text);
+      text-align: center;
+      transition: border-color 0.1s, background 0.1s;
+      min-width: 0;
+    }
+    .uc-tile:hover { background: var(--panel-muted); border-color: var(--border); }
+    .uc-tile.selected {
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border-color: var(--accent);
+    }
+    .uc-tile span.uc-char {
+      font-size: 1.8rem;
+      line-height: 1;
+      font-family: sans-serif; /* Fallback for most symbols */
+    }
+    .uc-tile-hex {
+      font-size: 0.55rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+
+    /* ── Sidebar ───────────────────────────────────────── */
+    .fac-sidebar {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .fac-empty-state {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .fac-empty-state p { margin: 0; font-size: 0.88rem; }
+    .fac-detail {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .fac-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 120px;
+      background: var(--panel-muted);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .fac-preview span { 
+      font-size: 4.5rem; 
+      color: var(--text);
+      font-family: sans-serif;
+    }
+    .fac-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
+    .fac-icon-meta strong { font-size: 0.95rem; line-height: 1.3; }
+    .fac-code-inline {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .fac-lang-ctl { width: 100%; }
+    .fac-lang-ctl select { width: 100%; }
+    .fac-code-wrap {
+      background: var(--panel-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: auto;
+      min-height: 80px;
+      max-height: 280px;
+    }
+    .fac-code {
+      margin: 0;
+      padding: 0.6rem 0.75rem;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.74rem;
+      line-height: 1.55;
+      color: var(--accent);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .fac-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }
+
+    @media (max-width: 760px) {
+      .fac-workspace { grid-template-columns: 1fr; height: auto; }
+      .fac-grid-wrap { height: 50vh; }
+      .fac-sidebar { min-height: 320px; }
+    }
+  </style>
+
+  <script define:vars={{ BLOCKS: blocksRaw }}>
+    // ─── State ────────────────────────────────────────────────────────────────
+    let selected = null;
+    let unicodeNames = {}; // Loaded lazily
+    let namesLoaded = false;
+    let isLoading = false;
+
+    // ─── DOM ──────────────────────────────────────────────────────────────────
+    const blockSel    = document.getElementById('uc-block');
+    const searchEl    = document.getElementById('uc-search');
+    const countEl     = document.getElementById('uc-count');
+    const gridEl      = document.getElementById('uc-grid');
+    const noResultsEl = document.getElementById('uc-no-results');
+    const limitMsgEl  = document.getElementById('uc-limit-msg');
+    const loadingEl   = document.getElementById('uc-loading');
+    
+    const emptyState  = document.getElementById('uc-empty-state');
+    const detailEl    = document.getElementById('uc-detail');
+    const previewEl   = document.getElementById('uc-preview');
+    const nameDisp    = document.getElementById('uc-name-display');
+    const classDisp   = document.getElementById('uc-class-display');
+    const langSel     = document.getElementById('uc-lang');
+    const codeOut     = document.getElementById('uc-code-out');
+    const copyBtn     = document.getElementById('uc-copy-code');
+
+    // ─── Load Dictionary ──────────────────────────────────────────────────────
+    async function loadNames() {
+      if (namesLoaded || isLoading) return;
+      isLoading = true;
+      loadingEl.style.display = 'block';
+      try {
+        const res = await fetch('/unicode-names.json');
+        unicodeNames = await res.json();
+        namesLoaded = true;
+      } catch (e) {
+        console.error('Failed to load Unicode names', e);
+      } finally {
+        isLoading = false;
+        loadingEl.style.display = 'none';
+        if (searchEl.value.trim().length > 0) {
+          renderGrid();
+        }
+      }
+    }
+
+    // ─── Code builder ────────────────────────────────────────────────────────
+    function buildCode(hexStr, lang) {
+      const codePoint = parseInt(hexStr, 16);
+      let charStr = '';
+      try {
+        charStr = String.fromCodePoint(codePoint);
+      } catch(e) {}
+      
+      const paddedHex = hexStr.padStart(4, '0').toUpperCase();
+
+      switch (lang) {
+        case 'html':
+          return `&#x${paddedHex};`;
+        case 'html-dec':
+          return `&#${codePoint};`;
+        case 'css':
+          return `\\${paddedHex}`;
+        case 'js':
+          // JSON / JS escapes
+          if (codePoint > 0xFFFF) {
+            return `\\u{${paddedHex}}`;
+          }
+          return `\\u${paddedHex}`;
+        case 'python':
+          if (codePoint > 0xFFFF) {
+            return `\\U${hexStr.padStart(8, '0').toUpperCase()}`;
+          }
+          return `\\u${paddedHex}`;
+        case 'csharp':
+          if (codePoint > 0xFFFF) {
+            return `\\U${hexStr.padStart(8, '0').toUpperCase()}`;
+          }
+          return `\\u${paddedHex}`;
+        case 'url':
+          return encodeURIComponent(charStr);
+        default:
+          return charStr;
+      }
+    }
+
+    // ─── Populate Block dropdown ──────────────────────────────────────────────
+    function populateBlocks() {
+      BLOCKS.forEach((block, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx.toString();
+        opt.textContent = `${block.name} (U+${block.start.toString(16).padStart(4,'0').toUpperCase()} - U+${block.end.toString(16).padStart(4,'0').toUpperCase()})`;
+        // Default to Basic Latin
+        if (block.name === 'Basic Latin') opt.selected = true;
+        blockSel.appendChild(opt);
+      });
+    }
+
+    function getName(hex) {
+      if (unicodeNames[hex]) return unicodeNames[hex];
+      return `<Unnamed Character>`;
+    }
+
+    // ─── Render grid ──────────────────────────────────────────────────────────
+    function renderGrid() {
+      const q = searchEl.value.toUpperCase().trim();
+      
+      let items = [];
+      const MAX_RENDER = 500;
+      let willLimit = false;
+
+      if (q) {
+        // Search mode
+        if (!namesLoaded) {
+          loadNames();
+          return;
+        }
+        
+        let count = 0;
+        // Optimization: iterate Object.entries
+        for (const [hex, name] of Object.entries(unicodeNames)) {
+          if (name.includes(q)) {
+            items.push(hex);
+            count++;
+            if (count >= MAX_RENDER) {
+              willLimit = true;
+              break;
+            }
+          }
+        }
+      } else {
+        // Block mode
+        const blockIdx = parseInt(blockSel.value, 10);
+        const block = BLOCKS[blockIdx];
+        if (block) {
+          for (let i = block.start; i <= block.end; i++) {
+            items.push(i.toString(16).toUpperCase());
+            if (items.length >= MAX_RENDER) {
+              willLimit = true;
+              break;
+            }
+          }
+        }
+      }
+
+      countEl.textContent = `${items.length} character${items.length !== 1 ? 's' : ''}`;
+      limitMsgEl.style.display = willLimit ? '' : 'none';
+      noResultsEl.style.display = items.length === 0 ? '' : 'none';
+
+      const frag = document.createDocumentFragment();
+      for (const hex of items) {
+        let charStr = '';
+        try {
+          charStr = String.fromCodePoint(parseInt(hex, 16));
+        } catch(e) {}
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isSelected = selected === hex;
+        
+        btn.className = 'uc-tile' + (isSelected ? ' selected' : '');
+        btn.dataset.hex = hex;
+        btn.title = getName(hex);
+        btn.innerHTML = `<span class="uc-char">${charStr}</span><span class="uc-tile-hex">${hex}</span>`;
+        btn.addEventListener('click', () => selectChar(hex, btn));
+        frag.appendChild(btn);
+      }
+      gridEl.innerHTML = '';
+      if (items.length > 0) {
+        gridEl.appendChild(frag);
+      }
+    }
+
+    // ─── Select an icon ───────────────────────────────────────────────────────
+    function selectChar(hex, btn) {
+      document.querySelectorAll('.uc-tile.selected').forEach(el => el.classList.remove('selected'));
+      if (btn) btn.classList.add('selected');
+      
+      selected = hex;
+      
+      if (!namesLoaded) {
+        // load names in background if not already loaded so we can show proper name
+        loadNames().then(updateSidebar);
+      } else {
+        updateSidebar();
+      }
+    }
+
+    function updateSidebar() {
+      if (!selected) return;
+      emptyState.style.display  = 'none';
+      detailEl.style.display    = 'flex';
+
+      const hex = selected;
+      const codePoint = parseInt(hex, 16);
+      let charStr = '';
+      try { charStr = String.fromCodePoint(codePoint); } catch(e) {}
+
+      previewEl.innerHTML = `<span>${charStr}</span>`;
+      
+      nameDisp.textContent = getName(hex);
+      classDisp.textContent = `U+${hex.padStart(4, '0').toUpperCase()} · Dec: ${codePoint}`;
+
+      refreshCode();
+    }
+
+    function refreshCode() {
+      if (!selected) return;
+      codeOut.textContent = buildCode(selected, langSel.value);
+    }
+
+    // ─── Events ──────────────────────────────────────────────────────────────
+    blockSel.addEventListener('change', () => {
+      searchEl.value = ''; // clear search when block changes
+      renderGrid();
+    });
+    
+    searchEl.addEventListener('input', () => {
+      // Debounce search slightly
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(renderGrid, 250);
+    });
+    
+    langSel.addEventListener('change', refreshCode);
+    copyBtn.addEventListener('click', async () => {
+      const text = codeOut.textContent ?? '';
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const orig = copyBtn.textContent ?? '';
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => { copyBtn.textContent = orig; }, 1500);
+      } catch { /* ignore */ }
+    });
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+    populateBlocks();
+    renderGrid();
+    
+    // Preload dictionary after a slight delay to keep initial render fast
+    setTimeout(loadNames, 500);
+  </script>
+</BaseLayout>
