@@ -42,14 +42,7 @@ export const tools: ToolMeta[] = [
     description: 'Visually create linear, radial, and conic CSS gradients. Drag color stops, copy code, or download PNG.',
     status: 'ready'
   },
-  {
-    id: 'dictation',
-    name: 'Dictation',
-    href: '/dictation.html',
-    category: 'write',
-    description: 'Speak into the microphone and copy the editable transcript anywhere.',
-    status: 'ready'
-  },
+
   {
     id: 'font-awesome-chooser',
     name: 'Font Awesome Chooser',
@@ -64,6 +57,14 @@ export const tools: ToolMeta[] = [
     href: '/google-icons-chooser.html',
     category: 'design',
     description: 'Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.',
+    status: 'ready'
+  },
+  {
+    id: 'hashing-tool',
+    name: 'Hashing & Encoding Tool',
+    href: '/hashing-tool.html',
+    category: 'convert',
+    description: 'A comprehensive suite for text transformations including Base64, Hex, URL, Binary, MD5, SHA hashes, ROT13, Morse Code, and more.',
     status: 'ready'
   },
   {
