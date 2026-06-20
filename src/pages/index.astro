@@ -5,10 +5,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Text Utilities">
   <main class="shell">
-    <section class="hero">
-      <h1>Fast text tools for the browser you already have.</h1>
-      <p>Write, inspect, convert, and clean up text without sending it to a server. The new Text Utilities starts small, sharp, and easy to extend.</p>
-    </section>
     <section class="tool-grid" aria-label="Available tools">
       {tools.map((tool) => <ToolCard tool={tool} />)}
     </section>

@@ -1,0 +1,776 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Font Awesome Chooser"
+  description="Browse Font Awesome 6 icons by category and style. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, C#, Python, PHP, WordPress, and more.">
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"
+    crossorigin="anonymous"
+  />
+
+  <main class="shell fa-main">
+    <header class="fa-page-header">
+      <h1>Font Awesome Chooser</h1>
+      <p>Browse icons by category · click any icon to get code in your language</p>
+    </header>
+
+    <!-- Controls bar -->
+    <div class="fa-controls">
+      <div class="fa-ctl">
+        <label for="fa-version">FA Version</label>
+        <select id="fa-version">
+          <option value="6" selected>Font Awesome 6</option>
+          <option value="5">Font Awesome 5</option>
+          <option value="4">Font Awesome 4</option>
+        </select>
+      </div>
+      <div class="fa-ctl">
+        <label for="fa-style-filter">Style</label>
+        <select id="fa-style-filter">
+          <option value="all" selected>All styles</option>
+          <option value="s">Solid</option>
+          <option value="r">Regular</option>
+          <option value="b">Brands</option>
+        </select>
+      </div>
+      <div class="fa-ctl">
+        <label for="fa-category">Category</label>
+        <select id="fa-category">
+          <option value="all">All categories</option>
+        </select>
+      </div>
+      <div class="fa-ctl fa-ctl-search">
+        <label for="fa-search">Search</label>
+        <div class="fa-search-wrap">
+          <i class="fa-solid fa-magnifying-glass fa-search-icon" aria-hidden="true"></i>
+          <input type="search" id="fa-search" placeholder="filter icons…" autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+      <span class="fa-count" id="fa-count"></span>
+    </div>
+
+    <!-- Workspace: scrollable grid + detail sidebar -->
+    <div class="fa-workspace">
+      <div class="fa-grid-wrap">
+        <div class="fa-grid" id="fa-grid"></div>
+        <p class="fa-no-results" id="fa-no-results" style="display:none">No icons match your filters.</p>
+      </div>
+
+      <aside class="fa-sidebar">
+        <div class="fa-empty-state" id="fa-empty-state">
+          <p>Click any icon to see usage code</p>
+        </div>
+        <div class="fa-detail" id="fa-detail" style="display:none">
+          <div class="fa-preview" id="fa-preview"></div>
+          <div class="fa-icon-meta">
+            <strong id="fa-name-display"></strong>
+            <code id="fa-class-display" class="fa-code-inline"></code>
+            <span id="fa-unicode-display" class="fa-muted-text"></span>
+          </div>
+          <div class="fa-ctl fa-lang-ctl">
+            <label for="fa-lang">Language / Framework</label>
+            <select id="fa-lang">
+              <option value="html">HTML</option>
+              <option value="css">CSS (content:)</option>
+              <option value="react">React / JSX</option>
+              <option value="vue">Vue 3</option>
+              <option value="angular">Angular</option>
+              <option value="svelte">Svelte</option>
+              <option value="csharp-blazor">C# — Blazor</option>
+              <option value="csharp-maui">C# — MAUI / WPF</option>
+              <option value="python">Python (qtawesome)</option>
+              <option value="php">PHP</option>
+              <option value="wordpress">WordPress PHP</option>
+            </select>
+          </div>
+          <div class="fa-code-wrap">
+            <pre id="fa-code-out" class="fa-code"></pre>
+          </div>
+          <button class="button primary fa-copy-btn" id="fa-copy-code">⎘ Copy code</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <style>
+    /* ── Page ──────────────────────────────────────────── */
+    .fa-main { padding: 1rem 0 1rem; }
+    .fa-page-header { margin-bottom: 0.6rem; }
+    .fa-page-header h1 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+    .fa-page-header p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+    /* ── Controls ──────────────────────────────────────── */
+    .fa-controls {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.65rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .fa-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
+    .fa-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .fa-ctl select {
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      padding: 0.3rem 0.6rem;
+      font: inherit;
+    }
+    .fa-ctl-search { flex: 1; min-width: 160px; }
+    .fa-search-wrap { position: relative; }
+    .fa-search-icon {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.82rem;
+      pointer-events: none;
+    }
+    #fa-search {
+      width: 100%;
+      min-height: 2.1rem;
+      padding: 0.3rem 0.6rem 0.3rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      font-size: 0.88rem;
+      font: inherit;
+    }
+    #fa-search:focus {
+      outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+      outline-offset: 1px;
+    }
+    .fa-count {
+      color: var(--muted);
+      font-size: 0.8rem;
+      align-self: flex-end;
+      padding-bottom: 0.4rem;
+      white-space: nowrap;
+      min-width: 6rem;
+    }
+
+    /* ── Workspace ─────────────────────────────────────── */
+    .fa-workspace {
+      display: grid;
+      grid-template-columns: 1fr 290px;
+      gap: 0.75rem;
+      height: calc(100vh - 230px);
+      min-height: 420px;
+      margin-top: 0.65rem;
+    }
+
+    /* ── Icon grid ─────────────────────────────────────── */
+    .fa-grid-wrap {
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .fa-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 0.25rem;
+      padding: 0.6rem;
+    }
+    .fa-no-results {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .fa-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.28rem;
+      padding: 0.5rem 0.2rem 0.4rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: transparent;
+      color: var(--text);
+      text-align: center;
+      transition: border-color 0.1s, background 0.1s;
+      min-width: 0;
+    }
+    .fa-tile:hover { background: var(--panel-muted); border-color: var(--border); }
+    .fa-tile.selected {
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border-color: var(--accent);
+    }
+    .fa-tile i { font-size: 1.35rem; line-height: 1; }
+    .fa-tile-name {
+      font-size: 0.59rem;
+      color: var(--muted);
+      word-break: break-all;
+      line-height: 1.2;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* ── Sidebar ───────────────────────────────────────── */
+    .fa-sidebar {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .fa-empty-state {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .fa-empty-state p { margin: 0; font-size: 0.88rem; }
+    .fa-detail {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .fa-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 82px;
+      background: var(--panel-muted);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .fa-preview i { font-size: 2.8rem; color: var(--accent); }
+    .fa-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
+    .fa-icon-meta strong { font-size: 0.95rem; }
+    .fa-code-inline {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .fa-muted-text { font-size: 0.72rem; color: var(--muted); font-family: ui-monospace, monospace; }
+    .fa-lang-ctl { width: 100%; }
+    .fa-lang-ctl select { width: 100%; }
+    .fa-code-wrap {
+      background: var(--panel-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: auto;
+      min-height: 80px;
+      max-height: 280px;
+    }
+    .fa-code {
+      margin: 0;
+      padding: 0.6rem 0.75rem;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.74rem;
+      line-height: 1.55;
+      color: var(--accent);
+      white-space: pre;
+    }
+    .fa-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }
+
+    /* ── Narrow fallback ───────────────────────────────── */
+    @media (max-width: 760px) {
+      .fa-workspace { grid-template-columns: 1fr; height: auto; }
+      .fa-grid-wrap { height: 50vh; }
+      .fa-sidebar { min-height: 320px; }
+    }
+  </style>
+
+  <script>
+    // ─── Icon data ─────────────────────────────────────────────────────────────
+    // Each entry: [name, style ('s'=solid | 'r'=regular | 'b'=brands), categories[]]
+    type IconDef = [string, string, string[]];
+
+    const ICON_DATA: IconDef[] = [
+      // === INTERFACE / NAVIGATION ===
+      ['house','s',['nav','map']], ['house-chimney','s',['nav','map']],
+      ['bars','s',['nav']], ['xmark','s',['nav']], ['check','s',['nav']],
+      ['magnifying-glass','s',['nav']], ['gear','s',['nav']],
+      ['bell','s',['nav','alert']], ['bell-slash','s',['nav','alert']],
+      ['eye','s',['nav','sec']], ['eye-slash','s',['nav','sec']],
+      ['heart','s',['nav','health']], ['star','s',['nav']], ['bookmark','s',['nav']],
+      ['tag','s',['nav','shop']], ['tags','s',['nav','shop']],
+      ['thumbs-up','s',['nav']], ['thumbs-down','s',['nav']], ['flag','s',['nav']],
+      ['plus','s',['nav']], ['minus','s',['nav']], ['ban','s',['nav','sec']],
+      ['link','s',['nav']], ['circle-plus','s',['nav']], ['circle-minus','s',['nav']],
+      ['circle-xmark','s',['nav']], ['circle-check','s',['nav']],
+      ['circle-info','s',['nav','alert']], ['circle-question','s',['nav']],
+      ['circle-exclamation','s',['nav','alert']], ['triangle-exclamation','s',['nav','alert']],
+      ['ellipsis','s',['nav']], ['ellipsis-vertical','s',['nav']],
+      ['grip','s',['nav']], ['grip-vertical','s',['nav']],
+      ['filter','s',['nav']], ['sort','s',['nav']],
+      ['table-cells','s',['nav']], ['table-list','s',['nav']],
+      ['list','s',['nav']], ['list-ul','s',['nav']], ['list-ol','s',['nav']],
+      ['list-check','s',['nav']], ['square-check','s',['nav']],
+      ['square','s',['nav']], ['circle','s',['nav']],
+      ['toggle-on','s',['nav']], ['toggle-off','s',['nav']],
+      ['sliders','s',['nav']], ['spinner','s',['nav']], ['rotate','s',['nav']],
+      ['arrows-rotate','s',['nav']], ['pen-to-square','s',['nav','edit']],
+      ['trash','s',['nav']], ['trash-can','s',['nav']],
+      ['copy','s',['nav','file']], ['scissors','s',['nav','edit']],
+      ['share','s',['nav']], ['share-nodes','s',['nav']],
+      ['print','s',['nav','biz']], ['download','s',['nav']], ['upload','s',['nav']],
+      ['cloud-arrow-up','s',['nav']], ['cloud-arrow-down','s',['nav']],
+      ['window-maximize','s',['nav']], ['window-minimize','s',['nav']],
+      ['window-restore','s',['nav']], ['question','s',['nav']],
+      ['exclamation','s',['nav','alert']], ['info','s',['nav']], ['power-off','s',['nav']],
+
+      // === ARROWS ===
+      ['arrow-up','s',['arrow']], ['arrow-down','s',['arrow']],
+      ['arrow-left','s',['arrow']], ['arrow-right','s',['arrow']],
+      ['arrows-up-down-left-right','s',['arrow']], ['arrows-up-down','s',['arrow']],
+      ['arrows-left-right','s',['arrow']],
+      ['chevron-up','s',['arrow']], ['chevron-down','s',['arrow']],
+      ['chevron-left','s',['arrow']], ['chevron-right','s',['arrow']],
+      ['angle-up','s',['arrow']], ['angle-down','s',['arrow']],
+      ['angle-left','s',['arrow']], ['angle-right','s',['arrow']],
+      ['angles-up','s',['arrow']], ['angles-down','s',['arrow']],
+      ['angles-left','s',['arrow']], ['angles-right','s',['arrow']],
+      ['caret-up','s',['arrow']], ['caret-down','s',['arrow']],
+      ['caret-left','s',['arrow']], ['caret-right','s',['arrow']],
+      ['circle-arrow-up','s',['arrow']], ['circle-arrow-down','s',['arrow']],
+      ['circle-arrow-left','s',['arrow']], ['circle-arrow-right','s',['arrow']],
+      ['turn-up','s',['arrow']], ['turn-down','s',['arrow']],
+      ['rotate-left','s',['arrow','nav']], ['rotate-right','s',['arrow','nav']],
+      ['right-from-bracket','s',['arrow','sec']], ['right-to-bracket','s',['arrow','sec']],
+      ['left-right','s',['arrow']], ['up-down','s',['arrow']],
+      ['up-down-left-right','s',['arrow']],
+
+      // === EDITING ===
+      ['pen','s',['edit']], ['pencil','s',['edit']], ['pen-nib','s',['edit']],
+      ['pen-ruler','s',['edit']], ['highlighter','s',['edit']], ['eraser','s',['edit']],
+      ['spell-check','s',['edit']], ['crop','s',['edit']],
+      ['wand-magic','s',['edit']], ['wand-magic-sparkles','s',['edit']],
+      ['palette','s',['edit']], ['paint-brush','s',['edit']], ['paint-roller','s',['edit']],
+      ['fill','s',['edit']], ['fill-drip','s',['edit']],
+      ['ruler','s',['edit']], ['ruler-combined','s',['edit']],
+      ['drafting-compass','s',['edit']], ['object-group','s',['edit']],
+      ['bold','s',['edit']], ['italic','s',['edit']], ['underline','s',['edit']],
+      ['strikethrough','s',['edit']], ['align-left','s',['edit']],
+      ['align-center','s',['edit']], ['align-right','s',['edit']],
+      ['align-justify','s',['edit']], ['indent','s',['edit']], ['outdent','s',['edit']],
+      ['font','s',['edit']],
+
+      // === FILES ===
+      ['file','s',['file']], ['file-lines','s',['file']], ['file-pdf','s',['file']],
+      ['file-word','s',['file']], ['file-excel','s',['file']],
+      ['file-powerpoint','s',['file']], ['file-image','s',['file']],
+      ['file-audio','s',['file']], ['file-video','s',['file']],
+      ['file-code','s',['file','sci']], ['file-zipper','s',['file']],
+      ['file-circle-plus','s',['file']], ['file-circle-minus','s',['file']],
+      ['file-circle-check','s',['file']], ['file-circle-xmark','s',['file']],
+      ['folder','s',['file']], ['folder-open','s',['file']],
+      ['folder-plus','s',['file']], ['folder-minus','s',['file']], ['folder-tree','s',['file']],
+
+      // === COMMUNICATION ===
+      ['phone','s',['comm']], ['phone-slash','s',['comm']],
+      ['phone-volume','s',['comm']], ['phone-flip','s',['comm']],
+      ['envelope','s',['comm']], ['envelope-open','s',['comm']],
+      ['envelope-circle-check','s',['comm']], ['paper-plane','s',['comm']],
+      ['comment','s',['comm']], ['comment-dots','s',['comm']],
+      ['comment-slash','s',['comm']], ['comments','s',['comm']],
+      ['message','s',['comm']], ['at','s',['comm']], ['inbox','s',['comm']],
+      ['reply','s',['comm']], ['reply-all','s',['comm']],
+
+      // === PEOPLE ===
+      ['user','s',['user']], ['user-large','s',['user']],
+      ['user-tie','s',['user','biz']], ['user-graduate','s',['user']],
+      ['user-nurse','s',['user','health']], ['user-doctor','s',['user','health']],
+      ['user-check','s',['user']], ['user-plus','s',['user']],
+      ['user-minus','s',['user']], ['user-xmark','s',['user']],
+      ['user-slash','s',['user']], ['user-pen','s',['user']],
+      ['user-gear','s',['user']], ['user-tag','s',['user']],
+      ['user-group','s',['user']], ['user-shield','s',['user','sec']],
+      ['users','s',['user']], ['person','s',['user']],
+      ['person-walking','s',['user','sport']], ['person-running','s',['user','sport']],
+      ['person-biking','s',['user','sport']], ['person-swimming','s',['user','sport']],
+      ['person-hiking','s',['user','sport']], ['child','s',['user']], ['baby','s',['user']],
+
+      // === HEALTH ===
+      ['heart-pulse','s',['health']], ['heart-crack','s',['health']],
+      ['stethoscope','s',['health']], ['syringe','s',['health']],
+      ['pills','s',['health']], ['capsules','s',['health']],
+      ['prescription-bottle','s',['health']], ['prescription-bottle-medical','s',['health']],
+      ['hospital','s',['health','biz','map']], ['kit-medical','s',['health']],
+      ['bandage','s',['health']], ['face-mask','s',['health']],
+      ['tooth','s',['health']], ['brain','s',['health','sci']],
+      ['lungs','s',['health']], ['bone','s',['health']],
+      ['wheelchair','s',['health','user']], ['dna','s',['health','sci']],
+      ['virus','s',['health','sec']], ['viruses','s',['health','sec']],
+
+      // === BUSINESS ===
+      ['briefcase','s',['biz']], ['building','s',['biz','map']],
+      ['building-columns','s',['biz']], ['chart-bar','s',['biz']],
+      ['chart-line','s',['biz']], ['chart-pie','s',['biz']], ['chart-simple','s',['biz']],
+      ['handshake','s',['biz']], ['calculator','s',['biz']],
+      ['calendar','s',['biz']], ['calendar-days','s',['biz']], ['calendar-check','s',['biz']],
+      ['id-card','s',['biz','user']], ['id-badge','s',['biz','user']],
+      ['industry','s',['biz']], ['warehouse','s',['biz']],
+      ['globe','s',['biz','map','travel']], ['network-wired','s',['biz','sci']],
+      ['sitemap','s',['biz']], ['diagram-project','s',['biz']], ['fax','s',['biz','comm']],
+      ['dollar-sign','s',['biz']], ['euro-sign','s',['biz']],
+      ['money-bill','s',['biz']], ['money-bill-wave','s',['biz']],
+      ['credit-card','s',['biz','shop']], ['receipt','s',['biz','shop']],
+      ['wallet','s',['biz']], ['piggy-bank','s',['biz']], ['coins','s',['biz']],
+      ['sack-dollar','s',['biz']], ['cash-register','s',['biz','shop']],
+
+      // === SHOPPING ===
+      ['cart-shopping','s',['shop']], ['cart-plus','s',['shop']],
+      ['basket-shopping','s',['shop']], ['bag-shopping','s',['shop']],
+      ['store','s',['shop','map']], ['gift','s',['shop']],
+      ['box','s',['shop']], ['boxes-stacking','s',['shop']],
+      ['truck','s',['shop','travel']], ['truck-fast','s',['shop','travel']],
+      ['barcode','s',['shop']], ['qrcode','s',['shop']],
+
+      // === TRAVEL ===
+      ['plane','s',['travel']], ['plane-departure','s',['travel']], ['plane-arrival','s',['travel']],
+      ['car','s',['travel']], ['car-side','s',['travel']], ['bus','s',['travel']],
+      ['train','s',['travel']], ['taxi','s',['travel']], ['ship','s',['travel']],
+      ['bicycle','s',['travel','sport']], ['motorcycle','s',['travel']],
+      ['rocket','s',['travel','sci']], ['suitcase','s',['travel']],
+      ['suitcase-rolling','s',['travel']], ['passport','s',['travel']],
+      ['hotel','s',['travel','map']], ['road','s',['travel','map']],
+      ['gas-pump','s',['travel']], ['traffic-light','s',['travel','map']],
+      ['helicopter','s',['travel']], ['ferry','s',['travel']],
+
+      // === NATURE / WEATHER ===
+      ['sun','s',['nature']], ['moon','s',['nature']], ['cloud','s',['nature']],
+      ['cloud-rain','s',['nature']], ['cloud-sun','s',['nature']],
+      ['cloud-moon','s',['nature']], ['cloud-snow','s',['nature']],
+      ['cloud-bolt','s',['nature']], ['cloud-showers-heavy','s',['nature']],
+      ['wind','s',['nature']], ['snowflake','s',['nature']],
+      ['fire','s',['nature','alert']], ['fire-flame-curved','s',['nature']],
+      ['water','s',['nature']], ['leaf','s',['nature']], ['tree','s',['nature']],
+      ['seedling','s',['nature']], ['mountain','s',['nature']],
+      ['earth-americas','s',['nature','map']], ['rainbow','s',['nature']],
+      ['tornado','s',['nature']], ['temperature-high','s',['nature']],
+      ['temperature-low','s',['nature']], ['droplet','s',['nature']],
+      ['bolt','s',['nature','alert']], ['smog','s',['nature']],
+
+      // === FOOD & DRINK ===
+      ['utensils','s',['food']], ['mug-hot','s',['food']], ['mug-saucer','s',['food']],
+      ['wine-glass','s',['food']], ['wine-bottle','s',['food']],
+      ['bottle-water','s',['food']], ['beer-mug-empty','s',['food']],
+      ['champagne-glasses','s',['food']], ['bowl-food','s',['food']],
+      ['pizza-slice','s',['food']], ['burger','s',['food']], ['hotdog','s',['food']],
+      ['ice-cream','s',['food']], ['cake-candles','s',['food']],
+      ['apple-whole','s',['food']], ['lemon','s',['food']], ['carrot','s',['food']],
+      ['pepper-hot','s',['food']], ['egg','s',['food']], ['shrimp','s',['food','animal']],
+      ['bread-slice','s',['food']], ['cheese','s',['food']],
+      ['martini-glass','s',['food']], ['cookie','s',['food']],
+
+      // === ANIMALS ===
+      ['cat','s',['animal']], ['dog','s',['animal']], ['horse','s',['animal']],
+      ['bug','s',['animal','alert']], ['spider','s',['animal']], ['hippo','s',['animal']],
+      ['frog','s',['animal']], ['dove','s',['animal']], ['feather','s',['animal']],
+      ['dragon','s',['animal']], ['crow','s',['animal']], ['kiwi-bird','s',['animal']],
+      ['otter','s',['animal']], ['paw','s',['animal']], ['cow','s',['animal']],
+      ['worm','s',['animal']], ['mosquito','s',['animal']], ['locust','s',['animal']],
+      ['horse-head','s',['animal']], ['fish-fins','s',['animal','food']],
+
+      // === SCIENCE & TECH ===
+      ['atom','s',['sci']], ['flask','s',['sci']], ['vial','s',['sci']], ['vials','s',['sci']],
+      ['microscope','s',['sci']], ['radiation','s',['sci','alert']], ['biohazard','s',['sci','alert']],
+      ['robot','s',['sci']], ['cpu','s',['sci']], ['memory','s',['sci']],
+      ['microchip','s',['sci']], ['hard-drive','s',['sci']], ['server','s',['sci']],
+      ['database','s',['sci']], ['code','s',['sci']], ['code-branch','s',['sci']],
+      ['code-commit','s',['sci']], ['code-fork','s',['sci']], ['code-merge','s',['sci']],
+      ['terminal','s',['sci']], ['laptop','s',['sci']], ['laptop-code','s',['sci']],
+      ['desktop','s',['sci']], ['tablet','s',['sci']], ['mobile','s',['sci']],
+      ['mobile-screen','s',['sci']], ['keyboard','s',['sci']],
+      ['plug','s',['sci']], ['wifi','s',['sci']], ['satellite','s',['sci','travel']],
+      ['satellite-dish','s',['sci']], ['ethernet','s',['sci']],
+
+      // === SECURITY ===
+      ['lock','s',['sec']], ['lock-open','s',['sec']],
+      ['shield','s',['sec']], ['shield-check','s',['sec']], ['shield-halved','s',['sec']],
+      ['key','s',['sec']], ['fingerprint','s',['sec']], ['user-lock','s',['sec','user']],
+      ['skull','s',['sec','alert']], ['skull-crossbones','s',['sec','alert']],
+
+      // === MEDIA ===
+      ['play','s',['media']], ['pause','s',['media']], ['stop','s',['media']],
+      ['forward','s',['media']], ['backward','s',['media']],
+      ['forward-step','s',['media']], ['backward-step','s',['media']],
+      ['forward-fast','s',['media']], ['backward-fast','s',['media']],
+      ['shuffle','s',['media']], ['repeat','s',['media']],
+      ['volume-off','s',['media']], ['volume-low','s',['media']],
+      ['volume-high','s',['media']], ['volume-xmark','s',['media']],
+      ['music','s',['media']], ['headphones','s',['media']],
+      ['headset','s',['media','comm']], ['microphone','s',['media','comm']],
+      ['microphone-slash','s',['media','comm']], ['camera','s',['media']],
+      ['camera-rotate','s',['media']], ['video','s',['media']], ['video-slash','s',['media']],
+      ['film','s',['media']], ['clapperboard','s',['media']],
+      ['image','s',['media']], ['images','s',['media']],
+      ['podcast','s',['media']], ['radio','s',['media']], ['tv','s',['media']],
+      ['record-vinyl','s',['media']], ['compact-disc','s',['media']],
+      ['guitar','s',['media']], ['drum','s',['media']],
+
+      // === SPORTS ===
+      ['dumbbell','s',['sport']], ['baseball','s',['sport']], ['baseball-bat-ball','s',['sport']],
+      ['basketball','s',['sport']], ['football','s',['sport']], ['soccer-ball','s',['sport']],
+      ['volleyball','s',['sport']], ['golf-ball-tee','s',['sport']],
+      ['table-tennis-paddle-ball','s',['sport']],
+      ['trophy','s',['sport','biz']], ['medal','s',['sport']],
+      ['ranking-star','s',['sport']], ['stopwatch','s',['sport']], ['whistle','s',['sport']],
+
+      // === MAPS ===
+      ['map','s',['map']], ['map-location','s',['map']], ['map-location-dot','s',['map']],
+      ['map-pin','s',['map']], ['location-dot','s',['map']], ['location-pin','s',['map']],
+      ['location-crosshairs','s',['map']], ['compass','s',['map','travel']],
+      ['route','s',['map','travel']], ['signs-post','s',['map','travel']],
+      ['school','s',['map']], ['church','s',['map']], ['monument','s',['map']],
+      ['place-of-worship','s',['map']],
+
+      // === BRANDS / SOCIAL ===
+      ['facebook','b',['social']], ['facebook-f','b',['social']],
+      ['x-twitter','b',['social']], ['twitter','b',['social']],
+      ['instagram','b',['social']], ['linkedin','b',['social']], ['linkedin-in','b',['social']],
+      ['youtube','b',['social']], ['github','b',['social']], ['gitlab','b',['social']],
+      ['bitbucket','b',['social']], ['discord','b',['social']], ['slack','b',['social']],
+      ['whatsapp','b',['social','comm']], ['telegram','b',['social','comm']],
+      ['snapchat','b',['social']], ['tiktok','b',['social']], ['pinterest','b',['social']],
+      ['reddit','b',['social']], ['reddit-alien','b',['social']], ['twitch','b',['social']],
+      ['spotify','b',['social','media']], ['apple','b',['social','sci']],
+      ['google','b',['social']], ['google-play','b',['social']],
+      ['microsoft','b',['social','sci']], ['windows','b',['social','sci']],
+      ['android','b',['social','sci']], ['amazon','b',['social']],
+      ['paypal','b',['social','biz']], ['stripe','b',['social','biz']],
+      ['shopify','b',['social','shop']], ['wordpress','b',['social']],
+      ['wordpress-simple','b',['social']], ['react','b',['social','sci']],
+      ['vuejs','b',['social','sci']], ['angular','b',['social','sci']],
+      ['node-js','b',['social','sci']], ['python','b',['social','sci']],
+      ['php','b',['social','sci']], ['js','b',['social','sci']],
+      ['html5','b',['social','sci']], ['css3','b',['social','sci']],
+      ['css3-alt','b',['social','sci']], ['bootstrap','b',['social','sci']],
+      ['figma','b',['social']], ['dropbox','b',['social']],
+      ['steam','b',['social']], ['playstation','b',['social']], ['xbox','b',['social']],
+      ['docker','b',['social','sci']], ['git','b',['social','sci']],
+      ['git-alt','b',['social','sci']], ['npm','b',['social','sci']],
+      ['yarn','b',['social','sci']], ['sass','b',['social','sci']],
+      ['linux','b',['social','sci']], ['ubuntu','b',['social','sci']],
+    ];
+
+    // ─── Category labels ──────────────────────────────────────────────────────
+    const CAT_LABELS: Record<string, string> = {
+      nav: 'Interface', arrow: 'Arrows', alert: 'Alerts', edit: 'Editing',
+      file: 'Files', comm: 'Communication', user: 'People', health: 'Health',
+      biz: 'Business', shop: 'Shopping', travel: 'Travel', nature: 'Nature',
+      food: 'Food & Drink', animal: 'Animals', sci: 'Science & Tech',
+      sec: 'Security', media: 'Media', sport: 'Sports', map: 'Maps', social: 'Brands',
+    };
+
+    // ─── State ────────────────────────────────────────────────────────────────
+    let selected: { name: string; style: string } | null = null;
+    let currentUnicode = '????';
+
+    // ─── DOM ──────────────────────────────────────────────────────────────────
+    const versionSel  = document.getElementById('fa-version') as HTMLSelectElement;
+    const styleSel    = document.getElementById('fa-style-filter') as HTMLSelectElement;
+    const categorySel = document.getElementById('fa-category') as HTMLSelectElement;
+    const searchEl    = document.getElementById('fa-search') as HTMLInputElement;
+    const countEl     = document.getElementById('fa-count') as HTMLElement;
+    const gridEl      = document.getElementById('fa-grid') as HTMLElement;
+    const noResultsEl = document.getElementById('fa-no-results') as HTMLElement;
+    const emptyState  = document.getElementById('fa-empty-state') as HTMLElement;
+    const detailEl    = document.getElementById('fa-detail') as HTMLElement;
+    const previewEl   = document.getElementById('fa-preview') as HTMLElement;
+    const nameDisp    = document.getElementById('fa-name-display') as HTMLElement;
+    const classDisp   = document.getElementById('fa-class-display') as HTMLElement;
+    const unicodeDisp = document.getElementById('fa-unicode-display') as HTMLElement;
+    const langSel     = document.getElementById('fa-lang') as HTMLSelectElement;
+    const codeOut     = document.getElementById('fa-code-out') as HTMLElement;
+    const copyBtn     = document.getElementById('fa-copy-code') as HTMLButtonElement;
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+    function styleClass(s: string): string {
+      return s === 'b' ? 'fa-brands' : s === 'r' ? 'fa-regular' : 'fa-solid';
+    }
+    function fa5Prefix(s: string): string {
+      return s === 'b' ? 'fab' : s === 'r' ? 'far' : 'fas';
+    }
+    function toCamel(name: string): string {
+      return 'fa' + name.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join('');
+    }
+    function toPascal(name: string): string {
+      return name.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join('');
+    }
+    function toLabel(name: string): string {
+      return name.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    /** Read the rendered unicode from FA's ::before pseudo-element */
+    function readUnicode(name: string, style: string): string {
+      const el = document.createElement('i');
+      el.className = `${styleClass(style)} fa-${name}`;
+      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;visibility:hidden;font-size:16px';
+      document.body.appendChild(el);
+      const content = window.getComputedStyle(el, '::before').content;
+      document.body.removeChild(el);
+      const m = content.match(/\\([0-9a-fA-F]+)/i);
+      return m ? m[1].toLowerCase() : '????';
+    }
+
+    // ─── Code builder ────────────────────────────────────────────────────────
+    function buildCode(name: string, style: string, version: string, lang: string, unicode: string): string {
+      const sc  = styleClass(style);
+      const fa5 = fa5Prefix(style);
+      const htmlCls = version === '6' ? `${sc} fa-${name}`
+                    : version === '5' ? `${fa5} fa-${name}`
+                    : `fa fa-${name}`;
+      const camel = toCamel(name);
+      const pascal = toPascal(name);
+      const pkg   = style === 'b' ? 'free-brands-svg-icons'
+                  : style === 'r' ? 'free-regular-svg-icons'
+                  : 'free-solid-svg-icons';
+      const fw    = (style === 'b' || style === 'r') ? '400' : '900';
+      const fontFam = version === '4' ? '"FontAwesome"'
+                    : `"Font Awesome ${version} ${style === 'b' ? 'Brands' : 'Free'}"`;
+      const cdn   = version === '4'
+        ? 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+        : version === '5'
+        ? 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'
+        : 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css';
+      const pyPfx = `fa${version}${style}`;
+      const pyName = name.replace(/-/g, '_');
+
+      switch (lang) {
+        case 'html':
+          return `<!-- Add to <head> -->\n<link rel="stylesheet" href="${cdn}">\n\n<!-- Icon -->\n<i class="${htmlCls}"></i>`;
+        case 'css':
+          return `.my-icon::before {\n  font-family: ${fontFam};\n  font-weight: ${fw};\n  content: "\\${unicode}"; /* fa-${name} */\n}`;
+        case 'react':
+          return `// npm i @fortawesome/react-fontawesome @fortawesome/${pkg}\nimport { FontAwesomeIcon } from '@fortawesome/react-fontawesome';\nimport { ${camel} } from '@fortawesome/${pkg}';\n\nexport default function MyComponent() {\n  return <FontAwesomeIcon icon={${camel}} />;\n}`;
+        case 'vue':
+          return `<!-- npm i @fortawesome/vue-fontawesome @fortawesome/${pkg} -->\n<template>\n  <font-awesome-icon :icon="['${fa5}', '${name}']" />\n</template>\n\n<script setup>\nimport { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';\nimport { library } from '@fortawesome/fontawesome-svg-core';\nimport { ${camel} } from '@fortawesome/${pkg}';\nlibrary.add(${camel});\n<\/script>`;
+        case 'angular':
+          return `// npm i @fortawesome/angular-fontawesome @fortawesome/${pkg}\n\n// app.module.ts\nimport { FaIconLibrary } from '@fortawesome/angular-fontawesome';\nimport { ${camel} } from '@fortawesome/${pkg}';\nconstructor(lib: FaIconLibrary) {\n  lib.addIcons(${camel});\n}\n\n// template.html\n<fa-icon [icon]="['${fa5}', '${name}']"></fa-icon>`;
+        case 'svelte':
+          return `<!-- npm i @fortawesome/svelte-fontawesome @fortawesome/${pkg} -->\n<script>\n  import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';\n  import { ${camel} } from '@fortawesome/${pkg}';\n<\/script>\n\n<FontAwesomeIcon icon={${camel}} />`;
+        case 'csharp-blazor':
+          return `@* Add in wwwroot/index.html <head>: *@\n<link rel="stylesheet" href="${cdn}" />\n\n@* .razor component *@\n<i class="${htmlCls}"></i>`;
+        case 'csharp-maui':
+          return `// NuGet: FontAwesome.Sharp\n// Register in MauiProgram.cs:\n// .ConfigureFonts(fonts => {\n//     fonts.AddFont("fa-solid-900.ttf", "FA6Solid");\n//     fonts.AddFont("fa-brands-400.ttf", "FA6Brands");\n// })\n\n<!-- XAML -->\n<Label Text="&#x${unicode};"\n       FontFamily="${style === 'b' ? 'FA6Brands' : 'FA6Solid'}" />\n\n<!-- FontImageSource -->\n<FontImageSource Glyph="&#x${unicode};"\n                 FontFamily="${style === 'b' ? 'FA6Brands' : 'FA6Solid'}" />`;
+        case 'python':
+          return `# pip install qtawesome\nimport qtawesome as qta\n\n# ${toLabel(name)} icon\nicon = qta.icon('${pyPfx}.${pyName}')\n\n# Apply to a widget\nbutton.setIcon(icon)\n# Or get a pixmap\npixmap = qta.icon('${pyPfx}.${pyName}').pixmap(32, 32)`;
+        case 'php':
+          return `<?php\n// Add to HTML <head>:\n// <link rel="stylesheet" href="${cdn}">\n\necho '<i class="${htmlCls}"></i>';\n?>`;
+        case 'wordpress':
+          return `<?php\n// functions.php — enqueue Font Awesome\nfunction theme_enqueue_fa() {\n    wp_enqueue_style(\n        'font-awesome',\n        '${cdn}'\n    );\n}\nadd_action('wp_enqueue_scripts', 'theme_enqueue_fa');\n\n// Template output\necho '<i class="${htmlCls}"></i>';\n\n// wp_kses safe output\necho wp_kses(\n    '<i class="${htmlCls}"></i>',\n    ['i' => ['class' => []]]\n);\n?>`;
+        default:
+          return `<i class="${htmlCls}"></i>`;
+      }
+    }
+
+    // ─── Populate category dropdown ───────────────────────────────────────────
+    function populateCategories() {
+      const used = new Set<string>();
+      for (const [,,cats] of ICON_DATA) cats.forEach((c: string) => used.add(c));
+      while (categorySel.options.length > 1) categorySel.remove(1);
+      for (const [key, label] of Object.entries(CAT_LABELS)) {
+        if (!used.has(key)) continue;
+        const opt = document.createElement('option');
+        opt.value = key; opt.textContent = label;
+        categorySel.appendChild(opt);
+      }
+    }
+
+    // ─── Render grid ──────────────────────────────────────────────────────────
+    function renderGrid() {
+      const sf = styleSel.value;
+      const cf = categorySel.value;
+      const q  = searchEl.value.toLowerCase().trim();
+
+      const filtered = ICON_DATA.filter(([name, style, cats]) => {
+        if (sf !== 'all' && style !== sf) return false;
+        if (cf !== 'all' && !cats.includes(cf)) return false;
+        if (q && !name.includes(q)) return false;
+        return true;
+      });
+
+      countEl.textContent = `${filtered.length} icon${filtered.length !== 1 ? 's' : ''}`;
+      gridEl.innerHTML = '';
+      noResultsEl.style.display = filtered.length === 0 ? '' : 'none';
+      if (filtered.length === 0) return;
+
+      const frag = document.createDocumentFragment();
+      for (const [name, style] of filtered) {
+        const sc = styleClass(style);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'fa-tile' + (selected?.name === name && selected?.style === style ? ' selected' : '');
+        btn.dataset.name = name;
+        btn.dataset.style = style;
+        btn.title = name;
+        btn.innerHTML = `<i class="${sc} fa-${name}" aria-hidden="true"></i><span class="fa-tile-name">${name}</span>`;
+        btn.addEventListener('click', () => selectIcon(name, style, btn));
+        frag.appendChild(btn);
+      }
+      gridEl.appendChild(frag);
+    }
+
+    // ─── Select an icon ───────────────────────────────────────────────────────
+    function selectIcon(name: string, style: string, btn: HTMLButtonElement) {
+      document.querySelectorAll('.fa-tile.selected').forEach(el => el.classList.remove('selected'));
+      btn.classList.add('selected');
+      selected = { name, style };
+      currentUnicode = readUnicode(name, style);
+
+      const sc = styleClass(style);
+      emptyState.style.display  = 'none';
+      detailEl.style.display    = 'flex';
+
+      previewEl.innerHTML = `<i class="${sc} fa-${name}" aria-hidden="true"></i>`;
+      nameDisp.textContent  = toLabel(name);
+      classDisp.textContent = `${sc} fa-${name}`;
+      unicodeDisp.textContent = currentUnicode !== '????' ? `U+${currentUnicode.toUpperCase()} · \\${currentUnicode}` : '';
+
+      codeOut.textContent = buildCode(name, style, versionSel.value, langSel.value, currentUnicode);
+    }
+
+    function refreshCode() {
+      if (!selected) return;
+      codeOut.textContent = buildCode(selected.name, selected.style, versionSel.value, langSel.value, currentUnicode);
+    }
+
+    // ─── Events ──────────────────────────────────────────────────────────────
+    styleSel.addEventListener('change', renderGrid);
+    categorySel.addEventListener('change', renderGrid);
+    searchEl.addEventListener('input', renderGrid);
+    versionSel.addEventListener('change', refreshCode);
+    langSel.addEventListener('change', refreshCode);
+    copyBtn.addEventListener('click', async () => {
+      const text = codeOut.textContent ?? '';
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const orig = copyBtn.textContent ?? '';
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => { copyBtn.textContent = orig; }, 1500);
+      } catch { /* ignore */ }
+    });
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+    populateCategories();
+    renderGrid();
+  </script>
+</BaseLayout>

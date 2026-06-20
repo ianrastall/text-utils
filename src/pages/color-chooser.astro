@@ -1,0 +1,825 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Color Chooser" description="Pick named HTML/CSS colors by family, use an eyedropper or color picker, get CSS/HTML/hex output, find the closest named color, and export solid-color PNGs.">
+  <main class="shell cc-main">
+    <header class="cc-page-header">
+      <h1>Color Chooser</h1>
+      <p>Named colors · Eyedropper · Format output · PNG export</p>
+    </header>
+
+    <div class="cc-grid">
+      <!-- ── LEFT COLUMN ── -->
+      <div class="cc-col-left">
+
+        <!-- Big swatch + hex badge -->
+        <div class="cc-swatch-wrap">
+          <div class="cc-swatch-large" id="cc-swatch"></div>
+          <div class="cc-hex-badge">
+            <span id="cc-hex-display">#000000</span>
+            <button class="cc-copy-inline" id="cc-copy-hex" title="Copy hex">⎘</button>
+          </div>
+        </div>
+
+        <!-- Named colours -->
+        <section class="cc-panel">
+          <h2 class="cc-section-heading">Named Colors</h2>
+          <div class="cc-fields">
+            <div class="field">
+              <label for="cc-ext">Set</label>
+              <select id="cc-ext">
+                <option value="basic">Basic (16)</option>
+                <option value="css" selected>CSS Named (~148)</option>
+                <option value="extended">Extended (~240)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="cc-family">Family</label>
+              <select id="cc-family"></select>
+            </div>
+            <div class="field cc-field-wide">
+              <label for="cc-name">Color</label>
+              <select id="cc-name"></select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Picker / Eyedropper / Hex -->
+        <section class="cc-panel">
+          <h2 class="cc-section-heading">Pick / Enter</h2>
+          <div class="cc-pick-row">
+            <label class="cc-picker-label" title="Open color picker">
+              <span class="cc-picker-swatch" id="cc-picker-swatch"></span>
+              <input type="color" id="cc-picker" value="#000000" />
+              <span>Picker</span>
+            </label>
+            <button id="cc-eyedropper-btn" class="button cc-eye-btn" title="Pick a color from anywhere on screen">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l9 9-9 9L3 11z"/><path d="M20 8l-2-2"/><circle cx="5" cy="19" r="2"/><path d="M6.5 17.5L15 9"/></svg>
+              Eyedropper
+            </button>
+            <div class="cc-hex-field">
+              <span class="cc-hash">#</span>
+              <input type="text" id="cc-hex-input" maxlength="6" placeholder="0f766e" spellcheck="false" autocomplete="off" title="Type a hex value" />
+            </div>
+          </div>
+          <p id="cc-eyedropper-note" class="cc-note"></p>
+        </section>
+      </div>
+
+      <!-- ── RIGHT COLUMN ── -->
+      <div class="cc-col-right">
+
+        <!-- Output format -->
+        <section class="cc-panel">
+          <h2 class="cc-section-heading">Output Format</h2>
+          <div class="cc-fields">
+            <div class="field">
+              <label for="cc-format">Format</label>
+              <select id="cc-format">
+                <option value="hex">Hex (#rrggbb)</option>
+                <option value="hex-upper">Hex uppercase (#RRGGBB)</option>
+                <option value="hex-bare">Hex bare (rrggbb)</option>
+                <option value="rgb">CSS rgb()</option>
+                <option value="rgba">CSS rgba() — fully opaque</option>
+                <option value="hsl">CSS hsl()</option>
+                <option value="css-color">CSS  color:</option>
+                <option value="css-bg">CSS  background-color:</option>
+                <option value="css-var">CSS custom property</option>
+                <option value="html-attr">HTML color attribute</option>
+                <option value="html-style">HTML inline style</option>
+              </select>
+            </div>
+            <div class="field" id="cc-varname-field" style="display:none">
+              <label for="cc-varname">Variable name</label>
+              <input type="text" id="cc-varname" value="my-color" placeholder="my-color" class="cc-text-input" />
+            </div>
+          </div>
+          <div class="cc-output-wrap">
+            <code id="cc-output" class="cc-output"></code>
+            <button class="button cc-copy-btn" id="cc-copy-output">⎘ Copy</button>
+          </div>
+        </section>
+
+        <!-- Closest named colour -->
+        <section class="cc-panel">
+          <h2 class="cc-section-heading">Closest Named Color</h2>
+          <div class="cc-closest-row" id="cc-closest-row">
+            <div class="cc-closest-swatch" id="cc-closest-swatch"></div>
+            <div class="cc-closest-info">
+              <strong id="cc-closest-name">—</strong>
+              <span id="cc-closest-hex" class="cc-muted"></span>
+              <span id="cc-closest-dist" class="cc-muted"></span>
+            </div>
+            <button class="button" id="cc-use-closest">Use this</button>
+          </div>
+        </section>
+
+        <!-- PNG export -->
+        <section class="cc-panel">
+          <h2 class="cc-section-heading">Export as PNG</h2>
+          <div class="cc-png-row">
+            <div class="field">
+              <label for="cc-png-w">Width (px)</label>
+              <input type="number" id="cc-png-w" value="256" min="1" max="4096" class="cc-dim-input" />
+            </div>
+            <div class="field">
+              <label for="cc-png-h">Height (px)</label>
+              <input type="number" id="cc-png-h" value="256" min="1" max="4096" class="cc-dim-input" />
+            </div>
+            <button class="button primary cc-dl-btn" id="cc-png-btn">⬇ Download PNG</button>
+          </div>
+          <canvas id="cc-canvas" style="display:none"></canvas>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <style>
+    /* ── Page wrapper ────────────────────────────────── */
+    .cc-main {
+      padding: 1rem 0 2rem;
+    }
+    .cc-page-header {
+      margin-bottom: 1rem;
+    }
+    .cc-page-header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: 0;
+    }
+    .cc-page-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* ── Two-column grid ─────────────────────────────── */
+    .cc-grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    /* ── Shared panel ────────────────────────────────── */
+    .cc-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .cc-panel:last-child { margin-bottom: 0; }
+
+    .cc-section-heading {
+      margin: 0 0 0.6rem;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    /* ── Field rows ──────────────────────────────────── */
+    .cc-fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .cc-fields .field { flex: 1 1 auto; min-width: 0; }
+    .cc-fields .field label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .cc-fields select {
+      width: 100%;
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+    }
+    .cc-field-wide { flex: 2 1 140px; }
+
+    /* ── Left column ─────────────────────────────────── */
+    .cc-swatch-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+    .cc-swatch-large {
+      width: 100%;
+      height: 130px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: background 0.1s;
+    }
+    .cc-hex-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.75rem;
+      width: 100%;
+    }
+    #cc-hex-display {
+      flex: 1;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+    }
+    .cc-copy-inline {
+      background: transparent;
+      border: none;
+      font-size: 1.15rem;
+      cursor: pointer;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      color: var(--muted);
+      min-height: unset;
+    }
+    .cc-copy-inline:hover { color: var(--accent); border-color: transparent; }
+
+    /* Picker row */
+    .cc-pick-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .cc-picker-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.6rem;
+      background: var(--panel-muted);
+      position: relative;
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .cc-picker-label:hover { border-color: var(--accent); }
+    .cc-picker-swatch {
+      display: inline-block;
+      width: 1.1rem;
+      height: 1.1rem;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      transition: background 0.1s;
+      flex-shrink: 0;
+    }
+    .cc-picker-label input[type="color"] {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+    }
+    .cc-eye-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.88rem;
+      min-height: 2.1rem;
+      padding: 0.35rem 0.6rem;
+      white-space: nowrap;
+    }
+    .cc-hex-field {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+    .cc-hash {
+      padding: 0 0.3rem 0 0.55rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+      font-size: 0.95rem;
+      line-height: 2.1rem;
+      flex-shrink: 0;
+    }
+    #cc-hex-input {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.95rem;
+      min-height: 2.1rem;
+      padding: 0.35rem 0.5rem 0.35rem 0;
+      width: 100%;
+      outline: none;
+    }
+    .cc-note {
+      margin: 0.4rem 0 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── Right column ────────────────────────────────── */
+    .cc-text-input {
+      min-height: 2.1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      padding: 0.35rem 0.6rem;
+      font-size: 0.88rem;
+      width: 100%;
+    }
+
+    /* Output */
+    .cc-output-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--panel-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.85rem;
+      margin-top: 0.6rem;
+    }
+    .cc-output {
+      flex: 1;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.92rem;
+      word-break: break-all;
+      color: var(--accent);
+    }
+    .cc-copy-btn { flex-shrink: 0; font-size: 0.88rem; min-height: 2.1rem; padding: 0.35rem 0.7rem; }
+
+    /* Closest named */
+    .cc-closest-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .cc-closest-swatch {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      transition: background 0.1s;
+    }
+    .cc-closest-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+    }
+    .cc-closest-info strong { font-size: 0.95rem; }
+    .cc-muted { font-size: 0.8rem; color: var(--muted); font-family: ui-monospace, monospace; }
+    #cc-use-closest { font-size: 0.82rem; min-height: 2rem; padding: 0.3rem 0.65rem; white-space: nowrap; }
+
+    /* PNG export */
+    .cc-png-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .cc-png-row .field label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .cc-dim-input {
+      min-height: 2.1rem;
+      width: 6rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      padding: 0.35rem 0.6rem;
+      font-size: 0.88rem;
+    }
+    .cc-dl-btn {
+      white-space: nowrap;
+      min-height: 2.1rem;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.88rem;
+    }
+
+    /* ── Narrow fallback (< 700px) ───────────────────── */
+    @media (max-width: 700px) {
+      .cc-grid { grid-template-columns: 1fr; }
+      .cc-swatch-large { height: 80px; }
+    }
+  </style>
+
+  <script>
+    // ─── Color Data ───────────────────────────────────────────────────────────
+    // Full CSS named color list grouped by family.
+    // Each entry: [name, hex]
+    type ColorEntry = [string, string];
+    type FamilyMap = Record<string, ColorEntry[]>;
+
+    const ALL_COLORS: FamilyMap = {
+      'Red': [
+        ['red','#ff0000'],['darkred','#8b0000'],['firebrick','#b22222'],
+        ['crimson','#dc143c'],['indianred','#cd5c5c'],['lightcoral','#f08080'],
+        ['salmon','#fa8072'],['darksalmon','#e9967a'],['lightsalmon','#ffa07a'],
+        ['tomato','#ff6347'],['coral','#ff7f50'],
+      ],
+      'Pink': [
+        ['pink','#ffc0cb'],['lightpink','#ffb6c1'],['hotpink','#ff69b4'],
+        ['deeppink','#ff1493'],['palevioletred','#db7093'],['mediumvioletred','#c71585'],
+      ],
+      'Orange': [
+        ['orangered','#ff4500'],['darkorange','#ff8c00'],['orange','#ffa500'],
+      ],
+      'Yellow': [
+        ['yellow','#ffff00'],['lightyellow','#ffffe0'],['lemonchiffon','#fffacd'],
+        ['lightgoldenrodyellow','#fafad2'],['papayawhip','#ffefd5'],['moccasin','#ffe4b5'],
+        ['peachpuff','#ffdab9'],['palegoldenrod','#eee8aa'],['khaki','#f0e68c'],
+        ['darkkhaki','#bdb76b'],['gold','#ffd700'],
+      ],
+      'Green': [
+        ['greenyellow','#adff2f'],['chartreuse','#7fff00'],['lawngreen','#7cfc00'],
+        ['lime','#00ff00'],['limegreen','#32cd32'],['palegreen','#98fb98'],
+        ['lightgreen','#90ee90'],['mediumspringgreen','#00fa9a'],['springgreen','#00ff7f'],
+        ['mediumseagreen','#3cb371'],['seagreen','#2e8b57'],['forestgreen','#228b22'],
+        ['green','#008000'],['darkgreen','#006400'],['yellowgreen','#9acd32'],
+        ['olivedrab','#6b8e23'],['olive','#808000'],['darkolivegreen','#556b2f'],
+        ['mediumaquamarine','#66cdaa'],['darkseagreen','#8fbc8f'],['lightseagreen','#20b2aa'],
+        ['darkcyan','#008b8b'],['teal','#008080'],
+      ],
+      'Cyan / Aqua': [
+        ['aqua','#00ffff'],['cyan','#00ffff'],['lightcyan','#e0ffff'],
+        ['paleturquoise','#afeeee'],['aquamarine','#7fffd4'],['turquoise','#40e0d0'],
+        ['mediumturquoise','#48d1cc'],['darkturquoise','#00ced1'],
+      ],
+      'Blue': [
+        ['cadetblue','#5f9ea0'],['steelblue','#4682b4'],['cornflowerblue','#6495ed'],
+        ['deepskyblue','#00bfff'],['dodgerblue','#1e90ff'],['lightskyblue','#87cefa'],
+        ['skyblue','#87ceeb'],['lightblue','#add8e6'],['powderblue','#b0e0e6'],
+        ['lightsteelblue','#b0c4de'],['aliceblue','#f0f8ff'],['slateblue','#6a5acd'],
+        ['darkslateblue','#483d8b'],['mediumslateblue','#7b68ee'],['mediumpurple','#9370db'],
+        ['royalblue','#4169e1'],['blue','#0000ff'],['mediumblue','#0000cd'],
+        ['darkblue','#00008b'],['navy','#000080'],['midnightblue','#191970'],
+      ],
+      'Purple / Violet': [
+        ['lavender','#e6e6fa'],['thistle','#d8bfd8'],['plum','#dda0dd'],
+        ['violet','#ee82ee'],['orchid','#da70d6'],['fuchsia','#ff00ff'],
+        ['magenta','#ff00ff'],['mediumorchid','#ba55d3'],['mediumpurple','#9370db'],
+        ['blueviolet','#8a2be2'],['darkviolet','#9400d3'],['darkorchid','#9932cc'],
+        ['darkmagenta','#8b008b'],['purple','#800080'],['indigo','#4b0082'],
+        ['darkslateblue','#483d8b'],['rebeccapurple','#663399'],
+      ],
+      'Brown': [
+        ['cornsilk','#fff8dc'],['blanchedalmond','#ffebcd'],['bisque','#ffe4c4'],
+        ['navajowhite','#ffdead'],['wheat','#f5deb3'],['burlywood','#deb887'],
+        ['tan','#d2b48c'],['rosybrown','#bc8f8f'],['sandybrown','#f4a460'],
+        ['goldenrod','#daa520'],['darkgoldenrod','#b8860b'],['peru','#cd853f'],
+        ['chocolate','#d2691e'],['saddlebrown','#8b4513'],['sienna','#a0522d'],
+        ['brown','#a52a2a'],['maroon','#800000'],
+      ],
+      'White / Cream': [
+        ['white','#ffffff'],['snow','#fffafa'],['honeydew','#f0fff0'],
+        ['mintcream','#f5fffa'],['azure','#f0ffff'],['aliceblue','#f0f8ff'],
+        ['ghostwhite','#f8f8ff'],['whitesmoke','#f5f5f5'],['seashell','#fff5ee'],
+        ['beige','#f5f5dc'],['oldlace','#fdf5e6'],['floralwhite','#fffaf0'],
+        ['ivory','#fffff0'],['antiquewhite','#faebd7'],['linen','#faf0e6'],
+        ['lavenderblush','#fff0f5'],['mistyrose','#ffe4e1'],
+      ],
+      'Gray / Black': [
+        ['gainsboro','#dcdcdc'],['lightgray','#d3d3d3'],['lightgrey','#d3d3d3'],
+        ['silver','#c0c0c0'],['darkgray','#a9a9a9'],['darkgrey','#a9a9a9'],
+        ['gray','#808080'],['grey','#808080'],['dimgray','#696969'],
+        ['dimgrey','#696969'],['lightslategray','#778899'],['lightslategrey','#778899'],
+        ['slategray','#708090'],['slategrey','#708090'],['darkslategray','#2f4f4f'],
+        ['darkslategrey','#2f4f4f'],['black','#000000'],
+      ],
+    };
+
+    // Basic 16 (subset)
+    const BASIC_NAMES = new Set([
+      'white','silver','gray','black','red','maroon','yellow','olive',
+      'lime','green','aqua','teal','blue','navy','fuchsia','purple',
+    ]);
+
+    // Extended — includes a few extras beyond pure CSS named
+    const EXTENDED_EXTRAS: ColorEntry[] = [
+      ['caribbeangreen','#00cc99'],['coquelicot','#ff3800'],['eigengrau','#16161d'],
+      ['falu red','#801818'],['fern green','#4f7942'],['french blue','#0072bb'],
+      ['international klein blue','#002fa7'],['iris','#5a4fcf'],['jade','#00a86b'],
+      ['jasper','#d73b3e'],['jungle green','#29ab87'],['lapis lazuli','#26619c'],
+      ['lust','#e62020'],['mantis','#74c365'],['mauve','#e0b0ff'],
+      ['midnight green','#004953'],['moss green','#8a9a5b'],['neon blue','#4666ff'],
+      ['neon green','#39ff14'],['ocean blue','#4f42b5'],['pastel pink','#dea5a4'],
+      ['persian blue','#1c39bb'],['prussian blue','#003153'],['puce','#cc8899'],
+      ['raspberry','#e30b5d'],['raw sienna','#d68a59'],['razzmatazz','#e3256b'],
+      ['safety orange','#ff6700'],['saffron','#f4c430'],['sage','#bcb88a'],
+      ['sangria','#92000a'],['sapphire','#0f52ba'],['scarlet','#ff2400'],
+      ['shocking pink','#fc0fc0'],['smalt','#003399'],['straw','#e4d96f'],
+      ['tawny','#cd5700'],['teal blue','#367588'],['true blue','#0073cf'],
+      ['tuscan red','#7c4848'],['umber','#635147'],['vermilion','#e34234'],
+      ['viridian','#40826d'],['wenge','#645452'],['wine','#722f37'],
+      ['xanadu','#738678'],['yale blue','#0f4d92'],['zaffre','#0014a8'],
+    ];
+
+    // ─── State ────────────────────────────────────────────────────────────────
+    let currentHex = '#000000';
+
+    // ─── DOM refs ─────────────────────────────────────────────────────────────
+    const swatchLarge   = document.getElementById('cc-swatch') as HTMLElement;
+    const hexDisplay    = document.getElementById('cc-hex-display') as HTMLElement;
+    const familySelect  = document.getElementById('cc-family') as HTMLSelectElement;
+    const nameSelect    = document.getElementById('cc-name') as HTMLSelectElement;
+    const extSelect     = document.getElementById('cc-ext') as HTMLSelectElement;
+    const picker        = document.getElementById('cc-picker') as HTMLInputElement;
+    const pickerSwatch  = document.getElementById('cc-picker-swatch') as HTMLElement;
+    const hexInput      = document.getElementById('cc-hex-input') as HTMLInputElement;
+    const eyeBtn        = document.getElementById('cc-eyedropper-btn') as HTMLButtonElement;
+    const eyeNote       = document.getElementById('cc-eyedropper-note') as HTMLElement;
+    const formatSelect  = document.getElementById('cc-format') as HTMLSelectElement;
+    const varnameField  = document.getElementById('cc-varname-field') as HTMLElement;
+    const varnameInput  = document.getElementById('cc-varname') as HTMLInputElement;
+    const outputEl      = document.getElementById('cc-output') as HTMLElement;
+    const copyOutput    = document.getElementById('cc-copy-output') as HTMLButtonElement;
+    const copyHex       = document.getElementById('cc-copy-hex') as HTMLButtonElement;
+    const closestSwatch = document.getElementById('cc-closest-swatch') as HTMLElement;
+    const closestName   = document.getElementById('cc-closest-name') as HTMLElement;
+    const closestHex    = document.getElementById('cc-closest-hex') as HTMLElement;
+    const closestDist   = document.getElementById('cc-closest-dist') as HTMLElement;
+    const useClosest    = document.getElementById('cc-use-closest') as HTMLButtonElement;
+    const pngW          = document.getElementById('cc-png-w') as HTMLInputElement;
+    const pngH          = document.getElementById('cc-png-h') as HTMLInputElement;
+    const pngBtn        = document.getElementById('cc-png-btn') as HTMLButtonElement;
+    const canvas        = document.getElementById('cc-canvas') as HTMLCanvasElement;
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+    function hexToRgb(hex: string): [number, number, number] {
+      const n = parseInt(hex.replace('#', ''), 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+
+    function rgbToHex(r: number, g: number, b: number): string {
+      return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    }
+
+    function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+          case g: h = ((b - r) / d + 2) / 6; break;
+          case b: h = ((r - g) / d + 4) / 6; break;
+        }
+      }
+      return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+    }
+
+    function colorDistance(hex1: string, hex2: string): number {
+      const [r1, g1, b1] = hexToRgb(hex1);
+      const [r2, g2, b2] = hexToRgb(hex2);
+      // Weighted Euclidean (human perception)
+      const rMean = (r1 + r2) / 2;
+      const dr = r1 - r2, dg = g1 - g2, db = b1 - b2;
+      return Math.sqrt((2 + rMean / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rMean) / 256) * db * db);
+    }
+
+    function allEntries(): ColorEntry[] {
+      return Object.values(ALL_COLORS).flat();
+    }
+
+    function findClosest(hex: string): { name: string; hex: string; dist: number } {
+      const base = allEntries();
+      const extras = EXTENDED_EXTRAS;
+      const pool = [...base, ...extras];
+      let best = pool[0];
+      let bestDist = Infinity;
+      for (const [name, h] of pool) {
+        const d = colorDistance(hex, h);
+        if (d < bestDist) { bestDist = d; best = [name, h]; }
+      }
+      return { name: best[0], hex: best[1], dist: Math.round(bestDist) };
+    }
+
+    function normalizeHex(raw: string): string | null {
+      const s = raw.replace(/^#/, '').trim();
+      if (/^[0-9a-fA-F]{3}$/.test(s)) {
+        return '#' + s.split('').map(c => c + c).join('');
+      }
+      if (/^[0-9a-fA-F]{6}$/.test(s)) return '#' + s;
+      return null;
+    }
+
+    function buildOutput(hex: string, format: string): string {
+      const [r, g, b] = hexToRgb(hex);
+      const [h, s, l] = rgbToHsl(r, g, b);
+      const varname = varnameInput.value.trim() || 'my-color';
+      switch (format) {
+        case 'hex':       return hex.toLowerCase();
+        case 'hex-upper': return hex.toUpperCase();
+        case 'hex-bare':  return hex.replace('#', '').toLowerCase();
+        case 'rgb':       return `rgb(${r}, ${g}, ${b})`;
+        case 'rgba':      return `rgba(${r}, ${g}, ${b}, 1)`;
+        case 'hsl':       return `hsl(${h}, ${s}%, ${l}%)`;
+        case 'css-color': return `color: ${hex.toLowerCase()};`;
+        case 'css-bg':    return `background-color: ${hex.toLowerCase()};`;
+        case 'css-var':   return `--${varname}: ${hex.toLowerCase()};`;
+        case 'html-attr': return `color="${hex.toLowerCase()}"`;
+        case 'html-style':return `style="color: ${hex.toLowerCase()};"`;
+        default:          return hex.toLowerCase();
+      }
+    }
+
+    // ─── Apply color to all UI ───────────────────────────────────────────────
+    function applyColor(hex: string, source: 'named' | 'picker' | 'hex' | 'eyedropper' | 'closest' = 'picker') {
+      currentHex = hex.toLowerCase();
+      swatchLarge.style.background = currentHex;
+      hexDisplay.textContent = currentHex;
+      pickerSwatch.style.background = currentHex;
+
+      // Sync picker value
+      if (source !== 'picker') picker.value = currentHex;
+      // Sync hex input
+      if (source !== 'hex') hexInput.value = currentHex.replace('#', '');
+
+      // Output
+      outputEl.textContent = buildOutput(currentHex, formatSelect.value);
+
+      // Closest named
+      const c = findClosest(currentHex);
+      closestSwatch.style.background = c.hex;
+      closestName.textContent = c.name;
+      closestHex.textContent = c.hex;
+      closestDist.textContent = `Δ ${c.dist}`;
+      useClosest.dataset.hex = c.hex;
+
+      // Sync named dropdowns if exact match
+      if (source !== 'named') syncNamedDropdownsToHex(currentHex);
+    }
+
+    // ─── Populate named dropdowns ─────────────────────────────────────────────
+    function getPool(): FamilyMap {
+      const set = extSelect.value;
+      if (set === 'basic') {
+        const basic: FamilyMap = {};
+        for (const [fam, entries] of Object.entries(ALL_COLORS)) {
+          const f = entries.filter(([n]) => BASIC_NAMES.has(n));
+          if (f.length) basic[fam] = f;
+        }
+        return basic;
+      }
+      if (set === 'extended') {
+        const ext: FamilyMap = { ...ALL_COLORS };
+        ext['Extended'] = EXTENDED_EXTRAS;
+        return ext;
+      }
+      return ALL_COLORS; // css
+    }
+
+    function populateFamilies() {
+      const pool = getPool();
+      const prev = familySelect.value;
+      familySelect.innerHTML = '';
+      for (const fam of Object.keys(pool)) {
+        const opt = document.createElement('option');
+        opt.value = fam; opt.textContent = fam;
+        familySelect.appendChild(opt);
+      }
+      if (prev && [...familySelect.options].some(o => o.value === prev)) {
+        familySelect.value = prev;
+      }
+      populateNames();
+    }
+
+    function populateNames() {
+      const pool = getPool();
+      const fam = familySelect.value;
+      const entries = pool[fam] ?? [];
+      const prev = nameSelect.value;
+      nameSelect.innerHTML = '';
+      for (const [name, hex] of entries) {
+        const opt = document.createElement('option');
+        opt.value = hex;
+        opt.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        nameSelect.appendChild(opt);
+      }
+      // Try restore, else pick first
+      if (prev && [...nameSelect.options].some(o => o.value === prev)) {
+        nameSelect.value = prev;
+      }
+      const chosen = nameSelect.value;
+      if (chosen) applyColor(chosen, 'named');
+    }
+
+    function syncNamedDropdownsToHex(hex: string) {
+      const pool = getPool();
+      for (const [fam, entries] of Object.entries(pool)) {
+        const match = entries.find(([, h]) => h.toLowerCase() === hex.toLowerCase());
+        if (match) {
+          if (familySelect.value !== fam) {
+            familySelect.value = fam;
+            populateNames();
+          }
+          nameSelect.value = match[1];
+          return;
+        }
+      }
+    }
+
+    // ─── Events ──────────────────────────────────────────────────────────────
+    familySelect.addEventListener('change', populateNames);
+    nameSelect.addEventListener('change', () => applyColor(nameSelect.value, 'named'));
+    extSelect.addEventListener('change', populateFamilies);
+
+    picker.addEventListener('input', () => applyColor(picker.value, 'picker'));
+
+    hexInput.addEventListener('input', () => {
+      const h = normalizeHex(hexInput.value);
+      if (h) applyColor(h, 'hex');
+    });
+    hexInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const h = normalizeHex(hexInput.value);
+        if (h) applyColor(h, 'hex');
+      }
+    });
+
+    formatSelect.addEventListener('change', () => {
+      varnameField.style.display = formatSelect.value === 'css-var' ? '' : 'none';
+      outputEl.textContent = buildOutput(currentHex, formatSelect.value);
+    });
+    varnameInput.addEventListener('input', () => {
+      outputEl.textContent = buildOutput(currentHex, formatSelect.value);
+    });
+
+    // Copy buttons
+    async function copyText(text: string, btn: HTMLButtonElement) {
+      try {
+        await navigator.clipboard.writeText(text);
+        const orig = btn.textContent ?? '';
+        btn.textContent = '✓ Copied';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      } catch { /* ignore */ }
+    }
+    copyOutput.addEventListener('click', () => copyText(outputEl.textContent ?? '', copyOutput));
+    copyHex.addEventListener('click', () => copyText(currentHex, copyHex));
+
+    // Eyedropper
+    if ('EyeDropper' in window) {
+      eyeBtn.addEventListener('click', async () => {
+        try {
+          // @ts-ignore — EyeDropper not yet in lib.dom.d.ts
+          const ed = new (window as any).EyeDropper();
+          const result = await ed.open();
+          applyColor(result.sRGBHex, 'eyedropper');
+        } catch { /* user cancelled */ }
+      });
+    } else {
+      eyeBtn.disabled = true;
+      eyeNote.textContent = 'Eyedropper requires Chrome 95+ or Edge 95+.';
+    }
+
+    // Use closest
+    useClosest.addEventListener('click', () => {
+      const h = useClosest.dataset.hex;
+      if (h) applyColor(h, 'closest');
+    });
+
+    // PNG export
+    pngBtn.addEventListener('click', () => {
+      const w = Math.max(1, Math.min(4096, parseInt(pngW.value) || 256));
+      const h = Math.max(1, Math.min(4096, parseInt(pngH.value) || 256));
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d')!;
+      ctx.fillStyle = currentHex;
+      ctx.fillRect(0, 0, w, h);
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = `color-${currentHex.replace('#', '')}-${w}x${h}.png`;
+      a.click();
+    });
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+    populateFamilies();
+    // Start on a pleasant green (teal default)
+    applyColor('#008080', 'named');
+  </script>
+</BaseLayout>

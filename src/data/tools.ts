@@ -1,4 +1,4 @@
-export type ToolCategory = 'write' | 'convert' | 'inspect';
+export type ToolCategory = 'write' | 'convert' | 'inspect' | 'design';
 
 export interface ToolMeta {
   id: string;
@@ -32,6 +32,22 @@ export const tools: ToolMeta[] = [
     href: '/text-info.html',
     category: 'inspect',
     description: 'Count words, characters, lines, sentences, and estimated reading time.',
+    status: 'ready'
+  },
+  {
+    id: 'color-chooser',
+    name: 'Color Chooser',
+    href: '/color-chooser',
+    category: 'design',
+    description: 'Pick named HTML colors by family, use the eyedropper or color picker, get CSS/HTML/hex output, find the closest named color, and generate solid-color PNGs.',
+    status: 'ready'
+  },
+  {
+    id: 'font-awesome-chooser',
+    name: 'Font Awesome Chooser',
+    href: '/font-awesome-chooser',
+    category: 'design',
+    description: 'Browse Font Awesome 6 icons by category and style. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, C#, Python, PHP, and more.',
     status: 'ready'
   }
 ];

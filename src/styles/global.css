@@ -140,6 +140,42 @@ textarea:focus-visible {
   align-items: center;
 }
 
+/* Accent color picker */
+.color-picker-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.color-swatch {
+  display: inline-block;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--border);
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.color-picker-wrap:hover .color-swatch {
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+
+.color-picker-wrap input[type="color"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
 .hero {
   padding: 3.2rem 0 2rem;
 }
@@ -163,7 +199,7 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
-  padding: 1rem 0 3rem;
+  padding: 2.5rem 0 3rem;
 }
 
 .tool-card {
