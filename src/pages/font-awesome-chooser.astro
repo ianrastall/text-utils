@@ -11,68 +11,68 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     crossorigin="anonymous"
   />
 
-  <main class="shell fa-main">
-    <header class="fa-page-header">
+  <main class="shell fac-main">
+    <header class="fac-page-header">
       <h1>Font Awesome Chooser</h1>
       <p>Browse icons by category · click any icon to get code in your language</p>
     </header>
 
     <!-- Controls bar -->
-    <div class="fa-controls">
-      <div class="fa-ctl">
-        <label for="fa-version">FA Version</label>
-        <select id="fa-version">
+    <div class="fac-controls">
+      <div class="fac-ctl">
+        <label for="fac-version">FA Version</label>
+        <select id="fac-version">
           <option value="6" selected>Font Awesome 6</option>
           <option value="5">Font Awesome 5</option>
           <option value="4">Font Awesome 4</option>
         </select>
       </div>
-      <div class="fa-ctl">
-        <label for="fa-style-filter">Style</label>
-        <select id="fa-style-filter">
+      <div class="fac-ctl">
+        <label for="fac-style-filter">Style</label>
+        <select id="fac-style-filter">
           <option value="all" selected>All styles</option>
           <option value="s">Solid</option>
           <option value="r">Regular</option>
           <option value="b">Brands</option>
         </select>
       </div>
-      <div class="fa-ctl">
-        <label for="fa-category">Category</label>
-        <select id="fa-category">
+      <div class="fac-ctl">
+        <label for="fac-category">Category</label>
+        <select id="fac-category">
           <option value="all">All categories</option>
         </select>
       </div>
-      <div class="fa-ctl fa-ctl-search">
-        <label for="fa-search">Search</label>
-        <div class="fa-search-wrap">
-          <i class="fa-solid fa-magnifying-glass fa-search-icon" aria-hidden="true"></i>
-          <input type="search" id="fa-search" placeholder="filter icons…" autocomplete="off" spellcheck="false" />
+      <div class="fac-ctl fac-ctl-search">
+        <label for="fac-search">Search</label>
+        <div class="fac-search-wrap">
+          <i class="fa-solid fa-magnifying-glass fac-search-icon" aria-hidden="true"></i>
+          <input type="search" id="fac-search" placeholder="filter icons…" autocomplete="off" spellcheck="false" />
         </div>
       </div>
-      <span class="fa-count" id="fa-count"></span>
+      <span class="fac-count" id="fac-count"></span>
     </div>
 
     <!-- Workspace: scrollable grid + detail sidebar -->
-    <div class="fa-workspace">
-      <div class="fa-grid-wrap">
-        <div class="fa-grid" id="fa-grid"></div>
-        <p class="fa-no-results" id="fa-no-results" style="display:none">No icons match your filters.</p>
+    <div class="fac-workspace">
+      <div class="fac-grid-wrap">
+        <div class="fac-grid" id="fac-grid"></div>
+        <p class="fac-no-results" id="fac-no-results" style="display:none">No icons match your filters.</p>
       </div>
 
-      <aside class="fa-sidebar">
-        <div class="fa-empty-state" id="fa-empty-state">
+      <aside class="fac-sidebar">
+        <div class="fac-empty-state" id="fac-empty-state">
           <p>Click any icon to see usage code</p>
         </div>
-        <div class="fa-detail" id="fa-detail" style="display:none">
-          <div class="fa-preview" id="fa-preview"></div>
-          <div class="fa-icon-meta">
-            <strong id="fa-name-display"></strong>
-            <code id="fa-class-display" class="fa-code-inline"></code>
-            <span id="fa-unicode-display" class="fa-muted-text"></span>
+        <div class="fac-detail" id="fac-detail" style="display:none">
+          <div class="fac-preview" id="fac-preview"></div>
+          <div class="fac-icon-meta">
+            <strong id="fac-name-display"></strong>
+            <code id="fac-class-display" class="fac-code-inline"></code>
+            <span id="fac-unicode-display" class="fac-muted-text"></span>
           </div>
-          <div class="fa-ctl fa-lang-ctl">
-            <label for="fa-lang">Language / Framework</label>
-            <select id="fa-lang">
+          <div class="fac-ctl fac-lang-ctl">
+            <label for="fac-lang">Language / Framework</label>
+            <select id="fac-lang">
               <option value="html">HTML</option>
               <option value="css">CSS (content:)</option>
               <option value="react">React / JSX</option>
@@ -86,10 +86,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <option value="wordpress">WordPress PHP</option>
             </select>
           </div>
-          <div class="fa-code-wrap">
-            <pre id="fa-code-out" class="fa-code"></pre>
+          <div class="fac-code-wrap">
+            <pre id="fac-code-out" class="fac-code"></pre>
           </div>
-          <button class="button primary fa-copy-btn" id="fa-copy-code">⎘ Copy code</button>
+          <button class="button primary fac-copy-btn" id="fac-copy-code">⎘ Copy code</button>
         </div>
       </aside>
     </div>
@@ -97,13 +97,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <style>
     /* ── Page ──────────────────────────────────────────── */
-    .fa-main { padding: 1rem 0 1rem; }
-    .fa-page-header { margin-bottom: 0.6rem; }
-    .fa-page-header h1 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
-    .fa-page-header p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    .fac-main { padding: 1rem 0 1rem; }
+    .fac-page-header { margin-bottom: 0.6rem; }
+    .fac-page-header h1 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+    .fac-page-header p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.85rem; }
 
     /* ── Controls ──────────────────────────────────────── */
-    .fa-controls {
+    .fac-controls {
       display: flex;
       align-items: flex-end;
       gap: 0.65rem;
@@ -111,9 +111,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
     }
-    .fa-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
-    .fa-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
-    .fa-ctl select {
+    .fac-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
+    .fac-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .fac-ctl select {
       min-height: 2.1rem;
       font-size: 0.88rem;
       border: 1px solid var(--border);
@@ -123,9 +123,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       padding: 0.3rem 0.6rem;
       font: inherit;
     }
-    .fa-ctl-search { flex: 1; min-width: 160px; }
-    .fa-search-wrap { position: relative; }
-    .fa-search-icon {
+    .fac-ctl-search { flex: 1; min-width: 160px; }
+    .fac-search-wrap { position: relative; }
+    .fac-search-icon {
       position: absolute;
       left: 0.6rem;
       top: 50%;
@@ -134,7 +134,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       font-size: 0.82rem;
       pointer-events: none;
     }
-    #fa-search {
+    #fac-search {
       width: 100%;
       min-height: 2.1rem;
       padding: 0.3rem 0.6rem 0.3rem 2rem;
@@ -145,11 +145,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       font-size: 0.88rem;
       font: inherit;
     }
-    #fa-search:focus {
+    #fac-search:focus {
       outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
       outline-offset: 1px;
     }
-    .fa-count {
+    .fac-count {
       color: var(--muted);
       font-size: 0.8rem;
       align-self: flex-end;
@@ -159,7 +159,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     /* ── Workspace ─────────────────────────────────────── */
-    .fa-workspace {
+    .fac-workspace {
       display: grid;
       grid-template-columns: 1fr 290px;
       gap: 0.75rem;
@@ -169,26 +169,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     /* ── Icon grid ─────────────────────────────────────── */
-    .fa-grid-wrap {
+    .fac-grid-wrap {
       overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: var(--panel);
     }
-    .fa-grid {
+    .fac-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
       gap: 0.25rem;
       padding: 0.6rem;
     }
-    .fa-no-results {
+    .fac-no-results {
       padding: 2rem;
       text-align: center;
       color: var(--muted);
       font-size: 0.9rem;
       margin: 0;
     }
-    .fa-tile {
+    .fac-tile {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -204,13 +204,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       transition: border-color 0.1s, background 0.1s;
       min-width: 0;
     }
-    .fa-tile:hover { background: var(--panel-muted); border-color: var(--border); }
-    .fa-tile.selected {
+    .fac-tile:hover { background: var(--panel-muted); border-color: var(--border); }
+    .fac-tile.selected {
       background: color-mix(in srgb, var(--accent) 12%, transparent);
       border-color: var(--accent);
     }
-    .fa-tile i { font-size: 1.35rem; line-height: 1; }
-    .fa-tile-name {
+    .fac-tile i { font-size: 1.35rem; line-height: 1; }
+    .fac-tile-name {
       font-size: 0.59rem;
       color: var(--muted);
       word-break: break-all;
@@ -223,7 +223,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     /* ── Sidebar ───────────────────────────────────────── */
-    .fa-sidebar {
+    .fac-sidebar {
       border: 1px solid var(--border);
       border-radius: 8px;
       background: var(--panel);
@@ -231,7 +231,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       display: flex;
       flex-direction: column;
     }
-    .fa-empty-state {
+    .fac-empty-state {
       flex: 1;
       display: flex;
       align-items: center;
@@ -240,14 +240,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       padding: 1.5rem;
       text-align: center;
     }
-    .fa-empty-state p { margin: 0; font-size: 0.88rem; }
-    .fa-detail {
+    .fac-empty-state p { margin: 0; font-size: 0.88rem; }
+    .fac-detail {
       padding: 0.85rem;
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
     }
-    .fa-preview {
+    .fac-preview {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -257,19 +257,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       border: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .fa-preview i { font-size: 2.8rem; color: var(--accent); }
-    .fa-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
-    .fa-icon-meta strong { font-size: 0.95rem; }
-    .fa-code-inline {
+    .fac-preview i { font-size: 2.8rem; color: var(--accent); }
+    .fac-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
+    .fac-icon-meta strong { font-size: 0.95rem; }
+    .fac-code-inline {
       font-family: ui-monospace, 'Cascadia Code', monospace;
       font-size: 0.72rem;
       color: var(--muted);
       word-break: break-all;
     }
-    .fa-muted-text { font-size: 0.72rem; color: var(--muted); font-family: ui-monospace, monospace; }
-    .fa-lang-ctl { width: 100%; }
-    .fa-lang-ctl select { width: 100%; }
-    .fa-code-wrap {
+    .fac-muted-text { font-size: 0.72rem; color: var(--muted); font-family: ui-monospace, monospace; }
+    .fac-lang-ctl { width: 100%; }
+    .fac-lang-ctl select { width: 100%; }
+    .fac-code-wrap {
       background: var(--panel-muted);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -277,7 +277,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       min-height: 80px;
       max-height: 280px;
     }
-    .fa-code {
+    .fac-code {
       margin: 0;
       padding: 0.6rem 0.75rem;
       font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
@@ -286,13 +286,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       color: var(--accent);
       white-space: pre;
     }
-    .fa-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }
+    .fac-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }
 
     /* ── Narrow fallback ───────────────────────────────── */
     @media (max-width: 760px) {
-      .fa-workspace { grid-template-columns: 1fr; height: auto; }
-      .fa-grid-wrap { height: 50vh; }
-      .fa-sidebar { min-height: 320px; }
+      .fac-workspace { grid-template-columns: 1fr; height: auto; }
+      .fac-grid-wrap { height: 50vh; }
+      .fac-sidebar { min-height: 320px; }
     }
   </style>
 
@@ -584,22 +584,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     let currentUnicode = '????';
 
     // ─── DOM ──────────────────────────────────────────────────────────────────
-    const versionSel  = document.getElementById('fa-version') as HTMLSelectElement;
-    const styleSel    = document.getElementById('fa-style-filter') as HTMLSelectElement;
-    const categorySel = document.getElementById('fa-category') as HTMLSelectElement;
-    const searchEl    = document.getElementById('fa-search') as HTMLInputElement;
-    const countEl     = document.getElementById('fa-count') as HTMLElement;
-    const gridEl      = document.getElementById('fa-grid') as HTMLElement;
-    const noResultsEl = document.getElementById('fa-no-results') as HTMLElement;
-    const emptyState  = document.getElementById('fa-empty-state') as HTMLElement;
-    const detailEl    = document.getElementById('fa-detail') as HTMLElement;
-    const previewEl   = document.getElementById('fa-preview') as HTMLElement;
-    const nameDisp    = document.getElementById('fa-name-display') as HTMLElement;
-    const classDisp   = document.getElementById('fa-class-display') as HTMLElement;
-    const unicodeDisp = document.getElementById('fa-unicode-display') as HTMLElement;
-    const langSel     = document.getElementById('fa-lang') as HTMLSelectElement;
-    const codeOut     = document.getElementById('fa-code-out') as HTMLElement;
-    const copyBtn     = document.getElementById('fa-copy-code') as HTMLButtonElement;
+    const versionSel  = document.getElementById('fac-version') as HTMLSelectElement;
+    const styleSel    = document.getElementById('fac-style-filter') as HTMLSelectElement;
+    const categorySel = document.getElementById('fac-category') as HTMLSelectElement;
+    const searchEl    = document.getElementById('fac-search') as HTMLInputElement;
+    const countEl     = document.getElementById('fac-count') as HTMLElement;
+    const gridEl      = document.getElementById('fac-grid') as HTMLElement;
+    const noResultsEl = document.getElementById('fac-no-results') as HTMLElement;
+    const emptyState  = document.getElementById('fac-empty-state') as HTMLElement;
+    const detailEl    = document.getElementById('fac-detail') as HTMLElement;
+    const previewEl   = document.getElementById('fac-preview') as HTMLElement;
+    const nameDisp    = document.getElementById('fac-name-display') as HTMLElement;
+    const classDisp   = document.getElementById('fac-class-display') as HTMLElement;
+    const unicodeDisp = document.getElementById('fac-unicode-display') as HTMLElement;
+    const langSel     = document.getElementById('fac-lang') as HTMLSelectElement;
+    const codeOut     = document.getElementById('fac-code-out') as HTMLElement;
+    const copyBtn     = document.getElementById('fac-copy-code') as HTMLButtonElement;
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
     function styleClass(s: string): string {
@@ -717,11 +717,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         const sc = styleClass(style);
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'fa-tile' + (selected?.name === name && selected?.style === style ? ' selected' : '');
+        btn.className = 'fac-tile' + (selected?.name === name && selected?.style === style ? ' selected' : '');
         btn.dataset.name = name;
         btn.dataset.style = style;
         btn.title = name;
-        btn.innerHTML = `<i class="${sc} fa-${name}" aria-hidden="true"></i><span class="fa-tile-name">${name}</span>`;
+        btn.innerHTML = `<i class="${sc} fa-${name}" aria-hidden="true"></i><span class="fac-tile-name">${name}</span>`;
         btn.addEventListener('click', () => selectIcon(name, style, btn));
         frag.appendChild(btn);
       }
@@ -730,7 +730,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     // ─── Select an icon ───────────────────────────────────────────────────────
     function selectIcon(name: string, style: string, btn: HTMLButtonElement) {
-      document.querySelectorAll('.fa-tile.selected').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.fac-tile.selected').forEach(el => el.classList.remove('selected'));
       btn.classList.add('selected');
       selected = { name, style };
       currentUnicode = readUnicode(name, style);
