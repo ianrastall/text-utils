@@ -21,7 +21,7 @@ export const tools: ToolMeta[] = [
   {
     id: 'clock-face',
     name: 'Clock Face Generator',
-    href: '/clock-face',
+    href: '/clock-face.html',
     category: 'design',
     description: 'Generate an SVG of an analog clock. Interactively drag hands to set the time.',
     status: 'ready'
@@ -29,7 +29,7 @@ export const tools: ToolMeta[] = [
   {
     id: 'color-chooser',
     name: 'Color Chooser',
-    href: '/color-chooser',
+    href: '/color-chooser.html',
     category: 'design',
     description: 'Pick named HTML colors by family, use the eyedropper or color picker, get CSS/HTML/hex output, find the closest named color, and generate solid-color PNGs.',
     status: 'ready'
@@ -37,7 +37,7 @@ export const tools: ToolMeta[] = [
   {
     id: 'css-gradient-generator',
     name: 'CSS Gradient Generator',
-    href: '/css-gradient-generator',
+    href: '/css-gradient-generator.html',
     category: 'design',
     description: 'Visually create linear, radial, and conic CSS gradients. Drag color stops, copy code, or download PNG.',
     status: 'ready'
@@ -53,7 +53,7 @@ export const tools: ToolMeta[] = [
   {
     id: 'font-awesome-chooser',
     name: 'Font Awesome Chooser',
-    href: '/font-awesome-chooser',
+    href: '/font-awesome-chooser.html',
     category: 'design',
     description: 'Browse Font Awesome 6 icons by category and style. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, C#, Python, PHP, and more.',
     status: 'ready'
@@ -61,7 +61,7 @@ export const tools: ToolMeta[] = [
   {
     id: 'google-icons-chooser',
     name: 'Google Icons Chooser',
-    href: '/google-icons-chooser',
+    href: '/google-icons-chooser.html',
     category: 'design',
     description: 'Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.',
     status: 'ready'
@@ -77,7 +77,7 @@ export const tools: ToolMeta[] = [
   {
     id: 'unicode-chooser',
     name: 'Unicode Chooser',
-    href: '/unicode-chooser',
+    href: '/unicode-chooser.html',
     category: 'design',
     description: 'Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.',
     status: 'ready'
