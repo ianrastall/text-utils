@@ -1,0 +1,703 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Font Chooser"
+  description="Preview and select fonts with Google Fonts integration, accessibility checking, and production-ready CSS generation.">
+
+  <main class="shell page-main fc-page">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Font Chooser</h1>
+        <p>Preview and select fonts with Google Fonts integration, accessibility checking, and production-ready CSS generation.</p>
+      </div>
+    </div>
+
+    <div class="fc-layout">
+      <!-- Sidebar -->
+      <aside class="fc-sidebar panel">
+        <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 1rem;">Font Source</h3>
+        
+        <div class="fc-source-radios" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="radio" name="fontSource" value="google" checked> 
+            <span>Google Fonts <span style="font-size: 0.7rem; background: var(--accent); color: white; padding: 2px 6px; border-radius: 10px;">100+</span></span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="radio" name="fontSource" value="system">
+            <span>System Fonts</span>
+          </label>
+        </div>
+
+        <div class="field" style="margin-bottom: 1rem;">
+          <input type="text" id="fontSearch" placeholder="Search fonts..." style="width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);" />
+        </div>
+
+        <div class="field" id="categoryFilterContainer" style="margin-bottom: 1rem;">
+          <select id="fontCategory" style="width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+            <option value="all">All Categories</option>
+            <option value="serif">Serif</option>
+            <option value="sans-serif">Sans Serif</option>
+            <option value="display">Display</option>
+            <option value="handwriting">Handwriting</option>
+            <option value="monospace">Monospace</option>
+          </select>
+        </div>
+
+        <div id="fontList" class="fc-font-list">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+
+      <!-- Main Column -->
+      <div class="fc-main">
+        <!-- Settings Panel -->
+        <div class="fc-settings panel" style="margin-bottom: 1.5rem;">
+          <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 1rem;">Preview Settings</h3>
+          
+          <div class="fc-controls-grid">
+            <div class="field">
+              <label>Font Size (<span id="fontSizeDisplay">16</span>px)</label>
+              <input type="range" id="fontSize" min="8" max="72" value="16" />
+            </div>
+            
+            <div class="field">
+              <label>Font Weight</label>
+              <select id="fontWeight" style="padding: 0.3rem;">
+                <option value="400" selected>400 - Regular</option>
+              </select>
+            </div>
+            
+            <div class="field">
+              <label>Line Height (<span id="lineHeightDisplay">1.5</span>)</label>
+              <input type="range" id="lineHeight" min="1" max="3" step="0.1" value="1.5" />
+            </div>
+            
+            <div class="field">
+              <label>Letter Spacing (<span id="letterSpacingDisplay">0</span>px)</label>
+              <input type="range" id="letterSpacing" min="-5" max="10" step="0.5" value="0" />
+            </div>
+            
+            <div class="field">
+              <label>Text Color</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="color" id="textColor" value="#ffffff" style="width: 40px; height: 32px; padding: 0; cursor: pointer;" />
+                <input type="text" id="textColorHex" value="#ffffff" style="flex: 1; padding: 0.3rem;" />
+              </div>
+            </div>
+            
+            <div class="field">
+              <label>Background Color</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="color" id="bgColor" value="#1a1a1a" style="width: 40px; height: 32px; padding: 0; cursor: pointer;" />
+                <input type="text" id="bgColorHex" value="#1a1a1a" style="flex: 1; padding: 0.3rem;" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Contrast Ratio</label>
+              <div id="contrastBadge" style="margin-top: 0.3rem;">
+                <!-- Filled by JS -->
+              </div>
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <label>Custom Text</label>
+              <input type="text" id="customText" value="The quick brown fox jumps over the lazy dog." style="width: 100%; padding: 0.4rem;" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="fc-preview panel" style="margin-bottom: 1.5rem; overflow: hidden;">
+          <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 1rem; display: flex; justify-content: space-between;">
+            Preview
+            <button class="button" id="resetBtn" style="font-size: 0.8rem; padding: 0.2rem 0.6rem;">Reset</button>
+          </h3>
+          <div id="previewArea" style="min-height: 250px; padding: 2rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); overflow-wrap: break-word;">
+            <div id="previewContent">
+              <p class="preview-text">The quick brown fox jumps over the lazy dog.</p>
+              <p class="preview-text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+              <p class="preview-text">abcdefghijklmnopqrstuvwxyz</p>
+              <p class="preview-text">0123456789</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code Panel -->
+        <div class="fc-code panel">
+          <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 1rem;">Production-Ready CSS</h3>
+          
+          <div class="fc-tabs">
+            <button class="fc-tab active" data-tab="css">CSS</button>
+            <button class="fc-tab" data-tab="import">@import</button>
+            <button class="fc-tab" data-tab="scss">SCSS</button>
+          </div>
+          
+          <div class="fc-tab-content active" id="tab-css">
+            <div class="fc-code-wrap">
+              <pre><code id="code-css">/* Select a font */</code></pre>
+              <button class="button copy-btn" data-target="code-css">⎘ Copy</button>
+            </div>
+          </div>
+          <div class="fc-tab-content" id="tab-import" style="display: none;">
+            <div class="fc-code-wrap">
+              <pre><code id="code-import">/* Select a font */</code></pre>
+              <button class="button copy-btn" data-target="code-import">⎘ Copy</button>
+            </div>
+          </div>
+          <div class="fc-tab-content" id="tab-scss" style="display: none;">
+            <div class="fc-code-wrap">
+              <pre><code id="code-scss">/* Select a font */</code></pre>
+              <button class="button copy-btn" data-target="code-scss">⎘ Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <style is:global>
+    .page-main { padding: 1.5rem 0 3rem; }
+    
+    .fc-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 800px) {
+      .fc-layout { grid-template-columns: 1fr; }
+    }
+
+    .fc-font-list {
+      height: 600px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      padding: 0.5rem;
+    }
+
+    .fc-category-header {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin: 1rem 0 0.5rem 0.5rem;
+    }
+    .fc-category-header:first-child { margin-top: 0.5rem; }
+
+    .fc-font-item {
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    .fc-font-item:hover { background: var(--panel-muted); }
+    .fc-font-item.active {
+      background: var(--panel-muted);
+      border-left: 3px solid var(--accent);
+    }
+    .fc-font-item-name { font-size: 1rem; }
+    .fc-font-item-meta { font-size: 0.75rem; color: var(--muted); }
+
+    .fc-controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .fc-controls-grid label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; display: block; }
+    .fc-controls-grid input[type="range"] { width: 100%; }
+
+    .contrast-badge {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .contrast-pass { background: #198754; color: white; }
+    .contrast-aa { background: #ffc107; color: black; }
+    .contrast-fail { background: #dc3545; color: white; }
+
+    .fc-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .fc-tab {
+      background: none; border: none; color: var(--muted);
+      padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem;
+      border-bottom: 2px solid transparent;
+    }
+    .fc-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    
+    .fc-code-wrap { position: relative; background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid var(--border); }
+    .fc-code-wrap pre { margin: 0; color: #e6edf3; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; font-size: 0.75rem; padding: 0.2rem 0.5rem; }
+
+    /* Toasts */
+    .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; z-index: 9999; }
+    .toast { background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; box-shadow: var(--shadow); display: flex; align-items: center; gap: 0.75rem; animation: slideIn 0.3s ease-out forwards; border-left: 4px solid var(--accent); }
+    .toast.hiding { animation: fadeOut 0.3s ease-in forwards; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+  </style>
+
+  <script>
+    const GOOGLE_FONTS = {
+      'sans-serif': {
+        'Roboto': ['100', '300', '400', '500', '700', '900'],
+        'Open Sans': ['300', '400', '500', '600', '700', '800'],
+        'Lato': ['100', '300', '400', '700', '900'],
+        'Montserrat': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Poppins': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Inter': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Raleway': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Ubuntu': ['300', '400', '500', '700'],
+        'Nunito': ['200', '300', '400', '500', '600', '700', '800', '900'],
+        'Work Sans': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Rubik': ['300', '400', '500', '600', '700', '800', '900'],
+        'Noto Sans': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Quicksand': ['300', '400', '500', '600', '700'],
+        'Nunito Sans': ['200', '300', '400', '600', '700', '800', '900'],
+        'Mukta': ['200', '300', '400', '500', '600', '700', '800'],
+        'Josefin Sans': ['100', '200', '300', '400', '500', '600', '700'],
+        'Cabin': ['400', '500', '600', '700'],
+        'Oxygen': ['300', '400', '700'],
+        'Karla': ['200', '300', '400', '500', '600', '700', '800'],
+        'Hind': ['300', '400', '500', '600', '700'],
+        'Source Sans Pro': ['200', '300', '400', '600', '700', '900'],
+        'Barlow': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'DM Sans': ['400', '500', '700'],
+        'Mulish': ['200', '300', '400', '500', '600', '700', '800', '900'],
+        'Manrope': ['200', '300', '400', '500', '600', '700', '800'],
+        'Plus Jakarta Sans': ['200', '300', '400', '500', '600', '700', '800'],
+        'Outfit': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+      },
+      'serif': {
+        'Playfair Display': ['400', '500', '600', '700', '800', '900'],
+        'Lora': ['400', '500', '600', '700'],
+        'Merriweather': ['300', '400', '700', '900'],
+        'PT Serif': ['400', '700'],
+        'Crimson Text': ['400', '600', '700'],
+        'Libre Baskerville': ['400', '700'],
+        'EB Garamond': ['400', '500', '600', '700', '800'],
+        'Roboto Slab': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Noto Serif': ['400', '700'],
+        'Source Serif Pro': ['200', '300', '400', '600', '700', '900'],
+        'Bitter': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Crimson Pro': ['200', '300', '400', '500', '600', '700', '800', '900'],
+        'Cormorant Garamond': ['300', '400', '500', '600', '700'],
+        'Domine': ['400', '700'],
+        'Vollkorn': ['400', '500', '600', '700', '800', '900'],
+        'Literata': ['200', '300', '400', '500', '600', '700', '800', '900'],
+        'Cardo': ['400', '700'],
+        'Spectral': ['200', '300', '400', '500', '600', '700', '800'],
+      },
+      'display': {
+        'Bebas Neue': ['400'],
+        'Oswald': ['200', '300', '400', '500', '600', '700'],
+        'Anton': ['400'],
+        'Righteous': ['400'],
+        'Fredoka One': ['400'],
+        'Passion One': ['400', '700', '900'],
+        'Russo One': ['400'],
+        'Archivo Black': ['400'],
+        'Teko': ['300', '400', '500', '600', '700'],
+        'Barlow Condensed': ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+        'Yanone Kaffeesatz': ['200', '300', '400', '500', '600', '700'],
+        'Fjalla One': ['400'],
+        'Staatliches': ['400'],
+        'Alfa Slab One': ['400'],
+        'Black Ops One': ['400'],
+        'Bungee': ['400'],
+        'Bowlby One SC': ['400'],
+      },
+      'monospace': {
+        'Roboto Mono': ['100', '200', '300', '400', '500', '600', '700'],
+        'Source Code Pro': ['200', '300', '400', '500', '600', '700', '800', '900'],
+        'Fira Code': ['300', '400', '500', '600', '700'],
+        'JetBrains Mono': ['100', '200', '300', '400', '500', '600', '700', '800'],
+        'IBM Plex Mono': ['100', '200', '300', '400', '500', '600', '700'],
+        'Inconsolata': ['200', '300', '400', '500', '600', '700', '800', '900'],
+        'Space Mono': ['400', '700'],
+        'Ubuntu Mono': ['400', '700'],
+        'Overpass Mono': ['300', '400', '600', '700'],
+        'Red Hat Mono': ['300', '400', '500', '600', '700'],
+        'Cousine': ['400', '700'],
+        'Anonymous Pro': ['400', '700'],
+        'VT323': ['400'],
+        'Share Tech Mono': ['400'],
+      },
+      'handwriting': {
+        'Dancing Script': ['400', '500', '600', '700'],
+        'Pacifico': ['400'],
+        'Caveat': ['400', '500', '600', '700'],
+        'Satisfy': ['400'],
+        'Great Vibes': ['400'],
+        'Cookie': ['400'],
+        'Permanent Marker': ['400'],
+        'Kalam': ['300', '400', '700'],
+        'Patrick Hand': ['400'],
+        'Shadows Into Light': ['400'],
+        'Indie Flower': ['400'],
+        'Amatic SC': ['400', '700'],
+        'Handlee': ['400'],
+        'Sacramento': ['400'],
+        'Courgette': ['400'],
+      }
+    };
+
+    const SYSTEM_FONTS = {
+      'all': {
+        'Arial': 'Arial, Helvetica, sans-serif',
+        'Georgia': 'Georgia, serif',
+        'Courier New': '"Courier New", Courier, monospace',
+        'Times New Roman': '"Times New Roman", Times, serif',
+        'Verdana': 'Verdana, Geneva, sans-serif',
+        'Tahoma': 'Tahoma, Geneva, sans-serif',
+        'Trebuchet MS': '"Trebuchet MS", Helvetica, sans-serif',
+        'Impact': 'Impact, Charcoal, sans-serif',
+        'Comic Sans MS': '"Comic Sans MS", cursive',
+      },
+      'windows': {
+        'Segoe UI': '"Segoe UI", Tahoma, Geneva, sans-serif',
+        'Calibri': 'Calibri, Candara, sans-serif',
+        'Cambria': 'Cambria, Georgia, serif',
+        'Consolas': 'Consolas, Monaco, monospace',
+      },
+      'mac': {
+        'San Francisco': '-apple-system, BlinkMacSystemFont, sans-serif',
+        'Helvetica Neue': '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Avenir': 'Avenir, "Avenir Next", sans-serif',
+        'Monaco': 'Monaco, Consolas, monospace',
+      },
+      'linux': {
+        'Ubuntu': 'Ubuntu, "Noto Sans", sans-serif',
+        'DejaVu Sans': '"DejaVu Sans", Verdana, sans-serif',
+        'Liberation Sans': '"Liberation Sans", Arial, sans-serif',
+      }
+    };
+
+    const dom = {
+      fontList: document.getElementById('fontList') as HTMLDivElement,
+      fontSearch: document.getElementById('fontSearch') as HTMLInputElement,
+      fontCategory: document.getElementById('fontCategory') as HTMLSelectElement,
+      catFilterContainer: document.getElementById('categoryFilterContainer') as HTMLDivElement,
+      radios: document.getElementsByName('fontSource') as NodeListOf<HTMLInputElement>,
+      
+      fontSize: document.getElementById('fontSize') as HTMLInputElement,
+      fontSizeDisplay: document.getElementById('fontSizeDisplay') as HTMLSpanElement,
+      fontWeight: document.getElementById('fontWeight') as HTMLSelectElement,
+      lineHeight: document.getElementById('lineHeight') as HTMLInputElement,
+      lineHeightDisplay: document.getElementById('lineHeightDisplay') as HTMLSpanElement,
+      letterSpacing: document.getElementById('letterSpacing') as HTMLInputElement,
+      letterSpacingDisplay: document.getElementById('letterSpacingDisplay') as HTMLSpanElement,
+      
+      textColor: document.getElementById('textColor') as HTMLInputElement,
+      textColorHex: document.getElementById('textColorHex') as HTMLInputElement,
+      bgColor: document.getElementById('bgColor') as HTMLInputElement,
+      bgColorHex: document.getElementById('bgColorHex') as HTMLInputElement,
+      contrastBadge: document.getElementById('contrastBadge') as HTMLDivElement,
+      customText: document.getElementById('customText') as HTMLInputElement,
+      
+      previewArea: document.getElementById('previewArea') as HTMLDivElement,
+      previewContent: document.getElementById('previewContent') as HTMLDivElement,
+      resetBtn: document.getElementById('resetBtn') as HTMLButtonElement,
+      
+      tabs: document.querySelectorAll('.fc-tab'),
+      tabContents: document.querySelectorAll('.fc-tab-content'),
+      codeCss: document.getElementById('code-css') as HTMLElement,
+      codeImport: document.getElementById('code-import') as HTMLElement,
+      codeScss: document.getElementById('code-scss') as HTMLElement,
+      copyBtns: document.querySelectorAll('.copy-btn'),
+      toastContainer: document.getElementById('toastContainer') as HTMLDivElement
+    };
+
+    let currentSource = 'google';
+    let currentFont = { name: '', familyDef: '', source: 'google' };
+    let activeOS = 'all';
+
+    // --- OS Detection ---
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('win')) activeOS = 'windows';
+    else if (ua.includes('mac')) activeOS = 'mac';
+    else if (ua.includes('linux')) activeOS = 'linux';
+
+    // --- Font List Rendering ---
+    function renderFontList() {
+      dom.fontList.innerHTML = '';
+      const search = dom.fontSearch.value.toLowerCase();
+      const categoryFilter = dom.fontCategory.value;
+
+      if (currentSource === 'google') {
+        dom.catFilterContainer.style.display = 'block';
+        for (const [cat, fonts] of Object.entries(GOOGLE_FONTS)) {
+          if (categoryFilter !== 'all' && categoryFilter !== cat) continue;
+          
+          const filteredFonts = Object.keys(fonts).filter(f => f.toLowerCase().includes(search));
+          if (filteredFonts.length === 0) continue;
+
+          const catHeader = document.createElement('div');
+          catHeader.className = 'fc-category-header';
+          catHeader.textContent = `${cat} (${filteredFonts.length})`;
+          dom.fontList.appendChild(catHeader);
+
+          filteredFonts.forEach(fontName => {
+            const weights = (fonts as Record<string, string[]>)[fontName];
+            const item = document.createElement('div');
+            item.className = 'fc-font-item';
+            item.innerHTML = `
+              <span class="fc-font-item-name" style="font-family: '${fontName}', sans-serif">${fontName}</span>
+              <span class="fc-font-item-meta">${weights.length} styles</span>
+            `;
+            item.onclick = () => selectFont(fontName, `'${fontName}', ${cat}`, 'google', item, weights);
+            dom.fontList.appendChild(item);
+          });
+        }
+      } else {
+        dom.catFilterContainer.style.display = 'none';
+        
+        // Render Web Safe
+        const safeFonts = Object.keys(SYSTEM_FONTS.all).filter(f => f.toLowerCase().includes(search));
+        if (safeFonts.length > 0) {
+          const catHeader = document.createElement('div');
+          catHeader.className = 'fc-category-header';
+          catHeader.textContent = `Web Safe Fonts`;
+          dom.fontList.appendChild(catHeader);
+          safeFonts.forEach(fontName => {
+            const familyDef = SYSTEM_FONTS.all[fontName as keyof typeof SYSTEM_FONTS.all];
+            const item = document.createElement('div');
+            item.className = 'fc-font-item';
+            item.innerHTML = `<span class="fc-font-item-name" style="font-family: ${familyDef}">${fontName}</span><span class="fc-font-item-meta" style="color:var(--success)">Universal</span>`;
+            item.onclick = () => selectFont(fontName, familyDef, 'system', item);
+            dom.fontList.appendChild(item);
+          });
+        }
+
+        // Render OS Specific
+        if (SYSTEM_FONTS[activeOS as keyof typeof SYSTEM_FONTS]) {
+          const osFonts = Object.keys(SYSTEM_FONTS[activeOS as keyof typeof SYSTEM_FONTS]).filter(f => f.toLowerCase().includes(search));
+          if (osFonts.length > 0) {
+            const catHeader = document.createElement('div');
+            catHeader.className = 'fc-category-header';
+            catHeader.textContent = `Your System (${activeOS})`;
+            dom.fontList.appendChild(catHeader);
+            osFonts.forEach(fontName => {
+              const familyDef = (SYSTEM_FONTS[activeOS as keyof typeof SYSTEM_FONTS] as Record<string, string>)[fontName];
+              const item = document.createElement('div');
+              item.className = 'fc-font-item';
+              item.innerHTML = `<span class="fc-font-item-name" style="font-family: ${familyDef}">${fontName}</span><span class="fc-font-item-meta" style="color:var(--accent)">${activeOS}</span>`;
+              item.onclick = () => selectFont(fontName, familyDef, 'system', item);
+              dom.fontList.appendChild(item);
+            });
+          }
+        }
+      }
+
+      if (dom.fontList.children.length === 0) {
+        dom.fontList.innerHTML = '<div style="padding: 1rem; color: var(--muted); text-align: center;">No fonts found.</div>';
+      } else if (!currentFont.name) {
+        // Auto select first
+        const first = dom.fontList.querySelector('.fc-font-item') as HTMLElement;
+        if (first) first.click();
+      } else {
+        // re-highlight current
+        const items = dom.fontList.querySelectorAll('.fc-font-item');
+        items.forEach((item: any) => {
+          if (item.querySelector('.fc-font-item-name').textContent === currentFont.name) {
+            item.classList.add('active');
+          }
+        });
+      }
+    }
+
+    function selectFont(name: string, familyDef: string, source: string, itemEl: HTMLElement, weights?: string[]) {
+      document.querySelectorAll('.fc-font-item').forEach(i => i.classList.remove('active'));
+      itemEl.classList.add('active');
+      currentFont = { name, familyDef, source };
+
+      if (source === 'google') {
+        const linkId = 'google-font-link';
+        let link = document.getElementById(linkId) as HTMLLinkElement;
+        if (!link) {
+          link = document.createElement('link');
+          link.id = linkId;
+          link.rel = 'stylesheet';
+          document.head.appendChild(link);
+        }
+        const encodedFamily = encodeURIComponent(name);
+        const wghts = weights ? weights.join(';') : '400';
+        link.href = `https://fonts.googleapis.com/css2?family=${encodedFamily}:wght@${wghts}&display=swap`;
+        
+        updateWeightsDropdown(weights || ['400']);
+      } else {
+        updateWeightsDropdown(['300', '400', '500', '600', '700']);
+      }
+
+      applyPreviewStyles();
+      generateCode();
+    }
+
+    function updateWeightsDropdown(weights: string[]) {
+      const current = dom.fontWeight.value;
+      dom.fontWeight.innerHTML = '';
+      const map: Record<string, string> = { '100':'Thin', '200':'Extra Light', '300':'Light', '400':'Regular', '500':'Medium', '600':'Semi Bold', '700':'Bold', '800':'Extra Bold', '900':'Black' };
+      
+      let hasCurrent = false;
+      weights.forEach(w => {
+        const opt = document.createElement('option');
+        opt.value = w;
+        opt.textContent = `${w} - ${map[w] || 'Custom'}`;
+        if (w === current) hasCurrent = true;
+        dom.fontWeight.appendChild(opt);
+      });
+      dom.fontWeight.value = hasCurrent ? current : weights[0];
+    }
+
+    // --- Preview & Typography ---
+    function applyPreviewStyles() {
+      dom.previewArea.style.fontFamily = currentFont.familyDef;
+      dom.previewArea.style.fontSize = `${dom.fontSize.value}px`;
+      dom.previewArea.style.fontWeight = dom.fontWeight.value;
+      dom.previewArea.style.lineHeight = dom.lineHeight.value;
+      dom.previewArea.style.letterSpacing = `${dom.letterSpacing.value}px`;
+      dom.previewArea.style.color = dom.textColor.value;
+      dom.previewArea.style.backgroundColor = dom.bgColor.value;
+      
+      dom.fontSizeDisplay.textContent = dom.fontSize.value;
+      dom.lineHeightDisplay.textContent = dom.lineHeight.value;
+      dom.letterSpacingDisplay.textContent = dom.letterSpacing.value;
+
+      document.querySelectorAll('.preview-text').forEach((el: any) => {
+        el.textContent = dom.customText.value || 'The quick brown fox jumps over the lazy dog.';
+      });
+    }
+
+    // --- Contrast ---
+    function getLuminance(hex: string) {
+      const rgb = (hex.match(/\w\w/g) || []).map(c => parseInt(c, 16) / 255);
+      const [r, g, b] = rgb.map(c => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+    function updateContrast() {
+      const l1 = getLuminance(dom.textColor.value);
+      const l2 = getLuminance(dom.bgColor.value);
+      const lighter = Math.max(l1, l2);
+      const darker = Math.min(l1, l2);
+      const ratio = (lighter + 0.05) / (darker + 0.05);
+      const num = ratio.toFixed(2);
+      
+      if (ratio >= 7) {
+        dom.contrastBadge.innerHTML = `<span class="contrast-badge contrast-pass">AAA (${num}:1)</span>`;
+      } else if (ratio >= 4.5) {
+        dom.contrastBadge.innerHTML = `<span class="contrast-badge contrast-aa">AA (${num}:1)</span>`;
+      } else {
+        dom.contrastBadge.innerHTML = `<span class="contrast-badge contrast-fail">FAIL (${num}:1)</span>`;
+      }
+    }
+
+    // --- Code Gen ---
+    function generateCode() {
+      const { name, familyDef, source } = currentFont;
+      const w = dom.fontWeight.value;
+
+      dom.codeCss.textContent = `.my-text {
+  font-family: ${familyDef};
+  font-weight: ${w};
+  font-size: ${dom.fontSize.value}px;
+  line-height: ${dom.lineHeight.value};
+  letter-spacing: ${dom.letterSpacing.value}px;
+  color: ${dom.textColor.value};
+  background-color: ${dom.bgColor.value};
+}`;
+
+      if (source === 'google') {
+        const encoded = name.replace(/ /g, '+');
+        dom.codeImport.textContent = `@import url('https://fonts.googleapis.com/css2?family=${encoded}:wght@${w}&display=swap');`;
+      } else {
+        dom.codeImport.textContent = `/* @import not needed for system fonts */`;
+      }
+
+      dom.codeScss.textContent = `$font-${name.toLowerCase().replace(/ /g, '-')}: ${familyDef};\n$text-color: ${dom.textColor.value};\n$bg-color: ${dom.bgColor.value};\n\n.my-text {\n  font-family: $font-${name.toLowerCase().replace(/ /g, '-')};\n  font-weight: ${w};\n  color: $text-color;\n  background-color: $bg-color;\n}`;
+    }
+
+    // --- Listeners ---
+    dom.radios.forEach(r => r.addEventListener('change', (e: any) => {
+      currentSource = e.target.value;
+      currentFont.name = ''; // force reselect
+      renderFontList();
+    }));
+
+    dom.fontSearch.addEventListener('input', renderFontList);
+    dom.fontCategory.addEventListener('change', renderFontList);
+
+    [dom.fontSize, dom.fontWeight, dom.lineHeight, dom.letterSpacing, dom.customText].forEach(el => {
+      el.addEventListener('input', () => { applyPreviewStyles(); generateCode(); });
+    });
+
+    dom.textColor.addEventListener('input', (e: any) => { dom.textColorHex.value = e.target.value; applyPreviewStyles(); updateContrast(); generateCode(); });
+    dom.textColorHex.addEventListener('input', (e: any) => { if (/^#[0-9A-F]{6}$/i.test(e.target.value)) { dom.textColor.value = e.target.value; applyPreviewStyles(); updateContrast(); generateCode(); } });
+    
+    dom.bgColor.addEventListener('input', (e: any) => { dom.bgColorHex.value = e.target.value; applyPreviewStyles(); updateContrast(); generateCode(); });
+    dom.bgColorHex.addEventListener('input', (e: any) => { if (/^#[0-9A-F]{6}$/i.test(e.target.value)) { dom.bgColor.value = e.target.value; applyPreviewStyles(); updateContrast(); generateCode(); } });
+
+    dom.resetBtn.addEventListener('click', () => {
+      dom.fontSize.value = '16';
+      dom.fontWeight.value = '400';
+      dom.lineHeight.value = '1.5';
+      dom.letterSpacing.value = '0';
+      dom.textColor.value = '#ffffff'; dom.textColorHex.value = '#ffffff';
+      dom.bgColor.value = '#1a1a1a'; dom.bgColorHex.value = '#1a1a1a';
+      dom.customText.value = 'The quick brown fox jumps over the lazy dog.';
+      applyPreviewStyles(); updateContrast(); generateCode();
+    });
+
+    // Tabs
+    dom.tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        dom.tabs.forEach(t => t.classList.remove('active'));
+        dom.tabContents.forEach(c => {
+          c.classList.remove('active', 'show');
+          (c as HTMLElement).style.display = 'none';
+        });
+        
+        tab.classList.add('active');
+        dom.tabContents.forEach((c: any) => c.style.display = 'none');
+        const target = document.getElementById(`tab-${tab.getAttribute('data-tab')}`);
+        if (target) {
+          target.style.display = 'block';
+          target.classList.add('active');
+        }
+      });
+    });
+
+    // Copy
+    dom.copyBtns.forEach(btn => {
+      btn.addEventListener('click', async (e: any) => {
+        const targetId = btn.getAttribute('data-target');
+        const text = document.getElementById(targetId as string)?.textContent || '';
+        try {
+          await navigator.clipboard.writeText(text);
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.textContent = 'Code copied to clipboard!';
+          dom.toastContainer.appendChild(toast);
+          setTimeout(() => { toast.classList.add('hiding'); toast.addEventListener('animationend', () => toast.remove()); }, 3000);
+        } catch(err) {}
+      });
+    });
+
+    // Init
+    renderFontList();
+    updateContrast();
+  </script>
+</BaseLayout>

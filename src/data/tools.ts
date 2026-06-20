@@ -52,6 +52,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'font-chooser',
+    name: 'Font Chooser',
+    href: '/font-chooser.html',
+    category: 'design',
+    description: 'Preview and select fonts with Google Fonts integration, accessibility checking, and production-ready CSS generation.',
+    status: 'ready'
+  },
+  {
     id: 'google-icons-chooser',
     name: 'Google Icons Chooser',
     href: '/google-icons-chooser.html',
