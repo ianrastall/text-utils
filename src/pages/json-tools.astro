@@ -1,0 +1,795 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="JSON Tools" description="Format, validate, sort, extract, and convert JSON and JSON Lines data in your browser.">
+  <main class="shell jt-main">
+    <header class="jt-page-header">
+      <div>
+        <h1>JSON Tools</h1>
+        <p>Format, validate, sort, extract, and convert JSON and JSON Lines.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </header>
+
+    <section class="jt-panel jt-toolbar" aria-label="JSON actions">
+      <div class="jt-control-group">
+        <label class="jt-field">
+          <span>Indent</span>
+          <select id="jtIndent">
+            <option value="2">2 spaces</option>
+            <option value="4">4 spaces</option>
+            <option value="tab">Tab</option>
+          </select>
+        </label>
+        <label class="jt-check">
+          <input type="checkbox" id="jtSortBeforeFormat">
+          Sort keys while formatting
+        </label>
+      </div>
+
+      <div class="jt-button-grid">
+        <button type="button" class="button primary" data-action="format">Format</button>
+        <button type="button" class="button" data-action="validate">Validate</button>
+        <button type="button" class="button" data-action="minify">Minify</button>
+        <button type="button" class="button" data-action="sortKeys">Sort Keys</button>
+        <button type="button" class="button" data-action="sortArray">Sort Array</button>
+        <button type="button" class="button" data-action="toJsonl">JSON to JSONL</button>
+        <button type="button" class="button" data-action="fromJsonl">JSONL to JSON</button>
+      </div>
+    </section>
+
+    <section class="jt-grid">
+      <div class="jt-panel jt-editor">
+        <div class="jt-label-row">
+          <label for="jtInput">Input</label>
+          <span id="jtInputCount">0 chars, 0 lines</span>
+        </div>
+        <textarea id="jtInput" spellcheck="false" autocomplete="off" placeholder='{"users":[{"id":1,"name":"Ada"},{"id":2,"name":"Grace"}]}'></textarea>
+        <div class="jt-util-row">
+          <button type="button" class="button jt-small-btn" data-action="example">Example</button>
+          <button type="button" class="button jt-small-btn" data-action="paste">Paste</button>
+          <button type="button" class="button jt-small-btn" data-action="copyInput">Copy Input</button>
+          <button type="button" class="button jt-small-btn jt-danger" data-action="clear">Clear</button>
+        </div>
+      </div>
+
+      <div class="jt-panel jt-editor">
+        <div class="jt-label-row">
+          <label for="jtOutput">Output</label>
+          <span id="jtOutputCount">0 chars, 0 lines</span>
+        </div>
+        <textarea id="jtOutput" spellcheck="false" autocomplete="off" readonly placeholder="Results appear here."></textarea>
+        <div class="jt-util-row">
+          <button type="button" class="button jt-small-btn" data-action="applyOutput">Apply Output</button>
+          <button type="button" class="button jt-small-btn" data-action="copyOutput">Copy Output</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="jt-lower-grid">
+      <div class="jt-panel">
+        <div class="jt-panel-title">Path</div>
+        <div class="jt-path-row">
+          <input id="jtPath" type="text" placeholder="users[0].name">
+          <button type="button" class="button" data-action="extract">Extract</button>
+        </div>
+        <div class="jt-path-row">
+          <input id="jtSortPath" type="text" placeholder="Sort array by key or path">
+          <select id="jtSortDirection" aria-label="Sort direction">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="jt-panel">
+        <div class="jt-panel-title">Structure</div>
+        <div class="jt-stats" id="jtStats">
+          <div><span>Type</span><strong id="jtStatType">-</strong></div>
+          <div><span>Objects</span><strong id="jtStatObjects">0</strong></div>
+          <div><span>Arrays</span><strong id="jtStatArrays">0</strong></div>
+          <div><span>Keys</span><strong id="jtStatKeys">0</strong></div>
+          <div><span>Values</span><strong id="jtStatValues">0</strong></div>
+          <div><span>Depth</span><strong id="jtStatDepth">0</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="jtStatus" class="jt-status" role="status" aria-live="polite">Ready</div>
+  </main>
+
+  <style>
+    .jt-main {
+      padding: 1rem 0 2rem;
+    }
+
+    .jt-page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .jt-page-header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      letter-spacing: 0;
+    }
+
+    .jt-page-header p {
+      margin: 0.25rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .jt-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+    }
+
+    .jt-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.72fr) 1fr;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .jt-control-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .jt-field {
+      display: grid;
+      gap: 0.25rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .jt-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .jt-check input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--accent);
+    }
+
+    .jt-button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: flex-end;
+    }
+
+    .jt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .jt-editor {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .jt-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .jt-label-row label {
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .jt-label-row span {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .jt-editor textarea {
+      min-height: 410px;
+      resize: vertical;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      tab-size: 2;
+    }
+
+    .jt-util-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .jt-small-btn {
+      min-height: 2rem;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.84rem;
+    }
+
+    .jt-danger {
+      color: var(--danger);
+      border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+    }
+
+    .jt-lower-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.75fr) 1fr;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .jt-panel-title {
+      margin-bottom: 0.6rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .jt-path-row {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .jt-path-row + .jt-path-row {
+      margin-top: 0.5rem;
+    }
+
+    .jt-path-row input {
+      min-width: 0;
+      flex: 1;
+      min-height: 2.35rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      padding: 0.45rem 0.65rem;
+    }
+
+    .jt-path-row input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      outline-offset: 2px;
+    }
+
+    .jt-stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(72px, 1fr));
+      gap: 0.45rem;
+    }
+
+    .jt-stats div {
+      min-width: 0;
+      background: var(--panel-muted);
+      border-radius: 6px;
+      padding: 0.55rem;
+    }
+
+    .jt-stats span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .jt-stats strong {
+      display: block;
+      overflow: hidden;
+      margin-top: 0.18rem;
+      font-size: 1.05rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .jt-status {
+      margin-top: 0.8rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .jt-status.good {
+      color: var(--success);
+    }
+
+    .jt-status.bad {
+      color: var(--danger);
+    }
+
+    .jt-status.warn {
+      color: color-mix(in srgb, var(--danger) 60%, #f59e0b);
+    }
+
+    @media (max-width: 900px) {
+      .jt-toolbar,
+      .jt-grid,
+      .jt-lower-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .jt-button-grid {
+        justify-content: flex-start;
+      }
+
+      .jt-stats {
+        grid-template-columns: repeat(3, minmax(72px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .jt-page-header {
+        flex-direction: column;
+      }
+
+      .jt-path-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .jt-stats {
+        grid-template-columns: repeat(2, minmax(72px, 1fr));
+      }
+    }
+  </style>
+
+  <script>
+    type JsonStats = {
+      objects: number;
+      arrays: number;
+      keys: number;
+      values: number;
+      maxDepth: number;
+    };
+
+    type PathResult = {
+      found: boolean;
+      value: unknown;
+    };
+
+    const input = document.getElementById('jtInput') as HTMLTextAreaElement;
+    const output = document.getElementById('jtOutput') as HTMLTextAreaElement;
+    const indentSelect = document.getElementById('jtIndent') as HTMLSelectElement;
+    const sortBeforeFormat = document.getElementById('jtSortBeforeFormat') as HTMLInputElement;
+    const pathInput = document.getElementById('jtPath') as HTMLInputElement;
+    const sortPathInput = document.getElementById('jtSortPath') as HTMLInputElement;
+    const sortDirection = document.getElementById('jtSortDirection') as HTMLSelectElement;
+    const statusEl = document.getElementById('jtStatus') as HTMLElement;
+    const inputCount = document.getElementById('jtInputCount') as HTMLElement;
+    const outputCount = document.getElementById('jtOutputCount') as HTMLElement;
+    const statType = document.getElementById('jtStatType') as HTMLElement;
+    const statObjects = document.getElementById('jtStatObjects') as HTMLElement;
+    const statArrays = document.getElementById('jtStatArrays') as HTMLElement;
+    const statKeys = document.getElementById('jtStatKeys') as HTMLElement;
+    const statValues = document.getElementById('jtStatValues') as HTMLElement;
+    const statDepth = document.getElementById('jtStatDepth') as HTMLElement;
+
+    const exampleJSON = {
+      users: [
+        { id: 1, name: 'Ada Lovelace', role: 'analyst', active: true },
+        { id: 2, name: 'Grace Hopper', role: 'engineer', active: true },
+        { id: 3, name: 'Katherine Johnson', role: 'mathematician', active: false }
+      ],
+      meta: {
+        count: 3,
+        source: 'Text Utilities',
+        updated: '2026-06-20T00:00:00Z'
+      }
+    };
+
+    function getIndent(): number | string {
+      return indentSelect.value === 'tab' ? '\t' : Number.parseInt(indentSelect.value, 10);
+    }
+
+    function plural(count: number, singular: string, pluralWord = `${singular}s`): string {
+      return `${count.toLocaleString()} ${count === 1 ? singular : pluralWord}`;
+    }
+
+    function countLines(text: string): number {
+      return text ? text.split(/\r\n|\r|\n/).length : 0;
+    }
+
+    function updateCounts(): void {
+      inputCount.textContent = `${plural(input.value.length, 'char')}, ${plural(countLines(input.value), 'line')}`;
+      outputCount.textContent = `${plural(output.value.length, 'char')}, ${plural(countLines(output.value), 'line')}`;
+    }
+
+    function setStatus(message: string, kind: 'good' | 'bad' | 'warn' | '' = ''): void {
+      statusEl.textContent = message;
+      statusEl.className = `jt-status${kind ? ` ${kind}` : ''}`;
+    }
+
+    function getJsonType(value: unknown): string {
+      if (Array.isArray(value)) return 'Array';
+      if (value === null) return 'Null';
+      if (typeof value === 'object') return 'Object';
+      if (typeof value === 'string') return 'String';
+      if (typeof value === 'number') return 'Number';
+      if (typeof value === 'boolean') return 'Boolean';
+      return typeof value;
+    }
+
+    function analyze(value: unknown, depth = 0, stats: JsonStats = {
+      objects: 0,
+      arrays: 0,
+      keys: 0,
+      values: 0,
+      maxDepth: 0
+    }): JsonStats {
+      stats.maxDepth = Math.max(stats.maxDepth, depth);
+      stats.values += 1;
+
+      if (Array.isArray(value)) {
+        stats.arrays += 1;
+        value.forEach((item) => analyze(item, depth + 1, stats));
+      } else if (value !== null && typeof value === 'object') {
+        const objectValue = value as Record<string, unknown>;
+        const keys = Object.keys(objectValue);
+        stats.objects += 1;
+        stats.keys += keys.length;
+        keys.forEach((key) => analyze(objectValue[key], depth + 1, stats));
+      }
+
+      return stats;
+    }
+
+    function displayStats(value: unknown): JsonStats {
+      const stats = analyze(value);
+      statType.textContent = getJsonType(value);
+      statObjects.textContent = stats.objects.toLocaleString();
+      statArrays.textContent = stats.arrays.toLocaleString();
+      statKeys.textContent = stats.keys.toLocaleString();
+      statValues.textContent = stats.values.toLocaleString();
+      statDepth.textContent = stats.maxDepth.toLocaleString();
+      return stats;
+    }
+
+    function resetStats(): void {
+      statType.textContent = '-';
+      statObjects.textContent = '0';
+      statArrays.textContent = '0';
+      statKeys.textContent = '0';
+      statValues.textContent = '0';
+      statDepth.textContent = '0';
+    }
+
+    function deepSortKeys(value: unknown): unknown {
+      if (Array.isArray(value)) return value.map(deepSortKeys);
+      if (value !== null && typeof value === 'object') {
+        return Object.keys(value as Record<string, unknown>)
+          .sort((a, b) => a.localeCompare(b))
+          .reduce<Record<string, unknown>>((sorted, key) => {
+            sorted[key] = deepSortKeys((value as Record<string, unknown>)[key]);
+            return sorted;
+          }, {});
+      }
+      return value;
+    }
+
+    function parseJsonInput(): unknown {
+      const text = input.value.trim();
+      if (!text) throw new Error('Input is empty.');
+      return JSON.parse(text);
+    }
+
+    function formatJson(value: unknown): string {
+      return JSON.stringify(value, null, getIndent());
+    }
+
+    function findErrorLocation(error: Error): string {
+      const match = error.message.match(/position (\d+)/i);
+      if (!match) return error.message;
+
+      const position = Number.parseInt(match[1], 10);
+      const before = input.value.slice(0, position);
+      const lines = before.split(/\r\n|\r|\n/);
+      const line = lines.length;
+      const column = lines[lines.length - 1].length + 1;
+      return `${error.message} (line ${line}, column ${column})`;
+    }
+
+    function pathTokens(path: string): string[] {
+      const tokens: string[] = [];
+      const regex = /(?:^|\.)([^.[\]]+)|\[(?:"((?:\\.|[^"])*)"|'((?:\\.|[^'])*)'|([^\]]+))\]/g;
+      let match: RegExpExecArray | null;
+      while ((match = regex.exec(path)) !== null) {
+        const token = match[1] ?? match[2] ?? match[3] ?? match[4];
+        if (token === undefined) continue;
+        tokens.push(token.trim().replace(/^["']|["']$/g, ''));
+      }
+      return tokens;
+    }
+
+    function getPath(value: unknown, path: string): PathResult {
+      const cleaned = path.trim();
+      if (!cleaned) return { found: true, value };
+
+      let current: unknown = value;
+      for (const token of pathTokens(cleaned)) {
+        if (Array.isArray(current)) {
+          const index = Number.parseInt(token, 10);
+          if (!Number.isInteger(index) || index < 0 || index >= current.length) {
+            return { found: false, value: undefined };
+          }
+          current = current[index];
+        } else if (current !== null && typeof current === 'object') {
+          const objectValue = current as Record<string, unknown>;
+          if (!Object.prototype.hasOwnProperty.call(objectValue, token)) {
+            return { found: false, value: undefined };
+          }
+          current = objectValue[token];
+        } else {
+          return { found: false, value: undefined };
+        }
+      }
+
+      return { found: true, value: current };
+    }
+
+    function compareValues(a: unknown, b: unknown): number {
+      if (a === b) return 0;
+      if (a === null || a === undefined) return -1;
+      if (b === null || b === undefined) return 1;
+      if (typeof a === 'number' && typeof b === 'number') return a - b;
+      if (typeof a === 'boolean' && typeof b === 'boolean') return Number(a) - Number(b);
+      return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+    }
+
+    function sortRootArray(value: unknown): unknown[] {
+      if (!Array.isArray(value)) {
+        throw new Error('Sort Array expects the root JSON value to be an array.');
+      }
+
+      const path = sortPathInput.value.trim();
+      const direction = sortDirection.value === 'desc' ? -1 : 1;
+      return value
+        .map((item, index) => ({ item, index }))
+        .sort((left, right) => {
+          const leftValue = path ? getPath(left.item, path).value : left.item;
+          const rightValue = path ? getPath(right.item, path).value : right.item;
+          const compared = compareValues(leftValue, rightValue);
+          return compared === 0 ? left.index - right.index : compared * direction;
+        })
+        .map(({ item }) => item);
+    }
+
+    function jsonToJsonl(value: unknown): string {
+      if (!Array.isArray(value)) {
+        throw new Error('JSON to JSONL expects the root JSON value to be an array.');
+      }
+      if (value.length === 0) {
+        throw new Error('Array is empty.');
+      }
+      return value.map((item) => JSON.stringify(item)).join('\n');
+    }
+
+    function jsonlToJson(text: string): unknown[] {
+      const lines = text.split(/\r\n|\r|\n/).map((line) => line.trim()).filter(Boolean);
+      if (!lines.length) throw new Error('JSONL input is empty.');
+      return lines.map((line, index) => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          throw new Error(`Line ${index + 1}: ${(error as Error).message}`);
+        }
+      });
+    }
+
+    function setOutput(text: string): void {
+      output.value = text;
+      updateCounts();
+    }
+
+    function processAction(action: string): void {
+      try {
+        if (action === 'fromJsonl') {
+          const parsedLines = jsonlToJson(input.value);
+          displayStats(parsedLines);
+          setOutput(formatJson(parsedLines));
+          setStatus(`Converted ${plural(parsedLines.length, 'line')} to JSON.`, 'good');
+          return;
+        }
+
+        const parsed = parseJsonInput();
+        let result: unknown = parsed;
+        let outputText = '';
+
+        switch (action) {
+          case 'format':
+            result = sortBeforeFormat.checked ? deepSortKeys(parsed) : parsed;
+            outputText = formatJson(result);
+            setStatus('Formatted JSON.', 'good');
+            break;
+          case 'validate': {
+            const stats = displayStats(parsed);
+            outputText = [
+              'Valid JSON',
+              '',
+              `Type: ${getJsonType(parsed)}`,
+              `Objects: ${stats.objects}`,
+              `Arrays: ${stats.arrays}`,
+              `Keys: ${stats.keys}`,
+              `Values: ${stats.values}`,
+              `Max depth: ${stats.maxDepth}`
+            ].join('\n');
+            setStatus('Valid JSON.', 'good');
+            setOutput(outputText);
+            return;
+          }
+          case 'minify':
+            outputText = JSON.stringify(parsed);
+            setStatus('Minified JSON.', 'good');
+            break;
+          case 'sortKeys':
+            result = deepSortKeys(parsed);
+            outputText = formatJson(result);
+            setStatus('Sorted object keys.', 'good');
+            break;
+          case 'sortArray':
+            result = sortRootArray(parsed);
+            outputText = formatJson(result);
+            setStatus('Sorted array.', 'good');
+            break;
+          case 'toJsonl':
+            outputText = jsonToJsonl(parsed);
+            setStatus('Converted JSON array to JSONL.', 'good');
+            break;
+          case 'extract': {
+            const path = pathInput.value.trim();
+            const extracted = getPath(parsed, path);
+            if (!extracted.found) {
+              setOutput('undefined');
+              setStatus('Path not found.', 'warn');
+              displayStats(parsed);
+              return;
+            }
+            outputText = typeof extracted.value === 'string'
+              ? extracted.value
+              : JSON.stringify(extracted.value, null, getIndent());
+            setStatus(path ? `Extracted ${path}.` : 'Extracted root value.', 'good');
+            setOutput(outputText);
+            displayStats(parsed);
+            return;
+          }
+          default:
+            return;
+        }
+
+        displayStats(result);
+        setOutput(outputText);
+      } catch (error) {
+        const err = error as Error;
+        setOutput('');
+        resetStats();
+        setStatus(findErrorLocation(err), 'bad');
+      }
+    }
+
+    document.addEventListener('click', async (event: MouseEvent) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('button[data-action]');
+      if (!button) return;
+
+      const action = button.dataset.action!;
+      switch (action) {
+        case 'format':
+        case 'validate':
+        case 'minify':
+        case 'sortKeys':
+        case 'sortArray':
+        case 'toJsonl':
+        case 'fromJsonl':
+        case 'extract':
+          processAction(action);
+          break;
+        case 'example':
+          input.value = JSON.stringify(exampleJSON, null, 2);
+          output.value = '';
+          displayStats(exampleJSON);
+          updateCounts();
+          setStatus('Example loaded.', 'good');
+          input.focus();
+          break;
+        case 'paste':
+          try {
+            input.value = await navigator.clipboard.readText();
+            output.value = '';
+            updateCounts();
+            setStatus('Pasted from clipboard.', 'good');
+          } catch {
+            setStatus('Paste failed. Check clipboard permissions.', 'bad');
+          }
+          break;
+        case 'copyInput':
+          if (!input.value) {
+            setStatus('Nothing to copy.', 'warn');
+            return;
+          }
+          await navigator.clipboard.writeText(input.value);
+          setStatus('Input copied.', 'good');
+          break;
+        case 'copyOutput':
+          if (!output.value) {
+            setStatus('Nothing to copy.', 'warn');
+            return;
+          }
+          await navigator.clipboard.writeText(output.value);
+          setStatus('Output copied.', 'good');
+          break;
+        case 'applyOutput':
+          if (!output.value) {
+            setStatus('No output to apply.', 'warn');
+            return;
+          }
+          input.value = output.value;
+          output.value = '';
+          updateCounts();
+          setStatus('Output moved to input.', 'good');
+          input.focus();
+          break;
+        case 'clear':
+          input.value = '';
+          output.value = '';
+          pathInput.value = '';
+          sortPathInput.value = '';
+          resetStats();
+          updateCounts();
+          setStatus('Cleared.', '');
+          input.focus();
+          break;
+      }
+    });
+
+    input.addEventListener('input', () => {
+      updateCounts();
+      if (!input.value.trim()) {
+        resetStats();
+        setStatus('Ready', '');
+        return;
+      }
+
+      try {
+        displayStats(JSON.parse(input.value));
+        setStatus('Valid JSON.', 'good');
+      } catch {
+        setStatus('Editing...', '');
+      }
+    });
+
+    input.addEventListener('keydown', (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        processAction('format');
+      }
+    });
+
+    updateCounts();
+    resetStats();
+  </script>
+</BaseLayout>

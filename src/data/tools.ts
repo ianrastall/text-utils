@@ -139,6 +139,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'json-tools',
+    name: 'JSON Tools',
+    href: '/json-tools.html',
+    category: 'inspect',
+    description: 'Format, validate, minify, sort, extract paths, and convert JSON Lines.',
+    status: 'ready'
+  },
+  {
     id: 'json-csv-converter',
     name: 'JSON & CSV Converter',
     href: '/json-csv-converter.html',
