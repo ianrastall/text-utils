@@ -49,5 +49,13 @@ export const tools: ToolMeta[] = [
     category: 'design',
     description: 'Browse Font Awesome 6 icons by category and style. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, C#, Python, PHP, and more.',
     status: 'ready'
+  },
+  {
+    id: 'google-icons-chooser',
+    name: 'Google Icons Chooser',
+    href: '/google-icons-chooser',
+    category: 'design',
+    description: 'Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.',
+    status: 'ready'
   }
 ];

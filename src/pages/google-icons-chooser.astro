@@ -1,0 +1,510 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import iconDataRaw from '../data/google-icons.json';
+
+// We import the huge JSON directly on build.
+// Since it's passed to client side, we can just inline it into the script.
+// But to save HTML size, Astro handles script inline data ok, or we can use an API.
+// Let's pass it via a script tag.
+---
+<BaseLayout
+  title="Google Icons Chooser"
+  description="Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.">
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  />
+
+  <main class="shell fac-main">
+    <header class="fac-page-header">
+      <h1>Google Icons Chooser</h1>
+      <p>Browse Material Symbols · customize weight & fill · click to get code</p>
+    </header>
+
+    <!-- Controls bar -->
+    <div class="fac-controls">
+      <div class="fac-ctl">
+        <label for="gic-style">Style</label>
+        <select id="gic-style">
+          <option value="Outlined" selected>Outlined</option>
+          <option value="Rounded">Rounded</option>
+          <option value="Sharp">Sharp</option>
+        </select>
+      </div>
+      <div class="fac-ctl">
+        <label for="gic-fill">Fill</label>
+        <select id="gic-fill">
+          <option value="0" selected>Outline (0)</option>
+          <option value="1">Filled (1)</option>
+        </select>
+      </div>
+      <div class="fac-ctl">
+        <label for="gic-weight">Weight</label>
+        <select id="gic-weight">
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="300">300</option>
+          <option value="400" selected>400 (Regular)</option>
+          <option value="500">500</option>
+          <option value="600">600</option>
+          <option value="700">700</option>
+        </select>
+      </div>
+      <div class="fac-ctl">
+        <label for="gic-category">Category</label>
+        <select id="gic-category">
+          <option value="all">All categories</option>
+        </select>
+      </div>
+      <div class="fac-ctl fac-ctl-search">
+        <label for="gic-search">Search</label>
+        <div class="fac-search-wrap">
+          <span class="material-symbols-outlined fac-search-icon" aria-hidden="true" style="font-size: 16px;">search</span>
+          <input type="search" id="gic-search" placeholder="filter icons…" autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+      <span class="fac-count" id="gic-count"></span>
+    </div>
+
+    <!-- Workspace: scrollable grid + detail sidebar -->
+    <div class="fac-workspace">
+      <div class="fac-grid-wrap">
+        <div class="fac-grid" id="gic-grid"></div>
+        <p class="fac-no-results" id="gic-no-results" style="display:none">No icons match your filters.</p>
+        <p class="fac-no-results" id="gic-limit-msg" style="display:none; padding-top: 0; padding-bottom: 2rem;">Showing first 300 results. Use search to find more.</p>
+      </div>
+
+      <aside class="fac-sidebar">
+        <div class="fac-empty-state" id="gic-empty-state">
+          <p>Click any icon to see usage code</p>
+        </div>
+        <div class="fac-detail" id="gic-detail" style="display:none">
+          <div class="fac-preview" id="gic-preview"></div>
+          <div class="fac-icon-meta">
+            <strong id="gic-name-display"></strong>
+            <code id="gic-class-display" class="fac-code-inline"></code>
+          </div>
+          <div class="fac-ctl fac-lang-ctl">
+            <label for="gic-lang">Language / Framework</label>
+            <select id="gic-lang">
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="react">React</option>
+              <option value="vue">Vue</option>
+              <option value="angular">Angular</option>
+              <option value="svelte">Svelte</option>
+            </select>
+          </div>
+          <div class="fac-code-wrap">
+            <pre id="gic-code-out" class="fac-code"></pre>
+          </div>
+          <button class="button primary fac-copy-btn" id="gic-copy-code">⎘ Copy code</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <style is:global>
+    /* ── Page ──────────────────────────────────────────── */
+    .fac-main { padding: 1rem 0 1rem; }
+    .fac-page-header { margin-bottom: 0.6rem; }
+    .fac-page-header h1 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+    .fac-page-header p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+    /* ── Controls ──────────────────────────────────────── */
+    .fac-controls {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.65rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .fac-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
+    .fac-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .fac-ctl select {
+      min-height: 2.1rem;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      padding: 0.3rem 0.6rem;
+      font: inherit;
+    }
+    .fac-ctl-search { flex: 1; min-width: 160px; }
+    .fac-search-wrap { position: relative; }
+    .fac-search-icon {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+    #gic-search {
+      width: 100%;
+      min-height: 2.1rem;
+      padding: 0.3rem 0.6rem 0.3rem 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      font-size: 0.88rem;
+      font: inherit;
+    }
+    #gic-search:focus {
+      outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+      outline-offset: 1px;
+    }
+    .fac-count {
+      color: var(--muted);
+      font-size: 0.8rem;
+      align-self: flex-end;
+      padding-bottom: 0.4rem;
+      white-space: nowrap;
+      min-width: 6rem;
+    }
+
+    /* ── Workspace ─────────────────────────────────────── */
+    .fac-workspace {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 0.75rem;
+      height: calc(100vh - 230px);
+      min-height: 420px;
+      margin-top: 0.65rem;
+    }
+
+    /* ── Icon grid ─────────────────────────────────────── */
+    .fac-grid-wrap {
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .fac-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 0.25rem;
+      padding: 0.6rem;
+    }
+    .fac-no-results {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .fac-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.28rem;
+      padding: 0.5rem 0.2rem 0.4rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: transparent;
+      color: var(--text);
+      text-align: center;
+      transition: border-color 0.1s, background 0.1s;
+      min-width: 0;
+    }
+    .fac-tile:hover { background: var(--panel-muted); border-color: var(--border); }
+    .fac-tile.selected {
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border-color: var(--accent);
+    }
+    .fac-tile span.material-symbols-outlined,
+    .fac-tile span.material-symbols-rounded,
+    .fac-tile span.material-symbols-sharp {
+      font-size: 1.6rem; 
+      line-height: 1; 
+      font-variation-settings: 'FILL' var(--gic-fill, 0), 'wght' var(--gic-weight, 400), 'GRAD' 0, 'opsz' 24;
+    }
+    .fac-tile-name {
+      font-size: 0.59rem;
+      color: var(--muted);
+      word-break: break-all;
+      line-height: 1.2;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* ── Sidebar ───────────────────────────────────────── */
+    .fac-sidebar {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .fac-empty-state {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .fac-empty-state p { margin: 0; font-size: 0.88rem; }
+    .fac-detail {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .fac-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 82px;
+      background: var(--panel-muted);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .fac-preview span { 
+      font-size: 3rem; 
+      color: var(--accent);
+      font-variation-settings: 'FILL' var(--gic-fill, 0), 'wght' var(--gic-weight, 400), 'GRAD' 0, 'opsz' 48;
+    }
+    .fac-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
+    .fac-icon-meta strong { font-size: 0.95rem; }
+    .fac-code-inline {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .fac-lang-ctl { width: 100%; }
+    .fac-lang-ctl select { width: 100%; }
+    .fac-code-wrap {
+      background: var(--panel-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: auto;
+      min-height: 80px;
+      max-height: 280px;
+    }
+    .fac-code {
+      margin: 0;
+      padding: 0.6rem 0.75rem;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.74rem;
+      line-height: 1.55;
+      color: var(--accent);
+      white-space: pre;
+    }
+    .fac-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }
+
+    /* ── Narrow fallback ───────────────────────────────── */
+    @media (max-width: 760px) {
+      .fac-workspace { grid-template-columns: 1fr; height: auto; }
+      .fac-grid-wrap { height: 50vh; }
+      .fac-sidebar { min-height: 320px; }
+    }
+  </style>
+
+  <script define:vars={{ ICON_DATA: iconDataRaw }}>
+    // ─── State ────────────────────────────────────────────────────────────────
+    let selected = null;
+
+    // ─── DOM ──────────────────────────────────────────────────────────────────
+    const styleSel    = document.getElementById('gic-style');
+    const fillSel     = document.getElementById('gic-fill');
+    const weightSel   = document.getElementById('gic-weight');
+    const categorySel = document.getElementById('gic-category');
+    const searchEl    = document.getElementById('gic-search');
+    const countEl     = document.getElementById('gic-count');
+    const gridEl      = document.getElementById('gic-grid');
+    const noResultsEl = document.getElementById('gic-no-results');
+    const limitMsgEl  = document.getElementById('gic-limit-msg');
+    
+    const emptyState  = document.getElementById('gic-empty-state');
+    const detailEl    = document.getElementById('gic-detail');
+    const previewEl   = document.getElementById('gic-preview');
+    const nameDisp    = document.getElementById('gic-name-display');
+    const classDisp   = document.getElementById('gic-class-display');
+    const langSel     = document.getElementById('gic-lang');
+    const codeOut     = document.getElementById('gic-code-out');
+    const copyBtn     = document.getElementById('gic-copy-code');
+
+    // ─── Update CSS Variables for Font Variation Settings ─────────────────────
+    function updateFontSettings() {
+      document.documentElement.style.setProperty('--gic-fill', fillSel.value);
+      document.documentElement.style.setProperty('--gic-weight', weightSel.value);
+      // Rerender grid to change classes
+      renderGrid();
+      if (selected) {
+        selectIcon(selected.name, document.querySelector(`.fac-tile.selected`));
+      }
+    }
+
+    // ─── Code builder ────────────────────────────────────────────────────────
+    function buildCode(name, style, fill, weight, lang) {
+      const cls = `material-symbols-${style.toLowerCase()}`;
+      const hasVariation = fill !== '0' || weight !== '400';
+      const cdnUrl = `https://fonts.googleapis.com/css2?family=Material+Symbols+${style}:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200`;
+      
+      const cssVar = hasVariation ? `\n<style>\n.material-symbols-${style.toLowerCase()} {\n  font-variation-settings:\n  'FILL' ${fill},\n  'wght' ${weight},\n  'GRAD' 0,\n  'opsz' 24;\n}\n</style>` : '';
+
+      const importCode = `<!-- Add to <head> -->\n<link rel="stylesheet" href="${cdnUrl}" />${cssVar}\n\n`;
+
+      switch (lang) {
+        case 'html':
+          return `${importCode}<!-- Icon -->\n<span class="${cls}">${name}</span>`;
+        case 'css':
+          return `.my-icon {\n  font-family: 'Material Symbols ${style}';\n  font-weight: ${weight};\n  font-style: normal;\n  font-size: 24px;\n  display: inline-block;\n  line-height: 1;\n  text-transform: none;\n  letter-spacing: normal;\n  word-wrap: normal;\n  white-space: nowrap;\n  direction: ltr;\n  font-variation-settings: 'FILL' ${fill}, 'wght' ${weight}, 'GRAD' 0, 'opsz' 24;\n}\n.my-icon::before {\n  content: '${name}';\n}`;
+        case 'react':
+          return `${importCode}// Component\nexport default function MyComponent() {\n  return <span className="${cls}">${name}</span>;\n}`;
+        case 'vue':
+          return `${importCode}<template>\n  <span class="${cls}">${name}</span>\n</template>`;
+        case 'angular':
+          return `${importCode}<!-- Template -->\n<span class="${cls}">${name}</span>`;
+        case 'svelte':
+          return `${importCode}<!-- Svelte -->\n<span class="${cls}">${name}</span>`;
+        default:
+          return `<span class="${cls}">${name}</span>`;
+      }
+    }
+
+    // ─── Populate category dropdown ───────────────────────────────────────────
+    function populateCategories() {
+      const used = new Set();
+      ICON_DATA.forEach(icon => {
+        if (icon.categories) {
+          icon.categories.forEach(c => used.add(c));
+        }
+      });
+      const sorted = Array.from(used).sort();
+      sorted.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c.charAt(0).toUpperCase() + c.slice(1);
+        categorySel.appendChild(opt);
+      });
+    }
+
+    // ─── Render grid ──────────────────────────────────────────────────────────
+    function renderGrid() {
+      const cf = categorySel.value;
+      const q  = searchEl.value.toLowerCase().trim();
+      const style = styleSel.value;
+      const sc = `material-symbols-${style.toLowerCase()}`;
+
+      let filtered = ICON_DATA;
+      
+      if (cf !== 'all') {
+        filtered = filtered.filter(icon => icon.categories && icon.categories.includes(cf));
+      }
+      
+      if (q) {
+        filtered = filtered.filter(icon => {
+          if (icon.name.includes(q)) return true;
+          if (icon.tags && icon.tags.some(t => t.includes(q))) return true;
+          return false;
+        });
+      }
+
+      countEl.textContent = `${filtered.length} icon${filtered.length !== 1 ? 's' : ''}`;
+      
+      // Limit to 300 to avoid freezing DOM
+      const MAX_RENDER = 300;
+      const willLimit = filtered.length > MAX_RENDER;
+      if (willLimit) {
+        filtered = filtered.slice(0, MAX_RENDER);
+      }
+      
+      limitMsgEl.style.display = willLimit ? '' : 'none';
+      noResultsEl.style.display = filtered.length === 0 ? '' : 'none';
+
+      // Keep selected state visually if still in filtered list
+      let hasSelected = false;
+
+      const frag = document.createDocumentFragment();
+      for (const icon of filtered) {
+        const name = icon.name;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isSelected = selected?.name === name;
+        if (isSelected) hasSelected = true;
+        
+        btn.className = 'fac-tile' + (isSelected ? ' selected' : '');
+        btn.dataset.name = name;
+        btn.title = name;
+        btn.innerHTML = `<span class="${sc}" aria-hidden="true">${name}</span><span class="fac-tile-name">${name}</span>`;
+        btn.addEventListener('click', () => selectIcon(name, btn));
+        frag.appendChild(btn);
+      }
+      gridEl.innerHTML = '';
+      if (filtered.length > 0) {
+        gridEl.appendChild(frag);
+      }
+    }
+
+    function toLabel(name) {
+      return name.split('_').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    // ─── Select an icon ───────────────────────────────────────────────────────
+    function selectIcon(name, btn) {
+      document.querySelectorAll('.fac-tile.selected').forEach(el => el.classList.remove('selected'));
+      if (btn) btn.classList.add('selected');
+      
+      selected = { name };
+
+      const style = styleSel.value;
+      const sc = `material-symbols-${style.toLowerCase()}`;
+      
+      emptyState.style.display  = 'none';
+      detailEl.style.display    = 'flex';
+
+      previewEl.innerHTML = `<span class="${sc}" aria-hidden="true">${name}</span>`;
+      nameDisp.textContent  = toLabel(name);
+      classDisp.textContent = `class="${sc}"`;
+
+      refreshCode();
+    }
+
+    function refreshCode() {
+      if (!selected) return;
+      codeOut.textContent = buildCode(selected.name, styleSel.value, fillSel.value, weightSel.value, langSel.value);
+    }
+
+    // ─── Events ──────────────────────────────────────────────────────────────
+    styleSel.addEventListener('change', updateFontSettings);
+    fillSel.addEventListener('change', updateFontSettings);
+    weightSel.addEventListener('change', updateFontSettings);
+    
+    categorySel.addEventListener('change', renderGrid);
+    searchEl.addEventListener('input', () => {
+      // Small debounce
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(renderGrid, 150);
+    });
+    langSel.addEventListener('change', refreshCode);
+    copyBtn.addEventListener('click', async () => {
+      const text = codeOut.textContent ?? '';
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const orig = copyBtn.textContent ?? '';
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => { copyBtn.textContent = orig; }, 1500);
+      } catch { /* ignore */ }
+    });
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+    populateCategories();
+    updateFontSettings();
+  </script>
+</BaseLayout>
