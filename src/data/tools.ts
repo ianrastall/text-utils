@@ -92,6 +92,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'line-operations',
+    name: 'Line Operations',
+    href: '/line-operations.html',
+    category: 'write',
+    description: 'Sort, filter, reverse, shuffle, number, and modify lines of text. Undo/redo support.',
+    status: 'ready'
+  },
+  {
     id: 'text-info',
     name: 'Text Info',
     href: '/text-info.html',

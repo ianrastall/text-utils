@@ -1,0 +1,579 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Line Operations" description="Sort, filter, reverse, shuffle, number, and modify lines of text. Fully client-side with undo/redo support.">
+  <main class="shell lo-main">
+    <header class="lo-page-header">
+      <h1>Line Operations</h1>
+      <p>Sort, filter, reverse, shuffle, number, and modify lines of text</p>
+    </header>
+
+    <div class="lo-layout">
+
+      <!-- Textarea Panel -->
+      <div class="lo-panel">
+        <div class="lo-textarea-header">
+          <label class="lo-section-label" for="loInput">Lines</label>
+          <span class="lo-linecount" id="loLineCount">0 lines</span>
+        </div>
+        <textarea id="loInput" class="lo-textarea" rows="10"
+          placeholder="Enter or paste text here, one item per line…"
+          spellcheck="false" autocomplete="off"></textarea>
+        <div class="lo-btn-bar">
+          <button type="button" class="button lo-btn-sm" data-action="undo" id="loUndo" disabled>&#x21A9; Undo</button>
+          <button type="button" class="button lo-btn-sm" data-action="redo" id="loRedo" disabled>&#x21AA; Redo</button>
+          <span class="lo-spacer"></span>
+          <button type="button" class="button lo-btn-sm" data-action="copy">&#x2398; Copy</button>
+          <button type="button" class="button lo-btn-sm" data-action="paste">&#x2398; Paste</button>
+          <button type="button" class="button lo-btn-sm" data-action="clear">&#x2715; Clear</button>
+        </div>
+      </div>
+
+      <!-- Sort Panel -->
+      <div class="lo-panel">
+        <div class="lo-panel-title">Sort</div>
+        <div class="lo-sort-row">
+          <div class="lo-btn-group">
+            <button type="button" class="button" data-action="sort" data-value="alpha">A&#x2013;Z</button>
+            <button type="button" class="button" data-action="sort" data-value="alphaDesc">Z&#x2013;A</button>
+          </div>
+          <div class="lo-btn-group">
+            <button type="button" class="button" data-action="sort" data-value="numeric">1&#x2013;9</button>
+            <button type="button" class="button" data-action="sort" data-value="numericDesc">9&#x2013;1</button>
+          </div>
+          <button type="button" class="button" data-action="sort" data-value="natural">Natural</button>
+          <button type="button" class="button" data-action="sort" data-value="length">By Length</button>
+          <label class="lo-case-toggle">
+            <input type="checkbox" id="loCaseSensitive">
+            Case-sensitive
+          </label>
+        </div>
+      </div>
+
+      <!-- Operations Panel -->
+      <div class="lo-panel">
+        <div class="lo-panel-title">Operations</div>
+        <div class="lo-ops-row">
+          <button type="button" class="button" data-action="operate" data-value="reverse">Reverse</button>
+          <button type="button" class="button" data-action="operate" data-value="shuffle">Shuffle</button>
+          <button type="button" class="button" data-action="operate" data-value="unique">Remove Duplicates</button>
+          <button type="button" class="button" data-action="operate" data-value="trim">Trim Spaces</button>
+          <button type="button" class="button" data-action="operate" data-value="unwrap">Unwrap Lines</button>
+          <button type="button" class="button" data-action="filter" data-value="empty">Remove Empty</button>
+          <button type="button" class="button" data-action="operate" data-value="removeZeroWidth">Remove Zero-Width</button>
+          <div class="lo-inline-group">
+            <span class="lo-label-inline">Wrap at</span>
+            <input type="number" id="loWrapLength" class="lo-number-input" value="80" min="1">
+            <span class="lo-label-inline">chars</span>
+            <button type="button" class="button" data-action="operate" data-value="hardwrap">Go</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Modify Panel -->
+      <div class="lo-panel">
+        <div class="lo-panel-title">Filter &amp; Modify</div>
+        <div class="lo-modify-grid">
+          <div class="lo-field lo-full-width">
+            <label class="lo-field-label" for="loFilterText">Filter lines containing</label>
+            <div class="lo-input-group">
+              <input type="text" id="loFilterText" class="lo-text-input" placeholder="Text to match&hellip;">
+              <button type="button" class="button" data-action="filter" data-value="keep">Keep</button>
+              <button type="button" class="button" data-action="filter" data-value="remove">Remove</button>
+            </div>
+          </div>
+          <div class="lo-field">
+            <label class="lo-field-label" for="loPrefix">Add prefix</label>
+            <div class="lo-input-group">
+              <input type="text" id="loPrefix" class="lo-text-input" placeholder="Prefix text">
+              <button type="button" class="button" data-action="prefix">Add</button>
+            </div>
+          </div>
+          <div class="lo-field">
+            <label class="lo-field-label" for="loSuffix">Add suffix</label>
+            <div class="lo-input-group">
+              <input type="text" id="loSuffix" class="lo-text-input" placeholder="Suffix text">
+              <button type="button" class="button" data-action="suffix">Add</button>
+            </div>
+          </div>
+          <div class="lo-field lo-full-width">
+            <label class="lo-field-label">Number lines</label>
+            <div class="lo-input-group">
+              <span class="lo-label-inline">Start</span>
+              <input type="number" id="loStartNumber" class="lo-number-input" value="1">
+              <span class="lo-label-inline">Step</span>
+              <input type="number" id="loStepNumber" class="lo-number-input" value="1" min="1">
+              <button type="button" class="button" data-action="number">Number</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="lo-toast" class="lo-toast" role="status" aria-live="polite"></div>
+    <div id="lo-sr" class="lo-sr-only" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <style>
+    .lo-main {
+      padding: 1rem 0 2rem;
+    }
+
+    .lo-page-header {
+      margin-bottom: 1rem;
+    }
+    .lo-page-header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+    .lo-page-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .lo-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 760px;
+    }
+
+    .lo-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+
+    .lo-panel-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .lo-textarea-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+
+    .lo-section-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .lo-linecount {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+
+    .lo-textarea {
+      width: 100%;
+      min-height: 200px;
+      resize: vertical;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .lo-textarea:focus { border-color: var(--accent); }
+
+    .lo-btn-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      align-items: center;
+    }
+
+    .lo-btn-sm {
+      font-size: 0.82rem;
+      min-height: 1.9rem;
+      padding: 0.25rem 0.7rem;
+    }
+
+    .lo-spacer { flex: 1; }
+
+    .lo-sort-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .lo-btn-group {
+      display: flex;
+    }
+    .lo-btn-group button {
+      border-color: var(--border);
+      border-radius: 0;
+    }
+    .lo-btn-group button:first-child { border-radius: 6px 0 0 6px; }
+    .lo-btn-group button:last-child  { border-radius: 0 6px 6px 0; }
+    .lo-btn-group button + button    { margin-left: -1px; }
+
+    .lo-case-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .lo-case-toggle input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: var(--accent);
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .lo-ops-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .lo-inline-group {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .lo-label-inline {
+      font-size: 0.88rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .lo-number-input {
+      width: 64px;
+      min-height: 2.35rem;
+      padding: 0.45rem 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+      text-align: center;
+    }
+    .lo-number-input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      outline-offset: 2px;
+    }
+
+    .lo-modify-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .lo-full-width { grid-column: 1 / -1; }
+
+    .lo-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .lo-field-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .lo-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .lo-text-input {
+      flex: 1;
+      min-width: 100px;
+      min-height: 2.35rem;
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-muted);
+      color: var(--text);
+    }
+    .lo-text-input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      outline-offset: 2px;
+    }
+
+    .lo-toast {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(0.5rem);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.88rem;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s, transform 0.18s;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    .lo-toast.lo-toast-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .lo-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 600px) {
+      .lo-modify-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script>
+    const input        = document.getElementById('loInput')        as HTMLTextAreaElement;
+    const caseSens     = document.getElementById('loCaseSensitive') as HTMLInputElement;
+    const wrapLen      = document.getElementById('loWrapLength')   as HTMLInputElement;
+    const filterText   = document.getElementById('loFilterText')   as HTMLInputElement;
+    const prefixInput  = document.getElementById('loPrefix')       as HTMLInputElement;
+    const suffixInput  = document.getElementById('loSuffix')       as HTMLInputElement;
+    const startNum     = document.getElementById('loStartNumber')  as HTMLInputElement;
+    const stepNum      = document.getElementById('loStepNumber')   as HTMLInputElement;
+    const undoBtn      = document.getElementById('loUndo')         as HTMLButtonElement;
+    const redoBtn      = document.getElementById('loRedo')         as HTMLButtonElement;
+    const lineCountEl  = document.getElementById('loLineCount')    as HTMLElement;
+    const toastEl      = document.getElementById('lo-toast')       as HTMLElement;
+    const srEl         = document.getElementById('lo-sr')          as HTMLElement;
+
+    // ── History ───────────────────────────────────────────────────────────────
+    const MAX_HISTORY = 30;
+    const hist: string[] = [];
+    let histIdx = -1;
+
+    function saveState(text: string) {
+      if (hist[histIdx] === text) return;
+      hist.splice(histIdx + 1);
+      hist.push(text);
+      if (hist.length > MAX_HISTORY) hist.shift(); else histIdx++;
+      syncUndoRedo();
+    }
+
+    function syncUndoRedo() {
+      undoBtn.disabled = histIdx <= 0;
+      redoBtn.disabled = histIdx >= hist.length - 1;
+    }
+
+    function undo() {
+      if (histIdx > 0) { histIdx--; setTextarea(hist[histIdx], false); showToast('Undo'); }
+      syncUndoRedo();
+    }
+
+    function redo() {
+      if (histIdx < hist.length - 1) { histIdx++; setTextarea(hist[histIdx], false); showToast('Redo'); }
+      syncUndoRedo();
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    let toastTimer: ReturnType<typeof setTimeout>;
+    function showToast(msg: string) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('lo-toast-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('lo-toast-visible'), 2500);
+      srEl.textContent = msg;
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function getLines(): string[] {
+      return input.value.split(/\r\n|\r|\n/);
+    }
+
+    function setTextarea(text: string, saveToHistory = true) {
+      input.value = text;
+      updateLineCount();
+      if (saveToHistory) saveState(text);
+    }
+
+    function updateLineCount() {
+      const lines = getLines();
+      const n = lines.length === 1 && lines[0] === '' ? 0 : lines.length;
+      lineCountEl.textContent = `${n} line${n === 1 ? '' : 's'}`;
+    }
+
+    // ── Sort ──────────────────────────────────────────────────────────────────
+    function performSort(type: string) {
+      const cs = caseSens.checked;
+      const cmp = (a: string, b: string) =>
+        cs ? a.localeCompare(b) : a.localeCompare(b, undefined, { sensitivity: 'base' });
+      const lines = getLines();
+      switch (type) {
+        case 'alpha':       lines.sort(cmp); break;
+        case 'alphaDesc':   lines.sort((a, b) => cmp(b, a)); break;
+        case 'numeric':     lines.sort((a, b) => parseFloat(a) - parseFloat(b)); break;
+        case 'numericDesc': lines.sort((a, b) => parseFloat(b) - parseFloat(a)); break;
+        case 'natural':     lines.sort((a, b) =>
+          a.localeCompare(b, undefined, { numeric: true, sensitivity: cs ? 'variant' : 'base' })); break;
+        case 'length':      lines.sort((a, b) => a.length - b.length); break;
+      }
+      setTextarea(lines.join('\n'));
+      showToast('Sorted');
+    }
+
+    // ── Operations ────────────────────────────────────────────────────────────
+    function performOperation(type: string) {
+      let lines = getLines();
+      switch (type) {
+        case 'reverse': lines.reverse(); break;
+        case 'shuffle':
+          for (let i = lines.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [lines[i], lines[j]] = [lines[j], lines[i]];
+          }
+          break;
+        case 'unique': {
+          const seen = new Set<string>();
+          lines = lines.filter(l => {
+            const k = caseSens.checked ? l : l.toLowerCase();
+            if (seen.has(k)) return false;
+            seen.add(k);
+            return true;
+          });
+          break;
+        }
+        case 'trim':            lines = lines.map(l => l.trim()); break;
+        case 'unwrap':          lines = [lines.join(' ')]; break;
+        case 'removeZeroWidth': lines = lines.map(l => l.replace(/[​-‍﻿­⁠]/g, '')); break;
+        case 'hardwrap': {
+          const len = parseInt(wrapLen.value) || 80;
+          const re = new RegExp(`(.{1,${len}})(\\s+|$)`, 'g');
+          lines = (lines.join(' ').match(re) || []).map(l => l.trimEnd());
+          break;
+        }
+      }
+      setTextarea(lines.join('\n'));
+      showToast('Done');
+    }
+
+    // ── Filter ────────────────────────────────────────────────────────────────
+    function performFilter(type: string) {
+      let lines = getLines();
+      const orig = lines.length;
+      const text = filterText.value;
+      const cs = caseSens.checked;
+      const has = (line: string, t: string) =>
+        cs ? line.includes(t) : line.toLowerCase().includes(t.toLowerCase());
+
+      switch (type) {
+        case 'empty':  lines = lines.filter(l => l.trim() !== ''); break;
+        case 'keep':
+          if (!text) { showToast('Enter text to filter by'); return; }
+          lines = lines.filter(l => has(l, text)); break;
+        case 'remove':
+          if (!text) { showToast('Enter text to filter by'); return; }
+          lines = lines.filter(l => !has(l, text)); break;
+      }
+      setTextarea(lines.join('\n'));
+      showToast(`${lines.length} of ${orig} lines kept`);
+    }
+
+    // ── Modify ────────────────────────────────────────────────────────────────
+    function addPrefix() {
+      const p = prefixInput.value;
+      setTextarea(getLines().map(l => p + l).join('\n'));
+      showToast('Prefix added');
+    }
+
+    function addSuffix() {
+      const s = suffixInput.value;
+      setTextarea(getLines().map(l => l + s).join('\n'));
+      showToast('Suffix added');
+    }
+
+    function numberLines() {
+      let n = parseInt(startNum.value, 10) || 1;
+      const step = parseInt(stepNum.value, 10) || 1;
+      setTextarea(getLines().map(l => { const r = `${n}. ${l}`; n += step; return r; }).join('\n'));
+      showToast('Lines numbered');
+    }
+
+    // ── Event delegation ──────────────────────────────────────────────────────
+    document.addEventListener('click', async (e: MouseEvent) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-action]');
+      if (!btn) return;
+      const { action, value } = btn.dataset;
+      switch (action) {
+        case 'sort':    performSort(value!); break;
+        case 'operate': performOperation(value!); break;
+        case 'filter':  performFilter(value!); break;
+        case 'prefix':  addPrefix(); break;
+        case 'suffix':  addSuffix(); break;
+        case 'number':  numberLines(); break;
+        case 'undo':    undo(); break;
+        case 'redo':    redo(); break;
+        case 'copy':
+          if (!input.value) { showToast('Nothing to copy'); return; }
+          try { await navigator.clipboard.writeText(input.value); showToast('Copied!'); }
+          catch { showToast('Copy failed — check permissions'); }
+          break;
+        case 'paste':
+          try { setTextarea(await navigator.clipboard.readText()); showToast('Pasted'); }
+          catch { showToast('Paste failed — check permissions'); }
+          break;
+        case 'clear':
+          setTextarea('');
+          filterText.value = prefixInput.value = suffixInput.value = '';
+          input.focus();
+          showToast('Cleared');
+          break;
+      }
+    });
+
+    // ── Keyboard shortcuts ────────────────────────────────────────────────────
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      if (e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+      if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) { e.preventDefault(); redo(); }
+    });
+
+    // ── Debounced save on typing ──────────────────────────────────────────────
+    let debounce: ReturnType<typeof setTimeout>;
+    input.addEventListener('input', () => {
+      updateLineCount();
+      clearTimeout(debounce);
+      debounce = setTimeout(() => saveState(input.value), 500);
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    saveState(input.value);
+    syncUndoRedo();
+    updateLineCount();
+  </script>
+</BaseLayout>
