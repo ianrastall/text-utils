@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="JSON Tools" description="Format, validate, sort, extract, and convert JSON and JSON Lines data in your browser.">
+<BaseLayout title="JSON Tools" description="Format, validate, sort, extract, and convert JSON, JSONL, and CSV data in your browser.">
   <main class="shell jt-main">
     <header class="jt-page-header">
       <div>
         <h1>JSON Tools</h1>
-        <p>Format, validate, sort, extract, and convert JSON and JSON Lines.</p>
+        <p>Format, validate, sort, extract, and convert JSON, JSONL, and CSV.</p>
       </div>
       <a class="button" href="/">Back</a>
     </header>
@@ -35,6 +35,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <button type="button" class="button" data-action="sortArray">Sort Array</button>
         <button type="button" class="button" data-action="toJsonl">JSON to JSONL</button>
         <button type="button" class="button" data-action="fromJsonl">JSONL to JSON</button>
+        <button type="button" class="button" data-action="jsonToCsv">JSON to CSV</button>
+        <button type="button" class="button" data-action="csvToJson">CSV to JSON</button>
       </div>
     </section>
 
@@ -602,6 +604,130 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       });
     }
 
+    function csvCellToValue(cell: string): unknown {
+      const value = cell.trim();
+      if (value === '') return '';
+      if (/^(true|false)$/i.test(value)) return value.toLowerCase() === 'true';
+      if (/^null$/i.test(value)) return null;
+      if (/^-?(?:\d+|\d*\.\d+)(?:e[+-]?\d+)?$/i.test(value)) return Number(value);
+      return cell;
+    }
+
+    function parseCsv(text: string): string[][] {
+      const rows: string[][] = [];
+      let row: string[] = [];
+      let cell = '';
+      let inQuotes = false;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const char = text[index];
+        const next = text[index + 1];
+
+        if (inQuotes) {
+          if (char === '"' && next === '"') {
+            cell += '"';
+            index += 1;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            cell += char;
+          }
+          continue;
+        }
+
+        if (char === '"') {
+          inQuotes = true;
+        } else if (char === ',') {
+          row.push(cell);
+          cell = '';
+        } else if (char === '\n') {
+          row.push(cell);
+          rows.push(row);
+          row = [];
+          cell = '';
+        } else if (char === '\r') {
+          if (next === '\n') index += 1;
+          row.push(cell);
+          rows.push(row);
+          row = [];
+          cell = '';
+        } else {
+          cell += char;
+        }
+      }
+
+      if (inQuotes) throw new Error('CSV has an unclosed quoted field.');
+      row.push(cell);
+      rows.push(row);
+
+      while (rows.length && rows[rows.length - 1].every((value) => value === '')) {
+        rows.pop();
+      }
+
+      return rows;
+    }
+
+    function csvToJson(text: string): Record<string, unknown>[] {
+      const rows = parseCsv(text);
+      if (!rows.length) throw new Error('CSV input is empty.');
+
+      const headers = rows[0].map((header) => header.trim());
+      if (headers.some((header) => !header)) {
+        throw new Error('CSV header row cannot contain blank column names.');
+      }
+
+      return rows.slice(1)
+        .filter((row) => row.some((value) => value !== ''))
+        .map((row) => headers.reduce<Record<string, unknown>>((record, header, index) => {
+          record[header] = csvCellToValue(row[index] ?? '');
+          return record;
+        }, {}));
+    }
+
+    function normalizeCsvCell(value: unknown): string {
+      if (value === null || value === undefined) return '';
+      if (typeof value === 'object') return JSON.stringify(value);
+      return String(value);
+    }
+
+    function csvEscape(value: unknown): string {
+      const text = normalizeCsvCell(value);
+      return /[",\r\n]|\s$|^\s/.test(text)
+        ? `"${text.replace(/"/g, '""')}"`
+        : text;
+    }
+
+    function recordsFromJson(value: unknown): { headers: string[]; rows: Record<string, unknown>[] } {
+      const sourceRows = Array.isArray(value) ? value : [value];
+      if (!sourceRows.length) throw new Error('JSON array is empty.');
+
+      const rows = sourceRows.map((item) => {
+        if (item !== null && typeof item === 'object' && !Array.isArray(item)) {
+          return item as Record<string, unknown>;
+        }
+        return { value: item };
+      });
+
+      const headers: string[] = [];
+      rows.forEach((row) => {
+        Object.keys(row).forEach((key) => {
+          if (!headers.includes(key)) headers.push(key);
+        });
+      });
+
+      if (!headers.length) throw new Error('No values found to convert.');
+      return { headers, rows };
+    }
+
+    function jsonToCsv(value: unknown): string {
+      const { headers, rows } = recordsFromJson(value);
+      const lines = [
+        headers.map(csvEscape).join(','),
+        ...rows.map((row) => headers.map((header) => csvEscape(row[header])).join(','))
+      ];
+      return lines.join('\n');
+    }
+
     function setOutput(text: string): void {
       output.value = text;
       updateCounts();
@@ -614,6 +740,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           displayStats(parsedLines);
           setOutput(formatJson(parsedLines));
           setStatus(`Converted ${plural(parsedLines.length, 'line')} to JSON.`, 'good');
+          return;
+        }
+
+        if (action === 'csvToJson') {
+          const rows = csvToJson(input.value);
+          displayStats(rows);
+          setOutput(formatJson(rows));
+          setStatus(`Converted ${plural(rows.length, 'row')} to JSON.`, 'good');
           return;
         }
 
@@ -661,6 +795,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             outputText = jsonToJsonl(parsed);
             setStatus('Converted JSON array to JSONL.', 'good');
             break;
+          case 'jsonToCsv':
+            outputText = jsonToCsv(parsed);
+            setStatus('Converted JSON to CSV.', 'good');
+            break;
           case 'extract': {
             const path = pathInput.value.trim();
             const extracted = getPath(parsed, path);
@@ -705,6 +843,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         case 'sortArray':
         case 'toJsonl':
         case 'fromJsonl':
+        case 'jsonToCsv':
+        case 'csvToJson':
         case 'extract':
           processAction(action);
           break;

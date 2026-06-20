@@ -1,5 +1,25 @@
 export type ToolCategory = 'write' | 'convert' | 'inspect' | 'design';
 
+export const toolCategories: ToolCategory[] = ['write', 'convert', 'inspect', 'design'];
+
+export const categoryLabels: Record<ToolCategory, string> = {
+  write: 'Write',
+  convert: 'Convert',
+  inspect: 'Inspect',
+  design: 'Design'
+};
+
+export const categoryDescriptions: Record<ToolCategory, string> = {
+  write: 'Draft, format, generate, and reshape writing and code snippets.',
+  convert: 'Transform text, markup, hashes, data formats, and encoded values.',
+  inspect: 'Validate, compare, count, search, and understand text or data.',
+  design: 'Pick colors, fonts, icons, gradients, symbols, and visual assets.'
+};
+
+export function categoryHref(category: ToolCategory): string {
+  return `/categories/${category}.html`;
+}
+
 export interface ToolMeta {
   id: string;
   name: string;
@@ -142,24 +162,8 @@ export const tools: ToolMeta[] = [
     id: 'json-tools',
     name: 'JSON Tools',
     href: '/json-tools.html',
-    category: 'inspect',
-    description: 'Format, validate, minify, sort, extract paths, and convert JSON Lines.',
-    status: 'ready'
-  },
-  {
-    id: 'json-csv-converter',
-    name: 'JSON & CSV Converter',
-    href: '/json-csv-converter.html',
     category: 'convert',
-    description: 'Convert tabular data seamlessly between JSON and CSV formats.',
-    status: 'ready'
-  },
-  {
-    id: 'json-formatter',
-    name: 'JSON Formatter & Validator',
-    href: '/json-formatter.html',
-    category: 'inspect',
-    description: 'Format, validate, and minify JSON data with real-time error checking.',
+    description: 'Format, validate, sort, extract, and convert JSON, JSONL, and CSV data.',
     status: 'ready'
   },
   {

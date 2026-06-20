@@ -1,0 +1,44 @@
+---
+import ToolCard from '../../components/ToolCard.astro';
+import {
+  categoryDescriptions,
+  categoryHref,
+  categoryLabels,
+  toolCategories,
+  tools,
+  type ToolCategory
+} from '../../data/tools';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return toolCategories.map((category) => ({ params: { category } }));
+}
+
+const category = Astro.params.category as ToolCategory;
+const categoryTools = tools.filter((tool) => tool.category === category);
+const title = `${categoryLabels[category]} Tools`;
+---
+<BaseLayout title={title} description={categoryDescriptions[category]}>
+  <main class="shell">
+    <header class="category-header">
+      <div>
+        <h1>{title}</h1>
+        <p>{categoryDescriptions[category]}</p>
+      </div>
+      <a class="button" href="/">All Tools</a>
+    </header>
+
+    <nav class="category-nav" aria-label="Tool categories">
+      <a class="category-chip" href="/">All <span>{tools.length}</span></a>
+      {toolCategories.map((item) => (
+        <a class={`category-chip${item === category ? ' active' : ''}`} href={categoryHref(item)} aria-current={item === category ? 'page' : undefined}>
+          {categoryLabels[item]} <span>{tools.filter((tool) => tool.category === item).length}</span>
+        </a>
+      ))}
+    </nav>
+
+    <section class="tool-grid" aria-label={`${categoryLabels[category]} tools`}>
+      {categoryTools.map((tool) => <ToolCard tool={tool} />)}
+    </section>
+  </main>
+</BaseLayout>

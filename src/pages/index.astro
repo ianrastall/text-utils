@@ -1,10 +1,19 @@
 ---
 import ToolCard from '../components/ToolCard.astro';
-import { tools } from '../data/tools';
+import { categoryHref, categoryLabels, toolCategories, tools } from '../data/tools';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Text Utilities">
   <main class="shell">
+    <nav class="category-nav home-category-nav" aria-label="Tool categories">
+      <a class="category-chip active" href="/" aria-current="page">All <span>{tools.length}</span></a>
+      {toolCategories.map((category) => (
+        <a class="category-chip" href={categoryHref(category)}>
+          {categoryLabels[category]} <span>{tools.filter((tool) => tool.category === category).length}</span>
+        </a>
+      ))}
+    </nav>
+
     <section class="tool-grid" aria-label="Available tools">
       {tools.map((tool) => <ToolCard tool={tool} />)}
     </section>

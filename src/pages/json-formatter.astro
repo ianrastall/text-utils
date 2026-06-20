@@ -1,118 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="JSON Formatter & Validator" description="Format, validate, and minify JSON data.">
+<BaseLayout title="JSON Formatter & Validator" description="JSON Formatter has moved into the unified JSON Tools page.">
+  <Fragment slot="head">
+    <meta http-equiv="refresh" content="0; url=/json-tools.html" />
+    <link rel="canonical" href="/json-tools.html" />
+  </Fragment>
+
   <main class="shell tool-shell">
     <div class="tool-bar">
       <div class="tool-title">
-        <h1>JSON Formatter & Validator</h1>
-        <p>Format, validate, and minify JSON data.</p>
+        <h1>JSON Formatter &amp; Validator</h1>
+        <p>This tool has moved into JSON Tools.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button primary" href="/json-tools.html">Open JSON Tools</a>
     </div>
-    <section class="panel">
-      <div class="control-row">
-        <div class="field">
-          <label for="indent-size">Indentation</label>
-          <select id="indent-size">
-            <option value="2">2 spaces</option>
-            <option value="4">4 spaces</option>
-            <option value="tab">Tab</option>
-          </select>
-        </div>
-        <button id="format-json" class="button primary" type="button">Format</button>
-        <button id="minify-json" class="button" type="button">Minify</button>
-        <button id="copy-output" class="button" type="button">Copy Output</button>
-        <button id="clear-all" class="button" type="button" style="color: var(--danger); border-color: var(--danger);">Clear</button>
-      </div>
-      <div class="two-column">
-        <div class="field">
-          <label for="input-text">Input JSON</label>
-          <textarea id="input-text" placeholder="Paste JSON here..."></textarea>
-        </div>
-        <div class="field">
-          <label for="output-text">Output</label>
-          <textarea id="output-text" readonly placeholder="Formatted JSON will appear here..."></textarea>
-        </div>
-      </div>
-      <div class="status-line">
-        <span id="status" class="status-good">Ready</span>
-        <span id="stats"></span>
-      </div>
-    </section>
   </main>
-  <style>
-    textarea {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.9rem;
-    }
-  </style>
-  <script>
-    const input = document.getElementById('input-text') as HTMLTextAreaElement;
-    const output = document.getElementById('output-text') as HTMLTextAreaElement;
-    const indentSize = document.getElementById('indent-size') as HTMLSelectElement;
-    const formatBtn = document.getElementById('format-json') as HTMLButtonElement;
-    const minifyBtn = document.getElementById('minify-json') as HTMLButtonElement;
-    const copy = document.getElementById('copy-output') as HTMLButtonElement;
-    const clear = document.getElementById('clear-all') as HTMLButtonElement;
-    const status = document.getElementById('status') as HTMLSpanElement;
-    const stats = document.getElementById('stats') as HTMLSpanElement;
 
-    function getIndent() {
-      if (indentSize.value === 'tab') return '\t';
-      return parseInt(indentSize.value, 10);
-    }
-
-    function processJson(minify = false) {
-      if (!input.value.trim()) {
-        output.value = '';
-        status.textContent = 'Ready';
-        status.style.color = 'var(--text-muted)';
-        stats.textContent = '';
-        return;
-      }
-      try {
-        const parsed = JSON.parse(input.value);
-        if (minify) {
-          output.value = JSON.stringify(parsed);
-        } else {
-          output.value = JSON.stringify(parsed, null, getIndent());
-        }
-        status.textContent = 'Valid JSON';
-        status.style.color = 'var(--success)';
-        stats.textContent = `${output.value.length} characters`;
-      } catch (err: any) {
-        output.value = '';
-        status.textContent = `Invalid JSON: ${err.message}`;
-        status.style.color = 'var(--danger)';
-        stats.textContent = '';
-        output.value = err.toString();
-      }
-    }
-
-    formatBtn.addEventListener('click', () => processJson(false));
-    minifyBtn.addEventListener('click', () => processJson(true));
-    
-    clear.addEventListener('click', () => {
-      input.value = '';
-      output.value = '';
-      status.textContent = 'Ready';
-      status.style.color = 'var(--text-muted)';
-      stats.textContent = '';
-      input.focus();
-    });
-    
-    copy.addEventListener('click', async () => {
-      if (!output.value) return;
-      await navigator.clipboard.writeText(output.value);
-      const original = status.textContent;
-      const originalColor = status.style.color;
-      status.textContent = 'Copied to clipboard';
-      status.style.color = 'var(--success)';
-      window.setTimeout(() => {
-        status.textContent = original;
-        status.style.color = originalColor;
-      }, 1500);
-    });
+  <script is:inline>
+    window.location.replace('/json-tools.html');
   </script>
 </BaseLayout>
