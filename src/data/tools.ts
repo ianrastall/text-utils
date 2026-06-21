@@ -151,6 +151,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'gutenberg-cleaner',
+    name: 'Project Gutenberg Cleaner',
+    href: '/gutenberg-cleaner.html',
+    category: 'convert',
+    description: 'Clean Project Gutenberg HTML or plain text for ebook prep and corpus work.',
+    status: 'ready'
+  },
+  {
     id: 'ip-info',
     name: 'IP Info & System Details',
     href: '/ip-info.html',
