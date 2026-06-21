@@ -53,3 +53,5 @@ Practical options:
 ## Current Decision
 
 Shelve the idea for now, but preserve it so it can be revisited later as either a Text Utilities feature, a standalone web page, or separate software.
+
+This is now also captured as part of a possible downloadable desktop suite in [Desktop Text Utilities Idea](desktop-text-utilities.md).

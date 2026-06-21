@@ -261,5 +261,13 @@ export const tools: ToolMeta[] = [
     category: 'design',
     description: 'Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.',
     status: 'ready'
+  },
+  {
+    id: 'xml-sitemap-generator',
+    name: 'XML Sitemap Generator',
+    href: '/xml-sitemap-generator.html',
+    category: 'inspect',
+    description: 'Generate sitemap.xml files from pasted URL lists, with best-effort browser crawling when CORS allows it.',
+    status: 'ready'
   }
 ];

@@ -17,6 +17,7 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <slot name="head" />
     <script is:inline>
       (() => {
@@ -33,13 +34,20 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
           <span class="brand-mark">T</span>
           <span>Text Utilities</span>
         </a>
+        <nav class="site-network" aria-label="Site network">
+          <a href="https://github.com/ianrastall/text-utils" rel="noreferrer" target="_blank">GitHub</a>
+          <a href="https://chessnerd.net" rel="noreferrer" target="_blank">Chess Nerd</a>
+          <a href="https://bookstacks.org" rel="noreferrer" target="_blank">Bookstacks</a>
+        </nav>
         <div class="header-actions">
           <label class="color-picker-wrap" title="Accent color">
+            <span class="visually-hidden">Accent color</span>
             <span class="color-swatch" id="color-swatch"></span>
-            <input type="color" id="accent-picker" />
+            <input type="color" id="accent-picker" aria-label="Accent color" />
           </label>
-          <a class="button" href="https://github.com/ianrastall/text-utils" rel="noreferrer" target="_blank">GitHub</a>
-          <button id="theme-toggle" type="button">Theme</button>
+          <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle theme">
+            <span class="material-icons" aria-hidden="true">dark_mode</span>
+          </button>
         </div>
       </header>
     </div>
@@ -53,12 +61,23 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
     <script>
       // Theme toggle
       const themeToggle = document.getElementById('theme-toggle');
+      function updateThemeIcon() {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        const icon = themeToggle?.querySelector('.material-icons');
+        if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
+        themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        themeToggle?.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+        themeToggle?.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      }
+
+      updateThemeIcon();
       themeToggle?.addEventListener('click', () => {
         const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.dataset.theme = next;
         localStorage.setItem('text-utils-theme', next);
         applyAccent(localStorage.getItem('text-utils-accent') || null);
+        updateThemeIcon();
       });
 
       // Accent colour picker
