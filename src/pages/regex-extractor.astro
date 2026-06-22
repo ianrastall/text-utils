@@ -42,7 +42,7 @@ Artist: Love - Track: 7 and 7 Is</textarea>
           <h3 style="margin-top: 1rem; font-size: 1rem; margin-bottom: 0.5rem;">Extraction Mode</h3>
           <div class="radio-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label class="radio-label"><input type="radio" name="output-mode" value="matching-lines"> Matching lines</label>
-            <label class="radio-label"><input type="radio" name="output-mode" value="full-match"> Full regex match</label>
+            <label class="radio-label"><input type="radio" name="output-mode" value="full-match" checked> Full regex match</label>
             <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem;">
               <input type="radio" name="output-mode" value="capture-group"> Capture group: 
               <input type="number" id="group-num" value="1" min="1" style="width: 60px; padding: 0.2rem;" disabled aria-label="Capture group number">
@@ -52,7 +52,7 @@ Artist: Love - Track: 7 and 7 Is</textarea>
               <input type="text" id="group-name" placeholder="name" style="width: 80px; padding: 0.2rem;" disabled aria-label="Named group name">
             </label>
             <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem;">
-              <input type="radio" name="output-mode" value="replacement" checked> Replacement: 
+              <input type="radio" name="output-mode" value="replacement"> Replacement:
               <input type="text" id="replacement-tpl" value="$1 — &quot;$2&quot;" style="flex: 1; padding: 0.2rem;" aria-label="Replacement template">
             </label>
           </div>

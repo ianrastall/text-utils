@@ -29,8 +29,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="he-field">
             <label class="he-field-label" for="scopeSelect">Scope</label>
             <select id="scopeSelect" class="he-select">
-              <option value="html">HTML-unsafe (&lt; &gt; &amp; " ')</option>
-              <option value="nonascii" selected>Non-ASCII (code point &gt; 127)</option>
+              <option value="html" selected>HTML-unsafe (&lt; &gt; &amp; " ')</option>
+              <option value="nonascii">Non-ASCII (code point &gt; 127)</option>
               <option value="both">HTML-unsafe + Non-ASCII</option>
               <option value="all">All printable (encode everything)</option>
             </select>
