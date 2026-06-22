@@ -53,10 +53,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <input type="checkbox" id="typeAUD" value="aud"> AUD <small style="color: var(--text-muted)">(Audience)</small>
             </label>
             <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
-              <input type="checkbox" id="typeMTX" value="matrix"> Matrix <small style="color: var(--text-muted)">(SBD+AUD Mix)</small>
+              <input type="checkbox" id="typeFOB" value="fob"> FOB <small style="color: var(--text-muted)">(Front of Board)</small>
             </label>
             <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
-              <input type="checkbox" id="typeFM" value="fm"> FM/Pre-FM <small style="color: var(--text-muted)">(Broadcast)</small>
+              <input type="checkbox" id="typeMTX" value="matrix"> Matrix <small style="color: var(--text-muted)">(SBD+AUD Mix)</small>
+            </label>
+          </div>
+        </div>
+
+        <!-- Broadcasts -->
+        <div class="field" style="margin-top: 1rem;">
+          <label>Broadcasts</label>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <label style="font-weight: normal; display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" id="typeFM" value="fm"> FM/Pre-FM <small style="color: var(--text-muted)">(Radio Broadcast)</small>
             </label>
           </div>
         </div>
@@ -133,7 +143,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <!-- Results Section -->
-    <section id="resultsSection" class="panel" style="display: none; margin-top: 2rem;">
+    <section id="resultsSection" style="display: none; margin-top: 2.5rem;">
       <h2 style="font-size: 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
         <span>Results <span id="resultCount" style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;"></span></span>
         <a id="archiveLink" href="#" target="_blank" class="button" style="font-size: 0.85rem;">View on Archive.org</a>
@@ -171,15 +181,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 0.6rem;
     align-content: start;
     padding: 1rem;
-    background: var(--surface-2);
+    background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 8px;
-    transition: transform 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   }
   
   .result-card:hover {
     border-color: var(--primary);
     transform: translateY(-2px);
+    box-shadow: var(--shadow);
   }
 
   .result-head {
@@ -295,6 +307,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const types = [];
       if ((document.getElementById('typeSBD') as HTMLInputElement).checked) types.push('sbd', 'soundboard');
       if ((document.getElementById('typeAUD') as HTMLInputElement).checked) types.push('aud', 'audience');
+      if ((document.getElementById('typeFOB') as HTMLInputElement).checked) types.push('fob', 'front of board');
       if ((document.getElementById('typeMTX') as HTMLInputElement).checked) types.push('matrix', 'mtx');
       if ((document.getElementById('typeFM') as HTMLInputElement).checked) types.push('fm', 'pre-fm', 'broadcast');
       
