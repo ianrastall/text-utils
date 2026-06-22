@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Text Effects" description="Apply fun effects to your text like reverse, upside-down, and zalgo.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Text Effects</h1>
+        <p>Apply fun transformations to your text.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+    <section class="panel">
+      <div class="control-row">
+        <div class="field">
+          <label for="effect-mode">Effect</label>
+          <select id="effect-mode">
+            <option value="reverse">Reverse</option>
+            <option value="upside-down">Upside Down</option>
+            <option value="mirror">Mirror</option>
+            <option value="vaporwave">Vaporwave</option>
+            <option value="small-caps">Small Caps</option>
+            <option value="alternating">aLtErNaTiNg CaSe</option>
+            <option value="zalgo">Zalgo</option>
+          </select>
+        </div>
+        <button id="copy-output" type="button">Copy Output</button>
+        <button id="clear-all" type="button">Clear</button>
+      </div>
+      <div class="two-column">
+        <div class="field">
+          <label for="input-text">Input</label>
+          <textarea id="input-text" placeholder="Paste or type text here"></textarea>
+        </div>
+        <div class="field">
+          <label for="output-text">Output</label>
+          <textarea id="output-text" readonly placeholder="Converted text appears here"></textarea>
+        </div>
+      </div>
+      <div class="status-line">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats">0 characters</span>
+      </div>
+    </section>
+  </main>
+  <script>
+    import { applyEffect, type TextEffect } from '../lib/effects';
+
+    const input = document.getElementById('input-text') as HTMLTextAreaElement;
+    const output = document.getElementById('output-text') as HTMLTextAreaElement;
+    const mode = document.getElementById('effect-mode') as HTMLSelectElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+    const copy = document.getElementById('copy-output') as HTMLButtonElement;
+    const clear = document.getElementById('clear-all') as HTMLButtonElement;
+
+    function render() {
+      output.value = applyEffect(input.value, mode.value as TextEffect);
+      stats.textContent = `${input.value.length} input characters, ${output.value.length} output characters`;
+    }
+
+    input.addEventListener('input', render);
+    mode.addEventListener('change', render);
+    clear.addEventListener('click', () => {
+      input.value = '';
+      output.value = '';
+      render();
+      input.focus();
+    });
+    copy.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(output.value);
+      status.textContent = 'Copied';
+      window.setTimeout(() => status.textContent = 'Ready', 1200);
+    });
+    render();
+  </script>
+</BaseLayout>

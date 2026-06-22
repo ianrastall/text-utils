@@ -277,5 +277,13 @@ export const tools: ToolMeta[] = [
     category: 'inspect',
     description: 'Generate sitemap.xml files from pasted URL lists, with best-effort browser crawling when CORS allows it.',
     status: 'ready'
+  },
+  {
+    id: 'text-effects',
+    name: 'Text Effects',
+    href: '/text-effects.html',
+    category: 'convert',
+    description: 'Apply fun transformations to your text like reverse, upside-down, mirror, vaporwave, small caps, and zalgo.',
+    status: 'ready'
   }
 ];
