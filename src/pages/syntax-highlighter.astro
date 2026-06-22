@@ -1,0 +1,297 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Syntax Highlighter" description="Convert code into beautiful images, rich text, or inline HTML.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Syntax Highlighter</h1>
+        <p>Convert code to Rich Text, Inline HTML, BBCode, or download as a PNG.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <!-- Hidden element to dynamically load Prism CSS based on theme selection -->
+    <link id="prism-theme-link" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <section class="panel">
+      <div class="control-row">
+        <div class="field">
+          <label for="language-select">Language</label>
+          <select id="language-select">
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="python">Python</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="json">JSON</option>
+            <option value="markdown">Markdown</option>
+            <option value="bash">Bash</option>
+            <option value="sql">SQL</option>
+            <option value="yaml">YAML</option>
+            <option value="regex">Regex</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="theme-select">Theme</label>
+          <select id="theme-select">
+            <option value="prism-tomorrow">Tomorrow Night (Dark)</option>
+            <option value="prism-okaidia">Okaidia (Dark)</option>
+            <option value="prism-twilight">Twilight (Dark)</option>
+            <option value="prism-dark">Dark</option>
+            <option value="prism">Default (Light)</option>
+            <option value="prism-coy">Coy (Light)</option>
+            <option value="prism-solarizedlight">Solarized Light</option>
+          </select>
+        </div>
+        <div style="flex-grow: 1;"></div>
+        <button id="copy-rtf" type="button" class="primary">Copy Rich Text</button>
+        <button id="copy-html" type="button">Copy HTML</button>
+        <button id="copy-bbcode" type="button">Copy BBCode</button>
+        <button id="download-png" type="button">Download PNG</button>
+      </div>
+
+      <div class="two-column" style="margin-top: 1rem;">
+        <div class="field" style="height: 100%;">
+          <label for="input-code">Code</label>
+          <textarea id="input-code" placeholder="Paste your code here..." spellcheck="false" style="font-family: monospace; min-height: 300px; height: 100%;"></textarea>
+        </div>
+        <div class="field" style="height: 100%;">
+          <label>Preview</label>
+          <div id="preview-container" class="preview-box" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; height: 100%; min-height: 300px;">
+            <pre id="code-output" style="margin: 0; height: 100%; overflow: auto; border-radius: 0; border: none; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size: 14px;"><code id="code-content"></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-line" style="margin-top: 1rem;">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    /* Ensure the preview box matches the theme's background */
+    .preview-box {
+      background-color: #2d2d2d; /* Default fallback for tomorrow night */
+      transition: background-color 0.3s ease;
+    }
+  </style>
+
+  <script>
+    import Prism from 'prismjs';
+    import 'prismjs/components/prism-javascript';
+    import 'prismjs/components/prism-typescript';
+    import 'prismjs/components/prism-python';
+    import 'prismjs/components/prism-css';
+    import 'prismjs/components/prism-json';
+    import 'prismjs/components/prism-markdown';
+    import 'prismjs/components/prism-bash';
+    import 'prismjs/components/prism-sql';
+    import 'prismjs/components/prism-yaml';
+    import 'prismjs/components/prism-regex';
+    
+    // We don't import HTML separately in prismjs usually, it's bundled as 'markup'
+    // But we need to alias it if the user selects HTML.
+    
+    import { toPng } from 'html-to-image';
+
+    const input = document.getElementById('input-code') as HTMLTextAreaElement;
+    const outputCode = document.getElementById('code-content') as HTMLElement;
+    const outputPre = document.getElementById('code-output') as HTMLElement;
+    const previewContainer = document.getElementById('preview-container') as HTMLElement;
+    const langSelect = document.getElementById('language-select') as HTMLSelectElement;
+    const themeSelect = document.getElementById('theme-select') as HTMLSelectElement;
+    const themeLink = document.getElementById('prism-theme-link') as HTMLLinkElement;
+    
+    const copyRtfBtn = document.getElementById('copy-rtf') as HTMLButtonElement;
+    const copyHtmlBtn = document.getElementById('copy-html') as HTMLButtonElement;
+    const copyBbcodeBtn = document.getElementById('copy-bbcode') as HTMLButtonElement;
+    const downloadPngBtn = document.getElementById('download-png') as HTMLButtonElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+
+    function getActualLanguage(lang: string) {
+      if (lang === 'html') return 'markup';
+      return lang;
+    }
+
+    function render() {
+      const code = input.value;
+      const lang = getActualLanguage(langSelect.value);
+      
+      if (!code.trim()) {
+        outputCode.innerHTML = '';
+        outputCode.className = `language-${langSelect.value}`;
+        return;
+      }
+
+      try {
+        const grammar = Prism.languages[lang];
+        if (grammar) {
+          const highlighted = Prism.highlight(code, grammar, lang);
+          outputCode.innerHTML = highlighted;
+        } else {
+          outputCode.textContent = code;
+        }
+        outputCode.className = `language-${langSelect.value}`;
+      } catch (e) {
+        outputCode.textContent = code;
+      }
+      
+      // Update preview background to match pre background
+      setTimeout(() => {
+        const preStyles = window.getComputedStyle(outputPre);
+        if (preStyles.backgroundColor && preStyles.backgroundColor !== 'rgba(0, 0, 0, 0)' && preStyles.backgroundColor !== 'transparent') {
+          previewContainer.style.backgroundColor = preStyles.backgroundColor;
+        }
+      }, 50);
+    }
+
+    themeSelect.addEventListener('change', () => {
+      const theme = themeSelect.value;
+      themeLink.href = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/${theme}.min.css`;
+      // Re-render slightly delayed to let CSS load and update background
+      setTimeout(render, 100);
+    });
+
+    input.addEventListener('input', render);
+    langSelect.addEventListener('change', render);
+
+    function setStatus(msg: string) {
+      status.textContent = msg;
+      setTimeout(() => status.textContent = 'Ready', 2000);
+    }
+
+    // Helper to walk DOM and extract text with computed color
+    function getColoredNodes(root: HTMLElement): { text: string, color: string }[] {
+      const result: { text: string, color: string }[] = [];
+      
+      function traverse(node: Node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent;
+          if (text) {
+            const parent = node.parentElement;
+            let color = '#000000';
+            if (parent) {
+              color = window.getComputedStyle(parent).color;
+            }
+            result.push({ text, color });
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          node.childNodes.forEach(traverse);
+        }
+      }
+      
+      traverse(root);
+      return result;
+    }
+
+    // Convert rgb(r, g, b) to #rrggbb
+    function rgbToHex(rgb: string) {
+      const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+      if (!match) return rgb; // Might already be hex or named color
+      function hex(x: string) {
+        return ("0" + parseInt(x).toString(16)).slice(-2);
+      }
+      return "#" + hex(match[1]) + hex(match[2]) + hex(match[3]);
+    }
+
+    copyHtmlBtn.addEventListener('click', async () => {
+      if (!input.value.trim()) return;
+      const nodes = getColoredNodes(outputCode);
+      const preBg = rgbToHex(window.getComputedStyle(outputPre).backgroundColor || '#ffffff');
+      
+      let html = `<pre style="background-color: ${preBg}; padding: 1em; font-family: monospace; white-space: pre-wrap;"><code>`;
+      for (const node of nodes) {
+        const hexColor = rgbToHex(node.color);
+        // Escape HTML
+        const escapedText = node.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        html += `<span style="color: ${hexColor};">${escapedText}</span>`;
+      }
+      html += `</code></pre>`;
+      
+      await navigator.clipboard.writeText(html);
+      setStatus('Copied Inline HTML');
+    });
+
+    copyBbcodeBtn.addEventListener('click', async () => {
+      if (!input.value.trim()) return;
+      const nodes = getColoredNodes(outputCode);
+      
+      let bbcode = `[code]\n`;
+      for (const node of nodes) {
+        const hexColor = rgbToHex(node.color);
+        // Minimal escaping if needed, but BBCode usually takes raw text inside [color]
+        bbcode += `[color=${hexColor}]${node.text}[/color]`;
+      }
+      bbcode += `\n[/code]`;
+      
+      await navigator.clipboard.writeText(bbcode);
+      setStatus('Copied BBCode');
+    });
+
+    copyRtfBtn.addEventListener('click', async () => {
+      if (!input.value.trim()) return;
+      
+      const nodes = getColoredNodes(outputCode);
+      const preBg = rgbToHex(window.getComputedStyle(outputPre).backgroundColor || '#ffffff');
+      
+      let html = `<pre style="background-color: ${preBg}; padding: 1em; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; white-space: pre-wrap;"><code>`;
+      for (const node of nodes) {
+        const hexColor = rgbToHex(node.color);
+        const escapedText = node.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        html += `<span style="color: ${hexColor};">${escapedText}</span>`;
+      }
+      html += `</code></pre>`;
+
+      try {
+        const blob = new Blob([html], { type: 'text/html' });
+        const plainBlob = new Blob([input.value], { type: 'text/plain' });
+        const data = [new ClipboardItem({
+          'text/html': blob,
+          'text/plain': plainBlob
+        })];
+        await navigator.clipboard.write(data);
+        setStatus('Copied Rich Text');
+      } catch (err) {
+        console.error('Clipboard write failed', err);
+        setStatus('Failed to copy RTF');
+      }
+    });
+
+    downloadPngBtn.addEventListener('click', async () => {
+      if (!input.value.trim()) return;
+      try {
+        setStatus('Generating Image...');
+        // We temporarily adjust styles for a better screenshot
+        const originalHeight = previewContainer.style.height;
+        const originalOverflow = outputPre.style.overflow;
+        
+        previewContainer.style.height = 'auto';
+        outputPre.style.overflow = 'visible';
+        
+        const dataUrl = await toPng(outputPre, { 
+          backgroundColor: window.getComputedStyle(outputPre).backgroundColor,
+          style: { margin: '0', padding: '20px' }
+        });
+        
+        previewContainer.style.height = originalHeight;
+        outputPre.style.overflow = originalOverflow;
+        
+        const link = document.createElement('a');
+        link.download = 'code-snippet.png';
+        link.href = dataUrl;
+        link.click();
+        
+        setStatus('Downloaded PNG');
+      } catch (err) {
+        console.error('Failed to generate PNG', err);
+        setStatus('Failed to generate Image');
+      }
+    });
+
+    // Initial render
+    setTimeout(render, 100);
+  </script>
+</BaseLayout>

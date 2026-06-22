@@ -285,5 +285,13 @@ export const tools: ToolMeta[] = [
     category: 'convert',
     description: 'Apply fun transformations to your text like reverse, upside-down, mirror, vaporwave, small caps, and zalgo.',
     status: 'ready'
+  },
+  {
+    id: 'syntax-highlighter',
+    name: 'Syntax Highlighter',
+    href: '/syntax-highlighter.html',
+    category: 'convert',
+    description: 'Format and highlight code snippets. Export as a beautiful PNG image, inline HTML, BBCode, or Rich Text.',
+    status: 'ready'
   }
 ];
