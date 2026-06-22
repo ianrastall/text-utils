@@ -101,6 +101,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="control-row" style="margin-top: 1rem;">
               <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="flacOnly"> FLAC/Lossless only</label>
               <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="highRated"> High ratings only (4+ stars)</label>
+              <label style="font-weight: normal; display: flex; gap: 5px; align-items: center;"><input type="checkbox" id="downloadableOnly" checked> Downloadable only (Exclude Stream-Only)</label>
             </div>
           </div>
         </details>
@@ -122,11 +123,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <!-- Buttons -->
         <div class="control-row" style="margin-top: 2rem;">
-          <button type="submit" class="button primary">Search Archive</button>
-          <button type="button" class="button" id="luckyBtn">I'm Feeling Lucky</button>
+          <button type="submit" class="button primary" id="searchBtn">Search</button>
           <button type="button" class="button button-danger" id="resetBtn">Reset</button>
+          <div id="loadingIndicator" style="display: none; align-items: center; gap: 8px; color: var(--text-muted);">
+             <span class="spinner"></span> Searching...
+          </div>
         </div>
       </form>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="panel" style="display: none; margin-top: 2rem;">
+      <h2 style="font-size: 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <span>Results <span id="resultCount" style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;"></span></span>
+        <a id="archiveLink" href="#" target="_blank" class="button" style="font-size: 0.85rem;">View on Archive.org</a>
+      </h2>
+      <div id="resultsContainer" class="results-grid"></div>
     </section>
 
     <!-- Quick Links -->
@@ -147,15 +159,91 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </main>
 </BaseLayout>
 
+<style>
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .result-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  
+  .result-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .result-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary);
+    text-decoration: none;
+    line-height: 1.3;
+  }
+  
+  .result-title:hover {
+    text-decoration: underline;
+  }
+
+  .result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .result-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .result-source {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    background: var(--surface-2);
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    word-break: break-word;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
 <script>
   const form = document.getElementById('gdSearchForm') as HTMLFormElement;
   const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
-  const luckyBtn = document.getElementById('luckyBtn') as HTMLButtonElement;
+  const searchBtn = document.getElementById('searchBtn') as HTMLButtonElement;
+  const loadingIndicator = document.getElementById('loadingIndicator') as HTMLElement;
+  const resultsSection = document.getElementById('resultsSection') as HTMLElement;
+  const resultsContainer = document.getElementById('resultsContainer') as HTMLElement;
+  const resultCount = document.getElementById('resultCount') as HTMLElement;
+  const archiveLink = document.getElementById('archiveLink') as HTMLAnchorElement;
   
-  function buildSearchUrl() {
-      const baseUrl = 'https://archive.org/search.php';
-      const params = new URLSearchParams();
-      
+  function buildQueryString() {
       let query = 'collection:GratefulDead';
       
       const searchQuery = (document.getElementById('searchQuery') as HTMLInputElement).value.trim();
@@ -219,33 +307,86 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if ((document.getElementById('highRated') as HTMLInputElement).checked) {
           query += ` AND avg_rating:[4 TO 5]`;
       }
+
+      if ((document.getElementById('downloadableOnly') as HTMLInputElement).checked) {
+          query += ` AND -collection:stream_only`;
+      }
       
-      params.append('query', query);
-      
-      const sortBy = (document.getElementById('sortBy') as HTMLSelectElement).value;
-      params.append('sort', sortBy);
-      
-      return `${baseUrl}?${params.toString()}`;
+      return query;
   }
   
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
       e.preventDefault();
-      const url = buildSearchUrl();
-      window.open(url, '_blank');
+      
+      const query = buildQueryString();
+      const sortBy = (document.getElementById('sortBy') as HTMLSelectElement).value;
+      
+      // Build Archive UI URL
+      const archiveUiUrl = `https://archive.org/search.php?query=${encodeURIComponent(query)}&sort=${encodeURIComponent(sortBy)}`;
+      archiveLink.href = archiveUiUrl;
+
+      // Build API URL
+      const apiUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(query)}&sort[]=${encodeURIComponent(sortBy)}&fl[]=identifier,title,date,coverage,source,downloads,avg_rating,description&rows=50&output=json`;
+
+      searchBtn.disabled = true;
+      loadingIndicator.style.display = 'flex';
+      resultsSection.style.display = 'none';
+
+      try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          renderResults(data.response);
+      } catch (err) {
+          console.error("Failed to fetch from Archive.org", err);
+          resultsContainer.innerHTML = `<div style="color: var(--danger); padding: 1rem;">Error fetching results. Archive.org API might be unreachable.</div>`;
+          resultsSection.style.display = 'block';
+      } finally {
+          searchBtn.disabled = false;
+          loadingIndicator.style.display = 'none';
+      }
   });
+
+  function renderResults(response: any) {
+    resultsSection.style.display = 'block';
+    resultCount.textContent = `(${response.numFound} found, showing up to 50)`;
+
+    if (!response.docs || response.docs.length === 0) {
+      resultsContainer.innerHTML = `<div style="padding: 1rem; color: var(--text-muted);">No recordings found matching those criteria.</div>`;
+      return;
+    }
+
+    let html = '';
+    for (const doc of response.docs) {
+      const url = `https://archive.org/details/${doc.identifier}`;
+      const title = doc.title || 'Unknown Title';
+      const date = doc.date ? doc.date.substring(0, 10) : 'Unknown Date';
+      const coverage = doc.coverage ? ` • ${doc.coverage}` : '';
+      const rating = doc.avg_rating ? `★ ${parseFloat(doc.avg_rating).toFixed(1)}` : 'No rating';
+      const downloads = doc.downloads ? `${doc.downloads.toLocaleString()} DLs` : '';
+      const source = doc.source ? doc.source : 'Source unknown';
+
+      html += `
+        <div class="result-card">
+          <a href="${url}" target="_blank" class="result-title">${title}</a>
+          <div class="result-meta">
+            <span>📅 ${date}</span>
+            ${coverage ? `<span>📍 ${coverage.substring(3)}</span>` : ''}
+            <span>${rating}</span>
+            ${downloads ? `<span>📥 ${downloads}</span>` : ''}
+          </div>
+          <div class="result-source">
+            <strong>Source:</strong> ${source}
+          </div>
+        </div>
+      `;
+    }
+
+    resultsContainer.innerHTML = html;
+  }
   
   resetBtn.addEventListener('click', function() {
       form.reset();
-  });
-  
-  luckyBtn.addEventListener('click', function() {
-      const years = [];
-      for (let y = 1965; y <= 1995; y++) years.push(y);
-      const randomYear = years[Math.floor(Math.random() * years.length)];
-      const randomMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-      
-      const url = `https://archive.org/search.php?query=collection:GratefulDead AND date:${randomYear}-${randomMonth}&sort=-avg_rating`;
-      window.open(url, '_blank');
+      resultsSection.style.display = 'none';
   });
   
   document.querySelectorAll<HTMLButtonElement>('.quick-search').forEach(btn => {
