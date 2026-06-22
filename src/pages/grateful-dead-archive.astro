@@ -325,8 +325,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const archiveUiUrl = `https://archive.org/search.php?query=${encodeURIComponent(query)}&sort=${encodeURIComponent(sortBy)}`;
       archiveLink.href = archiveUiUrl;
 
-      // Build API URL
-      const apiUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(query)}&sort[]=${encodeURIComponent(sortBy)}&fl[]=identifier,title,date,coverage,source,downloads,avg_rating,description&rows=50&output=json`;
+      // Build API URL safely using URLSearchParams
+      const params = new URLSearchParams();
+      params.append('q', query);
+      params.append('sort[]', sortBy);
+      params.append('fl[]', 'identifier,title,date,coverage,source,downloads,avg_rating,description');
+      params.append('rows', '50');
+      params.append('output', 'json');
+
+      const apiUrl = `https://archive.org/advancedsearch.php?${params.toString()}`;
 
       searchBtn.disabled = true;
       loadingIndicator.style.display = 'flex';
@@ -334,11 +341,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       try {
           const response = await fetch(apiUrl);
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
           const data = await response.json();
           renderResults(data.response);
-      } catch (err) {
+      } catch (err: any) {
           console.error("Failed to fetch from Archive.org", err);
-          resultsContainer.innerHTML = `<div style="color: var(--danger); padding: 1rem;">Error fetching results. Archive.org API might be unreachable.</div>`;
+          resultsContainer.innerHTML = `<div style="color: var(--danger); padding: 1rem;">
+            <strong>Error fetching results.</strong> Archive.org API might be unreachable.<br>
+            <small style="color: var(--text-muted); display: block; margin-top: 5px;">Details: ${err.message || err}</small>
+          </div>`;
           resultsSection.style.display = 'block';
       } finally {
           searchBtn.disabled = false;
