@@ -63,7 +63,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <button type="button" class="button" data-action="operate" data-value="removeZeroWidth">Remove Zero-Width</button>
           <div class="lo-inline-group">
             <span class="lo-label-inline">Wrap at</span>
-            <input type="number" id="loWrapLength" class="lo-number-input" value="80" min="1">
+            <input type="number" id="loWrapLength" class="lo-number-input" value="80" min="1" aria-label="Wrap line length">
             <span class="lo-label-inline">chars</span>
             <button type="button" class="button" data-action="operate" data-value="hardwrap">Go</button>
           </div>
@@ -100,9 +100,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <label class="lo-field-label">Number lines</label>
             <div class="lo-input-group">
               <span class="lo-label-inline">Start</span>
-              <input type="number" id="loStartNumber" class="lo-number-input" value="1">
+              <input type="number" id="loStartNumber" class="lo-number-input" value="1" aria-label="Starting line number">
               <span class="lo-label-inline">Step</span>
-              <input type="number" id="loStepNumber" class="lo-number-input" value="1" min="1">
+              <input type="number" id="loStepNumber" class="lo-number-input" value="1" min="1" aria-label="Line number step">
               <button type="button" class="button" data-action="number">Number</button>
             </div>
           </div>

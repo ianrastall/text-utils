@@ -22,7 +22,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </select>
         </label>
         <label class="jt-check">
-          <input type="checkbox" id="jtSortBeforeFormat">
+          <input type="checkbox" id="jtSortBeforeFormat" aria-label="Sort object keys before formatting">
           Sort keys while formatting
         </label>
       </div>
@@ -72,11 +72,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="jt-panel">
         <div class="jt-panel-title">Path</div>
         <div class="jt-path-row">
-          <input id="jtPath" type="text" placeholder="users[0].name">
+          <input id="jtPath" type="text" placeholder="users[0].name" aria-label="JSON path to extract">
           <button type="button" class="button" data-action="extract">Extract</button>
         </div>
         <div class="jt-path-row">
-          <input id="jtSortPath" type="text" placeholder="Sort array by key or path">
+          <input id="jtSortPath" type="text" placeholder="Sort array by key or path" aria-label="Path to sort by">
           <select id="jtSortDirection" aria-label="Sort direction">
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>

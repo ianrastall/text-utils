@@ -2,9 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Markdown Previewer" description="Edit and preview Markdown in real-time.">
-  <!-- Load marked.js from CDN -->
-  <script is:inline src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  
   <main class="shell tool-shell">
     <div class="tool-bar">
       <div class="tool-title">
@@ -113,6 +110,8 @@ function greet() {
   </style>
   
   <script>
+    import { renderMarkdownPreview } from '../lib/markdown';
+
     const editor = document.getElementById('md-editor') as HTMLTextAreaElement;
     const preview = document.getElementById('md-preview') as HTMLDivElement;
     const copyHtmlBtn = document.getElementById('copy-html-btn') as HTMLButtonElement;
@@ -130,15 +129,9 @@ function greet() {
       }
       
       try {
-        // @ts-ignore - marked is loaded globally via CDN
-        if (typeof marked !== 'undefined') {
-          // @ts-ignore
-          preview.innerHTML = marked.parse(text);
-          const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-          stats.textContent = `${text.length} characters, ${wordCount} words`;
-        } else {
-          preview.innerHTML = '<p style="color:var(--danger)">Error: Markdown parser not loaded.</p>';
-        }
+        preview.innerHTML = renderMarkdownPreview(text);
+        const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+        stats.textContent = `${text.length} characters, ${wordCount} words`;
       } catch (err: any) {
         console.error("Markdown parsing error:", err);
         status.textContent = "Parsing error";
@@ -150,8 +143,7 @@ function greet() {
     
     // Initial render
     window.addEventListener('DOMContentLoaded', () => {
-      // Small delay to ensure marked is loaded from CDN
-      setTimeout(renderMarkdown, 100);
+      renderMarkdown();
     });
     
     copyHtmlBtn.addEventListener('click', async () => {

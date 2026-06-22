@@ -32,7 +32,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           
           <div id="linearControls">
             <div style="display: flex; gap: 0.5rem; align-items: stretch;">
-              <select id="linearDirectionKeyword" style="flex: 1;">
+              <select id="linearDirectionKeyword" style="flex: 1;" aria-label="Linear gradient direction">
                 <option value="to right" selected>to right</option>
                 <option value="to bottom">to bottom</option>
                 <option value="to left">to left</option>
@@ -44,7 +44,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <option value="angle">Angle</option>
               </select>
               <div id="linearAngleContainer" style="display: none; align-items: stretch;">
-                <input type="number" id="linearAngle" value="90" step="1" style="width: 70px; padding: 0.45rem; border: 1px solid var(--border); border-right: none; border-radius: 6px 0 0 6px; background: var(--panel-muted); color: var(--text);" />
+                <input type="number" id="linearAngle" value="90" step="1" aria-label="Linear gradient angle" style="width: 70px; padding: 0.45rem; border: 1px solid var(--border); border-right: none; border-radius: 6px 0 0 6px; background: var(--panel-muted); color: var(--text);" />
                 <span style="display: flex; align-items: center; padding: 0 0.5rem; background: var(--panel-muted); border: 1px solid var(--border); border-radius: 0 6px 6px 0; color: var(--muted); font-size: 0.9rem;">deg</span>
               </div>
             </div>
@@ -62,7 +62,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
               <div style="display: flex;">
                 <span style="display: flex; align-items: center; padding: 0 0.5rem; background: var(--panel-muted); border: 1px solid var(--border); border-right: none; border-radius: 6px 0 0 6px; color: var(--muted); font-size: 0.9rem;">From</span>
-                <input type="number" id="conicAngleFrom" value="0" step="1" style="flex: 1; min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-right: none; border-radius: 0; background: var(--panel-muted); color: var(--text);" />
+                <input type="number" id="conicAngleFrom" value="0" step="1" aria-label="Conic gradient starting angle" style="flex: 1; min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-right: none; border-radius: 0; background: var(--panel-muted); color: var(--text);" />
                 <span style="display: flex; align-items: center; padding: 0 0.5rem; background: var(--panel-muted); border: 1px solid var(--border); border-radius: 0 6px 6px 0; color: var(--muted); font-size: 0.9rem;">deg</span>
               </div>
               <select id="conicPosition" aria-label="Position"><option value="center" selected>at Center</option><option value="top">at Top</option><option value="bottom">at Bottom</option><option value="left">at Left</option><option value="right">at Right</option></select>
@@ -101,11 +101,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div style="display: flex; gap: 0.5rem; align-items: stretch; flex-wrap: wrap;">
             <div style="display: flex; flex: 1; min-width: 100px;">
               <span style="display: flex; align-items: center; padding: 0 0.5rem; background: var(--panel-muted); border: 1px solid var(--border); border-right: none; border-radius: 6px 0 0 6px; color: var(--muted); font-size: 0.85rem;">W</span>
-              <input type="number" id="downloadWidth" value="800" min="1" style="flex: 1; min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-radius: 0 6px 6px 0; background: var(--panel-muted); color: var(--text);" />
+              <input type="number" id="downloadWidth" value="800" min="1" aria-label="Download image width" style="flex: 1; min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-radius: 0 6px 6px 0; background: var(--panel-muted); color: var(--text);" />
             </div>
             <div style="display: flex; flex: 1; min-width: 100px;">
               <span style="display: flex; align-items: center; padding: 0 0.5rem; background: var(--panel-muted); border: 1px solid var(--border); border-right: none; border-radius: 6px 0 0 6px; color: var(--muted); font-size: 0.85rem;">H</span>
-              <input type="number" id="downloadHeight" value="600" min="1" style="flex: 1; min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-radius: 0 6px 6px 0; background: var(--panel-muted); color: var(--text);" />
+              <input type="number" id="downloadHeight" value="600" min="1" aria-label="Download image height" style="flex: 1; min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-radius: 0 6px 6px 0; background: var(--panel-muted); color: var(--text);" />
             </div>
             <button type="button" id="downloadBtn" class="button primary" style="flex: 1; min-width: 120px;">Download</button>
           </div>

@@ -2,13 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Pretty Printer" description="Formats code snippets for various programming languages using Prettier.">
-  <!-- Load Prettier libraries -->
-  <script is:inline src="https://unpkg.com/prettier@3.0.3/standalone.js"></script>
-  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/estree.js"></script>
-  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/html.js"></script>
-  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/babel.js"></script>
-  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/typescript.js"></script>
-  <script is:inline src="https://unpkg.com/prettier@3.0.3/plugins/postcss.js"></script>
+
 
   <main class="shell tool-shell">
     <div class="tool-bar">
@@ -58,6 +52,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </main>
 
   <script>
+    import * as prettier from 'prettier/standalone';
+    import prettierPluginEstree from 'prettier/plugins/estree';
+    import prettierPluginHtml from 'prettier/plugins/html';
+    import prettierPluginBabel from 'prettier/plugins/babel';
+    import prettierPluginTypescript from 'prettier/plugins/typescript';
+    import prettierPluginPostcss from 'prettier/plugins/postcss';
+
     const languageSelect = document.getElementById('language-select') as HTMLSelectElement;
     const inputCode = document.getElementById('input-code') as HTMLTextAreaElement;
     const outputCode = document.getElementById('output-code') as HTMLTextAreaElement;
@@ -93,24 +94,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         return;
       }
 
-      // @ts-ignore
-      if (typeof prettier === 'undefined' || typeof prettierPlugins === 'undefined') {
-        showStatus('Libraries not loaded yet. Please wait or check your connection.', true);
-        return;
-      }
-
-      const parserMap: Record<string, { parser: string, plugins: string[] }> = {
-        'html': { parser: 'html', plugins: ['html'] },
-        'css': { parser: 'css', plugins: ['postcss'] },
-        'less': { parser: 'less', plugins: ['postcss'] },
-        'scss': { parser: 'scss', plugins: ['postcss'] },
-        'babel': { parser: 'babel', plugins: ['babel', 'estree'] },
-        'typescript': { parser: 'typescript', plugins: ['typescript', 'estree'] }
+      const parserMap: Record<string, { parser: string, plugins: any[] }> = {
+        'html': { parser: 'html', plugins: [prettierPluginHtml] },
+        'css': { parser: 'css', plugins: [prettierPluginPostcss] },
+        'less': { parser: 'less', plugins: [prettierPluginPostcss] },
+        'scss': { parser: 'scss', plugins: [prettierPluginPostcss] },
+        'babel': { parser: 'babel', plugins: [prettierPluginBabel, prettierPluginEstree] },
+        'typescript': { parser: 'typescript', plugins: [prettierPluginTypescript, prettierPluginEstree] }
       };
 
       const config = parserMap[language];
-      // @ts-ignore
-      const pluginsToUse = config.plugins.map(p => prettierPlugins[p]);
+      const pluginsToUse = config.plugins;
       
       status.textContent = 'Formatting...';
       status.style.color = 'var(--accent)';
@@ -118,7 +112,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       copyBtn.style.display = 'none';
 
       try {
-        // @ts-ignore
         const formatted = await prettier.format(code, {
           parser: config.parser,
           plugins: pluginsToUse,

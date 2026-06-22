@@ -50,7 +50,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="cc-pick-row">
             <label class="cc-picker-label" title="Open color picker">
               <span class="cc-picker-swatch" id="cc-picker-swatch"></span>
-              <input type="color" id="cc-picker" value="#000000" />
+              <input type="color" id="cc-picker" value="#000000" aria-label="Color picker" />
               <span>Picker</span>
             </label>
             <button id="cc-eyedropper-btn" class="button cc-eye-btn" title="Pick a color from anywhere on screen">
@@ -59,7 +59,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </button>
             <div class="cc-hex-field">
               <span class="cc-hash">#</span>
-              <input type="text" id="cc-hex-input" maxlength="6" placeholder="0f766e" spellcheck="false" autocomplete="off" title="Type a hex value" />
+              <input type="text" id="cc-hex-input" maxlength="6" placeholder="0f766e" spellcheck="false" autocomplete="off" title="Type a hex value" aria-label="Hex color code" />
             </div>
           </div>
           <p id="cc-eyedropper-note" class="cc-note"></p>
@@ -91,7 +91,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
             <div class="field" id="cc-varname-field" style="display:none">
               <label for="cc-varname">Variable name</label>
-              <input type="text" id="cc-varname" value="my-color" placeholder="my-color" class="cc-text-input" />
+              <input type="text" id="cc-varname" value="my-color" placeholder="my-color" class="cc-text-input" aria-label="CSS variable name" />
             </div>
           </div>
           <div class="cc-output-wrap">
@@ -120,11 +120,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="cc-png-row">
             <div class="field">
               <label for="cc-png-w">Width (px)</label>
-              <input type="number" id="cc-png-w" value="256" min="1" max="4096" class="cc-dim-input" />
+              <input type="number" id="cc-png-w" value="256" min="1" max="4096" class="cc-dim-input" aria-label="Image width" />
             </div>
             <div class="field">
               <label for="cc-png-h">Height (px)</label>
-              <input type="number" id="cc-png-h" value="256" min="1" max="4096" class="cc-dim-input" />
+              <input type="number" id="cc-png-h" value="256" min="1" max="4096" class="cc-dim-input" aria-label="Image height" />
             </div>
             <button class="button primary cc-dl-btn" id="cc-png-btn">⬇ Download PNG</button>
           </div>
@@ -569,10 +569,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     function hexToRgb(hex: string): [number, number, number] {
       const n = parseInt(hex.replace('#', ''), 16);
       return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-    }
-
-    function rgbToHex(r: number, g: number, b: number): string {
-      return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
     }
 
     function rgbToHsl(r: number, g: number, b: number): [number, number, number] {

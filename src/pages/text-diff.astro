@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Text Diff Tool" description="Compare two texts and highlight the differences.">
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/7.0.0/diff.min.js"></script>
+
   
   <main class="shell tool-shell">
     <div class="tool-bar">
@@ -80,6 +80,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </style>
   
   <script>
+    import * as Diff from 'diff';
+
     const textOld = document.getElementById('text-old') as HTMLTextAreaElement;
     const textNew = document.getElementById('text-new') as HTMLTextAreaElement;
     const diffMode = document.getElementById('diff-mode') as HTMLSelectElement;
@@ -104,11 +106,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         return;
       }
 
-      // @ts-ignore
-      if (typeof Diff === 'undefined') {
-        diffOutput.innerHTML = '<span style="color:var(--danger)">Error: Diff library not loaded yet. Please try again.</span>';
-        return;
-      }
+
 
       const oldVal = textOld.value;
       const newVal = textNew.value;

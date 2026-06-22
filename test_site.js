@@ -67,6 +67,7 @@ import path from 'path';
     
     if (hasErrors) {
         console.log("\n\nTest sweep completed with errors.");
+        process.exitCode = 1;
     } else {
         console.log("\n\nTest sweep completed successfully. All pages look good!");
     }

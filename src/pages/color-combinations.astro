@@ -13,7 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="comb-col-left">
         <section class="comb-panel">
           <h2 class="comb-section-heading">Harmony Type</h2>
-          <select id="harmonyTypeSelect" class="comb-select">
+          <select id="harmonyTypeSelect" class="comb-select" aria-label="Harmony type">
             <option value="monochromatic" selected>Monochromatic</option>
             <option value="analogous">Analogous</option>
             <option value="triadic">Triadic</option>
@@ -27,13 +27,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="comb-pick-row">
             <label class="comb-picker-label" title="Open color picker">
               <span class="comb-picker-swatch" id="pickerSwatch"></span>
-              <input type="color" id="baseColorInput" value="#4A90E2" />
+              <input type="color" id="baseColorInput" value="#4A90E2" aria-label="Base color picker" />
               <span>Picker</span>
             </label>
             <div class="comb-hex-field">
               <span class="comb-hash">#</span>
               <input type="text" id="baseColorText" maxlength="6" value="4A90E2"
-                spellcheck="false" autocomplete="off" title="Type a hex value" />
+                spellcheck="false" autocomplete="off" title="Type a hex value" aria-label="Base color hex code" />
             </div>
           </div>
 

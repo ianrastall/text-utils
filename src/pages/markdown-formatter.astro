@@ -44,25 +44,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
   </main>
 
-  <script type="module">
-    import { unified } from 'https://cdn.jsdelivr.net/npm/unified@11/+esm';
-    import remarkParse from 'https://cdn.jsdelivr.net/npm/remark-parse@11/+esm';
-    import remarkStringify from 'https://cdn.jsdelivr.net/npm/remark-stringify@11/+esm';
-    import remarkGfm from 'https://cdn.jsdelivr.net/npm/remark-gfm@4/+esm';
-    import remarkFrontmatter from 'https://cdn.jsdelivr.net/npm/remark-frontmatter@5/+esm';
-    import { visit } from 'https://cdn.jsdelivr.net/npm/unist-util-visit@5/+esm';
+  <script>
+    import { unified } from 'unified';
+    import remarkParse from 'remark-parse';
+    import remarkStringify from 'remark-stringify';
+    import remarkGfm from 'remark-gfm';
+    import remarkFrontmatter from 'remark-frontmatter';
+    import { SKIP, visit } from 'unist-util-visit';
 
-    const flavorSelect = document.getElementById('flavor-select');
-    const markdownInput = document.getElementById('markdown-input');
-    const markdownOutput = document.getElementById('markdown-output');
-    const formatBtn = document.getElementById('format-btn');
-    const normalizeBtn = document.getElementById('normalize-btn');
-    const copyBtn = document.getElementById('copy-btn');
-    const clearBtn = document.getElementById('clear-btn');
-    const status = document.getElementById('status');
-    const stats = document.getElementById('stats');
+    const flavorSelect = document.getElementById('flavor-select') as HTMLSelectElement;
+    const markdownInput = document.getElementById('markdown-input') as HTMLTextAreaElement;
+    const markdownOutput = document.getElementById('markdown-output') as HTMLTextAreaElement;
+    const formatBtn = document.getElementById('format-btn') as HTMLButtonElement;
+    const normalizeBtn = document.getElementById('normalize-btn') as HTMLButtonElement;
+    const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+    const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
 
-    function showStatus(message, isError = false) {
+    function showStatus(message: string, isError = false) {
       status.textContent = message;
       status.style.color = isError ? 'var(--danger)' : 'var(--success)';
       if (!isError && message !== 'Formatting AST...') {
@@ -88,7 +88,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       markdownOutput.value = 'Parsing AST and applying node transformations...';
 
       try {
-        let processor = unified().use(remarkParse);
+        let processor: any = unified().use(remarkParse);
 
         // Core parsing features based on flavor
         if (flavor === 'gfm' || flavor === 'pandoc') {
@@ -100,21 +100,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         // Custom AST Transformer
-        processor = processor.use(() => (tree) => {
+        processor = processor.use(() => (tree: any) => {
            if (flavor === 'commonmark') {
               // Strip YAML frontmatter
-              visit(tree, 'yaml', (node, index, parent) => {
-                 parent.children.splice(index, 1);
-                 return [visit.SKIP, index];
+              visit(tree, 'yaml', (_node, index, parent) => {
+                 if (typeof index === 'number' && parent?.children) {
+                   parent.children.splice(index, 1);
+                   return [SKIP, index];
+                 }
               });
               // Note: Tables and strikethrough are naturally parsed as literal text by standard remarkParse, 
               // which aligns perfectly with CommonMark specs!
            } 
            else if (flavor === 'gfm') {
               // Strip YAML frontmatter as GFM officially ignores it
-              visit(tree, 'yaml', (node, index, parent) => {
-                 parent.children.splice(index, 1);
-                 return [visit.SKIP, index];
+              visit(tree, 'yaml', (_node, index, parent) => {
+                 if (typeof index === 'number' && parent?.children) {
+                   parent.children.splice(index, 1);
+                   return [SKIP, index];
+                 }
               });
            }
            else if (flavor === 'pandoc') {
@@ -122,7 +126,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               // We need to ensure sub/sup/highlight syntax is NOT escaped by remark-stringify.
               // To do this, we intercept text nodes that contain these specific Pandoc markers
               // and convert them to 'html' nodes so remark-stringify outputs them raw.
-              visit(tree, 'text', (node) => {
+              visit(tree, 'text', (node: any) => {
                   let changed = false;
                   // Convert generic HTML subscript/superscript tags to native Pandoc syntax
                   let val = node.value;
@@ -140,7 +144,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   }
               });
 
-              visit(tree, 'html', (node) => {
+              visit(tree, 'html', (node: any) => {
                   let val = node.value;
                   val = val.replace(/<sub>(.*?)<\/sub>/g, '~$1~');
                   val = val.replace(/<sup>(.*?)<\/sup>/g, '^$1^');
@@ -162,7 +166,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         showStatus('Translated & Formatted successfully!');
         updateStats();
 
-      } catch (err) {
+      } catch (err: any) {
         console.error('AST Pipeline Error:', err);
         showStatus('Formatting error. Check console.', true);
         markdownOutput.value = `ERROR:\n${err.message}`;
@@ -200,7 +204,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
 
       const offset = minLevel - 1;
-      text = text.replace(/^#{1,6}(\s+.+)$/gm, (match, content) => {
+      text = text.replace(/^#{1,6}(\s+.+)$/gm, (match: string, content: string) => {
         const currentLevel = match.match(/^#+/)?.[0].length || 6;
         let newLevel = currentLevel - offset;
         if (newLevel < 1) newLevel = 1;
@@ -217,7 +221,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function updateStats() {
       const text = markdownInput.value;
-      stats.textContent = `${text.length} characters, ${text.split(/\s+/).filter(w => w.length > 0).length} words`;
+      stats.textContent = `${text.length} characters, ${text.split(/\s+/).filter((w: string) => w.length > 0).length} words`;
     }
 
     formatBtn.addEventListener('click', formatAndConvert);

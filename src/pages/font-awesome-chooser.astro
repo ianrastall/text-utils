@@ -1,16 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 ---
 <BaseLayout
   title="Font Awesome Chooser"
   description="Browse Font Awesome 6 icons by category and style. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, C#, Python, PHP, WordPress, and more.">
-  <link
-    slot="head"
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"
-    crossorigin="anonymous"
-  />
-
   <main class="shell fac-main">
     <header class="fac-page-header">
       <h1>Font Awesome Chooser</h1>
@@ -611,9 +605,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     function toCamel(name: string): string {
       return 'fa' + name.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join('');
     }
-    function toPascal(name: string): string {
-      return name.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join('');
-    }
     function toLabel(name: string): string {
       return name.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join(' ');
     }
@@ -638,7 +629,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     : version === '5' ? `${fa5} fa-${name}`
                     : `fa fa-${name}`;
       const camel = toCamel(name);
-      const pascal = toPascal(name);
       const pkg   = style === 'b' ? 'free-brands-svg-icons'
                   : style === 'r' ? 'free-regular-svg-icons'
                   : 'free-solid-svg-icons';

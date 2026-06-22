@@ -10,12 +10,6 @@ import iconDataRaw from '../data/google-icons.json';
 <BaseLayout
   title="Google Icons Chooser"
   description="Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.">
-  <link
-    slot="head"
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-  />
-
   <main class="shell fac-main">
     <header class="fac-page-header">
       <h1>Google Icons Chooser</h1>
@@ -317,9 +311,10 @@ import iconDataRaw from '../data/google-icons.json';
     }
   </style>
 
-  <script define:vars={{ ICON_DATA: iconDataRaw }}>
+  <script is:inline define:vars={{ ICON_DATA: iconDataRaw }}>
     // ─── State ────────────────────────────────────────────────────────────────
     let selected = null;
+    let searchTimeout;
 
     // ─── DOM ──────────────────────────────────────────────────────────────────
     const styleSel    = document.getElementById('gic-style');
@@ -430,16 +425,12 @@ import iconDataRaw from '../data/google-icons.json';
       limitMsgEl.style.display = willLimit ? '' : 'none';
       noResultsEl.style.display = filtered.length === 0 ? '' : 'none';
 
-      // Keep selected state visually if still in filtered list
-      let hasSelected = false;
-
       const frag = document.createDocumentFragment();
       for (const icon of filtered) {
         const name = icon.name;
         const btn = document.createElement('button');
         btn.type = 'button';
         const isSelected = selected?.name === name;
-        if (isSelected) hasSelected = true;
         
         btn.className = 'fac-tile' + (isSelected ? ' selected' : '');
         btn.dataset.name = name;
@@ -491,8 +482,8 @@ import iconDataRaw from '../data/google-icons.json';
     categorySel.addEventListener('change', renderGrid);
     searchEl.addEventListener('input', () => {
       // Small debounce
-      clearTimeout(window.searchTimeout);
-      window.searchTimeout = setTimeout(renderGrid, 150);
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(renderGrid, 150);
     });
     langSel.addEventListener('change', refreshCode);
     copyBtn.addEventListener('click', async () => {

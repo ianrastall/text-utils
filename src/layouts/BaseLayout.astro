@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import 'material-symbols/index.css';
 
 interface Props {
   title: string;
@@ -17,7 +18,6 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <slot name="head" />
     <script is:inline>
       (() => {
@@ -46,7 +46,7 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
             <input type="color" id="accent-picker" aria-label="Accent color" />
           </label>
           <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle theme">
-            <span class="material-icons" aria-hidden="true">dark_mode</span>
+            <span class="material-symbols-outlined" aria-hidden="true">dark_mode</span>
           </button>
         </div>
       </header>
@@ -54,7 +54,7 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
     <slot />
     <div class="shell">
       <footer class="site-footer">
-        <p>Text Utilities runs locally in your browser.</p>
+        <p>Text Utilities runs locally in your browser (some tools may make external requests).</p>
         <p class="support-blurb">If this saved you a few hours of work, or is something you would have paid $5 for, consider <a href="https://ko-fi.com/ianrastall" rel="noreferrer" target="_blank">buying me a coffee on Ko-fi</a>.</p>
       </footer>
     </div>
@@ -63,7 +63,7 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
       const themeToggle = document.getElementById('theme-toggle');
       function updateThemeIcon() {
         const isDark = document.documentElement.dataset.theme === 'dark';
-        const icon = themeToggle?.querySelector('.material-icons');
+        const icon = themeToggle?.querySelector('.material-symbols-outlined');
         if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
         themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
         themeToggle?.setAttribute('aria-pressed', isDark ? 'true' : 'false');

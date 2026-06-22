@@ -17,9 +17,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <label for="regex-pattern">Regular Expression</label>
           <div class="regex-input-wrapper">
             <span class="regex-slash">/</span>
-            <input type="text" id="regex-pattern" placeholder="pattern" value="([a-zA-Z]+)\s+">
+            <input type="text" id="regex-pattern" placeholder="pattern" value="([a-zA-Z]+)\s+" aria-label="Regex pattern">
             <span class="regex-slash">/</span>
-            <input type="text" id="regex-flags" placeholder="gim" value="g" title="Flags (e.g. g, i, m)">
+            <input type="text" id="regex-flags" placeholder="gim" value="g" title="Flags (e.g. g, i, m)" aria-label="Regex flags">
           </div>
         </div>
       </div>

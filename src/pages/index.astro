@@ -5,6 +5,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Text Utilities">
   <main class="shell">
+    <header class="hero">
+      <h1>Text Utilities</h1>
+      <p>Fast, private browser tools for writing, converting, inspecting, and designing text.</p>
+    </header>
+
     <nav class="category-nav home-category-nav" aria-label="Tool categories">
       <a class="category-chip active" href="/" aria-current="page">All <span>{tools.length}</span></a>
       {toolCategories.map((category) => (

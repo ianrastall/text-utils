@@ -30,11 +30,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
 
         <div class="field" style="margin-bottom: 1rem;">
-          <input type="text" id="fontSearch" placeholder="Search fonts..." style="width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);" />
+          <input type="text" id="fontSearch" placeholder="Search fonts..." style="width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);" aria-label="Search fonts" />
         </div>
 
         <div class="field" id="categoryFilterContainer" style="margin-bottom: 1rem;">
-          <select id="fontCategory" style="width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+          <select id="fontCategory" style="width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);" aria-label="Font category">
             <option value="all">All Categories</option>
             <option value="serif">Serif</option>
             <option value="sans-serif">Sans Serif</option>
@@ -58,39 +58,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="fc-controls-grid">
             <div class="field">
               <label>Font Size (<span id="fontSizeDisplay">16</span>px)</label>
-              <input type="range" id="fontSize" min="8" max="72" value="16" />
+              <input type="range" id="fontSize" min="8" max="72" value="16" aria-label="Font size" />
             </div>
             
             <div class="field">
               <label>Font Weight</label>
-              <select id="fontWeight" style="padding: 0.3rem;">
+              <select id="fontWeight" style="padding: 0.3rem;" aria-label="Font weight">
                 <option value="400" selected>400 - Regular</option>
               </select>
             </div>
             
             <div class="field">
               <label>Line Height (<span id="lineHeightDisplay">1.5</span>)</label>
-              <input type="range" id="lineHeight" min="1" max="3" step="0.1" value="1.5" />
+              <input type="range" id="lineHeight" min="1" max="3" step="0.1" value="1.5" aria-label="Line height" />
             </div>
             
             <div class="field">
               <label>Letter Spacing (<span id="letterSpacingDisplay">0</span>px)</label>
-              <input type="range" id="letterSpacing" min="-5" max="10" step="0.5" value="0" />
+              <input type="range" id="letterSpacing" min="-5" max="10" step="0.5" value="0" aria-label="Letter spacing" />
             </div>
             
             <div class="field">
               <label>Text Color</label>
               <div style="display: flex; gap: 0.5rem;">
-                <input type="color" id="textColor" value="#ffffff" style="width: 40px; height: 32px; padding: 0; cursor: pointer;" />
-                <input type="text" id="textColorHex" value="#ffffff" style="flex: 1; padding: 0.3rem;" />
+                <input type="color" id="textColor" value="#ffffff" style="width: 40px; height: 32px; padding: 0; cursor: pointer;" aria-label="Text color picker" />
+                <input type="text" id="textColorHex" value="#ffffff" style="flex: 1; padding: 0.3rem;" aria-label="Text color hex" />
               </div>
             </div>
             
             <div class="field">
               <label>Background Color</label>
               <div style="display: flex; gap: 0.5rem;">
-                <input type="color" id="bgColor" value="#1a1a1a" style="width: 40px; height: 32px; padding: 0; cursor: pointer;" />
-                <input type="text" id="bgColorHex" value="#1a1a1a" style="flex: 1; padding: 0.3rem;" />
+                <input type="color" id="bgColor" value="#1a1a1a" style="width: 40px; height: 32px; padding: 0; cursor: pointer;" aria-label="Background color picker" />
+                <input type="text" id="bgColorHex" value="#1a1a1a" style="flex: 1; padding: 0.3rem;" aria-label="Background color hex" />
               </div>
             </div>
 
@@ -103,7 +103,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
             <div class="field" style="grid-column: 1 / -1;">
               <label>Custom Text</label>
-              <input type="text" id="customText" value="The quick brown fox jumps over the lazy dog." style="width: 100%; padding: 0.4rem;" />
+              <input type="text" id="customText" value="The quick brown fox jumps over the lazy dog." style="width: 100%; padding: 0.4rem;" aria-label="Custom text" />
             </div>
           </div>
         </div>
@@ -682,7 +682,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     // Copy
     dom.copyBtns.forEach(btn => {
-      btn.addEventListener('click', async (e: any) => {
+      btn.addEventListener('click', async () => {
         const targetId = btn.getAttribute('data-target');
         const text = document.getElementById(targetId as string)?.textContent || '';
         try {

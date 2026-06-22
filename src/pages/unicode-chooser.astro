@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import blocksRaw from '../data/unicode-blocks.json';
 
 // Import blocks statically
+const blocksJson = JSON.stringify(blocksRaw).replace(/</g, '\\u003c');
 ---
 <BaseLayout
   title="Unicode Chooser"
@@ -265,12 +266,17 @@ import blocksRaw from '../data/unicode-blocks.json';
     }
   </style>
 
-  <script define:vars={{ BLOCKS: blocksRaw }}>
+  <script is:inline type="application/json" id="uc-blocks-data" set:html={blocksJson}></script>
+
+  <script is:inline>
     // ─── State ────────────────────────────────────────────────────────────────
     let selected = null;
     let unicodeNames = {}; // Loaded lazily
     let namesLoaded = false;
     let isLoading = false;
+    let searchTimeout;
+    const blocksDataEl = document.getElementById('uc-blocks-data');
+    const unicodeBlocks = blocksDataEl?.textContent ? JSON.parse(blocksDataEl.textContent) : [];
 
     // ─── DOM ──────────────────────────────────────────────────────────────────
     const blockSel    = document.getElementById('uc-block');
@@ -352,7 +358,7 @@ import blocksRaw from '../data/unicode-blocks.json';
 
     // ─── Populate Block dropdown ──────────────────────────────────────────────
     function populateBlocks() {
-      BLOCKS.forEach((block, idx) => {
+      unicodeBlocks.forEach((block, idx) => {
         const opt = document.createElement('option');
         opt.value = idx.toString();
         opt.textContent = `${block.name} (U+${block.start.toString(16).padStart(4,'0').toUpperCase()} - U+${block.end.toString(16).padStart(4,'0').toUpperCase()})`;
@@ -397,7 +403,7 @@ import blocksRaw from '../data/unicode-blocks.json';
       } else {
         // Block mode
         const blockIdx = parseInt(blockSel.value, 10);
-        const block = BLOCKS[blockIdx];
+        const block = unicodeBlocks[blockIdx];
         if (block) {
           for (let i = block.start; i <= block.end; i++) {
             items.push(i.toString(16).toUpperCase().padStart(4, '0'));
@@ -483,8 +489,8 @@ import blocksRaw from '../data/unicode-blocks.json';
     
     searchEl.addEventListener('input', () => {
       // Debounce search slightly
-      clearTimeout(window.searchTimeout);
-      window.searchTimeout = setTimeout(renderGrid, 250);
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(renderGrid, 250);
     });
     
     langSel.addEventListener('change', refreshCode);

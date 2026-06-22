@@ -43,14 +43,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       
       <div class="control-row" style="margin-bottom: 1rem;">
-        <button type="button" id="convertBtn" class="button button-primary">To Curly</button>
+        <button type="button" id="convertBtn" class="button primary">To Curly</button>
         <button type="button" id="convertBackBtn" class="button">To Straight</button>
         <button type="button" id="copyBtn" class="button">Copy Output</button>
         <button type="button" id="clearBtn" class="button button-danger">Clear</button>
       </div>
 
       <div class="field">
-        <textarea id="mainTextArea" class="text-input" placeholder="Enter text with 'straight' and &quot;double&quot; quotes here..." rows="12"></textarea>
+        <textarea id="mainTextArea" class="text-input" placeholder="Enter text with 'straight' and &quot;double&quot; quotes here..." rows="12" aria-label="Text to quote"></textarea>
       </div>
     </section>
   </main>
