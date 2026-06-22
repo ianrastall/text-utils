@@ -231,6 +231,14 @@ export const tools: ToolMeta[] = [
     status: 'ready'
   },
   {
+    id: 'regex-extractor',
+    name: 'Regex Extractor',
+    href: '/regex-extractor.html',
+    category: 'convert',
+    description: 'Search text with regex and extract full matches, capture groups, or formatted replacements.',
+    status: 'ready'
+  },
+  {
     id: 'sequence-generator',
     name: 'Sequence Generator',
     href: '/sequence-generator.html',

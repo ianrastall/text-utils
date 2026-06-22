@@ -1,0 +1,461 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Regex Extractor" description="Search text with regex and extract full matches, capture groups, or formatted replacements.">
+  <main class="shell tool-shell">
+    <div class="tool-bar">
+      <div class="tool-title">
+        <h1>Regex Extractor (Mark & Extract)</h1>
+        <p>Search text with regex and extract full matches, capture groups, or formatted replacements.</p>
+      </div>
+      <a class="button" href="/">Back</a>
+    </div>
+
+    <section class="panel">
+      <div class="two-column" style="margin-bottom: 1.5rem;">
+        <div class="field" style="flex: 2;">
+          <label for="input-text">Input Text</label>
+          <textarea id="input-text" placeholder="Paste your large text here..." style="min-height: 250px; font-family: monospace;">Artist: The Sonics - Track: The Witch
+Artist: The Seeds - Track: Pushin' Too Hard
+Artist: Love - Track: 7 and 7 Is</textarea>
+          
+          <label for="regex-pattern" style="margin-top: 1rem;">Regular Expression</label>
+          <div class="regex-input-wrapper">
+            <span class="regex-slash">/</span>
+            <input type="text" id="regex-pattern" placeholder="pattern" value="Artist:\s*(.*?)\s*-\s*Track:\s*(.*)">
+            <span class="regex-slash">/</span>
+            <input type="text" id="regex-flags" placeholder="g" value="gi" readonly title="Flags are controlled by checkboxes">
+          </div>
+        </div>
+
+        <div class="field" style="flex: 1; background: var(--panel-muted); padding: 1rem; border-radius: 6px;">
+          <h3 style="margin-top: 0; font-size: 1rem; margin-bottom: 0.5rem;">Regex Flags</h3>
+          <label class="checkbox-label"><input type="checkbox" id="flag-i" checked> Case insensitive (i)</label>
+          <label class="checkbox-label"><input type="checkbox" id="flag-m"> Multiline (m)</label>
+          <label class="checkbox-label"><input type="checkbox" id="flag-s"> Dot matches newline (s)</label>
+          
+          <h3 style="margin-top: 1rem; font-size: 1rem; margin-bottom: 0.5rem;">Output Formatting</h3>
+          <label class="checkbox-label"><input type="checkbox" id="opt-unique"> Unique results only</label>
+          <label class="checkbox-label"><input type="checkbox" id="opt-trim" checked> Trim whitespace</label>
+          <label class="checkbox-label"><input type="checkbox" id="opt-lines"> Include line numbers</label>
+
+          <h3 style="margin-top: 1rem; font-size: 1rem; margin-bottom: 0.5rem;">Extraction Mode</h3>
+          <div class="radio-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label class="radio-label"><input type="radio" name="output-mode" value="matching-lines"> Matching lines</label>
+            <label class="radio-label"><input type="radio" name="output-mode" value="full-match"> Full regex match</label>
+            <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="radio" name="output-mode" value="capture-group"> Capture group: 
+              <input type="number" id="group-num" value="1" min="1" style="width: 60px; padding: 0.2rem;" disabled>
+            </label>
+            <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="radio" name="output-mode" value="named-group"> Named group: 
+              <input type="text" id="group-name" placeholder="name" style="width: 80px; padding: 0.2rem;" disabled>
+            </label>
+            <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="radio" name="output-mode" value="replacement" checked> Replacement: 
+              <input type="text" id="replacement-tpl" value="$1 — &quot;$2&quot;" style="flex: 1; padding: 0.2rem;">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button id="btn-preview" class="button primary">Preview & Extract</button>
+        <button id="btn-copy" class="button" disabled>Copy Output</button>
+        <button id="btn-save" class="button" disabled>Save Text</button>
+        <button id="btn-csv" class="button" disabled>Export CSV</button>
+      </div>
+
+      <div class="status-line" style="margin-bottom: 1rem;">
+        <span id="status" class="status-good">Ready</span>
+        <span id="stats"></span>
+      </div>
+
+      <div id="preview-area" style="display: none;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Preview Table</h3>
+        <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 1.5rem; border: 1px solid var(--border); border-radius: 6px;">
+          <table id="preview-table" class="data-table" style="width: 100%; border-collapse: collapse; margin: 0;">
+            <thead>
+              <tr id="preview-thead-tr"></tr>
+            </thead>
+            <tbody id="preview-tbody"></tbody>
+          </table>
+        </div>
+
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Final Extracted Output</h3>
+        <textarea id="output-text" readonly style="min-height: 200px; background: var(--panel-muted); font-family: monospace;"></textarea>
+      </div>
+      
+    </section>
+  </main>
+
+  <style>
+    .regex-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    .regex-slash {
+      padding: 0.5rem;
+      background: var(--panel-muted);
+      color: var(--text-muted);
+      user-select: none;
+    }
+    #regex-pattern {
+      flex: 1;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      outline: none;
+      font-size: 1.1rem;
+    }
+    #regex-flags {
+      width: 50px;
+      border: none;
+      border-left: 1px solid var(--border);
+      border-radius: 0;
+      background: transparent;
+      outline: none;
+      font-size: 1.1rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .checkbox-label, .radio-label {
+      display: block;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      text-align: left;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .data-table th {
+      background: var(--panel-muted);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .data-table tr:nth-child(even) {
+      background: var(--panel-muted);
+    }
+  </style>
+
+  <script>
+    // Elements
+    const inputText = document.getElementById('input-text') as HTMLTextAreaElement;
+    const regexPattern = document.getElementById('regex-pattern') as HTMLInputElement;
+    const regexFlags = document.getElementById('regex-flags') as HTMLInputElement;
+    const outputText = document.getElementById('output-text') as HTMLTextAreaElement;
+    
+    // Checkboxes
+    const flagI = document.getElementById('flag-i') as HTMLInputElement;
+    const flagM = document.getElementById('flag-m') as HTMLInputElement;
+    const flagS = document.getElementById('flag-s') as HTMLInputElement;
+    const optUnique = document.getElementById('opt-unique') as HTMLInputElement;
+    const optTrim = document.getElementById('opt-trim') as HTMLInputElement;
+    const optLines = document.getElementById('opt-lines') as HTMLInputElement;
+
+    // Radio + Inputs
+    const modeRadios = document.getElementsByName('output-mode') as NodeListOf<HTMLInputElement>;
+    const groupNum = document.getElementById('group-num') as HTMLInputElement;
+    const groupName = document.getElementById('group-name') as HTMLInputElement;
+    const replacementTpl = document.getElementById('replacement-tpl') as HTMLInputElement;
+
+    // Buttons
+    const btnPreview = document.getElementById('btn-preview') as HTMLButtonElement;
+    const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement;
+    const btnSave = document.getElementById('btn-save') as HTMLButtonElement;
+    const btnCsv = document.getElementById('btn-csv') as HTMLButtonElement;
+
+    // Display areas
+    const status = document.getElementById('status') as HTMLSpanElement;
+    const stats = document.getElementById('stats') as HTMLSpanElement;
+    const previewArea = document.getElementById('preview-area') as HTMLDivElement;
+    const previewTheadTr = document.getElementById('preview-thead-tr') as HTMLTableRowElement;
+    const previewTbody = document.getElementById('preview-tbody') as HTMLTableSectionElement;
+
+    let currentCsvData: string[][] = [];
+
+    // Sync UI state
+    function updateUiState() {
+      // update flags display
+      let f = 'g';
+      if (flagI.checked) f += 'i';
+      if (flagM.checked) f += 'm';
+      if (flagS.checked) f += 's';
+      regexFlags.value = f;
+
+      // enable/disable mode inputs
+      const mode = Array.from(modeRadios).find(r => r.checked)?.value;
+      groupNum.disabled = mode !== 'capture-group';
+      groupName.disabled = mode !== 'named-group';
+      replacementTpl.disabled = mode !== 'replacement';
+    }
+
+    flagI.addEventListener('change', updateUiState);
+    flagM.addEventListener('change', updateUiState);
+    flagS.addEventListener('change', updateUiState);
+    modeRadios.forEach(r => r.addEventListener('change', updateUiState));
+
+    function escapeHtml(str: string) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m] as string;
+      });
+    }
+
+    function processRegex() {
+      const pattern = regexPattern.value;
+      const flags = regexFlags.value;
+      const text = inputText.value;
+
+      if (!pattern || !text) {
+        status.textContent = 'Please provide input text and pattern.';
+        status.className = 'status-warning';
+        return;
+      }
+
+      let regex: RegExp;
+      try {
+        regex = new RegExp(pattern, flags);
+      } catch (err: any) {
+        status.textContent = `Regex Error: ${err.message}`;
+        status.className = 'status-danger';
+        return;
+      }
+
+      const mode = Array.from(modeRadios).find(r => r.checked)?.value;
+      const trimOpt = optTrim.checked;
+      const uniqueOpt = optUnique.checked;
+      const linesOpt = optLines.checked;
+      
+      
+      
+      // We will perform a global match. 
+      // To get line numbers, we can keep track of index or just iterate over lines?
+      // Since it's a global regex (potentially multiline), matching against the whole text is better to support `\n` across lines.
+      // We can map indices to line numbers.
+      const lineStartIndices: number[] = [0];
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] === '\n') {
+          lineStartIndices.push(i + 1);
+        }
+      }
+      
+      function getLineNum(index: number) {
+        let low = 0;
+        let high = lineStartIndices.length - 1;
+        while (low <= high) {
+          const mid = (low + high) >> 1;
+          if (lineStartIndices[mid] === index) return mid + 1;
+          if (lineStartIndices[mid] < index) low = mid + 1;
+          else high = mid - 1;
+        }
+        return high + 1;
+      }
+
+      let match: RegExpExecArray | null;
+      const extractedResults: string[] = [];
+      let matchCount = 0;
+      
+      // Table Data
+      let maxGroups = 0;
+      const tableRows: {line: number, matchObj: RegExpExecArray, fullLineText: string}[] = [];
+
+      regex.lastIndex = 0; // reset
+      while ((match = regex.exec(text)) !== null) {
+        matchCount++;
+        const lineNum = getLineNum(match.index);
+        
+        // Find full line text
+        const startIdx = lineStartIndices[lineNum - 1];
+        const endIdx = lineNum < lineStartIndices.length ? lineStartIndices[lineNum] - 1 : text.length;
+        let fullLineText = text.substring(startIdx, endIdx);
+        // Remove trailing \r if any
+        if (fullLineText.endsWith('\r')) fullLineText = fullLineText.slice(0, -1);
+
+        tableRows.push({ line: lineNum, matchObj: match, fullLineText });
+        if (match.length - 1 > maxGroups) {
+          maxGroups = match.length - 1;
+        }
+
+        // Process Extraction
+        let extracted = '';
+        if (mode === 'matching-lines') {
+          extracted = fullLineText;
+        } else if (mode === 'full-match') {
+          extracted = match[0];
+        } else if (mode === 'capture-group') {
+          const gNum = parseInt(groupNum.value, 10);
+          extracted = match[gNum] || '';
+        } else if (mode === 'named-group') {
+          const gName = groupName.value;
+          extracted = match.groups?.[gName] || '';
+        } else if (mode === 'replacement') {
+          const tpl = replacementTpl.value;
+          // Simple replacement logic: user can use $1, $2, $<name>
+          // Since String.replace doesn't let us replace just ONE exec result easily with templates,
+          // we can do a trick: we replace the match[0] with the template, but using a custom RegExp that just matches everything and replaces.
+          // Better: we can manually construct it or use match[0].replace(regex, tpl).
+          // Wait, if we do match[0].replace(regex, tpl), it won't have the context if ^ or $ are used.
+          // Better: just replace the whole text, but that replaces all.
+          // We can use a temporary replace function that parses $1, $2, etc.
+          // Actually, JavaScript replace already handles this:
+          // 'abc'.replace(/a(b)c/, '$1') -> 'b'
+          // We can just construct a dummy string and replace it? No, because context.
+          // Let's implement a simple replacer for $N and $<name>.
+          extracted = tpl.replace(/\$([0-9]+)/g, (_, g) => {
+            const idx = parseInt(g, 10);
+            return match![idx] || '';
+          });
+          extracted = extracted.replace(/\$<([^>]+)>/g, (_, gName) => {
+             return match!.groups?.[gName] || '';
+          });
+        }
+
+        if (trimOpt) {
+          extracted = extracted.trim();
+        }
+
+        // Add line number to output?
+        if (linesOpt) {
+          extracted = `[Line ${lineNum}] ${extracted}`;
+        }
+
+        extractedResults.push(extracted);
+
+        if (match.index === regex.lastIndex) {
+          regex.lastIndex++; // prevent infinite loop
+        }
+      }
+
+      // Format final output
+      let finalResults = extractedResults;
+      if (uniqueOpt) {
+        finalResults = Array.from(new Set(finalResults));
+      }
+
+      outputText.value = finalResults.join('\n');
+      
+      status.textContent = 'Extraction Successful';
+      status.className = 'status-good';
+      stats.textContent = `${matchCount} match${matchCount !== 1 ? 'es' : ''} found, ${finalResults.length} output rows.`;
+      
+      // Update UI
+      previewArea.style.display = 'block';
+      btnCopy.disabled = false;
+      btnSave.disabled = false;
+      btnCsv.disabled = false;
+
+      // Render Table
+      renderTable(tableRows, maxGroups);
+    }
+
+    function renderTable(rows: any[], maxGroups: number) {
+      // Headers
+      let theadHtml = `<th>Line</th><th>Full Match</th>`;
+      currentCsvData = [];
+      const csvHeaders = ['Line', 'Full Match'];
+      
+      for (let i = 1; i <= maxGroups; i++) {
+        theadHtml += `<th>Group ${i}</th>`;
+        csvHeaders.push(`Group ${i}`);
+      }
+      previewTheadTr.innerHTML = theadHtml;
+      currentCsvData.push(csvHeaders);
+
+      // Body
+      let tbodyHtml = '';
+      // Limit to 100 rows for preview performance
+      const previewLimit = 100;
+      
+      rows.forEach((r, idx) => {
+        // Collect for CSV
+        const csvRow = [r.line.toString(), r.matchObj[0]];
+        for (let i = 1; i <= maxGroups; i++) {
+          csvRow.push(r.matchObj[i] || '');
+        }
+        currentCsvData.push(csvRow);
+
+        // Render HTML for first N
+        if (idx < previewLimit) {
+          tbodyHtml += `<tr>
+            <td>${r.line}</td>
+            <td><code>${escapeHtml(r.matchObj[0])}</code></td>`;
+          for (let i = 1; i <= maxGroups; i++) {
+            tbodyHtml += `<td><code>${escapeHtml(r.matchObj[i] || '')}</code></td>`;
+          }
+          tbodyHtml += `</tr>`;
+        }
+      });
+      
+      if (rows.length > previewLimit) {
+        tbodyHtml += `<tr><td colspan="${maxGroups + 2}" style="text-align: center; color: var(--text-muted); font-style: italic;">Showing first ${previewLimit} of ${rows.length} matches...</td></tr>`;
+      }
+
+      if (rows.length === 0) {
+         tbodyHtml = `<tr><td colspan="100" style="text-align: center; padding: 2rem;">No matches found.</td></tr>`;
+      }
+
+      previewTbody.innerHTML = tbodyHtml;
+    }
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText(outputText.value).then(() => {
+        const orig = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => btnCopy.textContent = orig, 2000);
+      });
+    }
+
+    function downloadFile(content: string, filename: string, type: string) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function saveText() {
+      downloadFile(outputText.value, 'extracted-matches.txt', 'text/plain');
+    }
+
+    function exportCsv() {
+      if (!currentCsvData || currentCsvData.length === 0) return;
+      
+      // Convert currentCsvData to CSV string
+      const csvString = currentCsvData.map(row => {
+        return row.map(cell => {
+          let c = cell || '';
+          if (c.includes('"') || c.includes(',') || c.includes('\n')) {
+            c = `"${c.replace(/"/g, '""')}"`;
+          }
+          return c;
+        }).join(',');
+      }).join('\n');
+
+      downloadFile(csvString, 'regex-matches.csv', 'text/csv');
+    }
+
+    btnPreview.addEventListener('click', processRegex);
+    btnCopy.addEventListener('click', copyToClipboard);
+    btnSave.addEventListener('click', saveText);
+    btnCsv.addEventListener('click', exportCsv);
+    
+    // Initialize UI
+    updateUiState();
+  </script>
+</BaseLayout>
