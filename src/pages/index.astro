@@ -1,11 +1,8 @@
 ---
-import ToolCatalogue from '../components/jupiter/ToolCatalogue.astro';
-import { tools } from '../data/tools';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EditorWorkspace from '../components/EditorWorkspace.astro';
+import '../styles/editor-workspace.css';
 ---
-<BaseLayout title="Text Utilities">
-  <main id="main-content" tabindex="-1" class="shell catalogue-main">
-    <header class="hero"><p class="eyebrow">Your everyday text toolkit</p><h1>Text Utilities</h1><p>Write, convert, inspect, and design.<br />Useful little tools, ready when you need them.</p></header>
-    <ToolCatalogue items={tools} />
-  </main>
+<BaseLayout title="Text Utilities" description="A free online text editor with built-in text tools, document tabs, Markdown preview, icon pickers, and private browser processing." editorWorkspace>
+  <EditorWorkspace />
 </BaseLayout>

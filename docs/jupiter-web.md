@@ -4,6 +4,8 @@
 
 ## Structure
 
+The site has advanced to the [working editor workspace](editor-workspace.md). CodeMirror 6 supplies the document surface; text commands share its undo history and specialist tools dock beside it. The catalogue moved to `/tools.html`. The Jupiter masthead, appearance controls and Pages hosting remain in use.
+
 Text Utilities is the first rebuild in the three-site sequence: Text Utilities, Chess Nerd, Bookstacks. It uses Astro static pages, TypeScript, plain CSS semantic tokens, Lucide interface icons, native browser APIs, Vitest and Playwright. Tool-specific icon/font previews remain domain content.
 
 `src/layouts/BaseLayout.astro` owns the family masthead, website links, category navigation, related-tool navigation, skip link and footer. `src/components/jupiter/` holds the appearance panel and searchable catalogue. `src/styles/global.css` holds the semantic palette and shared controls; `src/lib/` holds transformations and appearance contrast calculations. These are the initial reusable conventions for the other websites, with site-specific navigation/content. Extract a shared package after the other sites establish its actual boundaries.

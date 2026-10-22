@@ -4,8 +4,8 @@ import 'material-symbols/index.css';
 import { ArrowRightLeft, LayoutGrid, PencilLine, ScanSearch, Palette, ArrowUpRight } from '@lucide/astro';
 import Appearance from '../components/jupiter/Appearance.astro';
 import { tools, toolCategories, categoryLabels, categoryHref } from '../data/tools';
-interface Props { title: string; description?: string; }
-const { title, description = 'Browser tools for writing, converting, inspecting, and designing text.' } = Astro.props;
+interface Props { title: string; description?: string; editorWorkspace?: boolean; }
+const { title, editorWorkspace = false, description = 'Browser tools for writing, converting, inspecting, and designing text.' } = Astro.props;
 const pageTitle = title === 'Text Utilities' ? title : `${title} · Text Utilities`;
 const currentPath = Astro.url.pathname.replace(/\/index\.html$/, '/');
 const currentTool = tools.find(tool => tool.href === currentPath || tool.href.replace('.html', '') === currentPath);
@@ -20,7 +20,7 @@ const externalNote = currentTool && externalNotes[currentTool.id];
 const icons = { write: PencilLine, convert: ArrowRightLeft, inspect: ScanSearch, design: Palette };
 ---
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-editor-workspace={editorWorkspace ? "true" : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,6 +29,7 @@ const icons = { write: PencilLine, convert: ArrowRightLeft, inspect: ScanSearch,
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <slot name="head" />
     <script is:inline>
+      if (window.self !== window.top && new URLSearchParams(location.search).get('embed') === '1') document.documentElement.dataset.embedded = 'true';
       try {
         const theme = localStorage.getItem('text-utils-theme');
         document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
@@ -45,17 +46,17 @@ const icons = { write: PencilLine, convert: ArrowRightLeft, inspect: ScanSearch,
       <Appearance />
     </header>
     <div class="workspace">
-      <aside class="sidebar" aria-label="Tool navigation">
-        <p class="eyebrow">Workspace</p>
+      {!editorWorkspace && <aside class="sidebar" aria-label="Tool navigation">
+        <a class="editor-return" href="/">← Text editor</a><p class="eyebrow">Tools</p>
         <nav class="workspace-nav" aria-label="Tool categories">
-          <a href="/" class:list={[{ active: currentPath === '/' }]} aria-current={currentPath === '/' ? 'page' : undefined}><LayoutGrid size={17} aria-hidden="true" />All tools<span class="nav-count">{tools.length}</span></a>
+          <a href="/tools.html" class:list={[{ active: currentPath === '/tools.html' }]} aria-current={currentPath === '/tools.html' ? 'page' : undefined}><LayoutGrid size={17} aria-hidden="true" />All tools<span class="nav-count">{tools.length}</span></a>
           {toolCategories.map(category => { const Icon = icons[category]; const active = currentPath === categoryHref(category) || currentPath === categoryHref(category).replace('.html', '') || currentTool?.category === category; return <a href={categoryHref(category)} class:list={[{ active }]} aria-current={active ? 'true' : undefined}><Icon size={17} aria-hidden="true" />{categoryLabels[category]}<span class="nav-count">{tools.filter(tool => tool.category === category).length}</span></a>; })}
         </nav>
         {currentTool && <div class="related-nav"><p class="eyebrow">{categoryLabels[currentTool.category]} tools</p><nav aria-label="Related tools">{tools.filter(tool => tool.category === currentTool.category).map(tool => <a href={tool.href} aria-current={currentTool.id === tool.id ? 'page' : undefined}>{tool.name}</a>)}</nav></div>}
         <div class="sidebar-note"><span class="local-indicator" aria-hidden="true"></span><strong>Your text stays yours.</strong><p>Most tools work entirely in your browser. Tools using online services say so.</p></div>
-      </aside>
+      </aside>}
       <div class="workspace-content">
-        <noscript><p class="shell notice">JavaScript is off. You can browse the catalogue; interactive tools and appearance settings require JavaScript.</p></noscript>
+        <noscript><p class="shell notice">JavaScript is off. Interactive tools and appearance settings require JavaScript. <a href="/tools.html">Browse the tool directory</a>.</p></noscript>
         {externalNote && <p class="shell external-notice">{externalNote}</p>}
         <slot />
         <footer class="site-footer shell"><div><strong>Text Utilities</strong><p>Small tools. A little less busywork.</p></div><nav aria-label="Project links"><a href="https://github.com/ianrastall/text-utils">Source on GitHub <ArrowUpRight size={14} aria-hidden="true" /></a><a href="https://ko-fi.com/ianrastall">Support this project <ArrowUpRight size={14} aria-hidden="true" /></a></nav></footer>

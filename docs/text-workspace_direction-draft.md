@@ -2,6 +2,8 @@
 
 Discussion draft · 21 October 2026
 
+Ian subsequently authorized implementation. The [editor guide](editor-workspace.md) records the first working version: tabs, text commands, previews/recipes, shared undo, optional local recovery, Markdown/comparison views and specialist panels. This draft records the rationale; the guide records actual behavior and limits.
+
 Ian asked to re-envision how the tasks should work, including whether an online text editor should form part of the experience. This is the proposed product direction, beyond the initial Jupiter visual rebuild. It is not a claim that the editor is implemented.
 
 ## Recommended experience

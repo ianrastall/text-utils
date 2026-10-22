@@ -61,4 +61,6 @@ Ian's next proposal is a general text editor with appropriate Text Utilities ope
 
 ## Latest clarification: fresh editor
 
+The website has now advanced independently into a free browser editor, as Ian subsequently requested. See the [implemented editor workspace](editor-workspace.md). Desktop companion planning remains a separate track.
+
 Ian explicitly requested a fresh dark-mode text-editor design rather than revising an older program. The [fresh editor vision](../../_planning/text-editor_product-vision.md) supersedes earlier Lucy source/port assumptions. Text Utilities supplies candidate operations, not mandatory old UI or feature parity.

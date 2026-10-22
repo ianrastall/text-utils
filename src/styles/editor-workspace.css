@@ -1,0 +1,124 @@
+/* The editor is the primary document surface; tool pages retain their own layout. */
+:root { --syntax-keyword:#cfa9e9; --syntax-string:#9bc6a6; --syntax-number:#e3bd77; }
+[data-theme='light'] { --syntax-keyword:#774194; --syntax-string:#356741; --syntax-number:#825900; }
+[data-editor-workspace='true'] .workspace { display:block; max-width:none; min-height:0; }
+[data-editor-workspace='true'] .workspace-content > .site-footer { display:none; }
+[data-editor-workspace='true'] .workspace-content { height:calc(100dvh - 73px); min-height:580px; }
+[data-editor-workspace='true'] .site-header { min-height:72px; padding-block:12px; }
+.editor-workspace { display:flex; flex-direction:column; height:calc(100dvh - 73px); min-height:580px; font-size:14px; }
+.editor-workspace button { width:auto; border-radius:4px; min-height:32px; padding:6px 10px; font-size:13px; }
+.editor-workspace input, .editor-workspace select { font-size:13px; }
+.editor-menubar { display:flex; position:relative; flex-wrap:wrap; align-items:center; gap:0; padding:0 18px; background:var(--panel); border-bottom:1px solid var(--border); z-index:4; }
+.editor-menu summary { list-style:none; padding:8px 12px; font-size:13px; cursor:pointer; border-radius:4px; }
+.editor-menu summary::-webkit-details-marker { display:none; }
+.editor-menu[open] summary, .editor-menu summary:hover { background:var(--panel-muted); }
+.editor-menu-items { position:absolute; top:100%; left:18px; min-width:245px; max-width:calc(100vw - 36px); padding:6px; background:var(--panel-muted); border:1px solid var(--control-border); border-radius:4px; box-shadow:var(--shadow); display:grid; z-index:5; }
+.editor-menu-items button { justify-content:flex-start; border:0; background:transparent; text-align:left; }
+.editor-menu-items button:hover { background:var(--panel); }
+.editor-privacy { margin-left:auto; font-size:11px; color:var(--muted); padding:8px 12px; }
+.editor-toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:4px; padding:8px 20px; border-bottom:1px solid var(--border); background:var(--bg); }
+.editor-toolbar button { background:transparent; border-color:transparent; gap:7px; }
+.editor-toolbar button:hover { border-color:var(--border); background:var(--panel); }
+.toolbar-divider { width:1px; height:22px; background:var(--border); margin-inline:8px; }
+.toolbar-spacer { flex:1; }
+.document-strip { display:flex; align-items:stretch; background:var(--panel); border-bottom:1px solid var(--border); gap:2px; padding-left:20px; }
+#document-tabs { display:flex; overflow-x:auto; min-width:0; scrollbar-width:thin; }
+.document-tab { display:flex; align-items:center; border-right:1px solid var(--border); border-top:2px solid transparent; }
+.document-tab.active { background:var(--input); border-top-color:var(--accent-strong); }
+.document-tab button { white-space:nowrap; background:transparent; border:0; border-radius:0; max-width:240px; text-overflow:ellipsis; overflow:hidden; display:block; }
+.document-tab .close-document { font-size:18px; padding:0 8px; color:var(--muted); }
+.editor-body { display:flex; flex:1; min-height:0; }
+.document-area { flex:1; min-width:0; position:relative; background:var(--input); }
+#document-editor { height:100%; min-height:350px; }
+#document-editor .cm-editor { min-height:100%; }
+#document-editor .cm-content { min-height:350px; }
+#document-editor .cm-line { padding-left:16px; padding-right:20px; }
+#document-editor .cm-search { display:flex; gap:6px; flex-wrap:wrap; align-items:center; padding:10px; font-size:12px; }
+#document-editor .cm-search input { max-width:240px; min-width:0; }
+#document-editor .cm-search label { display:inline-flex; align-items:center; gap:5px; }
+#document-editor .cm-search button { font-size:12px; }
+#editor-loading { position:absolute; top:24px; left:60px; color:var(--muted); }
+.work-panel { width:340px; flex-shrink:0; min-width:0; border-left:1px solid var(--border); background:var(--panel); display:flex; flex-direction:column; }
+.work-panel-header { display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.work-panel-header h2 { font-size:14px; font-weight:600; margin:0; flex:1; min-width:0; overflow-wrap:anywhere; }
+.work-panel-header button { background:transparent; border:0; padding:4px; }
+.work-panel-content { padding:16px; overflow-y:auto; min-height:0; scrollbar-width:thin; }
+.work-field { display:grid; grid-template-columns:minmax(0,1fr); gap:5px; margin-bottom:14px; }
+.work-field label { font-size:12px; color:var(--muted); }
+.work-field input, .work-field select { width:100%; min-width:0; }
+.work-actions { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:12px 0; }
+.work-actions button { font-size:12px; flex:1 0 auto; }
+.work-hint { font-size:12px; color:var(--muted); line-height:1.7; margin:8px 0 14px; }
+#recipe-details { border-top:1px solid var(--border); margin-top:20px; padding-top:14px; }
+#recipe-details > summary { font-size:13px; cursor:pointer; }
+#recipe-steps { padding-left:20px; font-size:12px; }
+#recipe-steps li { margin-bottom:6px; }
+#recipe-steps button { min-height:24px; padding:0 7px; margin-left:6px; }
+.preview-label { font-size:12px; color:var(--muted); margin:20px 0 8px; }
+.preview-label span { display:block; font-size:11px; margin-top:3px; }
+#operation-result { max-height:260px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; padding:12px; margin:0; border:1px solid var(--border); background:var(--input); font:12px/1.65 ui-monospace,Consolas,monospace; }
+.workspace-error { color:var(--danger) !important; }
+.editor-statusbar { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:7px 20px; background:var(--panel); border-top:1px solid var(--border); font-size:11px; color:var(--muted); }
+.editor-statusbar select { font-size:11px; min-height:26px; padding:2px 6px; max-width:130px; border-color:transparent; }
+.workspace-bottom { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:8px 20px; border-top:1px solid var(--border); background:var(--bg); }
+#workspace-status { font-size:12px; color:var(--muted); flex:1 1 250px; margin:0; }
+.draft-preference { font-size:11px; display:flex; align-items:center; gap:6px; color:var(--muted); }
+.workspace-bottom button { font-size:11px; padding:4px 8px; min-height:26px; }
+.workspace-markdown { font-size:15px; line-height:1.8; overflow-wrap:anywhere; }
+.workspace-markdown :first-child { margin-top:0; }
+.workspace-markdown h1 { font-size:26px; }.workspace-markdown h2 { font-size:21px; }.workspace-markdown h3 { font-size:17px; }
+.workspace-markdown a { color:var(--accent-strong); text-underline-offset:3px; }
+.workspace-markdown pre, .workspace-markdown table { max-width:100%; overflow:auto; }
+.workspace-markdown pre { padding:12px; background:var(--input); font-size:12px; }
+.workspace-markdown table { display:block; border-collapse:collapse; }.workspace-markdown td,.workspace-markdown th { padding:6px; border:1px solid var(--border); }
+.workspace-markdown blockquote { border-left:3px solid var(--control-border); margin-left:0; padding-left:14px; color:var(--muted); }
+#workspace-diff pre { white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.7 ui-monospace,Consolas,monospace; margin:0; padding:6px; }
+#workspace-diff .diff-add { color:var(--success); background:color-mix(in srgb,var(--success) 8%,transparent); }
+#workspace-diff .diff-remove { color:var(--danger); background:color-mix(in srgb,var(--danger) 8%,transparent); }
+.tool-list-group { padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border); }
+.tool-list-group h3 { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:6px 0; }
+.tool-list-group button { display:flex; flex-direction:column; align-items:flex-start; width:100%; background:transparent; border-color:transparent; padding:9px 6px; text-align:left; }
+.tool-list-group button:hover { background:var(--panel-muted); }
+.tool-description { font-size:11px; color:var(--muted); line-height:1.6; }
+.editor-workspace[data-panel='specialist'] .work-panel { width:min(58vw,850px); }
+#specialist-panel { display:flex; flex-direction:column; flex:1; min-height:0; }
+.specialist-controls { padding:12px 16px; max-height:245px; overflow:auto; border-bottom:1px solid var(--border); }
+.specialist-controls .work-field { display:inline-grid; width:calc(50% - 6px); vertical-align:top; margin-right:4px; margin-bottom:6px; }
+.specialist-controls button { font-size:11px; }.specialist-controls a { font-size:11px; color:var(--muted); }
+.specialist-controls .work-hint { margin:0 0 10px; font-size:11px; }
+.specialist-controls .work-actions { margin:8px 0; }
+#specialist-frame { border:0; width:100%; flex:1; min-height:330px; background:var(--bg); }
+#help-panel p { font-size:13px; line-height:1.8; color:var(--muted); }
+#help-panel h3 { font-size:16px; }
+#help-panel a { display:block; margin-top:16px; color:var(--accent-strong); }
+#rename-dialog label { display:block; margin-bottom:6px; font-size:13px; }
+#rename-dialog input { width:100%; }
+@media (min-width:901px) { .editor-workspace[data-panel='markdown'] .work-panel, .editor-workspace[data-panel='compare'] .work-panel { width:42vw; max-width:750px; } }
+@media (max-width:900px) {
+  [data-editor-workspace='true'] .workspace-content { height:auto; }
+  .editor-workspace { height:auto; min-height:calc(100dvh - 73px); }
+  .editor-body { flex-direction:column; }
+  #document-editor { height:440px; }
+  .work-panel, .editor-workspace[data-panel='specialist'] .work-panel { width:100%; border-left:0; border-top:1px solid var(--border); }
+  .work-panel-content { max-height:600px; }
+  #specialist-frame { height:650px; flex:none; }
+  .work-panel-header { position:relative; }
+}
+@media (max-width:600px) {
+  .editor-workspace button { width:auto; }
+  .editor-menubar { padding:0 6px; }.editor-menu summary { padding:8px 9px; }
+  .editor-privacy { display:none; }
+  .editor-toolbar { padding:8px; gap:2px; }
+  .editor-toolbar button { font-size:11px; padding:6px; gap:4px; }
+  .editor-toolbar .toolbar-spacer { display:none; }
+  .toolbar-divider { margin-inline:3px; }
+  .document-strip { padding-left:6px; }.document-tab button { max-width:190px; }
+  .editor-statusbar { padding:8px 10px; gap:6px 10px; }
+  .editor-statusbar .toolbar-spacer { display:none; }
+  .workspace-bottom { padding:10px; gap:8px; }
+  .editor-menu-items { left:6px; max-width:calc(100vw - 12px); }
+  .specialist-controls .work-field { width:100%; }
+  #document-editor { height:400px; }
+  #document-editor .cm-search input { max-width:170px; }
+}
+@media (forced-colors:active) { .document-tab.active { border-top-color:Highlight; } }

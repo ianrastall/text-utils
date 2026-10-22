@@ -661,3 +661,12 @@ dialog::backdrop { background: #0008; }
 main > :first-child h1 { overflow-wrap: anywhere; }
 
 .field { grid-template-columns: minmax(0, 1fr); }
+
+.editor-return { display: block; color: var(--accent-strong); font-size: 13px; margin: 0 12px 24px; text-underline-offset: 4px; }
+[data-embedded='true'] .site-header, [data-embedded='true'] .workspace > .sidebar, [data-embedded='true'] .site-footer, [data-embedded='true'] .skip-link { display: none; }
+[data-embedded='true'] .workspace { display: block; min-height: 0; }
+[data-embedded='true'] .shell { width: calc(100% - 24px); }
+[data-embedded='true'] .tool-bar > .button, [data-embedded='true'] a.button[href='/tools.html'] { display: none; }
+[data-embedded='true'] .tool-shell { padding-top: 12px; }
+[data-embedded='true'] h1 { font-size: 21px; }
+@media (max-width:760px) { .editor-return { margin: 0 0 10px; } }

@@ -21,7 +21,7 @@ for (const tool of tools) {
 }
 
 test('catalogue search, empty state and category navigation', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/tools.html');
   await expect(page.locator('.tool-card:visible')).toHaveCount(33);
   await page.getByRole('searchbox', { name: 'Find a tool' }).fill('json');
   await expect(page.locator('.tool-card:visible')).toHaveCount(1);
@@ -81,7 +81,7 @@ test('legacy JSON links still reach the combined tool', async ({ page }) => {
 
 test('catalogue works without JavaScript and with blocked storage', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
-  const page = await context.newPage(); await page.goto('/');
+  const page = await context.newPage(); await page.goto('/tools.html');
   await expect(page.locator('.tool-card')).toHaveCount(33);
   await expect(page.locator('noscript .notice')).toBeVisible();
   await context.close();
