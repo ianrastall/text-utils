@@ -32,3 +32,14 @@ Local Chromium benchmark: a 4,320,000-character JavaScript file, 20 appended key
 
 Validation includes large-file editing, worker reuse, stable tabs, undo to a saved baseline, oversized paste rejection, detection/formatting compatibility, and existing tool/workspace workflows.
 
+## 4. Distinctive workflows
+
+Formatting recipes use the active document language, including recipes saved before this change. Steps support reordering, versioned JSON import/export, per-step size/change reports and progress states. Exported recipes include commands/options rather than editor contents. Imports validate names, versions, command IDs, options, step counts and file size before replacing the current recipe.
+
+Operation previews show line additions/removals, unchanged results disable Apply, and tool results offer Preview replacement before an undoable replacement. Line comparisons are bounded and render at most 1,000 difference sections; larger results retain the result preview with an explicit limit notice.
+
+Final reliability review also added recovery revision checks across browser windows, persistent draft status, normalized restored IDs/languages, and protection against interacting with partially initialized editor state. Conflicting recovery writes preserve both the newer stored copy and the competing open document.
+
+Validation includes recipe reuse across JSON/CSS documents, reorder/export/import round-trips, invalid imports, step reports, line differences, unchanged results, tool replacement/undo and competing browser windows. Full release checks follow all four passes.
+
+Final local release validation: 29 unit tests and 111 Chromium browser tests passed; Astro type checks/build passed with no type errors; npm audit reported no vulnerabilities. Expanded recipe/difference workflows were inspected at 1440 px and 320 px, with no horizontal page overflow. The existing large-bundle warning remains. GitHub Actions repeats release checks before deployment.

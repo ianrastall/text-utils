@@ -128,3 +128,12 @@
 #tool-result-preview { min-height:100px; max-height:180px; font-size:12px; padding:8px; }
 .work-panel-header .expand-tool { display:none; font-size:11px; }
 @media (min-width:901px) { .editor-workspace[data-panel='specialist'] .expand-tool { display:block; } .editor-workspace[data-panel='specialist'][data-tool-expanded='true'] .work-panel { width:min(82vw,1300px); } }
+
+#highlighting-note { margin:0; flex-basis:100%; }
+#recipe-steps li { overflow-wrap:anywhere; }
+#recipe-steps li:focus, #preview-size:focus, #work-panel-title:focus { outline:2px solid var(--accent-strong); outline-offset:3px; }
+#operation-differences, #operation-step-report { margin:12px 0; font-size:12px; }
+#operation-diff { max-height:260px; overflow:auto; }
+#operation-diff pre { white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.7 ui-monospace,Consolas,monospace; margin:0; padding:6px; }
+#operation-diff .diff-add { color:var(--success); background:color-mix(in srgb,var(--success) 8%,transparent); }
+#operation-diff .diff-remove { color:var(--danger); background:color-mix(in srgb,var(--danger) 8%,transparent); }

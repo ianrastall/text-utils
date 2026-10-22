@@ -14,10 +14,12 @@ import { tools } from '../data/tools';
 import { filenameLanguage, languageLabel, loadLanguage } from '../lib/workspace-languages';
 import { toolInputs, toolOutputs, type ToolField } from '../lib/workspace-tool-adapters';
 import { operationName, parseRecipe, type Operation } from '../lib/workspace-operations';
+import { encodeRecipe, decodeRecipe } from '../lib/workspace-recipes';
 import { exportText, readTextFile } from '../lib/workspace-files';
 import { readDrafts, writeDrafts, inspectDrafts, type SavedDocument } from '../lib/workspace-storage';
 
 const root = document.querySelector<HTMLElement>('.editor-workspace')!;
+root.inert = true;
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelector<T>(`#${id}`)!;
 const status = (message: string, error = false) => { root.dataset.status = error ? 'error' : 'ready'; $('workspace-status').textContent = message; $('workspace-status').classList.toggle('workspace-error', error); };
 const lang = new Compartment(), wrapping = new Compartment(), sizing = new Compartment();
@@ -218,7 +220,7 @@ root.addEventListener('drop', async event => {
   event.preventDefault();
   for (const file of Array.from(event.dataTransfer.files)) { try { const value = await readTextFile(file); newDocument(value.text,value.name,{...value,savedText:value.text,language:detectLanguage(value.name), languageMode:'auto'}); } catch (e) { status(e instanceof Error ? e.message : 'Could not open file.',true); } }
 });
-$<HTMLSelectElement>('document-language').addEventListener('change', event => { current().languageMode = (event.target as HTMLSelectElement).value; scheduleDetection(); scheduleDraft(); });
+$<HTMLSelectElement>('document-language').addEventListener('change', event => { current().languageMode = (event.target as HTMLSelectElement).value; invalidatePreview(); scheduleDetection(); scheduleDraft(); });
 $<HTMLSelectElement>('document-eol').addEventListener('change', event => { const value = (event.target as HTMLSelectElement).value; current().eol = value === 'crlf' ? '\r\n' : value === 'cr' ? '\r' : '\n'; status('File line endings updated.'); refresh(); scheduleDraft(); });
 
 let panel = '';
@@ -246,28 +248,42 @@ function invalidatePreview() {
 }
 function cancelOperation() { if (worker) operationState('idle'); worker?.terminate(); worker = null; clearTimeout(workerTimer); $('cancel-operation').hidden = true; $<HTMLButtonElement>('preview-operation').disabled = false; $<HTMLButtonElement>('preview-recipe').disabled = false; }
 function selectedOperation(): Operation {
-  return { id:$<HTMLSelectElement>('operation-choice').value, options:{ pattern:$<HTMLInputElement>('operation-pattern').value, flags:$<HTMLInputElement>('operation-flags').value, replacement:$<HTMLInputElement>('operation-replacement').value, group:$<HTMLInputElement>('operation-group').value, language:current().language } };
+  const id = $<HTMLSelectElement>('operation-choice').value;
+  if (!['replace','extract','filter'].includes(id)) return {id};
+  return { id, options:{ pattern:$<HTMLInputElement>('operation-pattern').value, flags:$<HTMLInputElement>('operation-flags').value, replacement:$<HTMLInputElement>('operation-replacement').value, group:$<HTMLInputElement>('operation-group').value } };
 }
-function preview(steps: Operation[]) {
+function preview(steps: Operation[], replacement?: string) {
   cancelOperation(); invalidatePreview();
   const selection = view.state.selection.main, selected = $<HTMLSelectElement>('operation-scope').value === 'selection';
-  if (selected && selection.empty) { status('Select text in the editor, or choose Whole document.',true); return; }
+  if (selected && selection.empty) { operationState('error'); status('Select text in the editor, or choose Whole document.',true); return; }
   const from = selected ? selection.from : 0, to = selected ? selection.to : view.state.doc.length;
   const snapshot = { docId:current().id,revision:current().revision,from,to,result:'' };
-  worker = new Worker(new URL('./workspace-worker.ts', import.meta.url),{ type:'module' });
+  const runningWorker = worker = new Worker(new URL('./workspace-worker.ts', import.meta.url),{ type:'module' });
   $<HTMLButtonElement>('preview-operation').disabled = true; $<HTMLButtonElement>('preview-recipe').disabled = true; $('cancel-operation').hidden = false;
+  root.dataset.operationStep = '0'; root.dataset.operationTotal = String(steps.length || 1);
   operationState('running'); status('Preparing change preview…');
   worker.onmessage = event => {
+    if (worker !== runningWorker) return;
+    if (event.data.progress) { const progress = event.data.progress; root.dataset.operationStep = String(progress.step); status(`Step ${progress.step} of ${progress.total}: ${progress.name}…`); return; }
     cancelOperation();
     if (event.data.error) { operationState('error'); status(event.data.error,true); $('preview-operation').focus(); return; }
     if (snapshot.docId !== current().id || snapshot.revision !== current().revision) { status('The document changed. Run the preview again.',true); return; }
     resultSnapshot = {...snapshot,result:event.data.result};
     $('operation-result').textContent = event.data.result.slice(0,100000);
+    const comparison = event.data.preview;
+    $('preview-change-summary').textContent = !comparison.changed ? 'No text changes. The document will be left unchanged.' : comparison.changes ? `${comparison.added} added lines · ${comparison.removed} removed lines. ${comparison.note}` : comparison.note;
+    $<HTMLButtonElement>('apply-operation').disabled = !comparison.changed;
+    renderDifferences($('operation-diff'), comparison.changes || []);
+    $('operation-reports').replaceChildren();
+    for (const report of event.data.reports) {
+      const item = document.createElement('li'); item.textContent = `${report.name}: ${report.before.toLocaleString()} → ${report.after.toLocaleString()} characters${report.changed ? '' : ' (unchanged)'}`; $('operation-reports').append(item);
+    }
+    root.dataset.operationStep = String(event.data.reports.length);
     $('preview-size').textContent = `${(to - from).toLocaleString()} → ${event.data.result.length.toLocaleString()} characters${event.data.result.length > 100000 ? ' (first 100,000 shown)' : ''}`;
     $('operation-preview').hidden = false; operationState('ready'); status('Preview ready. The document has not changed.'); $('preview-size').focus();
   };
   worker.onerror = () => { cancelOperation(); operationState('error'); status('Could not run the operation. Please try again.',true); };
-  worker.postMessage({ text:view.state.sliceDoc(from,to), steps });
+  worker.postMessage({ text:view.state.sliceDoc(from,to), steps, language:current().language, replacement });
   workerTimer = setTimeout(() => { cancelOperation(); operationState('error'); status('Operation stopped after 5 seconds. Try a smaller selection or a simpler expression.',true); },5000);
 }
 $('preview-operation').addEventListener('click', () => preview([selectedOperation()]));
@@ -287,7 +303,17 @@ function persistRecipes() { try { localStorage.setItem('text-utils-recipes',JSON
 function renderRecipe() {
   $('recipe-count').textContent = recipe.length ? `(${recipe.length})` : '';
   $('recipe-steps').replaceChildren();
-  recipe.forEach((step,index) => { const item = document.createElement('li'); item.textContent = operationName(step.id); const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label',`Remove step ${index + 1}`); remove.addEventListener('click', () => { recipe.splice(index,1); renderRecipe(); invalidatePreview(); }); item.append(remove); $('recipe-steps').append(item); });
+  recipe.forEach((step,index) => {
+    const item = document.createElement('li'); item.dataset.step = String(index); item.tabIndex = -1;
+    const label = document.createElement('span'); label.textContent = operationName(step.id); item.append(label);
+    for (const [offset, name] of [[-1,'up'],[1,'down']] as const) {
+      const move = document.createElement('button'); move.type = 'button'; move.textContent = name === 'up' ? '↑' : '↓';
+      move.setAttribute('aria-label',`Move step ${index + 1} ${name}`); move.disabled = index + offset < 0 || index + offset >= recipe.length;
+      move.addEventListener('click', () => { [recipe[index],recipe[index + offset]] = [recipe[index + offset],recipe[index]]; renderRecipe(); invalidatePreview(); $('recipe-steps').querySelector<HTMLElement>(`[data-step="${index + offset}"]`)?.focus(); }); item.append(move);
+    }
+    const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label',`Remove step ${index + 1}`);
+    remove.addEventListener('click', () => { recipe.splice(index,1); renderRecipe(); invalidatePreview(); }); item.append(remove); $('recipe-steps').append(item);
+  });
   const select = $<HTMLSelectElement>('saved-recipe'), previous = select.value; select.replaceChildren(new Option('Choose a recipe',''));
   for (const name of Object.keys(savedRecipes).sort()) select.add(new Option(name,name)); select.value = previous;
 }
@@ -306,6 +332,25 @@ $('save-recipe').addEventListener('click', () => {
 });
 $('load-recipe').addEventListener('click', () => { const name = $<HTMLSelectElement>('saved-recipe').value; if (savedRecipes[name]) { recipe = structuredClone(savedRecipes[name]); $<HTMLInputElement>('recipe-name').value = name; renderRecipe(); invalidatePreview(); status(`Loaded ${name}.`); } });
 $('delete-recipe').addEventListener('click', () => { delete savedRecipes[$<HTMLSelectElement>('saved-recipe').value]; persistRecipes(); renderRecipe(); });
+$('import-recipe').addEventListener('click', () => $('recipe-file').click());
+$<HTMLInputElement>('recipe-file').addEventListener('change', async event => {
+  const input = event.target as HTMLInputElement, file = input.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > 2_000_000) throw new Error('Recipe files are limited to 2 MB.');
+    const imported = decodeRecipe(await file.text()); recipe = imported.steps; $<HTMLInputElement>('recipe-name').value = imported.name;
+    renderRecipe(); invalidatePreview(); status(`Imported ${imported.name}. Review the steps, then preview or save the recipe.`);
+  } catch (error) { status(error instanceof Error ? error.message : 'Could not import this recipe.',true); }
+  finally { input.value = ''; }
+});
+$('export-recipe').addEventListener('click', () => {
+  try {
+    const name = $<HTMLInputElement>('recipe-name').value.trim() || 'Recipe';
+    const blob = new Blob([encodeRecipe(name,recipe)],{type:'application/json'}), url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `${name.replace(/[^\p{L}\p{N} _-]/gu,'_')}.recipe.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url),30000);
+    status('Recipe export started. It contains steps and options, without the editor document.');
+  } catch (error) { status(error instanceof Error ? error.message : 'Could not export this recipe.',true); }
+});
 renderRecipe();
 
 let previewGeneration = 0, markdownKey = '';
@@ -326,6 +371,14 @@ function openCompare() {
   documents.filter(d => d.id !== current().id).forEach(d => select.add(new Option(d.name,d.id)));
   showPanel('compare','Compare documents');
 }
+function renderDifferences(container: HTMLElement, changes: {added?:boolean;removed?:boolean;value:string}[]) {
+  const fragment = document.createDocumentFragment();
+  for (const part of changes) {
+    const pre = document.createElement('pre'); pre.className = part.added ? 'diff-add' : part.removed ? 'diff-remove' : '';
+    pre.textContent = `${part.added ? '+ ' : part.removed ? '− ' : '  '}${part.value}`; fragment.append(pre);
+  }
+  container.replaceChildren(fragment);
+}
 let comparisonWorker: Worker | null = null, comparisonKey = '';
 function stopComparison() { comparisonWorker?.terminate(); comparisonWorker = null; comparisonKey = ''; }
 function renderComparison() {
@@ -344,15 +397,8 @@ function renderComparison() {
     if (comparisonWorker !== worker || comparisonKey !== key || panel !== 'compare') return;
     comparisonWorker = null;
     if (!event.data.changes) { root.dataset.comparisonState = 'error'; $('compare-summary').textContent = 'Comparison timed out. Try smaller documents.'; return; }
-    let added = 0, removed = 0;
-    const fragment = document.createDocumentFragment();
-    for (const part of event.data.changes) {
-      const pre = document.createElement('pre'); pre.className = part.added ? 'diff-add' : part.removed ? 'diff-remove' : '';
-      pre.textContent = `${part.added ? '+ ' : part.removed ? '− ' : '  '}${part.value}`;
-      if (part.added) added += part.count || 0; if (part.removed) removed += part.count || 0; fragment.append(pre);
-    }
-    $('workspace-diff').replaceChildren(fragment); root.dataset.comparisonState = 'ready';
-    $('compare-summary').textContent = `${other.name}: ${added} added lines, ${removed} removed lines. + marks additions; − marks removals.`;
+    renderDifferences($('workspace-diff'),event.data.changes); root.dataset.comparisonState = 'ready';
+    $('compare-summary').textContent = `${other.name}: ${event.data.added} added lines, ${event.data.removed} removed lines. + marks additions; − marks removals. ${event.data.note}`;
   };
   worker.onerror = () => { clearTimeout(timer); if (comparisonWorker === worker) { stopComparison(); root.dataset.comparisonState = 'error'; $('compare-summary').textContent = 'Comparison failed. Editing is still available.'; } };
   worker.postMessage({before:doc.state.doc.toString(),after:other.state.doc.toString()});
@@ -385,6 +431,7 @@ function populateFields() {
   $('tool-result-size').textContent = `${result.length.toLocaleString()} characters${result.length > 100000 ? ' (first 100,000 shown)' : ''}`;
   $<HTMLButtonElement>('insert-tool-result').disabled = !result;
   $<HTMLButtonElement>('tool-result-document').disabled = !result;
+  $<HTMLButtonElement>('preview-tool-result').disabled = !result;
 }
 function readToolResult(): string {
   if (!toolReady) return '';
@@ -396,7 +443,7 @@ function openTool(id: string) {
   const online = ['font-chooser','google-icons-chooser','grateful-dead-archive','ip-info','xml-sitemap-generator'].includes(id);
   $('tool-network-note').textContent = online ? 'This tool has online features. Read its notice before use. Your document is sent to the tool only when you choose an input action.' : 'Choose a result, then insert it at the cursor or replace selected text.';
   $<HTMLAnchorElement>('standalone-tool').href = tool.href;
-  if (specialist !== id) { fieldObserver?.disconnect(); toolReady = false; inputFields = []; outputFields = []; for (const key of ['send-to-tool','insert-tool-result','tool-result-document']) $<HTMLButtonElement>(key).disabled = true; specialist = id; frame.src = `${tool.href}?embed=1`; frame.title = tool.name; status(`Opened ${tool.name}. Your document is unchanged.`); }
+  if (specialist !== id) { fieldObserver?.disconnect(); toolReady = false; inputFields = []; outputFields = []; for (const key of ['send-to-tool','insert-tool-result','tool-result-document','preview-tool-result']) $<HTMLButtonElement>(key).disabled = true; specialist = id; frame.src = `${tool.href}?embed=1`; frame.title = tool.name; status(`Opened ${tool.name}. Your document is unchanged.`); }
 }
 frame.addEventListener('load', () => {
   toolReady = !!frame.contentDocument?.querySelector('main');
@@ -412,6 +459,7 @@ $('send-to-tool').addEventListener('click', () => {
   field.write(s.empty ? view.state.doc.toString() : view.state.sliceDoc(s.from,s.to));
   populateFields(); status('Text sent to the selected tool input. Run its action to produce a result.');
 });
+$('preview-tool-result').addEventListener('click', () => { const result = readToolResult(); if (result) { openTransform(); preview([],result); } });
 $('insert-tool-result').addEventListener('click', () => { const result = readToolResult(); if (result) insert(result); else status('The selected tool has no result yet.',true); });
 $('tool-result-document').addEventListener('click', () => { const result = readToolResult(); if (result) newDocument(result,`Tool result ${++untitled}.txt`); });
 $<HTMLInputElement>('workspace-tool-search').addEventListener('input', event => {
@@ -481,21 +529,26 @@ root.querySelectorAll<HTMLDetailsElement>('.editor-menu').forEach(menu => {
   });
 });
 document.addEventListener('keydown', event => {
-  if (event.defaultPrevented) return;
+  if (event.defaultPrevented || root.dataset.ready !== 'true') return;
   if ((event.ctrlKey || event.metaKey) && ['o','s'].includes(event.key.toLowerCase()) && !event.altKey) { event.preventDefault(); action(event.key.toLowerCase() === 'o' ? 'open' : 'save'); }
 });
 $('load-example').addEventListener('click', () => { newDocument('  Keep useful tools.  \n\nMake them work together.\n  Keep useful tools.  \n\nLet the text stay in one place.  ','Cleanup example.txt'); action('cleanup'); });
 
-let draftEnabled = false, restoring = true, draftGeneration = 0, draftWrite: Promise<void> = Promise.resolve();
+let draftEnabled = false, restoring = true, draftGeneration = 0, draftRevision = 0, draftWrite: Promise<void> = Promise.resolve();
 let draftTimer: ReturnType<typeof setTimeout>;
 const persistedDrafts = new Map<string, { text: EditorState['doc']; meta: string; value: SavedDocument }>();
 try { draftEnabled = localStorage.getItem('text-utils-remember-drafts') === 'true'; } catch { /* Storage is optional. */ }
 $<HTMLInputElement>('remember-drafts').checked = draftEnabled;
-function scheduleDraft() { if (restoring || !draftEnabled) return; clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft,500); }
+function setDraftState(state: string) {
+  if (root.dataset.draftState === state) return;
+  root.dataset.draftState = state;
+  $('draft-status').textContent = ({off:'Draft recovery off',pending:'Draft changes pending',saving:'Saving drafts…',saved:'Drafts saved on this device',error:'Draft recovery needs attention',paused:'Draft saving paused'} as Record<string,string>)[state] || state;
+}
+function scheduleDraft() { if (restoring || !draftEnabled) return; draftRevision++; setDraftState('pending'); clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft,500); }
 function saveDraft() {
   if (!draftEnabled || restoring) return;
-  const generation = draftGeneration;
-  root.dataset.draftState = 'saving';
+  const generation = draftGeneration, revision = draftRevision;
+  setDraftState('saving');
   const entries = documents.map(d => {
     const meta = JSON.stringify([d.name,d.eol,d.bom,d.language,d.languageMode,d.savedEol,d.savedBom]);
     const previous = persistedDrafts.get(d.id);
@@ -507,12 +560,12 @@ function saveDraft() {
     if (generation !== draftGeneration || !draftEnabled) return;
     await writeDrafts(snapshot, changed);
     persistedDrafts.clear(); for (const entry of entries) persistedDrafts.set(entry.id, entry);
-    root.dataset.draftState = 'saved';
-  }).catch(error => { root.dataset.draftState = 'error'; status(error instanceof Error ? error.message : 'Draft recovery could not be saved. Download important work before closing.',true); });
+    setDraftState(revision === draftRevision ? 'saved' : 'pending');
+  }).catch(error => { setDraftState('error'); status(error instanceof Error ? error.message : 'Draft recovery could not be saved. Download important work before closing.',true); });
 }
 async function eraseDrafts() {
   persistedDrafts.clear(); draftGeneration++; draftEnabled = false; clearTimeout(draftTimer); $<HTMLInputElement>('remember-drafts').checked = false;
-  try { localStorage.removeItem('text-utils-remember-drafts'); await draftWrite; await writeDrafts(null); status('Saved drafts erased from this browser. Open documents are unchanged.'); }
+  try { localStorage.removeItem('text-utils-remember-drafts'); await draftWrite; await writeDrafts(null); setDraftState('off'); status('Saved drafts erased from this browser. Open documents are unchanged.'); }
   catch { status('Draft storage could not be erased. Use your browser’s site-data controls to remove it.',true); }
 }
 $('remember-drafts').addEventListener('change', async event => {
@@ -537,6 +590,7 @@ function showLanguage(reason:string) {
 }
 async function useLanguage(id:string, reason:string) {
   const doc = current(), generation = ++languageGeneration;
+  if (doc.language !== id) invalidatePreview();
   doc.language = id; showLanguage(reason);
   const highlighting = doc.state.doc.length > HIGHLIGHT_CHARACTER_LIMIT ? 'large-file' : id;
   if (doc.highlightedLanguage === highlighting) return;
@@ -579,7 +633,7 @@ async function initialize() {
         if (documents.length) { activate(Math.max(0,Math.min(documents.length - 1,Number(snapshot.active) || 0))); status('Drafts recovered from this browser. Undo history starts fresh.'); }
         if (checked.skipped.length) {
           draftEnabled = false; $<HTMLInputElement>('remember-drafts').checked = false;
-          root.dataset.draftState = 'error';
+          setDraftState('error');
           status(`Not recovered: ${checked.skipped.join(', ')}. Draft saving is paused to preserve the stored recovery copy. Download recovered work before enabling it again.`,true);
         }
       }
@@ -588,9 +642,11 @@ async function initialize() {
   if (!documents.length) newDocument();
   restoring = false;
   const command = new URLSearchParams(location.search).get('tool'); if (command) openTool(command);
+  if (!root.dataset.draftState) setDraftState(draftEnabled ? 'saved' : 'off');
   operationState('idle'); root.dataset.ready = 'true';
   root.inert = false;
   root.removeAttribute('aria-busy');
   $('editor-loading').hidden = true;
+  $('editor-startup-error').hidden = true;
 }
 void initialize();

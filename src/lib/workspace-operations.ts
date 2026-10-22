@@ -66,7 +66,7 @@ export function parseRecipe(value: unknown): Operation[] {
   return value.map(step => {
     if (!step || typeof step.id !== 'string' || !ids.has(step.id)) throw new Error('Recipe contains an unsupported operation.');
     const options: Record<string,string> = {};
-    if (step.options && typeof step.options === 'object') for (const [key,v] of Object.entries(step.options)) { if (typeof v !== 'string' || v.length > 10000) throw new Error('Invalid recipe options.'); if (key !== 'language') options[key] = v; }
+    if (step.options && typeof step.options === 'object') for (const [key,v] of Object.entries(step.options)) { if (typeof v !== 'string' || v.length > 10000) throw new Error('Invalid recipe options.'); if (['pattern','flags','replacement','group'].includes(key)) options[key] = v; }
     return { id:step.id, options };
   });
 }

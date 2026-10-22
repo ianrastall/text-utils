@@ -1,7 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 const editor = (page: Page) => page.getByRole('textbox', {name:'Document editor',exact:true});
 const command = (page: Page, id: string) => page.locator(`.editor-toolbar [data-action="${id}"]`);
-async function ready(page: Page) { await page.goto('/'); await expect(page.locator('.editor-workspace')).toHaveAttribute('data-ready','true'); }
+async function ready(page: Page) { await page.goto('/'); await expect(page.locator('.editor-workspace')).toHaveAttribute('data-ready','true'); await expect(page.locator('#editor-startup-error')).not.toBeVisible(); }
 test.beforeEach(async ({ page }) => {
   page.on('dialog', dialog => dialog.type() === 'beforeunload' ? dialog.accept() : dialog.dismiss());
   await page.route(/^https?:\/\/(?!127\.0\.0\.1|localhost)/, route => route.abort());
@@ -217,4 +218,82 @@ test('large files pause highlighting while retaining their formatting language',
   await editor(page).fill('const n = 1;');
   await expect(page.locator('.editor-workspace')).toHaveAttribute('data-highlighting','enabled');
   await expect(page.locator('#highlighting-note')).not.toBeVisible();
+});
+
+test('a formatting recipe follows the active document language and reports its steps', async ({ page }) => {
+  await ready(page); await editor(page).fill('{"value":1}'); await page.locator('#document-language').selectOption('json');
+  await command(page,'transform').click(); await page.locator('#operation-choice').selectOption('format-code');
+  await page.locator('#add-recipe-step').click(); await page.locator('#recipe-name').fill('Format current'); await page.locator('#save-recipe').click();
+  expect(await page.evaluate(() => localStorage.getItem('text-utils-recipes'))).not.toContain('language');
+  await command(page,'new').click(); await editor(page).fill('body{color:red}'); await page.locator('#document-language').selectOption('css');
+  await page.locator('#preview-recipe').click();
+  await expect(page.locator('#operation-result')).toContainText('color: red;');
+  await expect(page.locator('#operation-reports li')).toHaveCount(1);
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-operation-step','1');
+  await page.locator('#document-language').selectOption('javascript');
+  await expect(page.locator('#operation-preview')).not.toBeVisible();
+});
+
+test('recipe steps can be reordered, exported and imported without document contents', async ({ page }) => {
+  await ready(page); await editor(page).fill('Private document contents'); await command(page,'transform').click();
+  await page.locator('#add-recipe-step').click(); await page.locator('#operation-choice').selectOption('upper'); await page.locator('#add-recipe-step').click();
+  await page.getByRole('button',{name:'Move step 2 up',exact:true}).click();
+  await expect(page.locator('#recipe-steps li').first()).toContainText('UPPERCASE');
+  await page.locator('#recipe-name').fill('Reusable cleanup');
+  const downloaded = page.waitForEvent('download'); await page.locator('#export-recipe').click();
+  const file = await downloaded, bytes = await readFile((await file.path())!);
+  expect(bytes.toString('utf8')).not.toContain('Private document contents');
+  await page.locator('#clear-recipe').click();
+  await page.locator('#recipe-file').setInputFiles({name:'cleanup.recipe.json',mimeType:'application/json',buffer:bytes});
+  await expect(page.locator('#recipe-steps li')).toHaveCount(2);
+  await expect(page.locator('#recipe-steps li').first()).toContainText('UPPERCASE');
+  await page.locator('#preview-recipe').click();
+  await expect(page.locator('#operation-result')).toHaveText('PRIVATE DOCUMENT CONTENTS');
+  await expect(page.locator('#operation-reports li')).toHaveCount(2);
+  await page.locator('#recipe-file').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"version":1,"name":"Bad","steps":[{"id":"execute"}]}')});
+  await expect(page.locator('#workspace-status')).toHaveClass(/workspace-error/);
+  await expect(page.locator('#recipe-steps li')).toHaveCount(2);
+});
+
+test('previews show line changes and do not apply unchanged text', async ({ page }) => {
+  await ready(page); await editor(page).fill('  Original  '); await command(page,'transform').click();
+  await page.locator('#preview-operation').click();
+  await expect(page.locator('#operation-diff .diff-remove')).toContainText('Original');
+  await expect(page.locator('#operation-diff .diff-add')).toContainText('Original');
+  await expect(page.locator('#preview-change-summary')).toContainText('1 added lines');
+  await page.locator('#apply-operation').click();
+  await page.locator('#preview-operation').click();
+  await expect(page.locator('#preview-change-summary')).toContainText('No text changes');
+  await expect(page.locator('#apply-operation')).toBeDisabled();
+  await command(page,'undo').click();
+  expect(await editor(page).locator('.cm-line').textContent()).toBe('  Original  ');
+});
+
+test('tool replacements require preview and remain undoable', async ({ page }) => {
+  await ready(page); await editor(page).fill('Original document'); await command(page,'browse-tools').click();
+  await page.locator('#workspace-tool-search').fill('hashing'); await page.locator('[data-action="tool:hashing-tool"]').click();
+  const frame = page.frameLocator('#specialist-frame');
+  await frame.locator('#textOutput').evaluate((element: HTMLTextAreaElement) => { element.value = 'Replacement result'; element.dispatchEvent(new Event('input',{bubbles:true})); });
+  await page.locator('#preview-tool-result').click();
+  await expect(page.locator('#operation-result')).toHaveText('Replacement result');
+  await expect(editor(page)).toContainText('Original document');
+  await expect(page.locator('#operation-diff .diff-remove')).toContainText('Original document');
+  await page.locator('#apply-operation').click(); await expect(editor(page)).toContainText('Replacement result');
+  await command(page,'undo').click(); await expect(editor(page)).toContainText('Original document');
+});
+
+test('a second browser window cannot overwrite a newer recovery copy', async ({ page }) => {
+  await ready(page); await editor(page).fill('Shared original'); await page.locator('#remember-drafts').check();
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-draft-state','saved');
+  const other = await page.context().newPage();
+  other.on('dialog',dialog => dialog.accept());
+  await other.route(/^https?:\/\/(?!127\.0\.0\.1|localhost)/, route => route.abort());
+  await ready(other); await expect(editor(other)).toContainText('Shared original');
+  await editor(page).fill('Newer recovery'); await expect(page.locator('.editor-workspace')).toHaveAttribute('data-draft-state','saved');
+  await editor(other).fill('Competing edit');
+  await expect(other.locator('#workspace-status')).toContainText('another window');
+  await expect(other.locator('#draft-status')).toContainText('needs attention');
+  await expect(editor(other)).toContainText('Competing edit');
+  await other.reload(); await expect(other.locator('.editor-workspace')).toHaveAttribute('data-ready','true');
+  await expect(editor(other)).toContainText('Newer recovery'); await other.close();
 });

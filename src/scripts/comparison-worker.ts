@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
-import { diffLines } from 'diff';
+import { buildChangePreview } from '../lib/workspace-preview';
 self.onmessage = event => {
-  try { self.postMessage({ changes: diffLines(event.data.before,event.data.after,{timeout:1000}) }); }
+  try { self.postMessage(buildChangePreview(event.data.before,event.data.after)); }
   catch { self.postMessage({ changes: null }); }
 };

@@ -11,4 +11,10 @@ describe('recovery limits', () => {
     const checked = inspectDrafts({ active:0,documents:[{name:'broken'} as SavedDocument,doc('intact','Keep me')] });
     expect(checked.skipped).toEqual(['broken']); expect(checked.documents[0].text).toBe('Keep me');
   });
+  it('normalizes invalid language identifiers and duplicate document IDs', () => {
+    const checked = inspectDrafts({ active:0,documents:[{...doc('one','ok'),id:'same',language:'__proto__'}, {...doc('two','ok'),id:'same',languageMode:'toString'}] });
+    expect(checked.documents[0].language).toBe('text');
+    expect(checked.documents[1].id).toBeUndefined();
+    expect(checked.documents[1].languageMode).toBe('auto');
+  });
 });
