@@ -10,6 +10,7 @@ describe('workspace operations', () => {
     expect(() => runOperation('@@@',{id:'base64-decode'})).toThrow();
   });
   it('does not strip non-Latin words in identifier conversion', () => expect(runOperation('你好 世界 Café',{id:'snake'})).toBe('你好_世界_café'));
+  it('reverses whole graphemes without splitting accents or joined emoji', () => expect(runOperation('e\u0301👩‍💻',{id:'reverse'})).toBe('👩‍💻e\u0301'));
   it('sorts JSON keys without invoking prototype setters', () => {
     const result = runOperation('{"z":1,"__proto__":{"polluted":true},"a":2}',{id:'json-sort'});
     expect(JSON.parse(result).__proto__).toEqual({polluted:true}); expect(({} as Record<string,unknown>).polluted).toBeUndefined();

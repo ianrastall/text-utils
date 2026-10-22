@@ -54,7 +54,7 @@ export function runOperation(text: string, operation: Operation): string {
     case 'replace': return text.replace(regex(options), options.replacement || '');
     case 'filter': { const re = regex(options); return lines().filter(line => { re.lastIndex = 0; return re.test(line); }).join('\n'); }
     case 'extract': { const re = regex(options); const all = new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g'); return [...text.matchAll(all)].map(m => options.group ? m[Number(options.group)] ?? '' : m[0]).join('\n'); }
-    case 'reverse': return [...text].reverse().join('');
+    case 'reverse': return Array.from(new Intl.Segmenter(undefined,{ granularity:'grapheme' }).segment(text), part => part.segment).reverse().join('');
     case 'straight-quotes': return text.replace(/[“”„«»]/g, '"').replace(/[‘’‚]/g, "'");
     default: throw new Error('Unknown text operation.');
   }
