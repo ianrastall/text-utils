@@ -120,3 +120,44 @@ test('startup errors leave recovery navigation usable', async ({ page }) => {
   await expect(page.locator('#editor-startup-error a').first()).toBeEnabled();
   await expect(page.locator('.editor-workspace')).not.toHaveAttribute('inert','');
 });
+
+test('closing an active tab selects its neighbor and tab keys stay predictable', async ({ page }) => {
+  await ready(page);
+  await page.locator('#workspace-files').setInputFiles(['a.txt','b.txt','c.txt'].map(name => ({name,mimeType:'text/plain',buffer:Buffer.from(name)})));
+  await page.getByRole('tab',{name:'b.txt',exact:true}).click();
+  await page.getByRole('button',{name:'Close b.txt',exact:true}).click();
+  await expect(page.getByRole('tab',{name:'c.txt',exact:true})).toHaveAttribute('aria-selected','true');
+  await page.getByRole('tab',{name:'c.txt',exact:true}).focus(); await page.keyboard.press('Home');
+  await expect(page.getByRole('tab').first()).toBeFocused();
+  await page.keyboard.press('End'); await expect(page.getByRole('tab',{name:'c.txt',exact:true})).toBeFocused();
+});
+
+test('panel and menu keyboard focus returns to a useful control', async ({ page }) => {
+  await ready(page); await command(page,'transform').click();
+  await expect(page.locator('#work-panel-title')).toBeFocused();
+  await page.keyboard.press('Escape'); await expect(page.locator('#work-panel')).not.toBeVisible();
+  await expect(editor(page)).toBeFocused();
+  const file = page.locator('.editor-menu summary').filter({hasText:'File'});
+  await file.focus(); await page.keyboard.press('ArrowDown');
+  await expect(page.getByRole('button',{name:'New document',exact:true})).toBeFocused();
+  await page.keyboard.press('ArrowDown'); await expect(page.getByRole('button',{name:'Open files…',exact:true})).toBeFocused();
+  await page.keyboard.press('Escape'); await expect(file).toBeFocused();
+});
+
+test('editing options cancels pending work and exposes its state', async ({ page }) => {
+  await ready(page); await editor(page).fill('a'.repeat(200) + '!'); await command(page,'transform').click();
+  await page.locator('#operation-choice').selectOption('replace'); await page.locator('#operation-pattern').fill('(a+)+$');
+  await page.locator('#preview-operation').click();
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-operation-state','running');
+  await expect(page.locator('#transform-panel')).toHaveAttribute('aria-busy','true');
+  await page.locator('#operation-pattern').fill('a');
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-operation-state','stale');
+  await expect(page.locator('#transform-panel')).toHaveAttribute('aria-busy','false');
+  await expect(page.locator('#operation-preview')).not.toBeVisible();
+  await page.locator('#preview-operation').click();
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-operation-state','ready');
+  await expect(page.locator('#preview-size')).toBeFocused();
+  await page.locator('#apply-operation').click();
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-operation-state','applied');
+  await expect(editor(page)).toBeFocused();
+});

@@ -20,7 +20,7 @@ import { readDrafts, writeDrafts, inspectDrafts, type SavedDocument } from '../l
 
 const root = document.querySelector<HTMLElement>('.editor-workspace')!;
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelector<T>(`#${id}`)!;
-const status = (message: string, error = false) => { $('workspace-status').textContent = message; $('workspace-status').classList.toggle('workspace-error', error); };
+const status = (message: string, error = false) => { root.dataset.status = error ? 'error' : 'ready'; $('workspace-status').textContent = message; $('workspace-status').classList.toggle('workspace-error', error); };
 const lang = new Compartment(), wrapping = new Compartment(), sizing = new Compartment();
 let wrap = true, fontSize = 15, untitled = 0, active = 0, switching = false;
 interface Document extends SavedDocument { id:string; state:EditorState; revision:number; languageMode:string; }
@@ -96,7 +96,16 @@ function renderTabs() {
     button.setAttribute('aria-selected', String(index === active)); button.setAttribute('aria-controls','document-editor'); button.tabIndex = index === active ? 0 : -1;
     button.textContent = `${dirty(doc) ? '● ' : ''}${doc.name}`; button.title = `${doc.name}${dirty(doc) ? ' — modified' : ''}`;
     button.addEventListener('click', () => activate(index));
-    button.addEventListener('keydown', event => { if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); activate((index + (event.key === 'ArrowRight' ? 1 : documents.length - 1)) % documents.length); $('document-tabs').querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus(); } });
+    button.addEventListener('keydown', event => {
+      let target = index;
+      if (event.key === 'ArrowRight') target = (index + 1) % documents.length;
+      else if (event.key === 'ArrowLeft') target = (index + documents.length - 1) % documents.length;
+      else if (event.key === 'Home') target = 0;
+      else if (event.key === 'End') target = documents.length - 1;
+      else if (event.key === 'Delete') { event.preventDefault(); closeDocument(index); return; }
+      else return;
+      event.preventDefault(); activate(target); $('document-tabs').querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus();
+    });
     const close = document.createElement('button'); close.type = 'button'; close.className = 'close-document'; close.textContent = '×'; close.setAttribute('aria-label',`Close ${doc.name}`); close.addEventListener('click', () => closeDocument(index));
     item.append(button,close); tabs.append(item);
   });
@@ -117,7 +126,7 @@ function refresh() {
 function closeDocument(index = active) {
   if (dirty(documents[index]) && !window.confirm(`Close ${documents[index].name}? Changes that have not been downloaded will be discarded from this workspace.`)) return;
   const oldActive = current()?.id; documents.splice(index,1);
-  if (!documents.length) newDocument(); else activate(Math.max(0,documents.findIndex(d => d.id === oldActive)));
+  if (!documents.length) newDocument(); else { const kept = documents.findIndex(d => d.id === oldActive); activate(kept >= 0 ? kept : Math.min(index, documents.length - 1)); }
   scheduleDraft();
 }
 function insert(text: string, from = view.state.selection.main.from, to = view.state.selection.main.to) {
@@ -170,9 +179,10 @@ $<HTMLSelectElement>('document-eol').addEventListener('change', event => { const
 
 let panel = '';
 function showPanel(name: string, title: string) {
+  if (panel !== name) { cancelOperation(); invalidatePreview(); }
   panel = name; $('work-panel').hidden = false; $('work-panel-title').textContent = title;
   for (const child of Array.from($('work-panel').children)) if (child.tagName === 'SECTION') (child as HTMLElement).hidden = child.id !== `${name}-panel`;
-  root.dataset.panel = name; refresh();
+  root.dataset.panel = name; refresh(); $('work-panel-title').focus();
 }
 function closePanel() { cancelOperation(); panel = ''; root.dataset.panel = ''; $('work-panel').hidden = true; view.focus(); }
 function openTransform(operation = 'trim') {
@@ -183,8 +193,14 @@ function openTransform(operation = 'trim') {
 function updateOperationOptions() { $('regex-options').hidden = !['replace','extract','filter'].includes($<HTMLSelectElement>('operation-choice').value); }
 let worker: Worker | null = null, workerTimer: ReturnType<typeof setTimeout>;
 let resultSnapshot: { docId:string; revision:number; from:number; to:number; result:string } | null = null;
-function invalidatePreview() { resultSnapshot = null; $('operation-preview').hidden = true; }
-function cancelOperation() { worker?.terminate(); worker = null; clearTimeout(workerTimer); $('cancel-operation').hidden = true; $<HTMLButtonElement>('preview-operation').disabled = false; $<HTMLButtonElement>('preview-recipe').disabled = false; }
+function operationState(state: string) { root.dataset.operationState = state; $('transform-panel').setAttribute('aria-busy', String(state === 'running')); }
+function invalidatePreview() {
+  const pending = !!worker, hadResult = !!resultSnapshot;
+  if (pending) cancelOperation();
+  resultSnapshot = null; $('operation-preview').hidden = true;
+  if (pending || hadResult) { operationState('stale'); status('Text or options changed. Run a fresh preview before applying.'); }
+}
+function cancelOperation() { if (worker) operationState('idle'); worker?.terminate(); worker = null; clearTimeout(workerTimer); $('cancel-operation').hidden = true; $<HTMLButtonElement>('preview-operation').disabled = false; $<HTMLButtonElement>('preview-recipe').disabled = false; }
 function selectedOperation(): Operation {
   return { id:$<HTMLSelectElement>('operation-choice').value, options:{ pattern:$<HTMLInputElement>('operation-pattern').value, flags:$<HTMLInputElement>('operation-flags').value, replacement:$<HTMLInputElement>('operation-replacement').value, group:$<HTMLInputElement>('operation-group').value, language:current().language } };
 }
@@ -196,28 +212,28 @@ function preview(steps: Operation[]) {
   const snapshot = { docId:current().id,revision:current().revision,from,to,result:'' };
   worker = new Worker(new URL('./workspace-worker.ts', import.meta.url),{ type:'module' });
   $<HTMLButtonElement>('preview-operation').disabled = true; $<HTMLButtonElement>('preview-recipe').disabled = true; $('cancel-operation').hidden = false;
-  status('Preparing change preview…');
+  operationState('running'); status('Preparing change preview…');
   worker.onmessage = event => {
     cancelOperation();
-    if (event.data.error) { status(event.data.error,true); return; }
+    if (event.data.error) { operationState('error'); status(event.data.error,true); $('preview-operation').focus(); return; }
     if (snapshot.docId !== current().id || snapshot.revision !== current().revision) { status('The document changed. Run the preview again.',true); return; }
     resultSnapshot = {...snapshot,result:event.data.result};
     $('operation-result').textContent = event.data.result.slice(0,100000);
     $('preview-size').textContent = `${(to - from).toLocaleString()} → ${event.data.result.length.toLocaleString()} characters${event.data.result.length > 100000 ? ' (first 100,000 shown)' : ''}`;
-    $('operation-preview').hidden = false; status('Preview ready. The document has not changed.');
+    $('operation-preview').hidden = false; operationState('ready'); status('Preview ready. The document has not changed.'); $('preview-size').focus();
   };
-  worker.onerror = () => { cancelOperation(); status('Could not run the operation. Please try again.',true); };
+  worker.onerror = () => { cancelOperation(); operationState('error'); status('Could not run the operation. Please try again.',true); };
   worker.postMessage({ text:view.state.sliceDoc(from,to), steps });
-  workerTimer = setTimeout(() => { cancelOperation(); status('Operation stopped after 5 seconds. Try a smaller selection or a simpler expression.',true); },5000);
+  workerTimer = setTimeout(() => { cancelOperation(); operationState('error'); status('Operation stopped after 5 seconds. Try a smaller selection or a simpler expression.',true); },5000);
 }
 $('preview-operation').addEventListener('click', () => preview([selectedOperation()]));
-$('cancel-operation').addEventListener('click', () => { cancelOperation(); status('Operation cancelled. Your document is unchanged.'); });
+$('cancel-operation').addEventListener('click', () => { cancelOperation(); operationState('cancelled'); $('preview-operation').focus(); status('Operation cancelled. Your document is unchanged.'); });
 $('operation-choice').addEventListener('change', () => { updateOperationOptions(); invalidatePreview(); });
 for (const id of ['operation-scope','operation-pattern','operation-flags','operation-replacement','operation-group']) $(id).addEventListener('input',invalidatePreview);
 $('apply-operation').addEventListener('click', () => {
   const s = resultSnapshot;
   if (!s || s.docId !== current().id || s.revision !== current().revision) { status('Run a fresh preview before applying changes.',true); return; }
-  insert(s.result,s.from,s.to); status('Changes applied. Undo restores the previous text.');
+  insert(s.result,s.from,s.to); operationState('applied'); status('Changes applied. Undo restores the previous text.');
 });
 $('result-as-document').addEventListener('click', () => { if (resultSnapshot) { const text = resultSnapshot.result; newDocument(text,`Result ${++untitled}.txt`); } });
 let recipe: Operation[] = [];
@@ -380,7 +396,26 @@ function action(id: string) {
 }
 root.addEventListener('click', event => { const button = (event.target as HTMLElement).closest<HTMLElement>('[data-action]'); if (button?.dataset.action) action(button.dataset.action); });
 document.addEventListener('click', event => { if (!(event.target as HTMLElement).closest('.editor-menu')) root.querySelectorAll<HTMLDetailsElement>('.editor-menu[open]').forEach(menu => menu.open = false); });
-root.addEventListener('keydown', event => { if (event.key === 'Escape') { root.querySelectorAll<HTMLDetailsElement>('.editor-menu[open]').forEach(menu => menu.open = false); } });
+root.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  const menu = root.querySelector<HTMLDetailsElement>('.editor-menu[open]');
+  if (menu) { menu.open = false; menu.querySelector('summary')?.focus(); event.preventDefault(); }
+  else if ((event.target as HTMLElement).closest('#work-panel')) { event.preventDefault(); closePanel(); }
+});
+root.querySelectorAll<HTMLDetailsElement>('.editor-menu').forEach(menu => {
+  menu.addEventListener('toggle', () => { if (menu.open) root.querySelectorAll<HTMLDetailsElement>('.editor-menu').forEach(other => { if (other !== menu) other.open = false; }); });
+  menu.querySelector('summary')?.addEventListener('keydown', event => {
+    if (event.key === 'ArrowDown') { event.preventDefault(); menu.open = true; menu.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus(); }
+  });
+  menu.addEventListener('keydown', event => {
+    if (!(event.target instanceof HTMLButtonElement) || !['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    const items = Array.from(menu.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'));
+    const index = items.indexOf(event.target);
+    const target = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
+    items[target]?.focus();
+  });
+});
 document.addEventListener('keydown', event => {
   if (event.defaultPrevented) return;
   if ((event.ctrlKey || event.metaKey) && ['o','s'].includes(event.key.toLowerCase()) && !event.altKey) { event.preventDefault(); action(event.key.toLowerCase() === 'o' ? 'open' : 'save'); }
@@ -484,7 +519,7 @@ async function initialize() {
   if (!documents.length) newDocument();
   restoring = false;
   const command = new URLSearchParams(location.search).get('tool'); if (command) openTool(command);
-  root.dataset.ready = 'true';
+  operationState('idle'); root.dataset.ready = 'true';
   root.inert = false;
   root.removeAttribute('aria-busy');
   $('editor-loading').hidden = true;
