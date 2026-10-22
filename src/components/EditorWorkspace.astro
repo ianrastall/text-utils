@@ -13,10 +13,9 @@ const menus = [
 ];
 ---
 <main id="main-content" tabindex="-1" class="editor-workspace" aria-label="Text editor workspace" aria-busy="true" inert>
-  <h1 class="visually-hidden">Free online text editor</h1>
+  <h1 class="visually-hidden">Text editor</h1>
   <nav class="editor-menubar" aria-label="Editor menus">
     {menus.map(menu => <details class="editor-menu"><summary>{menu.name}</summary><div class="editor-menu-items">{menu.items.map(([id,label]) => <button type="button" data-action={id}>{label}</button>)}</div></details>)}
-    <span class="editor-privacy">Free · text stays in your browser</span>
   </nav>
   <div class="editor-toolbar" role="toolbar" aria-label="Document commands">
     <button type="button" data-action="new" title="New document"><FilePlusCorner size={17} aria-hidden="true" /><span>New</span></button>
@@ -60,7 +59,7 @@ const menus = [
       </section>
       <section id="help-panel" class="work-panel-content" hidden>
         <a href="/editor-third-party-notices.txt" target="_blank" rel="noopener">Editor software notices</a>
-        <h3>A text editor with tools built in</h3><p>Open a UTF-8 text file or start typing. Use Text tools on the whole document or a selection, preview the result, then apply. Undo covers editing and transformations.</p><p>Insert opens character, icon and snippet pickers beside your document. All tools includes the full original collection. Choose a result field and insert its contents at the cursor or replace selected text.</p><p>Use Markdown preview for a rendered view, or Compare documents for differences between tabs. File → Download saves a UTF-8 copy; it does not overwrite the file you opened.</p><p>Ctrl/Cmd+O opens files. Ctrl/Cmd+S downloads. Ctrl/Cmd+F opens find/replace. Ctrl/Cmd+Z undoes. Shift+Ctrl/Cmd+Z redoes. Press Escape, then Tab to leave the editor using the keyboard.</p><p>Draft recovery is optional and off initially. Enabling it stores documents in this browser on this device. Browser cleanup can remove them; keep important work in downloaded files. Recovered text starts a fresh undo history.</p><button id="load-example" type="button">Open a cleanup example</button><a href="/tools.html">Browse tool directory</a>
+        <h3>Editor help</h3><p>Open a UTF-8 text file or start typing. Use Text tools on the whole document or a selection, preview the result, then apply. Undo covers editing and transformations.</p><p>Insert opens character, icon and snippet pickers beside your document. All tools includes the full original collection. Choose a result field and insert its contents at the cursor or replace selected text.</p><p>Use Markdown preview for a rendered view, or Compare documents for differences between tabs. File → Download saves a UTF-8 copy; it does not overwrite the file you opened.</p><p>Ctrl/Cmd+O opens files. Ctrl/Cmd+S downloads. Ctrl/Cmd+F opens find/replace. Ctrl/Cmd+Z undoes. Shift+Ctrl/Cmd+Z redoes. Press Escape, then Tab to leave the editor using the keyboard.</p><p>Draft recovery is optional and off initially. Enabling it stores documents in this browser on this device. Browser cleanup can remove them; keep important work in downloaded files. Recovered text starts a fresh undo history.</p><button id="load-example" type="button">Open a cleanup example</button><a href="/tools.html">Browse tool directory</a>
       </section>
     </aside>
   </div>

@@ -53,13 +53,13 @@ const icons = { write: PencilLine, convert: ArrowRightLeft, inspect: ScanSearch,
           {toolCategories.map(category => { const Icon = icons[category]; const active = currentPath === categoryHref(category) || currentPath === categoryHref(category).replace('.html', '') || currentTool?.category === category; return <a href={categoryHref(category)} class:list={[{ active }]} aria-current={active ? 'true' : undefined}><Icon size={17} aria-hidden="true" />{categoryLabels[category]}<span class="nav-count">{tools.filter(tool => tool.category === category).length}</span></a>; })}
         </nav>
         {currentTool && <div class="related-nav"><p class="eyebrow">{categoryLabels[currentTool.category]} tools</p><nav aria-label="Related tools">{tools.filter(tool => tool.category === currentTool.category).map(tool => <a href={tool.href} aria-current={currentTool.id === tool.id ? 'page' : undefined}>{tool.name}</a>)}</nav></div>}
-        <div class="sidebar-note"><span class="local-indicator" aria-hidden="true"></span><strong>Your text stays yours.</strong><p>Most tools work entirely in your browser. Tools using online services say so.</p></div>
+        <div class="sidebar-note"><span class="local-indicator" aria-hidden="true"></span><strong>Processing</strong><p>Most tools work entirely in your browser. Tools using online services say so.</p></div>
       </aside>}
       <div class="workspace-content">
         <noscript><p class="shell notice">JavaScript is off. Interactive tools and appearance settings require JavaScript. <a href="/tools.html">Browse the tool directory</a>.</p></noscript>
         {externalNote && <p class="shell external-notice">{externalNote}</p>}
         <slot />
-        <footer class="site-footer shell"><div><strong>Text Utilities</strong><p>Small tools. A little less busywork.</p></div><nav aria-label="Project links"><a href="https://github.com/ianrastall/text-utils">Source on GitHub <ArrowUpRight size={14} aria-hidden="true" /></a><a href="https://ko-fi.com/ianrastall">Support this project <ArrowUpRight size={14} aria-hidden="true" /></a></nav></footer>
+        <footer class="site-footer shell"><div><strong>Text Utilities</strong></div><nav aria-label="Project links"><a href="https://github.com/ianrastall/text-utils">Source on GitHub <ArrowUpRight size={14} aria-hidden="true" /></a><a href="https://ko-fi.com/ianrastall">Support this project <ArrowUpRight size={14} aria-hidden="true" /></a></nav></footer>
       </div>
     </div>
   </body>

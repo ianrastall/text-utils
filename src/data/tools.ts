@@ -291,7 +291,7 @@ export const tools: ToolMeta[] = [
     name: 'Syntax Highlighter',
     href: '/syntax-highlighter.html',
     category: 'convert',
-    description: 'Format and highlight code snippets. Export as a beautiful PNG image, inline HTML, BBCode, or Rich Text.',
+    description: 'Format and highlight code snippets. Export as a PNG image, inline HTML, BBCode, or Rich Text.',
     status: 'ready'
   }
 ];
