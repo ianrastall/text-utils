@@ -45,6 +45,8 @@ GitHub Actions repeats the tests, audit, build and browser checks before deployi
 
 The previous clean checkout was `D:/GitHub/text-utils`; `D:/dev/proj/text-utils` was absent. Git metadata and sources were copied into `D:/jupiter/text-utils` before editing. On 22 October 2026, the Jupiter checkout was confirmed to contain the old checkout's history and all seven subsequent implementation commits. The old checkout was preserved at `D:/GitHub/text-utils.pre-jupiter-2026-10-22`; use `D:/jupiter/text-utils` for subsequent work. The GitHub origin remains `https://github.com/ianrastall/text-utils.git`, and the public domain and Pages deployment workflow are unchanged. The planning README is preserved in `docs/workspace/planning-readme.md`; the project brief and source map remain in `docs/`.
 
+The former path `D:/GitHub/text-utils` is now a Windows directory junction to `D:/jupiter/text-utils`, so saved GitHub Desktop/editor paths continue to reach the same repository rather than an outdated second checkout. The archived checkout remains separate.
+
 ## Google ownership verification
 
 `public/google3dd959c930caf3f2.html` is the unchanged verification file supplied in `D:/dev/proj`. Astro copies it into the published site root at `https://text-utils.net/google3dd959c930caf3f2.html`. Keep this file in future deployments so Google can recheck ownership. It is a standalone endpoint, rather than visible homepage content.

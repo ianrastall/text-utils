@@ -23,5 +23,6 @@
   "source_evidence_status": "clean local checkout verified against origin/main before rebuild; see jupiter-web.md for validation",
   "current_checkout": "D:/jupiter/text-utils",
   "previous_checkout": "D:/GitHub/text-utils",
-  "archived_checkout": "D:/GitHub/text-utils.pre-jupiter-2026-10-22"
+  "archived_checkout": "D:/GitHub/text-utils.pre-jupiter-2026-10-22",
+  "compatibility_junction": "D:/GitHub/text-utils"
 }
