@@ -1,5 +1,5 @@
 import { basicSetup } from 'codemirror';
-import { Compartment, EditorState, Prec, Transaction, type Extension } from '@codemirror/state';
+import { Compartment, EditorState, Prec, Transaction, Text, type Extension } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { undo, redo, undoDepth, redoDepth, isolateHistory, indentWithTab, selectAll } from '@codemirror/commands';
 import { openSearchPanel } from '@codemirror/search';
@@ -14,7 +14,6 @@ import { tools } from '../data/tools';
 import { filenameLanguage, languageLabel, loadLanguage } from '../lib/workspace-languages';
 import { toolInputs, toolOutputs, type ToolField } from '../lib/workspace-tool-adapters';
 import { operationName, parseRecipe, type Operation } from '../lib/workspace-operations';
-import { getTextStats } from '../lib/text';
 import { exportText, readTextFile } from '../lib/workspace-files';
 import { readDrafts, writeDrafts, inspectDrafts, type SavedDocument } from '../lib/workspace-storage';
 
@@ -23,12 +22,13 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelecto
 const status = (message: string, error = false) => { root.dataset.status = error ? 'error' : 'ready'; $('workspace-status').textContent = message; $('workspace-status').classList.toggle('workspace-error', error); };
 const lang = new Compartment(), wrapping = new Compartment(), sizing = new Compartment();
 let wrap = true, fontSize = 15, untitled = 0, active = 0, switching = false;
-interface Document extends SavedDocument { id:string; state:EditorState; revision:number; languageMode:string; }
+interface Document extends SavedDocument { id:string; state:EditorState; revision:number; languageMode:string; savedDoc:Text; modified:boolean; highlightedLanguage:string; words:number; statsRevision:number; }
 const documents: Document[] = [];
 const languageExtensions: Record<string, () => Extension> = { text:() => [], markdown, json, html, css, javascript, typescript:() => javascript({ typescript:true }) };
 const detectLanguage = (name: string) => filenameLanguage(name) || 'text';
+const HIGHLIGHT_CHARACTER_LIMIT = 1_000_000;
 const current = () => documents[active];
-const dirty = (doc: Document) => doc.state.doc.toString() !== doc.savedText || doc.eol !== doc.savedEol || doc.bom !== doc.savedBom;
+const dirty = (doc: Document) => doc.modified || doc.eol !== doc.savedEol || doc.bom !== doc.savedBom;
 const editorTheme = EditorView.theme({
   '&': { color:'var(--text)', backgroundColor:'var(--input)', height:'100%' },
   '.cm-content': { fontFamily:'ui-monospace, Consolas, monospace', padding:'20px 0', caretColor:'var(--text)' },
@@ -46,6 +46,10 @@ let refreshTimer: ReturnType<typeof setTimeout>;
 function makeState(text: string, language: string): EditorState {
   return EditorState.create({ doc:text, extensions:[
     basicSetup, editorTheme,
+    EditorState.transactionFilter.of(transaction => {
+      if (transaction.docChanged && transaction.newDoc.length > 10_000_000) { status('Documents are limited to 10 million characters. The edit was not applied.',true); return []; }
+      return transaction;
+    }),
     syntaxHighlighting(HighlightStyle.define([
       { tag:[tags.keyword,tags.operatorKeyword], color:'var(--syntax-keyword)' },
       { tag:[tags.string,tags.regexp], color:'var(--syntax-string)' },
@@ -54,7 +58,7 @@ function makeState(text: string, language: string): EditorState {
       { tag:[tags.heading,tags.link,tags.tagName], color:'var(--accent-strong)' }
     ])),
     Prec.high(EditorState.allowMultipleSelections.of(false)),
-    lang.of((languageExtensions[language] || languageExtensions.text)()),
+    lang.of(text.length > HIGHLIGHT_CHARACTER_LIMIT ? [] : (languageExtensions[language] || languageExtensions.text)()),
     wrapping.of(wrap ? EditorView.lineWrapping : []),
     sizing.of(EditorView.theme({ '&':{ fontSize:`${fontSize}px` } })),
     placeholder('Start typing, paste text, or open a file…'),
@@ -63,7 +67,16 @@ function makeState(text: string, language: string): EditorState {
     EditorView.updateListener.of(update => {
       if (switching || !current()) return;
       current().state = update.state;
-      if (update.docChanged) { current().revision++; invalidatePreview(); scheduleDraft(); queueMicrotask(scheduleDetection); }
+      if (update.docChanged) {
+        const doc = current(); doc.revision++;
+        doc.modified = update.transactions.some(tr => tr.isUserEvent('undo') || tr.isUserEvent('redo')) ? !update.state.doc.eq(doc.savedDoc) : true;
+        invalidatePreview(); scheduleDraft(); scheduleStatistics();
+        let replaced = false;
+        update.changes.iterChanges((from, to, _newFrom, _newTo, inserted) => { if (from === 0 && to === update.startState.doc.length && inserted.length > 1) replaced = true; });
+        const pasted = replaced || update.transactions.some(tr => tr.isUserEvent('input.paste'));
+        if (doc.languageMode === 'auto' && !filenameLanguage(doc.name) && (doc.language === 'text' || pasted)) queueMicrotask(scheduleDetection);
+        else if ((doc.state.doc.length > HIGHLIGHT_CHARACTER_LIMIT) !== (doc.highlightedLanguage === 'large-file')) queueMicrotask(() => { if (current()?.id === doc.id) void useLanguage(doc.language,'Document size changed'); });
+      }
       if (update.docChanged || update.selectionSet) { clearTimeout(refreshTimer); refreshTimer = setTimeout(refresh,80); }
     })
   ] });
@@ -74,26 +87,31 @@ function newDocument(text = '', name = `Untitled ${++untitled}.txt`, saved?: Sav
   if (documents.length >= 30) { status('Up to 30 documents can be open. Close a tab before opening another.',true); return; }
   const languageMode = saved?.languageMode || (saved?.language ? saved.language : 'auto');
   const language = languageMode === 'auto' ? filenameLanguage(name) || saved?.language || 'text' : languageMode;
-  const doc: Document = { id:saved?.id || crypto.randomUUID(), savedEol:saved?.savedEol ?? saved?.eol ?? '\n', savedBom:saved?.savedBom ?? saved?.bom ?? false, name, text, savedText:saved?.savedText ?? '', eol:saved?.eol || '\n', bom:saved?.bom || false, language, languageMode, state:makeState(text,language), revision:0 };
+  const state = makeState(text,language), savedText = saved?.savedText ?? '';
+  const doc: Document = { savedDoc:text === savedText ? state.doc : Text.of(savedText.split('\n')), modified:text !== savedText, highlightedLanguage:text.length > HIGHLIGHT_CHARACTER_LIMIT ? 'large-file' : languageExtensions[language] ? language : 'text', words:0, statsRevision:text ? -1 : 0, id:saved?.id || crypto.randomUUID(), savedEol:saved?.savedEol ?? saved?.eol ?? '\n', savedBom:saved?.savedBom ?? saved?.bom ?? false, name, text, savedText:saved?.savedText ?? '', eol:saved?.eol || '\n', bom:saved?.bom || false, language, languageMode, state, revision:0 };
   documents.push(doc); activate(documents.length - 1); scheduleDraft();
 }
 function activate(index: number) {
   cancelOperation(); invalidatePreview(); active = index; switching = true;
   view.setState(current().state);
-  view.dispatch({ effects:[lang.reconfigure((languageExtensions[current().language] || languageExtensions.text)()), wrapping.reconfigure(wrap ? EditorView.lineWrapping : []), sizing.reconfigure(EditorView.theme({ '&':{ fontSize:`${fontSize}px` } }))] });
+  view.dispatch({ effects:[wrapping.reconfigure(wrap ? EditorView.lineWrapping : []), sizing.reconfigure(EditorView.theme({ '&':{ fontSize:`${fontSize}px` } }))] });
   current().state = view.state; switching = false;
   $('document-language').setAttribute('data-current',current().language);
   ($('document-language') as HTMLSelectElement).value = current().languageMode;
   ($('document-eol') as HTMLSelectElement).value = current().eol === '\r\n' ? 'crlf' : current().eol === '\r' ? 'cr' : 'lf';
-  refresh(); view.focus(); scheduleDraft(); scheduleDetection();
+  refresh(); view.focus(); scheduleDraft(); scheduleDetection(); scheduleStatistics();
 }
+let tabSignature = '';
 function renderTabs() {
+  const signature = JSON.stringify([active,documents.map(doc => [doc.id,doc.name,dirty(doc)])]);
+  if (signature === tabSignature) return;
+  tabSignature = signature;
   const tabs = $('document-tabs'); const focused = document.activeElement?.getAttribute('data-document');
   tabs.replaceChildren();
   documents.forEach((doc,index) => {
     const item = document.createElement('div'); item.className = 'document-tab'; item.classList.toggle('active', index === active);
     const button = document.createElement('button'); button.type = 'button'; button.role = 'tab'; button.dataset.document = doc.id;
-    button.setAttribute('aria-selected', String(index === active)); button.setAttribute('aria-controls','document-editor'); button.tabIndex = index === active ? 0 : -1;
+    button.dataset.dirty = String(dirty(doc)); button.setAttribute('aria-selected', String(index === active)); button.setAttribute('aria-controls','document-editor'); button.tabIndex = index === active ? 0 : -1;
     button.textContent = `${dirty(doc) ? '● ' : ''}${doc.name}`; button.title = `${doc.name}${dirty(doc) ? ' — modified' : ''}`;
     button.addEventListener('click', () => activate(index));
     button.addEventListener('keydown', event => {
@@ -113,8 +131,8 @@ function renderTabs() {
 }
 function refresh() {
   if (!current()) return;
-  const text = view.state.doc.toString(), stats = getTextStats(text), selection = view.state.selection.main;
-  $('document-stats').textContent = `${stats.words.toLocaleString()} words · ${text.length.toLocaleString()} characters · ${view.state.doc.lines.toLocaleString()} lines`;
+  const doc = current(), selection = view.state.selection.main;
+  $('document-stats').textContent = `${doc.statsRevision === doc.revision ? doc.words.toLocaleString() + ' words' : 'Counting words…'} · ${view.state.doc.length.toLocaleString()} characters · ${view.state.doc.lines.toLocaleString()} lines`;
   const position = view.state.doc.lineAt(selection.head);
   $('selection-stats').textContent = selection.empty ? `Ln ${position.number}, Col ${selection.head - position.from + 1}` : `${(selection.to - selection.from).toLocaleString()} selected`;
   root.querySelectorAll<HTMLButtonElement>('[data-action="undo"]').forEach(b => b.disabled = !undoDepth(view.state));
@@ -122,6 +140,32 @@ function refresh() {
   renderTabs();
   if (panel === 'markdown') void renderMarkdown();
   if (panel === 'compare') void renderComparison();
+}
+let statisticsTimer: ReturnType<typeof setTimeout>, statisticsIdle: number | undefined;
+let statisticsWorker: Worker | null = null;
+function scheduleStatistics() {
+  clearTimeout(statisticsTimer);
+  if (statisticsIdle !== undefined && 'cancelIdleCallback' in window) window.cancelIdleCallback(statisticsIdle);
+  const doc = current();
+  if (!doc || doc.statsRevision === doc.revision) { root.dataset.statsState = 'ready'; return; }
+  root.dataset.statsState = 'pending';
+  const run = () => {
+    if (current()?.id !== doc.id) return;
+    if (!statisticsWorker) {
+      statisticsWorker = new Worker(new URL('./statistics-worker.ts', import.meta.url), {type:'module'});
+      statisticsWorker.onmessage = event => {
+        const target = documents.find(item => item.id === event.data.id);
+        if (!target || target.revision !== event.data.revision) return;
+        target.words = event.data.words; target.statsRevision = event.data.revision;
+        if (target.id === current()?.id) { root.dataset.statsState = 'ready'; refresh(); }
+      };
+      statisticsWorker.onerror = () => { statisticsWorker?.terminate(); statisticsWorker = null; root.dataset.statsState = 'error'; $('document-stats').textContent = `${view.state.doc.length.toLocaleString()} characters · ${view.state.doc.lines.toLocaleString()} lines · Word count unavailable`; };
+    }
+    statisticsWorker.postMessage({id:doc.id,revision:doc.revision,text:doc.state.doc.toString()});
+  };
+  statisticsTimer = setTimeout(() => {
+    if ('requestIdleCallback' in window) statisticsIdle = window.requestIdleCallback(run, {timeout:1000}); else run();
+  },250);
 }
 function closeDocument(index = active) {
   if (dirty(documents[index]) && !window.confirm(`Close ${documents[index].name}? Changes that have not been downloaded will be discarded from this workspace.`)) return;
@@ -146,14 +190,14 @@ interface SaveHandle { name: string; createWritable(): Promise<FileWriter>; }
 async function saveFile() {
   const picker = (window as unknown as { showSaveFilePicker?: (options: { suggestedName: string }) => Promise<SaveHandle> }).showSaveFilePicker;
   if (!picker) { download(); return; }
-  const doc = current(), text = doc.state.doc.toString(), eol = doc.eol, bom = doc.bom;
+  const doc = current(), savedDoc = doc.state.doc, text = savedDoc.toString(), eol = doc.eol, bom = doc.bom;
   const originalName = doc.name;
   try {
     const handle = await picker.call(window, { suggestedName: originalName });
     const writable = await handle.createWritable();
     await writable.write(new Blob([exportText(text, eol, bom)], { type: 'text/plain;charset=utf-8' }));
     await writable.close();
-    doc.savedText = text; doc.savedEol = eol; doc.savedBom = bom;
+    doc.savedText = text; doc.savedDoc = savedDoc; doc.modified = !doc.state.doc.eq(savedDoc); doc.savedEol = eol; doc.savedBom = bom;
     if (doc.name === originalName) doc.name = handle.name;
     status(`Saved ${handle.name}.`); refresh(); scheduleDraft();
   } catch (error) {
@@ -179,12 +223,12 @@ $<HTMLSelectElement>('document-eol').addEventListener('change', event => { const
 
 let panel = '';
 function showPanel(name: string, title: string) {
-  if (panel !== name) { cancelOperation(); invalidatePreview(); }
+  if (panel !== name) { cancelOperation(); invalidatePreview(); stopComparison(); }
   panel = name; $('work-panel').hidden = false; $('work-panel-title').textContent = title;
   for (const child of Array.from($('work-panel').children)) if (child.tagName === 'SECTION') (child as HTMLElement).hidden = child.id !== `${name}-panel`;
   root.dataset.panel = name; refresh(); $('work-panel-title').focus();
 }
-function closePanel() { cancelOperation(); panel = ''; root.dataset.panel = ''; $('work-panel').hidden = true; view.focus(); }
+function closePanel() { cancelOperation(); stopComparison(); panel = ''; root.dataset.panel = ''; $('work-panel').hidden = true; view.focus(); }
 function openTransform(operation = 'trim') {
   showPanel('transform','Text operations'); $<HTMLSelectElement>('operation-choice').value = operation;
   $<HTMLSelectElement>('operation-scope').value = view.state.selection.main.empty ? 'document' : 'selection';
@@ -264,12 +308,16 @@ $('load-recipe').addEventListener('click', () => { const name = $<HTMLSelectElem
 $('delete-recipe').addEventListener('click', () => { delete savedRecipes[$<HTMLSelectElement>('saved-recipe').value]; persistRecipes(); renderRecipe(); });
 renderRecipe();
 
-let previewGeneration = 0;
+let previewGeneration = 0, markdownKey = '';
 async function renderMarkdown() {
-  const generation = ++previewGeneration, source = view.state.doc.toString();
-  if (source.length > 500000) { $('workspace-markdown').textContent = 'Markdown preview is limited to 500,000 characters. Editing and downloading remain available.'; return; }
+  const key = `${current().id}:${current().revision}`;
+  if (key === markdownKey) return;
+  markdownKey = key;
+  const generation = ++previewGeneration;
+  if (view.state.doc.length > 500000) { $('workspace-markdown').textContent = 'Markdown preview is limited to 500,000 characters. Editing and downloading remain available.'; return; }
+  const source = view.state.doc.toString();
   const { renderWorkspaceMarkdown } = await import('../lib/markdown');
-  if (generation !== previewGeneration || panel !== 'markdown') return;
+  if (generation !== previewGeneration || panel !== 'markdown') { if (markdownKey === key) markdownKey = ''; return; }
   $('workspace-markdown').innerHTML = renderWorkspaceMarkdown(source);
   $('workspace-markdown').querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener noreferrer'; });
 }
@@ -278,20 +326,36 @@ function openCompare() {
   documents.filter(d => d.id !== current().id).forEach(d => select.add(new Option(d.name,d.id)));
   showPanel('compare','Compare documents');
 }
-async function renderComparison() {
-  const other = documents.find(d => d.id === $<HTMLSelectElement>('compare-document').value);
+let comparisonWorker: Worker | null = null, comparisonKey = '';
+function stopComparison() { comparisonWorker?.terminate(); comparisonWorker = null; comparisonKey = ''; }
+function renderComparison() {
+  const doc = current(), other = documents.find(d => d.id === $<HTMLSelectElement>('compare-document').value);
+  const key = `${doc.id}:${doc.revision}:${other?.id}:${other?.revision}`;
+  if (key === comparisonKey) return;
+  stopComparison(); comparisonKey = key;
   $('workspace-diff').replaceChildren();
-  if (!other) { $('compare-summary').textContent = 'Open a second document to compare it with the active one.'; return; }
-  const text = view.state.doc.toString(), second = other.state.doc.toString();
-  if (text.length + second.length > 200000) { $('compare-summary').textContent = 'Comparison is limited to 200,000 combined characters. Select smaller documents.'; return; }
-  const generation = ++previewGeneration;
-  const { diffLines } = await import('diff');
-  const changes = diffLines(text,second,{ timeout:1000 });
-  if (generation !== previewGeneration || panel !== 'compare') return;
-  if (!changes) { $('compare-summary').textContent = 'Comparison timed out. Try smaller documents.'; return; }
-  let added = 0, removed = 0;
-  for (const part of changes) { const pre = document.createElement('pre'); pre.className = part.added ? 'diff-add' : part.removed ? 'diff-remove' : ''; pre.textContent = `${part.added ? '+ ' : part.removed ? '− ' : '  '}${part.value}`; if (part.added) added += part.count || 0; if (part.removed) removed += part.count || 0; $('workspace-diff').append(pre); }
-  $('compare-summary').textContent = `${other.name}: ${added} added lines, ${removed} removed lines. + marks additions; − marks removals.`;
+  if (!other) { $('compare-summary').textContent = 'Open a second document to compare it with the active one.'; root.dataset.comparisonState = 'empty'; return; }
+  if (doc.state.doc.length + other.state.doc.length > 200000) { $('compare-summary').textContent = 'Comparison is limited to 200,000 combined characters. Select smaller documents.'; root.dataset.comparisonState = 'error'; return; }
+  const worker = comparisonWorker = new Worker(new URL('./comparison-worker.ts', import.meta.url), {type:'module'});
+  root.dataset.comparisonState = 'running'; $('compare-summary').textContent = 'Comparing documents…';
+  const timer = setTimeout(() => { if (comparisonWorker === worker) { stopComparison(); root.dataset.comparisonState = 'error'; $('compare-summary').textContent = 'Comparison timed out. Try smaller documents.'; } },2000);
+  worker.onmessage = event => {
+    clearTimeout(timer); worker.terminate();
+    if (comparisonWorker !== worker || comparisonKey !== key || panel !== 'compare') return;
+    comparisonWorker = null;
+    if (!event.data.changes) { root.dataset.comparisonState = 'error'; $('compare-summary').textContent = 'Comparison timed out. Try smaller documents.'; return; }
+    let added = 0, removed = 0;
+    const fragment = document.createDocumentFragment();
+    for (const part of event.data.changes) {
+      const pre = document.createElement('pre'); pre.className = part.added ? 'diff-add' : part.removed ? 'diff-remove' : '';
+      pre.textContent = `${part.added ? '+ ' : part.removed ? '− ' : '  '}${part.value}`;
+      if (part.added) added += part.count || 0; if (part.removed) removed += part.count || 0; fragment.append(pre);
+    }
+    $('workspace-diff').replaceChildren(fragment); root.dataset.comparisonState = 'ready';
+    $('compare-summary').textContent = `${other.name}: ${added} added lines, ${removed} removed lines. + marks additions; − marks removals.`;
+  };
+  worker.onerror = () => { clearTimeout(timer); if (comparisonWorker === worker) { stopComparison(); root.dataset.comparisonState = 'error'; $('compare-summary').textContent = 'Comparison failed. Editing is still available.'; } };
+  worker.postMessage({before:doc.state.doc.toString(),after:other.state.doc.toString()});
 }
 $('compare-document').addEventListener('change', () => void renderComparison());
 
@@ -433,9 +497,9 @@ function saveDraft() {
   const generation = draftGeneration;
   root.dataset.draftState = 'saving';
   const entries = documents.map(d => {
-    const meta = JSON.stringify([d.name,d.savedText,d.eol,d.bom,d.language,d.languageMode,d.savedEol,d.savedBom]);
+    const meta = JSON.stringify([d.name,d.eol,d.bom,d.language,d.languageMode,d.savedEol,d.savedBom]);
     const previous = persistedDrafts.get(d.id);
-    return { id: d.id, text: d.state.doc, meta, value: previous?.text === d.state.doc && previous.meta === meta ? previous.value : { id:d.id,name:d.name,text:d.state.doc.toString(),savedText:d.savedText,eol:d.eol,bom:d.bom,language:d.language,languageMode:d.languageMode,savedEol:d.savedEol,savedBom:d.savedBom } };
+    return { id: d.id, text: d.state.doc, meta, value: previous?.text === d.state.doc && previous.meta === meta && previous.value.savedText === d.savedText ? previous.value : { id:d.id,name:d.name,text:d.state.doc.toString(),savedText:d.savedText,eol:d.eol,bom:d.bom,language:d.language,languageMode:d.languageMode,savedEol:d.savedEol,savedBom:d.savedBom } };
   });
   const snapshot = { active, documents: entries.map(entry => entry.value) };
   const changed = new Set(entries.filter(entry => persistedDrafts.get(entry.id)?.value !== entry.value).map(entry => entry.id));
@@ -466,15 +530,20 @@ function showLanguage(reason:string) {
   const doc = current(); if (!doc) return;
   $('language-status').textContent = `${languageLabel(doc.language)} · ${doc.languageMode === 'auto' ? 'auto' : 'manual'}`;
   $('language-status').title = reason;
+  const large = doc.state.doc.length > HIGHLIGHT_CHARACTER_LIMIT;
+  root.dataset.highlighting = large ? 'paused' : 'enabled';
+  $('highlighting-note').hidden = !large;
   root.dataset.language = doc.language; root.dataset.languageMode = doc.languageMode;
 }
 async function useLanguage(id:string, reason:string) {
   const doc = current(), generation = ++languageGeneration;
   doc.language = id; showLanguage(reason);
+  const highlighting = doc.state.doc.length > HIGHLIGHT_CHARACTER_LIMIT ? 'large-file' : id;
+  if (doc.highlightedLanguage === highlighting) return;
   try {
-    const extension = languageExtensions[id] ? languageExtensions[id]() : await loadLanguage(id);
+    const extension = highlighting === 'large-file' ? [] : languageExtensions[id] ? languageExtensions[id]() : await loadLanguage(id);
     if (current()?.id !== doc.id || generation !== languageGeneration) return;
-    view.dispatch({effects:lang.reconfigure(extension)}); doc.state = view.state;
+    view.dispatch({effects:lang.reconfigure(extension)}); doc.state = view.state; doc.highlightedLanguage = highlighting;
     scheduleDraft();
   } catch { if (current()?.id === doc.id) status(`Could not load ${languageLabel(id)} highlighting. Editing is still available.`,true); }
 }

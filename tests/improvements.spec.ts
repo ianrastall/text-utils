@@ -161,3 +161,60 @@ test('editing options cancels pending work and exposes its state', async ({ page
   await expect(page.locator('.editor-workspace')).toHaveAttribute('data-operation-state','applied');
   await expect(editor(page)).toBeFocused();
 });
+
+test('ordinary edits reuse workers and leave document tabs in place', async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as any).languageWorkers = 0; (window as any).statisticsWorkers = 0;
+    const OriginalWorker = Worker;
+    window.Worker = class extends OriginalWorker {
+      constructor(url: string | URL, options?: WorkerOptions) {
+        super(url,options);
+        if (String(url).includes('language-worker')) (window as any).languageWorkers++;
+        if (String(url).includes('statistics-worker')) (window as any).statisticsWorkers++;
+      }
+    };
+  });
+  await ready(page);
+  await page.locator('#workspace-files').setInputFiles({name:'large.js',mimeType:'text/plain',buffer:Buffer.from('const value = 42;\n'.repeat(35000))});
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-stats-state','ready');
+  await editor(page).press('Control+End'); await editor(page).press('x');
+  await expect(page.getByRole('tab',{name:/large.js/})).toContainText('●');
+  await page.evaluate(() => {
+    (window as any).tabChanges = 0;
+    new MutationObserver(records => { (window as any).tabChanges += records.length; }).observe(document.getElementById('document-tabs')!,{childList:true});
+  });
+  await editor(page).pressSequentially('abcde',{delay:100});
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-stats-state','ready');
+  expect(await page.evaluate(() => (window as any).languageWorkers)).toBe(0);
+  expect(await page.evaluate(() => (window as any).statisticsWorkers)).toBe(1);
+  expect(await page.evaluate(() => (window as any).tabChanges)).toBe(0);
+});
+
+test('undo to an opened file restores its clean state', async ({ page }) => {
+  await ready(page); await page.locator('#workspace-files').setInputFiles({name:'clean.txt',mimeType:'text/plain',buffer:Buffer.from('Original')});
+  await editor(page).press('Control+End'); await editor(page).press('x');
+  await expect(page.getByRole('tab',{name:/clean.txt/})).toContainText('●');
+  await command(page,'undo').click();
+  await expect(page.getByRole('tab',{name:'clean.txt',exact:true})).toHaveAttribute('data-dirty','false');
+});
+
+test('oversized pastes are rejected without changing the document', async ({ page }) => {
+  await ready(page); await editor(page).fill('Keep this');
+  await editor(page).evaluate(element => {
+    const clipboardData = new DataTransfer(); clipboardData.setData('text/plain','x'.repeat(10_000_001));
+    element.dispatchEvent(new ClipboardEvent('paste',{clipboardData,bubbles:true,cancelable:true}));
+  });
+  await expect(page.locator('#workspace-status')).toContainText('10 million');
+  await expect(editor(page)).toHaveText('Keep this');
+});
+
+test('large files pause highlighting while retaining their formatting language', async ({ page }) => {
+  await ready(page);
+  await page.locator('#workspace-files').setInputFiles({name:'large.js',mimeType:'text/plain',buffer:Buffer.from('const n = 1;\n'.repeat(90000))});
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-highlighting','paused');
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-language','javascript');
+  await expect(page.locator('#highlighting-note')).toBeVisible();
+  await editor(page).fill('const n = 1;');
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-highlighting','enabled');
+  await expect(page.locator('#highlighting-note')).not.toBeVisible();
+});
