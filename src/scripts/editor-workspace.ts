@@ -11,6 +11,8 @@ import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { javascript } from '@codemirror/lang-javascript';
 import { tools } from '../data/tools';
+import { filenameLanguage, languageLabel, loadLanguage } from '../lib/workspace-languages';
+import { toolInputs, toolOutputs, type ToolField } from '../lib/workspace-tool-adapters';
 import { operationName, parseRecipe, type Operation } from '../lib/workspace-operations';
 import { getTextStats } from '../lib/text';
 import { exportText, readTextFile } from '../lib/workspace-files';
@@ -21,10 +23,10 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelecto
 const status = (message: string, error = false) => { $('workspace-status').textContent = message; $('workspace-status').classList.toggle('workspace-error', error); };
 const lang = new Compartment(), wrapping = new Compartment(), sizing = new Compartment();
 let wrap = true, fontSize = 15, untitled = 0, active = 0, switching = false;
-interface Document extends SavedDocument { id:string; state:EditorState; revision:number; }
+interface Document extends SavedDocument { id:string; state:EditorState; revision:number; languageMode:string; }
 const documents: Document[] = [];
 const languageExtensions: Record<string, () => Extension> = { text:() => [], markdown, json, html, css, javascript, typescript:() => javascript({ typescript:true }) };
-const detectLanguage = (name: string) => ({ md:'markdown', markdown:'markdown', json:'json', html:'html', htm:'html', css:'css', js:'javascript', mjs:'javascript', ts:'typescript', txt:'text' } as Record<string,string>)[name.split('.').pop()!.toLowerCase()] || 'text';
+const detectLanguage = (name: string) => filenameLanguage(name) || 'text';
 const current = () => documents[active];
 const dirty = (doc: Document) => doc.state.doc.toString() !== doc.savedText;
 const editorTheme = EditorView.theme({
@@ -61,7 +63,7 @@ function makeState(text: string, language: string): EditorState {
     EditorView.updateListener.of(update => {
       if (switching || !current()) return;
       current().state = update.state;
-      if (update.docChanged) { current().revision++; invalidatePreview(); scheduleDraft(); }
+      if (update.docChanged) { current().revision++; invalidatePreview(); scheduleDraft(); queueMicrotask(scheduleDetection); }
       if (update.docChanged || update.selectionSet) { clearTimeout(refreshTimer); refreshTimer = setTimeout(refresh,80); }
     })
   ] });
@@ -69,8 +71,9 @@ function makeState(text: string, language: string): EditorState {
 const view = new EditorView({ state:makeState('', 'text'), parent:$('document-editor') });
 function newDocument(text = '', name = `Untitled ${++untitled}.txt`, saved?: SavedDocument) {
   if (documents.length >= 30) { status('Up to 30 documents can be open. Close a tab before opening another.',true); return; }
-  const language = saved?.language && languageExtensions[saved.language] ? saved.language : detectLanguage(name);
-  const doc: Document = { id:crypto.randomUUID(), name, text, savedText:saved?.savedText ?? '', eol:saved?.eol || '\n', bom:saved?.bom || false, language, state:makeState(text,language), revision:0 };
+  const languageMode = saved?.languageMode || (saved?.language ? saved.language : 'auto');
+  const language = languageMode === 'auto' ? filenameLanguage(name) || saved?.language || 'text' : languageMode;
+  const doc: Document = { id:crypto.randomUUID(), name, text, savedText:saved?.savedText ?? '', eol:saved?.eol || '\n', bom:saved?.bom || false, language, languageMode, state:makeState(text,language), revision:0 };
   documents.push(doc); activate(documents.length - 1); scheduleDraft();
 }
 function activate(index: number) {
@@ -79,9 +82,9 @@ function activate(index: number) {
   view.dispatch({ effects:[lang.reconfigure((languageExtensions[current().language] || languageExtensions.text)()), wrapping.reconfigure(wrap ? EditorView.lineWrapping : []), sizing.reconfigure(EditorView.theme({ '&':{ fontSize:`${fontSize}px` } }))] });
   current().state = view.state; switching = false;
   $('document-language').setAttribute('data-current',current().language);
-  ($('document-language') as HTMLSelectElement).value = current().language;
+  ($('document-language') as HTMLSelectElement).value = current().languageMode;
   ($('document-eol') as HTMLSelectElement).value = current().eol === '\r\n' ? 'crlf' : current().eol === '\r' ? 'cr' : 'lf';
-  refresh(); view.focus(); scheduleDraft();
+  refresh(); view.focus(); scheduleDraft(); scheduleDetection();
 }
 function renderTabs() {
   const tabs = $('document-tabs'); const focused = document.activeElement?.getAttribute('data-document');
@@ -132,7 +135,7 @@ function download() {
 $<HTMLInputElement>('workspace-files').addEventListener('change', async event => {
   const input = event.target as HTMLInputElement;
   for (const file of Array.from(input.files || [])) {
-    try { const value = await readTextFile(file); newDocument(value.text,value.name,{ ...value,savedText:value.text, language:detectLanguage(value.name) }); status(`Opened ${file.name} locally.`); }
+    try { const value = await readTextFile(file); newDocument(value.text,value.name,{ ...value,savedText:value.text, language:detectLanguage(value.name), languageMode:'auto' }); status(`Opened ${file.name} locally.`); }
     catch (error) { status(error instanceof Error ? error.message : 'Could not open the file. Use UTF-8 text.',true); }
   }
   input.value = '';
@@ -141,9 +144,9 @@ root.addEventListener('dragover', event => { if (event.dataTransfer?.types.inclu
 root.addEventListener('drop', async event => {
   if (!event.dataTransfer?.files.length) return;
   event.preventDefault();
-  for (const file of Array.from(event.dataTransfer.files)) { try { const value = await readTextFile(file); newDocument(value.text,value.name,{...value,savedText:value.text,language:detectLanguage(value.name)}); } catch (e) { status(e instanceof Error ? e.message : 'Could not open file.',true); } }
+  for (const file of Array.from(event.dataTransfer.files)) { try { const value = await readTextFile(file); newDocument(value.text,value.name,{...value,savedText:value.text,language:detectLanguage(value.name), languageMode:'auto'}); } catch (e) { status(e instanceof Error ? e.message : 'Could not open file.',true); } }
 });
-$<HTMLSelectElement>('document-language').addEventListener('change', event => { current().language = (event.target as HTMLSelectElement).value; view.dispatch({ effects:lang.reconfigure(languageExtensions[current().language]()) }); scheduleDraft(); });
+$<HTMLSelectElement>('document-language').addEventListener('change', event => { current().languageMode = (event.target as HTMLSelectElement).value; scheduleDetection(); scheduleDraft(); });
 $<HTMLSelectElement>('document-eol').addEventListener('change', event => { const value = (event.target as HTMLSelectElement).value; current().eol = value === 'crlf' ? '\r\n' : value === 'cr' ? '\r' : '\n'; status('Download line endings updated.'); scheduleDraft(); });
 
 let panel = '';
@@ -263,52 +266,52 @@ const frame = $<HTMLIFrameElement>('specialist-frame');
 let fieldObserver: MutationObserver | null = null;
 let fieldTimer: ReturnType<typeof setTimeout>;
 let specialist = '';
-const resultSelectors = ['#fac-code-out','#gic-code-out','#uc-code-out','#cc-output','#mainOutput','#code-css','#code-import','#code-scss','#outputXml','#codeOutput','#outputText','#numberOutput','#textOutput','#pgOutput','#jtOutput','#output-text','#markdown-output','#output-code','#mainTextArea','#mainText','#source-text'];
-function labelFor(el: HTMLElement): string {
-  const doc = el.ownerDocument; const label = el.id ? doc.querySelector<HTMLLabelElement>(`label[for="${CSS.escape(el.id)}"]`)?.textContent : null;
-  return label?.trim() || el.getAttribute('aria-label') || el.id || el.tagName.toLowerCase();
-}
+let inputFields: ToolField[] = [], outputFields: ToolField[] = [];
+let toolReady = false;
 function populateFields() {
-  const doc = frame.contentDocument; if (!doc) return;
-  const inputs = Array.from(doc.querySelectorAll<HTMLTextAreaElement>('main textarea')).filter(e => !e.readOnly);
-  const outputs = Array.from(new Set([...doc.querySelectorAll<HTMLElement>(resultSelectors.join(',')),...doc.querySelectorAll<HTMLTextAreaElement>('main textarea')])).filter(e => !!e.id);
-  const update = (select: HTMLSelectElement, values: HTMLElement[], fallback: string) => {
-    const previous = select.value; const signature = values.map(el => el.id).join('|'); if (select.dataset.signature === signature) return;
-    select.dataset.signature = signature; select.replaceChildren(new Option(fallback,'')); values.forEach(el => select.add(new Option(labelFor(el),el.id))); select.value = values.some(el => el.id === previous) ? previous : values[0]?.id || '';
+  const doc = frame.contentDocument; if (!doc || !toolReady) return;
+  inputFields = toolInputs(doc,specialist); outputFields = toolOutputs(doc,specialist);
+  const update = (select: HTMLSelectElement, fields:ToolField[], fallback:string) => {
+    const previous = select.value, signature = fields.map(field => `${field.id}:${field.label}`).join('|');
+    if (select.dataset.signature === signature) return;
+    select.dataset.signature = signature; select.replaceChildren(new Option(fallback,''));
+    fields.forEach(field => select.add(new Option(field.label,field.id)));
+    select.value = fields.some(field => field.id === previous) ? previous : fields[0]?.id || '';
   };
-  update($<HTMLSelectElement>('tool-input-field'),inputs,'No text input'); update($<HTMLSelectElement>('tool-output-field'),outputs,'No text result');
-  $<HTMLButtonElement>('send-to-tool').disabled = !inputs.length;
+  update($<HTMLSelectElement>('tool-input-field'),inputFields,'No text input');
+  update($<HTMLSelectElement>('tool-output-field'),outputFields,'No text result');
+  $<HTMLButtonElement>('send-to-tool').disabled = !inputFields.length;
   const result = readToolResult();
+  $<HTMLTextAreaElement>('tool-result-preview').value = result.slice(0,100000);
+  $('tool-result-size').textContent = `${result.length.toLocaleString()} characters${result.length > 100000 ? ' (first 100,000 shown)' : ''}`;
   $<HTMLButtonElement>('insert-tool-result').disabled = !result;
   $<HTMLButtonElement>('tool-result-document').disabled = !result;
 }
 function readToolResult(): string {
-  const id = $<HTMLSelectElement>('tool-output-field').value;
-  const el = id && frame.contentDocument?.getElementById(id);
-  if (!el) return '';
-  return el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' ? (el as HTMLInputElement).value : el.textContent || '';
+  if (!toolReady) return '';
+  return outputFields.find(field => field.id === $<HTMLSelectElement>('tool-output-field').value)?.read() || '';
 }
 function openTool(id: string) {
-  const native: Record<string,string> = { 'case-converter':'case', 'line-operations':'cleanup', 'markdown-previewer':'markdown', 'markdown-formatter':'format-markdown', 'pretty-printer':'format-code', 'text-diff':'compare' };
-  if (native[id]) { action(native[id]); return; }
   const tool = tools.find(t => t.id === id); if (!tool) return;
   showPanel('specialist',tool.name);
   const online = ['font-chooser','google-icons-chooser','grateful-dead-archive','ip-info','xml-sitemap-generator'].includes(id);
   $('tool-network-note').textContent = online ? 'This tool has online features. Read its notice before use. Your document is sent to the tool only when you choose an input action.' : 'Choose a result, then insert it at the cursor or replace selected text.';
   $<HTMLAnchorElement>('standalone-tool').href = tool.href;
-  if (specialist !== id) { fieldObserver?.disconnect(); specialist = id; frame.src = `${tool.href}?embed=1`; frame.title = tool.name; status(`Opened ${tool.name}. Your document is unchanged.`); }
+  if (specialist !== id) { fieldObserver?.disconnect(); toolReady = false; inputFields = []; outputFields = []; for (const key of ['send-to-tool','insert-tool-result','tool-result-document']) $<HTMLButtonElement>(key).disabled = true; specialist = id; frame.src = `${tool.href}?embed=1`; frame.title = tool.name; status(`Opened ${tool.name}. Your document is unchanged.`); }
 }
 frame.addEventListener('load', () => {
+  toolReady = !!frame.contentDocument?.querySelector('main');
   fieldObserver?.disconnect();
   populateFields();
   if (frame.contentDocument?.body) { fieldObserver = new MutationObserver(() => { clearTimeout(fieldTimer); fieldTimer = setTimeout(populateFields,100); }); fieldObserver.observe(frame.contentDocument.body,{ childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['value','readonly'] }); frame.contentDocument.addEventListener('input',populateFields); frame.contentDocument.addEventListener('change',populateFields); frame.contentDocument.addEventListener('click',() => setTimeout(populateFields,0)); }
 });
 $('tool-output-field').addEventListener('change',populateFields);
 $('send-to-tool').addEventListener('click', () => {
-  const el = frame.contentDocument?.getElementById($<HTMLSelectElement>('tool-input-field').value) as HTMLTextAreaElement | null; if (!el) return;
+  const field = inputFields.find(field => field.id === $<HTMLSelectElement>('tool-input-field').value);
+  if (!field?.write || !toolReady) return;
   const s = view.state.selection.main;
-  el.value = s.empty ? view.state.doc.toString() : view.state.sliceDoc(s.from,s.to);
-  el.dispatchEvent(new Event('input',{ bubbles:true })); el.dispatchEvent(new Event('change',{ bubbles:true })); populateFields(); status('Text sent to the selected tool input. Run its action to produce a result.');
+  field.write(s.empty ? view.state.doc.toString() : view.state.sliceDoc(s.from,s.to));
+  populateFields(); status('Text sent to the selected tool input. Run its action to produce a result.');
 });
 $('insert-tool-result').addEventListener('click', () => { const result = readToolResult(); if (result) insert(result); else status('The selected tool has no result yet.',true); });
 $('tool-result-document').addEventListener('click', () => { const result = readToolResult(); if (result) newDocument(result,`Tool result ${++untitled}.txt`); });
@@ -321,7 +324,7 @@ $<HTMLInputElement>('workspace-tool-search').addEventListener('input', event => 
 });
 
 const renameDialog = $<HTMLDialogElement>('rename-dialog');
-$('rename-form').addEventListener('submit', event => { event.preventDefault(); const name = $<HTMLInputElement>('document-name').value.trim().replace(/[<>:"/\\|?*\x00-\x1f]/g,'_'); if (name) { current().name = name; renameDialog.close(); refresh(); scheduleDraft(); } });
+$('rename-form').addEventListener('submit', event => { event.preventDefault(); const name = $<HTMLInputElement>('document-name').value.trim().replace(/[<>:"/\\|?*\x00-\x1f]/g,'_'); if (name) { current().name = name; renameDialog.close(); refresh(); scheduleDraft(); scheduleDetection(); } });
 $('rename-cancel').addEventListener('click', () => renameDialog.close());
 function action(id: string) {
   root.querySelectorAll<HTMLDetailsElement>('.editor-menu[open]').forEach(menu => menu.open = false);
@@ -348,6 +351,7 @@ function action(id: string) {
     case 'compare': openCompare(); break;
     case 'browse-tools': showPanel('browse','All tools'); $('workspace-tool-search').focus(); break;
     case 'help': showPanel('help','Workspace help'); break;
+    case 'expand-tool': { const expanded = root.dataset.toolExpanded !== 'true'; root.dataset.toolExpanded = String(expanded); const button = root.querySelector<HTMLButtonElement>('[data-action="expand-tool"]')!; button.textContent = expanded ? 'Reduce' : 'Expand'; button.setAttribute('aria-pressed',String(expanded)); break; }
     case 'close-panel': closePanel(); break;
     case 'wrap': wrap = !wrap; view.dispatch({ effects:wrapping.reconfigure(wrap ? EditorView.lineWrapping : []) }); status(`Word wrap ${wrap ? 'on' : 'off'}.`); break;
     case 'zoom-in': case 'zoom-out': fontSize = Math.max(11,Math.min(28,fontSize + (id === 'zoom-in' ? 1 : -1))); view.dispatch({ effects:sizing.reconfigure(EditorView.theme({ '&':{ fontSize:`${fontSize}px` } })) }); break;
@@ -372,7 +376,7 @@ function saveDraft() {
   if (!draftEnabled || restoring) return;
   const generation = draftGeneration;
   root.dataset.draftState = 'saving';
-  const snapshot = { active,documents:documents.map(d => ({ name:d.name,text:d.state.doc.toString(),savedText:d.savedText,eol:d.eol,bom:d.bom,language:d.language })) };
+  const snapshot = { active,documents:documents.map(d => ({ name:d.name,text:d.state.doc.toString(),savedText:d.savedText,eol:d.eol,bom:d.bom,language:d.language,languageMode:d.languageMode })) };
   draftWrite = draftWrite.catch(() => {}).then(async () => { if (generation === draftGeneration && draftEnabled) { await writeDrafts(snapshot); root.dataset.draftState = 'saved'; } }).catch(() => { root.dataset.draftState = 'error'; status('Draft recovery could not be saved. Download important work before closing.',true); });
 }
 async function eraseDrafts() {
@@ -389,6 +393,46 @@ $('remember-drafts').addEventListener('change', async event => {
 $('forget-drafts').addEventListener('click', () => void eraseDrafts());
 window.addEventListener('beforeunload', event => { if (documents.some(dirty)) event.preventDefault(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) saveDraft(); });
+let detectionTimer: ReturnType<typeof setTimeout>, detectionTimeout: ReturnType<typeof setTimeout>;
+let detectionWorker: Worker | null = null, languageGeneration = 0;
+function showLanguage(reason:string) {
+  const doc = current(); if (!doc) return;
+  $('language-status').textContent = `${languageLabel(doc.language)} · ${doc.languageMode === 'auto' ? 'auto' : 'manual'}`;
+  $('language-status').title = reason;
+  root.dataset.language = doc.language; root.dataset.languageMode = doc.languageMode;
+}
+async function useLanguage(id:string, reason:string) {
+  const doc = current(), generation = ++languageGeneration;
+  doc.language = id; showLanguage(reason);
+  try {
+    const extension = languageExtensions[id] ? languageExtensions[id]() : await loadLanguage(id);
+    if (current()?.id !== doc.id || generation !== languageGeneration) return;
+    view.dispatch({effects:lang.reconfigure(extension)}); doc.state = view.state;
+    scheduleDraft();
+  } catch { if (current()?.id === doc.id) status(`Could not load ${languageLabel(id)} highlighting. Editing is still available.`,true); }
+}
+function scheduleDetection() {
+  clearTimeout(detectionTimer); clearTimeout(detectionTimeout); detectionWorker?.terminate(); detectionWorker = null;
+  if (!current()) return;
+  const doc = current(); languageGeneration++;
+  if (doc.languageMode !== 'auto') { void useLanguage(doc.languageMode,'Manual language choice'); return; }
+  const named = filenameLanguage(doc.name);
+  if (named) { void useLanguage(named,`Detected from ${doc.name}`); return; }
+  const docId = doc.id, revision = doc.revision;
+  showLanguage('Examining document contents');
+  detectionTimer = setTimeout(() => {
+    if (current()?.id !== docId || current().revision !== revision || current().languageMode !== 'auto') return;
+    const worker = detectionWorker = new Worker(new URL('./language-worker.ts',import.meta.url),{type:'module'});
+    const finish = () => { worker.terminate(); if (detectionWorker === worker) detectionWorker = null; clearTimeout(detectionTimeout); };
+    worker.onmessage = event => {
+      finish();
+      if (current()?.id === docId && current().revision === revision && current().languageMode === 'auto') void useLanguage(event.data.language,event.data.reason);
+    };
+    worker.onerror = () => { finish(); if (current()?.id === docId) void useLanguage('text','Detection unavailable; choose a language manually'); };
+    worker.postMessage({text:doc.state.doc.sliceString(0,16000)});
+    detectionTimeout = setTimeout(() => { finish(); if (current()?.id === docId && current().languageMode === 'auto') void useLanguage('text','Ambiguous text; choose a language manually'); },2000);
+  },450);
+}
 async function initialize() {
   if (draftEnabled) {
     try {

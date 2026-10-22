@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import defaultTheme from 'prismjs/themes/prism-tomorrow.css?url';
 ---
 <BaseLayout title="Syntax Highlighter" description="Convert code into beautiful images, rich text, or inline HTML.">
   <main id="main-content" tabindex="-1" class="shell tool-shell">
@@ -12,7 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
 
     <!-- Hidden element to dynamically load Prism CSS based on theme selection -->
-    <link id="prism-theme-link" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link id="prism-theme-link" rel="stylesheet" href={defaultTheme} crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <section class="panel">
       <div class="control-row">
@@ -80,6 +81,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </style>
 
   <script>
+    import prismTheme0 from 'prismjs/themes/prism-tomorrow.css?url';
+    import prismTheme1 from 'prismjs/themes/prism-okaidia.css?url';
+    import prismTheme2 from 'prismjs/themes/prism-twilight.css?url';
+    import prismTheme3 from 'prismjs/themes/prism-dark.css?url';
+    import prismTheme4 from 'prismjs/themes/prism.css?url';
+    import prismTheme5 from 'prismjs/themes/prism-coy.css?url';
+    import prismTheme6 from 'prismjs/themes/prism-solarizedlight.css?url';
+    const prismThemes: Record<string,string> = {'prism-tomorrow':prismTheme0,'prism-okaidia':prismTheme1,'prism-twilight':prismTheme2,'prism-dark':prismTheme3,'prism':prismTheme4,'prism-coy':prismTheme5,'prism-solarizedlight':prismTheme6};
     import Prism from 'prismjs';
     import 'prismjs/components/prism-javascript';
     import 'prismjs/components/prism-typescript';
@@ -150,7 +159,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     themeSelect.addEventListener('change', () => {
       const theme = themeSelect.value;
-      themeLink.href = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/${theme}.min.css`;
+      themeLink.href = prismThemes[theme];
       // Re-render slightly delayed to let CSS load and update background
       setTimeout(render, 100);
     });

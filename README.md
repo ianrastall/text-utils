@@ -2,7 +2,7 @@
 
 A free online text editor with built-in transformations, document tabs, previews and 33 browser tools. The first working Jupiter website, located at `D:/jupiter/text-utils`.
 
-Start editing at [text-utils.net](https://text-utils.net). Open files locally, apply operations to selections or documents, preview changes and undo. Icon, character, snippet and design tools open beside the editor. The [tool directory](https://text-utils.net/tools.html) and existing tool URLs remain available.
+Start editing at [text-utils.net](https://text-utils.net). Open files locally, apply operations to selections or documents, preview changes and undo. All 33 complete tools open beside the editor, with explicit input and result insertion. Syntax highlighting detects filenames or content, with 30 manual language modes. The [tool directory](https://text-utils.net/tools.html) and existing tool URLs remain available.
 
 See [the editor guide](docs/editor-workspace.md) for files, keyboard shortcuts, optional draft recovery, privacy and current limits.
 

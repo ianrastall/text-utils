@@ -122,3 +122,9 @@
   #document-editor .cm-search input { max-width:170px; }
 }
 @media (forced-colors:active) { .document-tab.active { border-top-color:Highlight; } }
+
+#language-status { max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tool-result-details { font-size:12px; margin:10px 0; }
+#tool-result-preview { min-height:100px; max-height:180px; font-size:12px; padding:8px; }
+.work-panel-header .expand-tool { display:none; font-size:11px; }
+@media (min-width:901px) { .editor-workspace[data-panel='specialist'] .expand-tool { display:block; } .editor-workspace[data-panel='specialist'][data-tool-expanded='true'] .work-panel { width:min(82vw,1300px); } }

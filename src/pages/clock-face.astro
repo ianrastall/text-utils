@@ -40,6 +40,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
     </div>
+    <details><summary>SVG source</summary><label class="visually-hidden" for="clock-svg-output">Clock SVG</label><textarea id="clock-svg-output" readonly spellcheck="false"></textarea></details>
   </main>
 
   <style is:global>
@@ -146,6 +147,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const [h, m, s] = parseClockTime(timeValue);
       const svgString = generateClockSVG(h, m, s, secondsInput.checked);
+      (document.getElementById('clock-svg-output') as HTMLTextAreaElement).value = svgString;
       
       const blob = new Blob([svgString], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);

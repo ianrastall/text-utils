@@ -389,7 +389,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           console.error("Failed to fetch from Archive.org", err);
           resultsContainer.innerHTML = `<div style="color: var(--danger); padding: 1rem;">
             <strong>Error fetching results.</strong> Archive.org API might be unreachable.<br>
-            <small style="color: var(--text-muted); display: block; margin-top: 5px;">Details: ${err.message || err}</small>
+            <small style="color: var(--text-muted); display: block; margin-top: 5px;">Details: ${escapeResult(err.message || err)}</small>
           </div>`;
           resultsSection.style.display = 'block';
       } finally {
@@ -398,6 +398,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
   });
 
+  const escapeResult = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
   function renderResults(response: any) {
     resultsSection.style.display = 'block';
     resultCount.textContent = `(${response.numFound} found, showing up to 50)`;
@@ -409,13 +410,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     let html = '';
     for (const doc of response.docs) {
-      const url = `https://archive.org/details/${doc.identifier}`;
-      const title = doc.title || 'Unknown Title';
-      const date = doc.date ? doc.date.substring(0, 10) : 'Unknown Date';
-      const coverage = doc.coverage ? ` • ${doc.coverage}` : '';
+      const url = `https://archive.org/details/${encodeURIComponent(String(doc.identifier))}`;
+      const title = escapeResult(doc.title || 'Unknown Title');
+      const date = doc.date ? escapeResult(String(doc.date).substring(0,10)) : 'Unknown Date';
+      const coverage = doc.coverage ? ` • ${escapeResult(doc.coverage)}` : '';
       const rating = doc.avg_rating ? parseFloat(doc.avg_rating).toFixed(1) : '—';
-      const downloads = doc.downloads ? doc.downloads.toLocaleString() : '';
-      const source = doc.source ? doc.source : 'Source unknown';
+      const downloads = Number(doc.downloads) > 0 ? Number(doc.downloads).toLocaleString() : '';
+      const source = escapeResult(doc.source || 'Source unknown');
 
       html += `
         <div class="result-card">

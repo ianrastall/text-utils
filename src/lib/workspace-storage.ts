@@ -1,4 +1,4 @@
-export interface SavedDocument { name: string; text: string; savedText: string; eol: '\n' | '\r\n' | '\r'; bom: boolean; language: string; }
+export interface SavedDocument { name: string; text: string; savedText: string; eol: '\n' | '\r\n' | '\r'; bom: boolean; language: string; languageMode?: string; }
 export interface WorkspaceSnapshot { documents: SavedDocument[]; active: number; }
 export function draftDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve,reject) => {
