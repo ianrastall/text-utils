@@ -297,3 +297,16 @@ test('a second browser window cannot overwrite a newer recovery copy', async ({ 
   await other.reload(); await expect(other.locator('.editor-workspace')).toHaveAttribute('data-ready','true');
   await expect(editor(other)).toContainText('Newer recovery'); await other.close();
 });
+
+test('windows opened before enabling recovery cannot overwrite the first saved copy', async ({ page }) => {
+  await ready(page);
+  const other = await page.context().newPage(); other.on('dialog',dialog => dialog.accept());
+  await other.route(/^https?:\/\/(?!127\.0\.0\.1|localhost)/, route => route.abort());
+  await ready(other);
+  await editor(page).fill('First saved copy'); await page.locator('#remember-drafts').check();
+  await expect(page.locator('.editor-workspace')).toHaveAttribute('data-draft-state','saved');
+  await editor(other).fill('Competing first save'); await other.locator('#remember-drafts').check();
+  await expect(other.locator('#workspace-status')).toContainText('another window');
+  await other.reload(); await expect(other.locator('.editor-workspace')).toHaveAttribute('data-ready','true');
+  await expect(editor(other)).toContainText('First saved copy'); await other.close();
+});

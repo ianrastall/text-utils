@@ -1,7 +1,7 @@
 import { languageOptions } from './workspace-languages';
 export interface SavedDocument { id?: string; name: string; text: string; savedText: string; eol: '\n' | '\r\n' | '\r'; bom: boolean; language: string; languageMode?: string; savedEol?: '\n' | '\r\n' | '\r'; savedBom?: boolean; }
 export interface WorkspaceSnapshot { documents: SavedDocument[]; active: number; }
-let draftVersion: string | null | undefined;
+let draftVersion: string | null = null;
 const languageIds = new Set(languageOptions.map(([id]) => id));
 export const DRAFT_CHARACTER_LIMIT = 30_000_000;
 export function inspectDrafts(snapshot: WorkspaceSnapshot): { documents: SavedDocument[]; skipped: string[] } {
@@ -69,7 +69,7 @@ export async function writeDrafts(snapshot: WorkspaceSnapshot | null, changedIds
       const session = workspace.get('session');
       session.onsuccess = () => {
         const actualVersion = typeof session.result?.revision === 'string' ? session.result.revision : null;
-        if (draftVersion !== undefined && actualVersion !== draftVersion) {
+        if (actualVersion !== draftVersion) {
           tx.abort(); reject(new Error('Draft recovery changed in another window. Download this window’s work, then reload to recover the latest copy.')); return;
         }
         try {
