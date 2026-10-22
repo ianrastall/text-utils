@@ -1,15 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convertCase, getTextStats } from './text';
-
-describe('convertCase', () => {
-  it('converts text to snake case', () => {
-    expect(convertCase('Text utilities rebuild', 'snake')).toBe('text_utilities_rebuild');
-  });
-
-  it('converts text to pascal case', () => {
-    expect(convertCase('text-utils rebuild', 'pascal')).toBe('TextUtilsRebuild');
-  });
-});
+import { getTextStats } from './text';
 
 describe('getTextStats', () => {
   it('counts basic text structure', () => {

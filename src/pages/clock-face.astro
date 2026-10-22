@@ -16,7 +16,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="fac-controls" style="align-items: flex-end; gap: 1rem;">
       <div class="fac-ctl">
         <label for="timeInput">Time (HH:MM or HH:MM:SS)</label>
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; flex-wrap: wrap; min-width: 0; gap: 0.5rem;">
           <input type="text" id="timeInput" value="02:41:20" style="padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: var(--panel-muted); color: var(--text);" />
           <button class="button primary" id="currentTimeBtn" title="Set to current time">Now</button>
         </div>
@@ -57,7 +57,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
     }
-    .fac-ctl { display: flex; flex-direction: column; gap: 0.2rem; }
+    .fac-ctl { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; max-width: 100%; }
+    #timeInput { min-width: 0; max-width: 100%; }
     .fac-ctl label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
   </style>
 

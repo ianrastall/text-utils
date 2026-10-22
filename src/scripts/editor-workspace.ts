@@ -110,7 +110,6 @@ function refresh() {
   root.querySelectorAll<HTMLButtonElement>('[data-action="undo"]').forEach(b => b.disabled = !undoDepth(view.state));
   root.querySelectorAll<HTMLButtonElement>('[data-action="redo"]').forEach(b => b.disabled = !redoDepth(view.state));
   renderTabs();
-  document.title = `${dirty(current()) ? '● ' : ''}${current().name} · Text Utilities`;
   if (panel === 'markdown') void renderMarkdown();
   if (panel === 'compare') void renderComparison();
 }
@@ -233,9 +232,9 @@ let previewGeneration = 0;
 async function renderMarkdown() {
   const generation = ++previewGeneration, source = view.state.doc.toString();
   if (source.length > 500000) { $('workspace-markdown').textContent = 'Markdown preview is limited to 500,000 characters. Editing and downloading remain available.'; return; }
-  const [{ renderMarkdownPreview },{ default:purify }] = await Promise.all([import('../lib/markdown'),import('dompurify')]);
+  const { renderWorkspaceMarkdown } = await import('../lib/markdown');
   if (generation !== previewGeneration || panel !== 'markdown') return;
-  $('workspace-markdown').innerHTML = purify.sanitize(renderMarkdownPreview(source),{ FORBID_TAGS:['img','video','audio','source','iframe','form','input','style','link'] });
+  $('workspace-markdown').innerHTML = renderWorkspaceMarkdown(source);
   $('workspace-markdown').querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener noreferrer'; });
 }
 function openCompare() {

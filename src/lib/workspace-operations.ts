@@ -34,7 +34,7 @@ export function runOperation(text: string, operation: Operation): string {
     case 'upper': return text.toUpperCase();
     case 'lower': return text.toLowerCase();
     case 'title': return text.toLowerCase().replace(/\p{L}[\p{L}\p{M}\p{N}'’]*/gu, cap);
-    case 'sentence': return text.toLowerCase().replace(/(^\s*\p{L}|[.!?]\s+\p{L})/gu, s => s.toUpperCase());
+    case 'sentence': return text.toLowerCase().replace(/(^\s*\p{L}|[.!?]\s+\p{L})/gmu, s => s.toUpperCase());
     case 'snake': return words(text).map(s => s.toLowerCase()).join('_');
     case 'kebab': return words(text).map(s => s.toLowerCase()).join('-');
     case 'camel': return words(text).map((s,i) => i ? cap(s) : s.toLowerCase()).join('');

@@ -9,6 +9,34 @@ const command = (page: Page, id: string) => page.locator(`.editor-toolbar [data-
 async function ready(page: Page) { await page.goto('/'); await expect(page.locator('.editor-workspace')).toHaveAttribute('data-ready','true'); }
 test.beforeEach(async ({ page }) => { page.on('dialog',async dialog => { if (dialog.type() === 'beforeunload') await dialog.accept(); else await dialog.dismiss(); }); });
 
+test('analytics uses a static title and does not load in docked tools', async ({ page }) => {
+  const tags: string[] = [];
+  await page.route('https://www.googletagmanager.com/**', route => {
+    tags.push(route.request().url());
+    return route.fulfill({ contentType: 'application/javascript', body: '' });
+  });
+  await ready(page);
+  await expect.poll(() => tags.length).toBe(1);
+  await page.locator('.editor-menu summary').filter({ hasText: 'File' }).click();
+  await page.getByRole('button', { name: 'Rename document…', exact: true }).click();
+  await page.locator('#document-name').fill('Private letter.txt');
+  await page.locator('#rename-form button[type="submit"]').click();
+  await editor(page).fill('Private document contents');
+  await expect(page).toHaveTitle('Text Utilities');
+  const config = await page.evaluate(() => {
+    const layer = (window as unknown as { dataLayer: ArrayLike<unknown>[] }).dataLayer;
+    return layer.map(entry => Array.from(entry)).find(entry => entry[0] === 'config');
+  });
+  expect(config).toEqual(['config', 'G-29350EGFR5', { page_title: 'Text Utilities' }]);
+  await command(page,'browse-tools').click();
+  await page.locator('#workspace-tool-search').fill('hashing');
+  await page.locator('[data-action="tool:hashing-tool"]').click();
+  const frame = page.frameLocator('#specialist-frame');
+  await expect(frame.locator('html')).toHaveAttribute('data-embedded', 'true');
+  await expect(frame.locator('script[src*="googletagmanager"]')).toHaveCount(0);
+  expect(tags).toHaveLength(1);
+});
+
 test('homepage is a responsive editor and does not send text over the network', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror',e => errors.push(e.message));
   await ready(page);
@@ -116,10 +144,14 @@ test('pathological regex can be cancelled without blocking editing', async ({ pa
 test('Markdown preview blocks executable markup and remote images', async ({ page }) => {
   await ready(page); const remote: string[] = [];
   page.on('request',r => { if (r.url().includes('example.invalid')) remote.push(r.url()); });
-  await editor(page).fill('# Title\n\n**Hello**\n\n<img src="https://example.invalid/image.png" onerror="alert(1)"><script>alert(2)</script>');
+  await page.route('https://example.invalid/**', route => route.abort());
+  await editor(page).fill('# Title\n\n**Hello**\n\n<img src="https://example.invalid/image.png" onerror="alert(1)"><script>alert(2)</script><div style="background-image:url(https://example.invalid/css)">Styled</div><table background="https://example.invalid/table"><tr><td>Cell</td></tr></table>');
   await command(page,'markdown').click();
   await expect(page.locator('#workspace-markdown strong')).toHaveText('Hello');
   await expect(page.locator('#workspace-markdown img, #workspace-markdown script')).toHaveCount(0);
+  await expect(page.locator('#workspace-markdown [style], #workspace-markdown [background]')).toHaveCount(0);
+  await expect(page.locator('#workspace-markdown td')).toHaveText('Cell');
+  await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute('content', /img-src 'self' data: blob:/);
   expect(remote).toEqual([]);
 });
 

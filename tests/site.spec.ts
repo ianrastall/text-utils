@@ -59,6 +59,10 @@ test('tools still transform text, JSON, and Markdown', async ({ page }) => {
   await expect(page.getByLabel('Output', { exact: true })).toHaveValue('HELLO JUPITER');
   await page.getByLabel('Case', { exact: true }).selectOption('snake');
   await expect(page.getByLabel('Output', { exact: true })).toHaveValue('hello_jupiter');
+  await page.getByLabel('Input', { exact: true }).fill('Café élan naïve Zoë');
+  await expect(page.getByLabel('Output', { exact: true })).toHaveValue('café_élan_naïve_zoë');
+  await page.getByLabel('Case', { exact: true }).selectOption('title');
+  await expect(page.getByLabel('Output', { exact: true })).toHaveValue('Café Élan Naïve Zoë');
   await page.getByRole('button', { name: 'Clear', exact: true }).click();
   await expect(page.getByLabel('Input', { exact: true })).toHaveValue('');
   await page.goto('/json-tools.html');

@@ -2,6 +2,16 @@ import { describe,it,expect } from 'vitest';
 import { runOperation,runPipeline,parseRecipe } from './workspace-operations';
 import { exportText } from './workspace-files';
 describe('workspace operations', () => {
+  it('preserves accented letters in every word-based case conversion', () => {
+    const text = 'Café élan naïve Zoë';
+    for (const [id, expected] of Object.entries({
+      title: 'Café Élan Naïve Zoë', snake: 'café_élan_naïve_zoë',
+      kebab: 'café-élan-naïve-zoë', camel: 'caféÉlanNaïveZoë', pascal: 'CaféÉlanNaïveZoë'
+    })) expect(runOperation(text, { id })).toBe(expected);
+    expect(runOperation('élan begins\nsecond line. déjà vu', { id: 'sentence' })).toBe('Élan begins\nSecond line. Déjà vu');
+    expect(runOperation('Text utilities rebuild', { id: 'snake' })).toBe('text_utilities_rebuild');
+    expect(runOperation('text-utils rebuild', { id: 'pascal' })).toBe('TextUtilsRebuild');
+  });
   it('runs ordered cleanup without losing Unicode', () => {
     expect(runPipeline('  café 🪐  \n\ncafé 🪐\n  你好 ',[{id:'trim'},{id:'blank'},{id:'unique'}])).toBe('café 🪐\n你好');
   });
