@@ -26,6 +26,16 @@ Support ordered operation recipes after single operations are dependable. Show w
 
 ## Browser behavior
 
+### Confirmed hosting and cost boundary
+
+Ian's requirement: the existing domain's annual renewal is the only required recurring cost. Retain the existing public repository, GitHub Pages and custom-domain configuration. Build the editor and its required tools without paid APIs, subscriptions or a separately hosted backend.
+
+GitHub Pages serves the application; the visitor's browser runs interactive editing, transformations and document storage chosen by the visitor. GitHub Actions handles testing, builds, publication and useful offline processing. Python is available for build-time tasks such as generating reference datasets, validating sources or producing downloadable files; Pages cannot execute a Python backend for visitor requests. Do not route visitors' private text into public workflows, issues or repository content.
+
+Use standard GitHub-hosted runners and stay within free storage allowances. GitHub Releases can distribute versioned downloads; Issues and documentation can support maintenance. Existing third-party lookup tools remain explicit optional features and must not become dependencies of core editing. Account billing settings have not been inspected.
+
+References checked 21 October 2026: [Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site), [Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions), [Releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases).
+
 Process text in the browser by default. An editor does not inherently require accounts, uploads or a server. Provide explicit controls over saved drafts and session recovery; explain where text is retained. Large operations must remain cancellable and keep the interface responsive. Copy, download and opening local files belong in the common document workflow.
 
 ## First useful implementation
