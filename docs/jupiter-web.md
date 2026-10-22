@@ -22,7 +22,7 @@ References: [CSS system colors](https://developer.mozilla.org/en-US/docs/Web/CSS
 
 All 33 tool routes and four category URLs retain their `.html` paths. Older JSON pages still redirect to JSON Tools. `public/CNAME` retains `text-utils.net`. Existing transformations and data are retained. Search filters the rendered catalogue locally; navigation and descriptions remain available without JavaScript. Interactive tools need JavaScript. Settings tolerate unavailable browser storage.
 
-Most text processing stays in the browser. Notices identify Internet Archive search, IP lookup services, Google font/icon previews and optional sitemap crawling. Domain previews retain their own palettes independently of interface styling. No analytics or text upload service has been added.
+Most text processing stays in the browser. Notices identify Internet Archive search, IP lookup services, Google font/icon previews and optional sitemap crawling. Domain previews retain their own palettes independently of interface styling. Google Analytics uses measurement ID `G-29350EGFR5`; its Google tag loads immediately after the opening `<head>` tag through the shared layout on every application page. No custom events or document-text parameters are configured. No text upload service has been added.
 
 ## Toolchain and release checks
 
