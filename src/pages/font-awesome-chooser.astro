@@ -5,7 +5,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 <BaseLayout
   title="Font Awesome Chooser"
   description="Browse Font Awesome 6 icons by category and style. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, C#, Python, PHP, WordPress, and more.">
-  <main class="shell fac-main">
+  <main id="main-content" tabindex="-1" class="shell fac-main">
     <header class="fac-page-header">
       <h1>Font Awesome Chooser</h1>
       <p>Browse icons by category · click any icon to get code in your language</p>
@@ -201,7 +201,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     .fac-tile:hover { background: var(--panel-muted); border-color: var(--border); }
     .fac-tile.selected {
       background: color-mix(in srgb, var(--accent) 12%, transparent);
-      border-color: var(--accent);
+      border-color: var(--accent-strong);
     }
     .fac-tile i { font-size: 1.35rem; line-height: 1; }
     .fac-tile-name {
@@ -251,7 +251,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       border: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .fac-preview i { font-size: 2.8rem; color: var(--accent); }
+    .fac-preview i { font-size: 2.8rem; color: var(--accent-strong); }
     .fac-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
     .fac-icon-meta strong { font-size: 0.95rem; }
     .fac-code-inline {
@@ -277,7 +277,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
       font-size: 0.74rem;
       line-height: 1.55;
-      color: var(--accent);
+      color: var(--accent-strong);
       white-space: pre;
     }
     .fac-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }

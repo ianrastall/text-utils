@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="JSON Tools" description="Format, validate, sort, extract, and convert JSON, JSONL, and CSV data in your browser.">
-  <main class="shell jt-main">
+  <main id="main-content" tabindex="-1" class="shell jt-main">
     <header class="jt-page-header">
       <div>
         <h1>JSON Tools</h1>
         <p>Format, validate, sort, extract, and convert JSON, JSONL, and CSV.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button" href="/">All tools</a>
     </header>
 
     <section class="jt-panel jt-toolbar" aria-label="JSON actions">
@@ -169,7 +169,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .jt-check input {
       width: 1rem;
       height: 1rem;
-      accent-color: var(--accent);
+      accent-color: var(--accent-strong);
     }
 
     .jt-button-grid {

@@ -1,0 +1,26 @@
+{
+  "project": "text-utils",
+  "status": "Jupiter website rebuild; migrated checkout with original Git history",
+  "priority": "important",
+  "track": "Existing Astro website; desktop companion under consideration",
+  "source_candidates": [
+    "D:/GitHub/text-utils"
+  ],
+  "related_portfolio_entries": [
+    {
+      "id": "dir-054",
+      "kind": "top-level directory",
+      "current_path": "D:\\GitHub\\text-utils",
+      "group": "text-utils",
+      "relationship": "distinct project / tool",
+      "observed_state": "Website",
+      "purpose": "Text Utilities: static Astro/TypeScript site of browser-based text tools, deployed through GitHub Pages.",
+      "evidence": "D:\\GitHub\\text-utils\\README.md",
+      "organization_note": "",
+      "disposition": "Review alongside group; retain current source until a product/repository decision."
+    }
+  ],
+  "source_evidence_status": "clean local checkout verified against origin/main before rebuild; see jupiter-web.md for validation",
+  "current_checkout": "D:/jupiter/text-utils",
+  "previous_checkout": "D:/GitHub/text-utils"
+}

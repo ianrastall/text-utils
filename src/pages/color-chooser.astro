@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Color Chooser" description="Pick named HTML/CSS colors by family, use an eyedropper or color picker, get CSS/HTML/hex output, find the closest named color, and export solid-color PNGs.">
-  <main class="shell cc-main">
+  <main id="main-content" tabindex="-1" class="shell cc-main">
     <header class="cc-page-header">
       <h1>Color Chooser</h1>
       <p>Named colors · Eyedropper · Format output · PNG export</p>
@@ -243,7 +243,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       color: var(--muted);
       min-height: unset;
     }
-    .cc-copy-inline:hover { color: var(--accent); border-color: transparent; }
+    .cc-copy-inline:hover { color: var(--accent-strong); border-color: transparent; }
 
     /* Picker row */
     .cc-pick-row {
@@ -267,7 +267,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       user-select: none;
       white-space: nowrap;
     }
-    .cc-picker-label:hover { border-color: var(--accent); }
+    .cc-picker-label:hover { border-color: var(--accent-strong); }
     .cc-picker-swatch {
       display: inline-block;
       width: 1.1rem;
@@ -359,7 +359,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
       font-size: 0.92rem;
       word-break: break-all;
-      color: var(--accent);
+      color: var(--accent-strong);
     }
     .cc-copy-btn { flex-shrink: 0; font-size: 0.88rem; min-height: 2.1rem; padding: 0.35rem 0.7rem; }
 
@@ -417,8 +417,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       font-size: 0.88rem;
     }
 
-    /* ── Narrow fallback (< 700px) ───────────────────── */
-    @media (max-width: 700px) {
+    /* ── Narrow workspace fallback ───────────────────── */
+    @media (max-width: 1100px) {
       .cc-grid { grid-template-columns: 1fr; }
       .cc-swatch-large { height: 80px; }
     }

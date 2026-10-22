@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="HTML Entity Encoder / Decoder" description="Encode and decode HTML entities in hex, decimal, or named format. Choose your scope: HTML-unsafe characters, non-ASCII, or all printable.">
-  <main class="shell he-main">
+  <main id="main-content" tabindex="-1" class="shell he-main">
     <header class="he-page-header">
       <h1>HTML Entity Encoder / Decoder</h1>
       <p>Encode special characters to HTML entities — or decode them back</p>
@@ -140,7 +140,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       outline: none;
       transition: border-color 0.15s;
     }
-    .he-textarea:focus { border-color: var(--accent); }
+    .he-textarea:focus { border-color: var(--accent-strong); }
 
     /* Controls panel */
     .he-controls {

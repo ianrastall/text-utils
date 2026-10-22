@@ -9,31 +9,37 @@
     "preview": "astro preview",
     "test": "vitest run",
     "test:site": "node test_site.js",
-    "audit": "npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=high",
+    "test:browser": "playwright test"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@fortawesome/fontawesome-free": "^6.7.2",
-    "@types/prismjs": "^1.26.6",
-    "astro": "^6.4.8",
-    "dompurify": "^3.4.11",
-    "jsdom": "^29.1.1",
-    "marked": "^18.0.5",
-    "material-symbols": "^0.45.2",
-    "puppeteer": "^25.1.0",
-    "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.1",
-    "remark-parse": "^11.0.0",
-    "remark-stringify": "^11.0.0",
-    "typescript": "^6.0.3",
-    "unified": "^11.0.5",
-    "unist-util-visit": "^5.1.0",
-    "vitest": "^4.1.9"
+    "@astrojs/check": "0.9.9",
+    "@fortawesome/fontawesome-free": "6.7.2",
+    "@lucide/astro": "1.61.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@types/prismjs": "1.26.6",
+    "astro": "7.4.2",
+    "dompurify": "3.4.17",
+    "jsdom": "29.1.1",
+    "marked": "18.0.5",
+    "material-symbols": "0.45.2",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-stringify": "11.0.0",
+    "typescript": "6.0.3",
+    "unified": "11.0.5",
+    "unist-util-visit": "5.1.0",
+    "vitest": "4.1.12"
   },
   "dependencies": {
-    "diff": "^9.0.0",
-    "html-to-image": "^1.11.13",
-    "prettier": "^3.8.4",
-    "prismjs": "^1.30.0"
+    "diff": "9.0.0",
+    "html-to-image": "1.11.13",
+    "prettier": "3.8.4",
+    "prismjs": "1.30.0"
+  },
+  "engines": {
+    "node": ">=24.13.0 <25"
   }
 }

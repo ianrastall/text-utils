@@ -1,0 +1,35 @@
+---
+import { Search, X } from '@lucide/astro';
+import ToolCard from '../ToolCard.astro';
+import type { ToolMeta } from '../../data/tools';
+interface Props { items: ToolMeta[]; }
+const { items } = Astro.props;
+---
+<div class="catalogue-toolbar" data-catalogue>
+  <div class="catalogue-search"><Search size={18} aria-hidden="true" /><label class="visually-hidden" for="tool-search">Find a tool</label><input id="tool-search" disabled type="search" placeholder="Find a tool by name or task…" autocomplete="off" /><button id="search-clear" type="button" aria-label="Clear tool search" hidden><X size={17} aria-hidden="true" /></button></div>
+  <p id="tool-count" role="status" aria-live="polite">{items.length} tools</p>
+</div>
+<section class="tool-grid" aria-label="Available tools">{items.map(tool => <ToolCard tool={tool} />)}</section>
+<div class="empty-search" id="empty-search" hidden><Search size={26} aria-hidden="true" /><h2>No matching tools</h2><p>Try a shorter search, such as “lines”, “JSON”, or “color”.</p><button id="search-reset" type="button">Clear search</button></div>
+<script>
+  const input = document.querySelector<HTMLInputElement>('#tool-search');
+  if (input) {
+    input.disabled = false;
+    const cards = [...document.querySelectorAll<HTMLElement>('.tool-card')];
+    const count = document.querySelector('#tool-count')!;
+    const clear = document.querySelector<HTMLButtonElement>('#search-clear')!;
+    const empty = document.querySelector<HTMLElement>('#empty-search')!;
+    function filter() {
+      const words = input!.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let visible = 0;
+      cards.forEach(card => { card.hidden = !words.every(word => card.dataset.search!.includes(word)); if (!card.hidden) visible++; });
+      count.textContent = `${visible} ${visible === 1 ? 'tool' : 'tools'}${words.length ? ` of ${cards.length}` : ''}`;
+      clear.hidden = !input!.value;
+      empty.hidden = visible !== 0;
+    }
+    input.addEventListener('input', filter);
+    const reset = () => { input.value = ''; filter(); input.focus(); };
+    clear.addEventListener('click', reset);
+    document.querySelector('#search-reset')!.addEventListener('click', reset);
+  }
+</script>

@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Line Operations" description="Sort, filter, reverse, shuffle, number, and modify lines of text. Fully client-side with undo/redo support.">
-  <main class="shell lo-main">
+  <main id="main-content" tabindex="-1" class="shell lo-main">
     <header class="lo-page-header">
       <h1>Line Operations</h1>
       <p>Sort, filter, reverse, shuffle, number, and modify lines of text</p>
@@ -193,7 +193,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       outline: none;
       transition: border-color 0.15s;
     }
-    .lo-textarea:focus { border-color: var(--accent); }
+    .lo-textarea:focus { border-color: var(--accent-strong); }
 
     .lo-btn-bar {
       display: flex;
@@ -238,7 +238,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
     .lo-case-toggle input[type="checkbox"] {
       cursor: pointer;
-      accent-color: var(--accent);
+      accent-color: var(--accent-strong);
       width: 1rem;
       height: 1rem;
     }

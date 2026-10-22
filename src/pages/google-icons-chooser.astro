@@ -10,7 +10,7 @@ import iconDataRaw from '../data/google-icons.json';
 <BaseLayout
   title="Google Icons Chooser"
   description="Browse Google Material Symbols. Customize styles, fill, weight, and optical size. Click any icon to get usage code for HTML, CSS, React, Vue, Angular, and more.">
-  <main class="shell fac-main">
+  <main id="main-content" tabindex="-1" class="shell fac-main">
     <header class="fac-page-header">
       <h1>Google Icons Chooser</h1>
       <p>Browse Material Symbols · customize weight & fill · click to get code</p>
@@ -210,7 +210,7 @@ import iconDataRaw from '../data/google-icons.json';
     .fac-tile:hover { background: var(--panel-muted); border-color: var(--border); }
     .fac-tile.selected {
       background: color-mix(in srgb, var(--accent) 12%, transparent);
-      border-color: var(--accent);
+      border-color: var(--accent-strong);
     }
     .fac-tile span.material-symbols-outlined,
     .fac-tile span.material-symbols-rounded,
@@ -271,7 +271,7 @@ import iconDataRaw from '../data/google-icons.json';
     }
     .fac-preview span { 
       font-size: 3rem; 
-      color: var(--accent);
+      color: var(--accent-strong);
       font-variation-settings: 'FILL' var(--gic-fill, 0), 'wght' var(--gic-weight, 400), 'GRAD' 0, 'opsz' 48;
     }
     .fac-icon-meta { display: flex; flex-direction: column; gap: 0.15rem; }
@@ -298,7 +298,7 @@ import iconDataRaw from '../data/google-icons.json';
       font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
       font-size: 0.74rem;
       line-height: 1.55;
-      color: var(--accent);
+      color: var(--accent-strong);
       white-space: pre;
     }
     .fac-copy-btn { width: 100%; font-size: 0.88rem; min-height: 2.1rem; }

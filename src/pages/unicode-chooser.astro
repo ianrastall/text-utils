@@ -9,7 +9,7 @@ const blocksJson = JSON.stringify(blocksRaw).replace(/</g, '\\u003c');
   title="Unicode Chooser"
   description="Browse all available Unicode characters by block. Get usage code for HTML, CSS, React, Python, C#, and more.">
 
-  <main class="shell fac-main">
+  <main id="main-content" tabindex="-1" class="shell fac-main">
     <header class="fac-page-header">
       <h1>Unicode Chooser</h1>
       <p>Browse Unicode characters by block · search by name · click to get code</p>
@@ -176,7 +176,7 @@ const blocksJson = JSON.stringify(blocksRaw).replace(/</g, '\\u003c');
     .uc-tile:hover { background: var(--panel-muted); border-color: var(--border); }
     .uc-tile.selected {
       background: color-mix(in srgb, var(--accent) 12%, transparent);
-      border-color: var(--accent);
+      border-color: var(--accent-strong);
     }
     .uc-tile span.uc-char {
       font-size: 1.8rem;
@@ -253,7 +253,7 @@ const blocksJson = JSON.stringify(blocksRaw).replace(/</g, '\\u003c');
       font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
       font-size: 0.74rem;
       line-height: 1.55;
-      color: var(--accent);
+      color: var(--accent-strong);
       white-space: pre-wrap;
       word-break: break-all;
     }

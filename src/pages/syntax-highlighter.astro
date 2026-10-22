@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Syntax Highlighter" description="Convert code into beautiful images, rich text, or inline HTML.">
-  <main class="shell tool-shell">
+  <main id="main-content" tabindex="-1" class="shell tool-shell">
     <div class="tool-bar">
       <div class="tool-title">
         <h1>Syntax Highlighter</h1>
         <p>Convert code to Rich Text, Inline HTML, BBCode, or download as a PNG.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button" href="/">All tools</a>
     </div>
 
     <!-- Hidden element to dynamically load Prism CSS based on theme selection -->

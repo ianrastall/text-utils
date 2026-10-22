@@ -5,7 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Font Chooser"
   description="Preview and select fonts with Google Fonts integration, accessibility checking, and production-ready CSS generation.">
 
-  <main class="shell page-main fc-page">
+  <main id="main-content" tabindex="-1" class="shell page-main fc-page">
     <div class="tool-bar">
       <div class="tool-title">
         <h1>Font Chooser</h1>
@@ -21,7 +21,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="fc-source-radios" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
           <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
             <input type="radio" name="fontSource" value="google" checked> 
-            <span>Google Fonts <span style="font-size: 0.7rem; background: var(--accent); color: white; padding: 2px 6px; border-radius: 10px;">100+</span></span>
+            <span>Google Fonts <span style="font-size: 0.7rem; background: var(--accent); color: var(--on-accent); padding: 2px 6px; border-radius: 10px;">100+</span></span>
           </label>
           <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
             <input type="radio" name="fontSource" value="system">
@@ -237,7 +237,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem;
       border-bottom: 2px solid transparent;
     }
-    .fc-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .fc-tab.active { color: var(--text); border-bottom-color: var(--accent-strong); }
     
     .fc-code-wrap { position: relative; background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid var(--border); }
     .fc-code-wrap pre { margin: 0; color: #e6edf3; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; }

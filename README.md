@@ -1,6 +1,6 @@
 # Text Utilities
 
-A fresh static rebuild of Text Utilities for GitHub Pages.
+33 browser tools for writing, converting, inspecting and designing text. The first working Jupiter website specimen, located at `D:/jupiter/text-utils`.
 
 ## Stack
 
@@ -13,8 +13,10 @@ GitHub Pages can host the generated HTML, CSS, JavaScript, and assets. It cannot
 
 ## Local Development
 
+Use Node 24.13.0 (`.nvmrc`).
+
 ```powershell
-npm install
+npm ci
 npm run dev
 ```
 
@@ -23,9 +25,18 @@ npm run dev
 ```powershell
 npm run build
 npm test
+npx playwright install chromium
+npm run test:browser
+npm run audit
 ```
 
 The deployed custom domain is configured through `public/CNAME`.
+
+## Jupiter web conventions
+
+Astro static output, TypeScript, plain CSS semantic tokens, Lucide interface icons and native browser APIs. The shared shell provides category navigation, a searchable catalogue and consistent appearance settings. Dark is the first-run default; a saved light preference is retained. Automatic accent uses the system color when the browser exposes it, with a family fallback, custom override and explicit reset.
+
+All existing tool URLs and processing behavior are retained. Tools accessing online services display a notice. See [Jupiter implementation notes](docs/jupiter-web.md) for architecture, privacy, relocation and browser accent limitations. The deployment workflow runs unit tests, audit, build and browser checks before publishing to GitHub Pages.
 
 ## Support
 

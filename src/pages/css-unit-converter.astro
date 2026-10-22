@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="CSS Unit Converter" description="Convert between various CSS units based on context values like root font size and viewport dimensions.">
-  <main class="shell tool-shell">
+  <main id="main-content" tabindex="-1" class="shell tool-shell">
     <div class="tool-bar">
       <div class="tool-title">
         <h1>CSS Unit Converter</h1>
         <p>Convert between px, em, rem, %, pt, vw, vh based on your current layout context.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button" href="/">All tools</a>
     </div>
 
     <section class="panel">
@@ -41,7 +41,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="two-column" style="margin-bottom: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
         <div class="field-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <h3 style="margin: 0; font-size: 1.1rem; color: var(--accent);">Font Context</h3>
+            <h3 style="margin: 0; font-size: 1.1rem; color: var(--accent-strong);">Font Context</h3>
             <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;">
               <input type="checkbox" id="sync-parent-font" checked>
               Sync Parent with Root
@@ -58,7 +58,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
 
         <div class="field-group">
-          <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: var(--accent);">Viewport Context</h3>
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: var(--accent-strong);">Viewport Context</h3>
           <div class="field">
             <label for="viewport-width" title="Width of the browser viewport. Affects 'vw' units.">Viewport Width (px) ℹ️</label>
             <input type="number" step="1" min="1" id="viewport-width" value="1920" />
@@ -99,7 +99,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .result-card h4 {
       margin: 0 0 0.5rem 0;
       font-size: 1rem;
-      color: var(--accent);
+      color: var(--accent-strong);
       text-transform: uppercase;
     }
     .result-card p.value {
@@ -122,7 +122,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       padding: 0.25rem;
     }
     .btn-copy:hover {
-      color: var(--accent);
+      color: var(--accent-strong);
     }
     .highlight-input {
       border-color: var(--accent) !important;

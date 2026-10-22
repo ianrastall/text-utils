@@ -1,17 +1,14 @@
 ---
 import type { ToolMeta } from '../data/tools';
-import { categoryHref, categoryLabels } from '../data/tools';
-
-interface Props {
-  tool: ToolMeta;
-}
-
+import { categoryLabels } from '../data/tools';
+import { ArrowRight, PencilLine, ArrowRightLeft, ScanSearch, Palette } from '@lucide/astro';
+interface Props { tool: ToolMeta; }
 const { tool } = Astro.props;
-const categoryLabel = categoryLabels[tool.category];
+const Icon = { write: PencilLine, convert: ArrowRightLeft, inspect: ScanSearch, design: Palette }[tool.category];
 ---
-<article class="tool-card">
-  <a class="tag tag-link" href={categoryHref(tool.category)} aria-label={`View ${categoryLabel} tools`}>{categoryLabel}</a>
+<article class="tool-card" data-search={`${tool.name} ${tool.description} ${categoryLabels[tool.category]}`.toLowerCase()}>
   <a class="tool-card-link" href={tool.href}>
+    <div class="card-meta"><span class="tool-icon"><Icon size={19} aria-hidden="true" /></span><span>{categoryLabels[tool.category]}</span><ArrowRight class="card-arrow" size={17} aria-hidden="true" /></div>
     <h2>{tool.name}</h2>
     <p>{tool.description}</p>
   </a>

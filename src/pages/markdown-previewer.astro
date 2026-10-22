@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Markdown Previewer" description="Edit and preview Markdown in real-time.">
-  <main class="shell tool-shell">
+  <main id="main-content" tabindex="-1" class="shell tool-shell">
     <div class="tool-bar">
       <div class="tool-title">
         <h1>Markdown Previewer</h1>
         <p>Edit and preview Markdown in real-time.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button" href="/">All tools</a>
     </div>
     
     <section class="panel" style="display: flex; flex-direction: column; flex: 1;">
@@ -74,7 +74,7 @@ function greet() {
     }
     .preview-pane h1 { border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
     .preview-pane p { margin-bottom: 1rem; line-height: 1.6; }
-    .preview-pane a { color: var(--accent); text-decoration: none; }
+    .preview-pane a { color: var(--accent-strong); text-decoration: none; }
     .preview-pane a:hover { text-decoration: underline; }
     .preview-pane code {
       background: var(--panel-muted);

@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Regex Extractor" description="Search text with regex and extract full matches, capture groups, or formatted replacements.">
-  <main class="shell tool-shell">
+  <main id="main-content" tabindex="-1" class="shell tool-shell">
     <div class="tool-bar">
       <div class="tool-title">
         <h1>Regex Extractor (Mark & Extract)</h1>
         <p>Search text with regex and extract full matches, capture groups, or formatted replacements.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button" href="/">All tools</a>
     </div>
 
     <section class="panel">
@@ -90,6 +90,8 @@ Artist: Love - Track: 7 and 7 Is</textarea>
   </main>
 
   <style>
+    .radio-label { flex-wrap: wrap; }
+    @media (max-width: 1100px) { .two-column { grid-template-columns: minmax(0, 1fr); } }
     .regex-input-wrapper {
       display: flex;
       align-items: center;

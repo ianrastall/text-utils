@@ -6,3 +6,7 @@ dist/
 npm-debug.log*
 _astro/
 .claude/
+
+playwright-report/
+test-results/
+audit-report.json

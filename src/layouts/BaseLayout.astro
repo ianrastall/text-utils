@@ -1,17 +1,26 @@
 ---
 import '../styles/global.css';
 import 'material-symbols/index.css';
-
-interface Props {
-  title: string;
-  description?: string;
-}
-
-const { title, description = 'Fast, private text tools that run in your browser.' } = Astro.props;
-const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilities`;
+import { ArrowRightLeft, LayoutGrid, PencilLine, ScanSearch, Palette, ArrowUpRight } from '@lucide/astro';
+import Appearance from '../components/jupiter/Appearance.astro';
+import { tools, toolCategories, categoryLabels, categoryHref } from '../data/tools';
+interface Props { title: string; description?: string; }
+const { title, description = 'Browser tools for writing, converting, inspecting, and designing text.' } = Astro.props;
+const pageTitle = title === 'Text Utilities' ? title : `${title} · Text Utilities`;
+const currentPath = Astro.url.pathname.replace(/\/index\.html$/, '/');
+const currentTool = tools.find(tool => tool.href === currentPath || tool.href.replace('.html', '') === currentPath);
+const externalNotes: Record<string, string> = {
+  'font-chooser': 'Google Fonts previews load font files from Google. Choose system fonts to work without those requests.',
+  'google-icons-chooser': 'Icon previews load Material Symbols fonts from Google.',
+  'ip-info': 'This tool contacts IP lookup services and Google DNS to retrieve network details.',
+  'grateful-dead-archive': 'Searches are sent to the Internet Archive. Results and recordings require a connection.',
+  'xml-sitemap-generator': 'Pasted URL lists are processed locally. Crawling contacts the URLs you choose and any proxy you provide.'
+};
+const externalNote = currentTool && externalNotes[currentTool.id];
+const icons = { write: PencilLine, convert: ArrowRightLeft, inspect: ScanSearch, design: Palette };
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,137 +29,37 @@ const pageTitle = title === 'Text Utilities' ? title : `${title} - Text Utilitie
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <slot name="head" />
     <script is:inline>
-      (() => {
-        const stored = localStorage.getItem('text-utils-theme');
-        const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-        document.documentElement.dataset.theme = stored || (prefersDark ? 'dark' : 'light');
-      })();
+      try {
+        const theme = localStorage.getItem('text-utils-theme');
+        document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+        const accent = localStorage.getItem('text-utils-accent');
+        if (accent && /^#[0-9a-f]{6}$/i.test(accent)) document.documentElement.style.setProperty('--accent', accent);
+      } catch { /* Browser storage is optional. */ }
     </script>
   </head>
   <body>
-    <div class="shell">
-      <header class="site-header">
-        <a class="brand" href="/">
-          <span class="brand-mark">T</span>
-          <span>Text Utilities</span>
-        </a>
-        <nav class="site-network" aria-label="Site network">
-          <a href="https://github.com/ianrastall/text-utils" rel="noreferrer" target="_blank">GitHub</a>
-          <a href="https://chessnerd.net" rel="noreferrer" target="_blank">Chess Nerd</a>
-          <a href="https://bookstacks.org" rel="noreferrer" target="_blank">Bookstacks</a>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Text Utilities home"><span class="brand-mark" aria-hidden="true">T<span>_</span></span><span>Text Utilities<small>A Jupiter project</small></span></a>
+      <nav class="site-network" aria-label="Jupiter websites"><a class="network-current" href="/" aria-current="true">Text Utilities</a><a href="https://chessnerd.net">Chess Nerd <ArrowUpRight size={13} aria-hidden="true" /></a><a href="https://bookstacks.org">Bookstacks <ArrowUpRight size={13} aria-hidden="true" /></a></nav>
+      <Appearance />
+    </header>
+    <div class="workspace">
+      <aside class="sidebar" aria-label="Tool navigation">
+        <p class="eyebrow">Workspace</p>
+        <nav class="workspace-nav" aria-label="Tool categories">
+          <a href="/" class:list={[{ active: currentPath === '/' }]} aria-current={currentPath === '/' ? 'page' : undefined}><LayoutGrid size={17} aria-hidden="true" />All tools<span class="nav-count">{tools.length}</span></a>
+          {toolCategories.map(category => { const Icon = icons[category]; const active = currentPath === categoryHref(category) || currentPath === categoryHref(category).replace('.html', '') || currentTool?.category === category; return <a href={categoryHref(category)} class:list={[{ active }]} aria-current={active ? 'true' : undefined}><Icon size={17} aria-hidden="true" />{categoryLabels[category]}<span class="nav-count">{tools.filter(tool => tool.category === category).length}</span></a>; })}
         </nav>
-        <div class="header-actions">
-          <label class="color-picker-wrap" title="Accent color">
-            <span class="visually-hidden">Accent color</span>
-            <span class="color-swatch" id="color-swatch"></span>
-            <input type="color" id="accent-picker" aria-label="Accent color" />
-          </label>
-          <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle theme">
-            <span class="material-symbols-outlined" aria-hidden="true">dark_mode</span>
-          </button>
-        </div>
-      </header>
+        {currentTool && <div class="related-nav"><p class="eyebrow">{categoryLabels[currentTool.category]} tools</p><nav aria-label="Related tools">{tools.filter(tool => tool.category === currentTool.category).map(tool => <a href={tool.href} aria-current={currentTool.id === tool.id ? 'page' : undefined}>{tool.name}</a>)}</nav></div>}
+        <div class="sidebar-note"><span class="local-indicator" aria-hidden="true"></span><strong>Your text stays yours.</strong><p>Most tools work entirely in your browser. Tools using online services say so.</p></div>
+      </aside>
+      <div class="workspace-content">
+        <noscript><p class="shell notice">JavaScript is off. You can browse the catalogue; interactive tools and appearance settings require JavaScript.</p></noscript>
+        {externalNote && <p class="shell external-notice">{externalNote}</p>}
+        <slot />
+        <footer class="site-footer shell"><div><strong>Text Utilities</strong><p>Small tools. A little less busywork.</p></div><nav aria-label="Project links"><a href="https://github.com/ianrastall/text-utils">Source on GitHub <ArrowUpRight size={14} aria-hidden="true" /></a><a href="https://ko-fi.com/ianrastall">Support this project <ArrowUpRight size={14} aria-hidden="true" /></a></nav></footer>
+      </div>
     </div>
-    <slot />
-    <div class="shell">
-      <footer class="site-footer">
-        <p>Text Utilities runs locally in your browser (some tools may make external requests).</p>
-        <p class="support-blurb">If this saved you a few hours of work, or is something you would have paid $5 for, consider <a href="https://ko-fi.com/ianrastall" rel="noreferrer" target="_blank">buying me a coffee on Ko-fi</a>.</p>
-      </footer>
-    </div>
-    <script>
-      // Theme toggle
-      const themeToggle = document.getElementById('theme-toggle');
-      function updateThemeIcon() {
-        const isDark = document.documentElement.dataset.theme === 'dark';
-        const icon = themeToggle?.querySelector('.material-symbols-outlined');
-        if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
-        themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-        themeToggle?.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-        themeToggle?.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-      }
-
-      updateThemeIcon();
-      themeToggle?.addEventListener('click', () => {
-        const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem('text-utils-theme', next);
-        applyAccent(localStorage.getItem('text-utils-accent') || null);
-        updateThemeIcon();
-      });
-
-      // Accent colour picker
-      function hexToHsl(hex: string): [number, number, number] {
-        let r = parseInt(hex.slice(1, 3), 16) / 255;
-        let g = parseInt(hex.slice(3, 5), 16) / 255;
-        let b = parseInt(hex.slice(5, 7), 16) / 255;
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h = 0, s = 0;
-        const l = (max + min) / 2;
-        if (max !== min) {
-          const d = max - min;
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-          switch (max) {
-            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-            case g: h = ((b - r) / d + 2) / 6; break;
-            case b: h = ((r - g) / d + 4) / 6; break;
-          }
-        }
-        return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
-      }
-
-      function hslToHex(h: number, s: number, l: number): string {
-        s /= 100; l /= 100;
-        const k = (n: number) => (n + h / 30) % 12;
-        const a = s * Math.min(l, 1 - l);
-        const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-        return '#' + [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
-      }
-
-      function applyAccent(hex: string | null) {
-        const root = document.documentElement;
-        const isDark = root.dataset.theme === 'dark';
-        if (!hex) {
-          root.style.removeProperty('--accent');
-          root.style.removeProperty('--accent-strong');
-          return;
-        }
-        const [h, s] = hexToHsl(hex);
-        // Light: moderately saturated mid-tone; Dark: bright teal-style
-        const accent      = isDark ? hslToHex(h, Math.min(s + 10, 100), 65) : hslToHex(h, Math.min(s, 90), 40);
-        const accentStrong = isDark ? hslToHex(h, Math.min(s + 5, 100), 75) : hslToHex(h, Math.min(s, 90), 32);
-        root.style.setProperty('--accent', accent);
-        root.style.setProperty('--accent-strong', accentStrong);
-        const swatch = document.getElementById('color-swatch') as HTMLElement | null;
-        if (swatch) swatch.style.background = accent;
-      }
-
-      function initAccent() {
-        const stored = localStorage.getItem('text-utils-accent');
-        const picker = document.getElementById('accent-picker') as HTMLInputElement | null;
-        if (stored && picker) picker.value = stored;
-        applyAccent(stored);
-        // sync swatch on load
-        const swatch = document.getElementById('color-swatch') as HTMLElement | null;
-        if (swatch && stored) swatch.style.background = stored;
-      }
-
-      initAccent();
-
-      document.getElementById('accent-picker')?.addEventListener('input', (e) => {
-        const hex = (e.target as HTMLInputElement).value;
-        localStorage.setItem('text-utils-accent', hex);
-        applyAccent(hex);
-      });
-
-      // Reset on double-click
-      document.getElementById('accent-picker')?.addEventListener('dblclick', () => {
-        localStorage.removeItem('text-utils-accent');
-        applyAccent(null);
-        const swatch = document.getElementById('color-swatch') as HTMLElement | null;
-        if (swatch) swatch.style.background = '';
-      });
-    </script>
   </body>
 </html>

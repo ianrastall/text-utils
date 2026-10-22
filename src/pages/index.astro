@@ -1,26 +1,11 @@
 ---
-import ToolCard from '../components/ToolCard.astro';
-import { categoryHref, categoryLabels, toolCategories, tools } from '../data/tools';
+import ToolCatalogue from '../components/jupiter/ToolCatalogue.astro';
+import { tools } from '../data/tools';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Text Utilities">
-  <main class="shell">
-    <header class="hero">
-      <h1>Text Utilities</h1>
-      <p>Fast, private browser tools for writing, converting, inspecting, and designing text.</p>
-    </header>
-
-    <nav class="category-nav home-category-nav" aria-label="Tool categories">
-      <a class="category-chip active" href="/" aria-current="page">All <span>{tools.length}</span></a>
-      {toolCategories.map((category) => (
-        <a class="category-chip" href={categoryHref(category)}>
-          {categoryLabels[category]} <span>{tools.filter((tool) => tool.category === category).length}</span>
-        </a>
-      ))}
-    </nav>
-
-    <section class="tool-grid" aria-label="Available tools">
-      {tools.map((tool) => <ToolCard tool={tool} />)}
-    </section>
+  <main id="main-content" tabindex="-1" class="shell catalogue-main">
+    <header class="hero"><p class="eyebrow">Your everyday text toolkit</p><h1>Text Utilities</h1><p>Write, convert, inspect, and design.<br />Useful little tools, ready when you need them.</p></header>
+    <ToolCatalogue items={tools} />
   </main>
 </BaseLayout>

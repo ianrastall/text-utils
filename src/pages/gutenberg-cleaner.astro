@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Project Gutenberg Cleaner" description="Clean Project Gutenberg HTML or plain text by removing boilerplate, page numbers, footnotes, and corpus noise.">
-  <main class="shell pg-main">
+  <main id="main-content" tabindex="-1" class="shell pg-main">
     <header class="pg-page-header">
       <div>
         <h1>Project Gutenberg Cleaner</h1>
         <p>Clean Gutenberg HTML or plain text for ebook prep and corpus work.</p>
       </div>
-      <a class="button" href="/">Back</a>
+      <a class="button" href="/">All tools</a>
     </header>
 
     <section class="pg-panel pg-toolbar" aria-label="Cleaning controls">
@@ -236,7 +236,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       width: 1rem;
       height: 1rem;
       margin-top: 0.18rem;
-      accent-color: var(--accent);
+      accent-color: var(--accent-strong);
       flex: 0 0 auto;
     }
 

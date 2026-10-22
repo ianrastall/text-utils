@@ -1,12 +1,9 @@
-# Text Utilities — Codex Instructions
+# Text Utilities — agent instructions
 
 ## Workflow
 
-**The user manages all git and GitHub operations via GitHub Desktop. Codex's only job is editing files.**
+Ian authorizes commits, pushes, pulls and release publication by default (21 October 2026). This supersedes the previous GitHub Desktop-only restriction. Preserve unrelated local work, validate changes before publication, and report the resulting commit and deployment state.
 
-- Do NOT run `git commit`, `git push`, `git branch`, or any `gh` commands.
-- Do NOT create pull requests, branches, or additional worktrees.
-- Do NOT suggest or offer to commit, push, or open PRs.
-- Edit source files directly in the current working directory and stop there.
+## Project conventions
 
-The user will commit and publish changes themselves using GitHub Desktop.
+This is the first Jupiter website implementation. Follow `docs/jupiter-web.md` and the workspace standards in `../_standards/`. Use Astro, TypeScript, plain CSS semantic tokens, native browser APIs and GitHub Pages. Preserve public URLs, existing tool behavior and accessible interactions. Keep domain artwork and preview palettes separate from interface colors.
