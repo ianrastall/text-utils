@@ -102,7 +102,7 @@ test('UTF-8 files preserve CRLF, BOM and download filename', async ({ page }) =>
   await page.locator('#workspace-files').setInputFiles({name:'original.txt',mimeType:'text/plain',buffer:Buffer.from('\ufeffHello 🪐\r\nSecond line\r\n','utf8')});
   await expect(page.getByRole('tab',{name:'original.txt',exact:true})).toBeVisible();
   await expect(page.locator('#document-eol')).toHaveValue('crlf');
-  const download = page.waitForEvent('download'); await command(page,'save').click();
+  const download = page.waitForEvent('download'); await page.locator('.editor-menu summary').filter({hasText:'File'}).click(); await page.getByRole('button',{name:'Download copy',exact:true}).click();
   const file = await download; expect(file.suggestedFilename()).toBe('original.txt');
   const bytes = await readFile((await file.path())!); expect(bytes.toString('utf8')).toBe('\ufeffHello 🪐\r\nSecond line\r\n');
 });
@@ -213,6 +213,7 @@ test('find and replace, help and tool directory remain reachable', async ({ page
 });
 
 test('keyboard download fires once and Escape then Tab leaves the editor', async ({ page }) => {
+  await page.addInitScript(() => { Object.defineProperty(window, 'showSaveFilePicker', { value: undefined }); });
   await ready(page); await editor(page).fill('Download me');
   let downloads = 0; page.on('download',() => downloads++);
   const downloaded = page.waitForEvent('download'); await editor(page).press('Control+s'); await downloaded;

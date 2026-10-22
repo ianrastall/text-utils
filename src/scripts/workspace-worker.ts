@@ -1,6 +1,8 @@
 /// <reference lib="webworker" />
 import { runOperation, type Operation } from '../lib/workspace-operations';
+import { formatJsonText } from '../lib/workspace-json';
 async function format(text: string, language: string): Promise<string> {
+  if (language === 'json') return formatJsonText(text) + '\n';
   const { format } = await import('prettier/standalone');
   const parser = ({ markdown:'markdown', json:'json', html:'html', css:'css', javascript:'babel', typescript:'babel-ts' } as Record<string,string>)[language];
   if (!parser) throw new Error('Choose Markdown, JSON, HTML, CSS, JavaScript or TypeScript in the status bar before formatting.');

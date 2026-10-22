@@ -363,6 +363,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </style>
 
   <script>
+    import { formatJsonText, jsonTokens } from '../lib/workspace-json';
     type JsonStats = {
       objects: number;
       arrays: number;
@@ -482,19 +483,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       statDepth.textContent = '0';
     }
 
-    function deepSortKeys(value: unknown): unknown {
-      if (Array.isArray(value)) return value.map(deepSortKeys);
-      if (value !== null && typeof value === 'object') {
-        return Object.keys(value as Record<string, unknown>)
-          .sort((a, b) => a.localeCompare(b))
-          .reduce<Record<string, unknown>>((sorted, key) => {
-            sorted[key] = deepSortKeys((value as Record<string, unknown>)[key]);
-            return sorted;
-          }, {});
-      }
-      return value;
-    }
-
     function parseJsonInput(): unknown {
       const text = input.value.trim();
       if (!text) throw new Error('Input is empty.');
@@ -609,7 +597,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (value === '') return '';
       if (/^(true|false)$/i.test(value)) return value.toLowerCase() === 'true';
       if (/^null$/i.test(value)) return null;
-      if (/^-?(?:\d+|\d*\.\d+)(?:e[+-]?\d+)?$/i.test(value)) return Number(value);
+      if (/^-?(?:\d+|\d*\.\d+)(?:e[+-]?\d+)?$/i.test(value)) return Number.isSafeInteger(Number(value)) && String(Number(value)) === value ? Number(value) : value;
       return cell;
     }
 
@@ -681,7 +669,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .map((row) => headers.reduce<Record<string, unknown>>((record, header, index) => {
           record[header] = csvCellToValue(row[index] ?? '');
           return record;
-        }, {}));
+        }, Object.create(null)));
     }
 
     function normalizeCsvCell(value: unknown): string {
@@ -735,6 +723,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function processAction(action: string): void {
       try {
+        if (['sortArray', 'toJsonl', 'jsonToCsv', 'extract', 'fromJsonl'].includes(action)) {
+          const sources = action === 'fromJsonl' ? input.value.split(/\r?\n/).filter(line => line.trim()) : [input.value];
+          for (const source of sources) for (const token of jsonTokens(source)) {
+            if (/^-?\d/.test(token) && JSON.stringify(JSON.parse(token)) !== token) throw new Error('This conversion would change a number’s precision or spelling. Format, Minify and Sort Keys preserve numbers exactly.');
+          }
+        }
         if (action === 'fromJsonl') {
           const parsedLines = jsonlToJson(input.value);
           displayStats(parsedLines);
@@ -757,8 +751,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         switch (action) {
           case 'format':
-            result = sortBeforeFormat.checked ? deepSortKeys(parsed) : parsed;
-            outputText = formatJson(result);
+            outputText = formatJsonText(input.value, getIndent(), sortBeforeFormat.checked);
             setStatus('Formatted JSON.', 'good');
             break;
           case 'validate': {
@@ -778,12 +771,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             return;
           }
           case 'minify':
-            outputText = JSON.stringify(parsed);
+            outputText = formatJsonText(input.value, 0);
             setStatus('Minified JSON.', 'good');
             break;
           case 'sortKeys':
-            result = deepSortKeys(parsed);
-            outputText = formatJson(result);
+            outputText = formatJsonText(input.value, getIndent(), true);
             setStatus('Sorted object keys.', 'good');
             break;
           case 'sortArray':

@@ -4,7 +4,7 @@ import { operationGroups } from '../lib/workspace-operations';
 import { tools, categoryLabels, toolCategories } from '../data/tools';
 import { FilePlusCorner, FolderOpen, Download, Undo2, Redo2, Search, SlidersHorizontal, PanelRightClose, BookOpen, Puzzle, ArrowUpRight } from '@lucide/astro';
 const menus = [
-  { name:'File', items:[['new','New document'],['open','Open files…'],['save','Download document'],['rename','Rename document…'],['duplicate','Duplicate document'],['close-document','Close document']] },
+  { name:'File', items:[['new','New document'],['open','Open files…'],['save','Save file…'],['download','Download copy'],['rename','Rename document…'],['duplicate','Duplicate document'],['close-document','Close document']] },
   { name:'Edit', items:[['undo','Undo'],['redo','Redo'],['find','Find and replace…'],['select-all','Select all'],['copy','Copy document or selection']] },
   { name:'Text', items:[['transform','Text operations…'],['cleanup','Clean up lines…'],['case','Change letter case…'],['regex','Regex replace or extract…'],['format-json','Format JSON…'],['format-markdown','Format Markdown…']] },
   { name:'Insert', items:[['tool:unicode-chooser','Unicode characters…'],['tool:font-awesome-chooser','Font Awesome icons…'],['tool:google-icons-chooser','Google icons…'],['tool:code-snippets','Code snippets…'],['tool:lorem-ipsum','Placeholder text…'],['tool:sequence-generator','Sequence…'],['tool:random-numbers','Random numbers…']] },
@@ -12,7 +12,8 @@ const menus = [
   { name:'Tools', items:[['browse-tools','Browse all tools…'],['tool:color-chooser','Color picker…'],['tool:font-chooser','Font picker…'],['tool:css-gradient-generator','Gradient designer…'],['tool:json-tools','Advanced JSON tools…'],['tool:gutenberg-cleaner','Gutenberg cleaner…'],['help','Workspace help']] }
 ];
 ---
-<main id="main-content" tabindex="-1" class="editor-workspace" aria-label="Text editor workspace" aria-busy="true" inert>
+<main id="main-content" tabindex="-1" class="editor-workspace" aria-label="Text editor workspace" aria-busy="true">
+  <div id="editor-startup-error" role="alert" hidden><p>The editor could not start. Reload to try again. Existing saved drafts are kept.</p><a href="/">Reload editor</a> · <a href="/tools.html">Browse tool directory</a></div>
   <h1 class="visually-hidden">Text editor</h1>
   <nav class="editor-menubar" aria-label="Editor menus">
     {menus.map(menu => <details class="editor-menu"><summary>{menu.name}</summary><div class="editor-menu-items">{menu.items.map(([id,label]) => <button type="button" data-action={id}>{label}</button>)}</div></details>)}
@@ -20,7 +21,7 @@ const menus = [
   <div class="editor-toolbar" role="toolbar" aria-label="Document commands">
     <button type="button" data-action="new" title="New document"><FilePlusCorner size={17} aria-hidden="true" /><span>New</span></button>
     <button type="button" data-action="open" title="Open files (Ctrl+O)"><FolderOpen size={17} aria-hidden="true" /><span>Open</span></button>
-    <button type="button" data-action="save" title="Download document (Ctrl+S)"><Download size={17} aria-hidden="true" /><span>Download</span></button>
+    <button type="button" data-action="save" title="Save file (Ctrl+S)"><Download size={17} aria-hidden="true" /><span>Save</span></button>
     <span class="toolbar-divider"></span>
     <button type="button" data-action="undo" aria-label="Undo" title="Undo (Ctrl+Z)"><Undo2 size={17} aria-hidden="true" /></button>
     <button type="button" data-action="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)"><Redo2 size={17} aria-hidden="true" /></button>
@@ -59,7 +60,7 @@ const menus = [
       </section>
       <section id="help-panel" class="work-panel-content" hidden>
         <a href="/editor-third-party-notices.txt" target="_blank" rel="noopener">Editor software notices</a>
-        <h3>Editor help</h3><p>Open a UTF-8 text file or start typing. Use Text tools on the whole document or a selection, preview the result, then apply. Undo covers editing and transformations.</p><p>Insert opens character, icon and snippet pickers beside your document. All tools includes the full original collection. Choose a result field and insert its contents at the cursor or replace selected text.</p><p>Use Markdown preview for a rendered view, or Compare documents for differences between tabs. File → Download saves a UTF-8 copy; it does not overwrite the file you opened.</p><p>Ctrl/Cmd+O opens files. Ctrl/Cmd+S downloads. Ctrl/Cmd+F opens find/replace. Ctrl/Cmd+Z undoes. Shift+Ctrl/Cmd+Z redoes. Press Escape, then Tab to leave the editor using the keyboard.</p><p>Draft recovery is optional and off initially. Enabling it stores documents in this browser on this device. Browser cleanup can remove them; keep important work in downloaded files. Recovered text starts a fresh undo history.</p><button id="load-example" type="button">Open a cleanup example</button><a href="/tools.html">Browse tool directory</a>
+        <h3>Editor help</h3><p>Open a UTF-8 text file or start typing. Use Text tools on the whole document or a selection, preview the result, then apply. Undo covers editing and transformations.</p><p>Insert opens character, icon and snippet pickers beside your document. All tools includes the full original collection. Choose a result field and insert its contents at the cursor or replace selected text.</p><p>Use Markdown preview for a rendered view, or Compare documents for differences between tabs. File → Save file writes a UTF-8 file after you choose a destination, where supported. Download copy always creates a download; its completion cannot be confirmed, so it keeps the unsaved marker.</p><p>Ctrl/Cmd+O opens files. Ctrl/Cmd+S saves a file, or downloads a copy when file saving is unavailable. Ctrl/Cmd+F opens find/replace. Ctrl/Cmd+Z undoes. Shift+Ctrl/Cmd+Z redoes. Press Escape, then Tab to leave the editor using the keyboard.</p><p>Draft recovery is optional and off initially. Enabling it stores documents in this browser on this device. Browser cleanup can remove them; keep important work in downloaded files. Recovered text starts a fresh undo history.</p><button id="load-example" type="button">Open a cleanup example</button><a href="/tools.html">Browse tool directory</a>
       </section>
     </aside>
   </div>
@@ -68,4 +69,18 @@ const menus = [
   <dialog id="rename-dialog" aria-labelledby="rename-title"><form id="rename-form"><h2 id="rename-title">Rename document</h2><label for="document-name">File name</label><input id="document-name" type="text" required maxlength="180" /><div class="work-actions"><button class="primary" type="submit">Rename</button><button type="button" id="rename-cancel">Cancel</button></div></form></dialog>
   <noscript><p>The editor needs JavaScript. The <a href="/tools.html">tool directory</a> remains available to browse.</p></noscript>
 </main>
+<script is:inline>
+  (() => {
+    const root = document.querySelector('.editor-workspace');
+    const fail = () => {
+      if (root.dataset.ready === 'true') return;
+      root.dataset.ready = 'error';
+      root.removeAttribute('aria-busy');
+      document.getElementById('editor-loading').hidden = true;
+      document.getElementById('editor-startup-error').hidden = false;
+    };
+    window.addEventListener('error', event => { if (event instanceof ErrorEvent || event.target instanceof HTMLScriptElement) fail(); }, true);
+    window.addEventListener('unhandledrejection', fail);
+  })();
+</script>
 <script src="../scripts/editor-workspace.ts"></script>

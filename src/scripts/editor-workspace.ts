@@ -16,7 +16,7 @@ import { toolInputs, toolOutputs, type ToolField } from '../lib/workspace-tool-a
 import { operationName, parseRecipe, type Operation } from '../lib/workspace-operations';
 import { getTextStats } from '../lib/text';
 import { exportText, readTextFile } from '../lib/workspace-files';
-import { readDrafts, writeDrafts, type SavedDocument } from '../lib/workspace-storage';
+import { readDrafts, writeDrafts, inspectDrafts, type SavedDocument } from '../lib/workspace-storage';
 
 const root = document.querySelector<HTMLElement>('.editor-workspace')!;
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelector<T>(`#${id}`)!;
@@ -28,7 +28,7 @@ const documents: Document[] = [];
 const languageExtensions: Record<string, () => Extension> = { text:() => [], markdown, json, html, css, javascript, typescript:() => javascript({ typescript:true }) };
 const detectLanguage = (name: string) => filenameLanguage(name) || 'text';
 const current = () => documents[active];
-const dirty = (doc: Document) => doc.state.doc.toString() !== doc.savedText;
+const dirty = (doc: Document) => doc.state.doc.toString() !== doc.savedText || doc.eol !== doc.savedEol || doc.bom !== doc.savedBom;
 const editorTheme = EditorView.theme({
   '&': { color:'var(--text)', backgroundColor:'var(--input)', height:'100%' },
   '.cm-content': { fontFamily:'ui-monospace, Consolas, monospace', padding:'20px 0', caretColor:'var(--text)' },
@@ -59,7 +59,7 @@ function makeState(text: string, language: string): EditorState {
     sizing.of(EditorView.theme({ '&':{ fontSize:`${fontSize}px` } })),
     placeholder('Start typing, paste text, or open a file…'),
     EditorView.contentAttributes.of({ 'aria-label':'Document editor', spellcheck:'false' }),
-    keymap.of([indentWithTab, { key:'Escape', run:editor => { editor.setTabFocusMode(2000); return false; } }, { key:'Mod-s', run:() => { download(); return true; } }, { key:'Mod-o', run:() => { $('workspace-files').click(); return true; } }]),
+    keymap.of([indentWithTab, { key:'Escape', run:editor => { editor.setTabFocusMode(2000); return false; } }, { key:'Mod-s', run:() => { void saveFile(); return true; } }, { key:'Mod-o', run:() => { $('workspace-files').click(); return true; } }]),
     EditorView.updateListener.of(update => {
       if (switching || !current()) return;
       current().state = update.state;
@@ -70,10 +70,11 @@ function makeState(text: string, language: string): EditorState {
 }
 const view = new EditorView({ state:makeState('', 'text'), parent:$('document-editor') });
 function newDocument(text = '', name = `Untitled ${++untitled}.txt`, saved?: SavedDocument) {
+  if (text.length > 10_000_000) { status('Documents are limited to 10 million characters. Your current document is unchanged.',true); return; }
   if (documents.length >= 30) { status('Up to 30 documents can be open. Close a tab before opening another.',true); return; }
   const languageMode = saved?.languageMode || (saved?.language ? saved.language : 'auto');
   const language = languageMode === 'auto' ? filenameLanguage(name) || saved?.language || 'text' : languageMode;
-  const doc: Document = { id:crypto.randomUUID(), name, text, savedText:saved?.savedText ?? '', eol:saved?.eol || '\n', bom:saved?.bom || false, language, languageMode, state:makeState(text,language), revision:0 };
+  const doc: Document = { id:saved?.id || crypto.randomUUID(), savedEol:saved?.savedEol ?? saved?.eol ?? '\n', savedBom:saved?.savedBom ?? saved?.bom ?? false, name, text, savedText:saved?.savedText ?? '', eol:saved?.eol || '\n', bom:saved?.bom || false, language, languageMode, state:makeState(text,language), revision:0 };
   documents.push(doc); activate(documents.length - 1); scheduleDraft();
 }
 function activate(index: number) {
@@ -129,7 +130,26 @@ function download() {
   const doc = current(), text = view.state.doc.toString();
   const blob = new Blob([exportText(text,doc.eol,doc.bom)],{ type:'text/plain;charset=utf-8' });
   const a = document.createElement('a'), url = URL.createObjectURL(blob); a.href = url; a.download = doc.name; a.click(); setTimeout(() => URL.revokeObjectURL(url),30000);
-  doc.savedText = text; status(`Download started: ${doc.name}. Keep the downloaded copy for permanent storage.`); refresh(); scheduleDraft();
+  status(`Download started: ${doc.name}. The browser cannot confirm completion; the unsaved marker is kept.`); refresh(); scheduleDraft();
+}
+interface FileWriter { write(data: Blob): Promise<void>; close(): Promise<void>; }
+interface SaveHandle { name: string; createWritable(): Promise<FileWriter>; }
+async function saveFile() {
+  const picker = (window as unknown as { showSaveFilePicker?: (options: { suggestedName: string }) => Promise<SaveHandle> }).showSaveFilePicker;
+  if (!picker) { download(); return; }
+  const doc = current(), text = doc.state.doc.toString(), eol = doc.eol, bom = doc.bom;
+  const originalName = doc.name;
+  try {
+    const handle = await picker.call(window, { suggestedName: originalName });
+    const writable = await handle.createWritable();
+    await writable.write(new Blob([exportText(text, eol, bom)], { type: 'text/plain;charset=utf-8' }));
+    await writable.close();
+    doc.savedText = text; doc.savedEol = eol; doc.savedBom = bom;
+    if (doc.name === originalName) doc.name = handle.name;
+    status(`Saved ${handle.name}.`); refresh(); scheduleDraft();
+  } catch (error) {
+    status(error instanceof Error && error.name === 'AbortError' ? 'Save cancelled. Your document is unchanged.' : 'The file could not be saved. Your document remains open and unsaved.', !(error instanceof Error && error.name === 'AbortError'));
+  }
 }
 $<HTMLInputElement>('workspace-files').addEventListener('change', async event => {
   const input = event.target as HTMLInputElement;
@@ -146,7 +166,7 @@ root.addEventListener('drop', async event => {
   for (const file of Array.from(event.dataTransfer.files)) { try { const value = await readTextFile(file); newDocument(value.text,value.name,{...value,savedText:value.text,language:detectLanguage(value.name), languageMode:'auto'}); } catch (e) { status(e instanceof Error ? e.message : 'Could not open file.',true); } }
 });
 $<HTMLSelectElement>('document-language').addEventListener('change', event => { current().languageMode = (event.target as HTMLSelectElement).value; scheduleDetection(); scheduleDraft(); });
-$<HTMLSelectElement>('document-eol').addEventListener('change', event => { const value = (event.target as HTMLSelectElement).value; current().eol = value === 'crlf' ? '\r\n' : value === 'cr' ? '\r' : '\n'; status('Download line endings updated.'); scheduleDraft(); });
+$<HTMLSelectElement>('document-eol').addEventListener('change', event => { const value = (event.target as HTMLSelectElement).value; current().eol = value === 'crlf' ? '\r\n' : value === 'cr' ? '\r' : '\n'; status('File line endings updated.'); refresh(); scheduleDraft(); });
 
 let panel = '';
 function showPanel(name: string, title: string) {
@@ -330,7 +350,8 @@ function action(id: string) {
   switch (id) {
     case 'new': newDocument(); break;
     case 'open': $('workspace-files').click(); break;
-    case 'save': download(); break;
+    case 'save': void saveFile(); break;
+    case 'download': download(); break;
     case 'rename': $<HTMLInputElement>('document-name').value = current().name; renameDialog.showModal(); break;
     case 'duplicate': newDocument(view.state.doc.toString(),`Copy of ${current().name}`); break;
     case 'close-document': closeDocument(); break;
@@ -368,6 +389,7 @@ $('load-example').addEventListener('click', () => { newDocument('  Keep useful t
 
 let draftEnabled = false, restoring = true, draftGeneration = 0, draftWrite: Promise<void> = Promise.resolve();
 let draftTimer: ReturnType<typeof setTimeout>;
+const persistedDrafts = new Map<string, { text: EditorState['doc']; meta: string; value: SavedDocument }>();
 try { draftEnabled = localStorage.getItem('text-utils-remember-drafts') === 'true'; } catch { /* Storage is optional. */ }
 $<HTMLInputElement>('remember-drafts').checked = draftEnabled;
 function scheduleDraft() { if (restoring || !draftEnabled) return; clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft,500); }
@@ -375,11 +397,22 @@ function saveDraft() {
   if (!draftEnabled || restoring) return;
   const generation = draftGeneration;
   root.dataset.draftState = 'saving';
-  const snapshot = { active,documents:documents.map(d => ({ name:d.name,text:d.state.doc.toString(),savedText:d.savedText,eol:d.eol,bom:d.bom,language:d.language,languageMode:d.languageMode })) };
-  draftWrite = draftWrite.catch(() => {}).then(async () => { if (generation === draftGeneration && draftEnabled) { await writeDrafts(snapshot); root.dataset.draftState = 'saved'; } }).catch(() => { root.dataset.draftState = 'error'; status('Draft recovery could not be saved. Download important work before closing.',true); });
+  const entries = documents.map(d => {
+    const meta = JSON.stringify([d.name,d.savedText,d.eol,d.bom,d.language,d.languageMode,d.savedEol,d.savedBom]);
+    const previous = persistedDrafts.get(d.id);
+    return { id: d.id, text: d.state.doc, meta, value: previous?.text === d.state.doc && previous.meta === meta ? previous.value : { id:d.id,name:d.name,text:d.state.doc.toString(),savedText:d.savedText,eol:d.eol,bom:d.bom,language:d.language,languageMode:d.languageMode,savedEol:d.savedEol,savedBom:d.savedBom } };
+  });
+  const snapshot = { active, documents: entries.map(entry => entry.value) };
+  const changed = new Set(entries.filter(entry => persistedDrafts.get(entry.id)?.value !== entry.value).map(entry => entry.id));
+  draftWrite = draftWrite.catch(() => {}).then(async () => {
+    if (generation !== draftGeneration || !draftEnabled) return;
+    await writeDrafts(snapshot, changed);
+    persistedDrafts.clear(); for (const entry of entries) persistedDrafts.set(entry.id, entry);
+    root.dataset.draftState = 'saved';
+  }).catch(error => { root.dataset.draftState = 'error'; status(error instanceof Error ? error.message : 'Draft recovery could not be saved. Download important work before closing.',true); });
 }
 async function eraseDrafts() {
-  draftGeneration++; draftEnabled = false; clearTimeout(draftTimer); $<HTMLInputElement>('remember-drafts').checked = false;
+  persistedDrafts.clear(); draftGeneration++; draftEnabled = false; clearTimeout(draftTimer); $<HTMLInputElement>('remember-drafts').checked = false;
   try { localStorage.removeItem('text-utils-remember-drafts'); await draftWrite; await writeDrafts(null); status('Saved drafts erased from this browser. Open documents are unchanged.'); }
   catch { status('Draft storage could not be erased. Use your browser’s site-data controls to remove it.',true); }
 }
@@ -437,15 +470,16 @@ async function initialize() {
     try {
       const snapshot = await readDrafts();
       if (snapshot?.documents && Array.isArray(snapshot.documents)) {
-        let total = 0;
-        for (const doc of snapshot.documents.slice(0,30)) {
-          if (!doc || typeof doc.text !== 'string' || typeof doc.name !== 'string' || doc.text.length > 10_000_000) continue;
-          total += doc.text.length; if (total > 30_000_000) break;
-          newDocument(doc.text,doc.name,{ ...doc, savedText:typeof doc.savedText === 'string' ? doc.savedText : '',eol:['\n','\r\n','\r'].includes(doc.eol) ? doc.eol : '\n', bom:!!doc.bom });
-        }
+        const checked = inspectDrafts(snapshot);
+        for (const doc of checked.documents) newDocument(doc.text,doc.name,doc);
         if (documents.length) { activate(Math.max(0,Math.min(documents.length - 1,Number(snapshot.active) || 0))); status('Drafts recovered from this browser. Undo history starts fresh.'); }
+        if (checked.skipped.length) {
+          draftEnabled = false; $<HTMLInputElement>('remember-drafts').checked = false;
+          root.dataset.draftState = 'error';
+          status(`Not recovered: ${checked.skipped.join(', ')}. Draft saving is paused to preserve the stored recovery copy. Download recovered work before enabling it again.`,true);
+        }
       }
-    } catch { status('Saved drafts could not be restored. Browser storage may be unavailable.',true); }
+    } catch { draftEnabled = false; $<HTMLInputElement>('remember-drafts').checked = false; status('Saved drafts could not be restored. Recovery saving is paused to preserve the stored copy.',true); }
   }
   if (!documents.length) newDocument();
   restoring = false;

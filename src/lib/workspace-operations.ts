@@ -1,3 +1,4 @@
+import { formatJsonText } from './workspace-json';
 export interface Operation { id: string; options?: Record<string, string>; }
 export const operationGroups = [
   { name: 'Clean up', items: [['trim', 'Trim each line'], ['blank', 'Remove blank lines'], ['unique', 'Remove duplicate lines'], ['spaces', 'Collapse repeated spaces']] },
@@ -10,11 +11,6 @@ export const operationGroups = [
 export function operationName(id: string): string { return operationGroups.flatMap(g => g.items).find(item => item[0] === id)?.[1] || id; }
 function words(text: string): string[] { return text.replace(/([\p{Ll}\p{N}])(\p{Lu})/gu, '$1 $2').match(/[\p{L}\p{M}\p{N}]+/gu) || []; }
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-function sorted(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(sorted);
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, v]) => [key, sorted(v)]));
-  return value;
-}
 function regex(options: Record<string, string>): RegExp {
   if (!options.pattern) throw new Error('Enter a regular expression first.');
   return new RegExp(options.pattern, options.flags ?? 'g');
@@ -39,9 +35,9 @@ export function runOperation(text: string, operation: Operation): string {
     case 'kebab': return words(text).map(s => s.toLowerCase()).join('-');
     case 'camel': return words(text).map((s,i) => i ? cap(s) : s.toLowerCase()).join('');
     case 'pascal': return words(text).map(cap).join('');
-    case 'json-format': return JSON.stringify(JSON.parse(text), null, 2);
-    case 'json-minify': return JSON.stringify(JSON.parse(text));
-    case 'json-sort': return JSON.stringify(sorted(JSON.parse(text)), null, 2);
+    case 'json-format': return formatJsonText(text);
+    case 'json-minify': return formatJsonText(text, 0);
+    case 'json-sort': return formatJsonText(text, 2, true);
     case 'url-encode': return encodeURIComponent(text);
     case 'url-decode': return decodeURIComponent(text);
     case 'base64-encode': { const bytes = new TextEncoder().encode(text); let binary = ''; for (const b of bytes) binary += String.fromCharCode(b); return btoa(binary); }
@@ -70,7 +66,7 @@ export function parseRecipe(value: unknown): Operation[] {
   return value.map(step => {
     if (!step || typeof step.id !== 'string' || !ids.has(step.id)) throw new Error('Recipe contains an unsupported operation.');
     const options: Record<string,string> = {};
-    if (step.options && typeof step.options === 'object') for (const [key,v] of Object.entries(step.options)) { if (typeof v !== 'string' || v.length > 10000) throw new Error('Invalid recipe options.'); options[key] = v; }
+    if (step.options && typeof step.options === 'object') for (const [key,v] of Object.entries(step.options)) { if (typeof v !== 'string' || v.length > 10000) throw new Error('Invalid recipe options.'); if (key !== 'language') options[key] = v; }
     return { id:step.id, options };
   });
 }
