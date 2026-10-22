@@ -43,3 +43,5 @@ Final reliability review also added recovery revision checks across browser wind
 Validation includes recipe reuse across JSON/CSS documents, reorder/export/import round-trips, invalid imports, step reports, line differences, unchanged results, tool replacement/undo and competing browser windows. Full release checks follow all four passes.
 
 Final local release validation: 29 unit tests and 112 Chromium browser tests passed; Astro type checks/build passed with no type errors; npm audit reported no vulnerabilities. Expanded recipe/difference workflows were inspected at 1440 px and 320 px, with no horizontal page overflow. The existing large-bundle warning remains. GitHub Actions repeats release checks before deployment.
+
+During publication, the runner's Azure Ubuntu mirror stalled while downloading browser dependencies. CI now pins Ubuntu 24.04, uses the main Ubuntu archive/security mirrors, applies package-download timeouts/retries, and limits browser installation to eight minutes.
