@@ -14,7 +14,7 @@ Text Utilities is the first rebuild in the three-site sequence: Text Utilities, 
 
 Warm charcoal surfaces, system UI fonts, compact labeled controls, quiet borders and restrained accents. Dark is the first-run default; an explicitly saved light preference is preserved. Settings opens a keyboard-accessible native modal with Theme and Accent color controls. Choices apply immediately, persist per browser/site and include an explicit reset.
 
-Automatic accent uses CSS `AccentColor` where supported, with `#C8A96B` as the family fallback. Browsers can supply their own accent for privacy or platform reasons, so the site cannot promise an exact Windows personalization color match. A custom picker is always available. System color resources remain live; derived text contrast refreshes while the page is visible. Forced colors take priority.
+Automatic accent uses CSS `AccentColor` where supported, with `#C8A96B` as the family fallback. Browsers can supply their own accent for privacy or platform reasons, so the site cannot promise a match with the operating system's accent; the setting is labelled "Use system accent color" rather than naming Windows. A custom picker is always available. System color resources remain live; derived text contrast refreshes while the page is visible. Forced colors take priority.
 
 References: [CSS system colors](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/system-color), [Astro styling](https://docs.astro.build/en/guides/styling/).
 

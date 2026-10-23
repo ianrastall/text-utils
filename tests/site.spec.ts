@@ -48,9 +48,9 @@ test('appearance persists across routes, resets and remains keyboard accessible'
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim())).toBe('#ff0000');
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.getByRole('button', { name: 'Reset to Windows accent' }).click();
+  await page.getByRole('button', { name: 'Reset to system accent' }).click();
   expect(await page.evaluate(() => localStorage.getItem('text-utils-accent'))).toBeNull();
-  await expect(page.getByLabel('Use Windows accent color')).toBeChecked();
+  await expect(page.getByLabel('Use system accent color')).toBeChecked();
 });
 
 test('tools still transform text, JSON, and Markdown', async ({ page }) => {
